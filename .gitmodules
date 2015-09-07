@@ -1,9 +1,9 @@
 [submodule "AVNUtilLibs/Socket"]
 	path = AVNUtilLibs/Socket
-	url = git@github.com:craigtong/Socket.git
+	url = ssh://git@brains/gitRepos/CPP/AVNUtilLibs/Socket.git
 [submodule "AVNUtilLibs/DataStructures"]
 	path = AVNUtilLibs/DataStructures
-	url = git@github.com:craigtong/DataStructures.git
+	url = ssh://git@brains/gitRepos/CPP/AVNUtilLibs/DataStructures.git
 [submodule "AVNAppLibs/SocketStreamers"]
 	path = AVNAppLibs/SocketStreamers
-	url = git@github.com:craigtong/SocketStreamers.git
+	url = ssh://git@brains/gitRepos/CPP/AVNAppLibs/SocketStreamers.git
