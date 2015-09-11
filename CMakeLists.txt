@@ -46,3 +46,5 @@ if(NOT CMAKE_BUILD_TYPE)
     message(STATUS "No build configuration specified, defaulting to Release")
         set(CMAKE_BUILD_TYPE "Release")
 endif()
+
+message(STATUS "Make generation finished for build type " ${CMAKE_BUILD_TYPE})
