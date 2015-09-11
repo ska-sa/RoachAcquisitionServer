@@ -13,7 +13,7 @@ if(WIN32)
         set(Boost_USE_STATIC_LIBS ON)
 endif()
 
-find_package(Boost COMPONENTS system thread chrono REQUIRED)
+find_package(Boost COMPONENTS system thread REQUIRED)
 
 #OS thread library
 find_package(Threads REQUIRED)
