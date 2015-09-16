@@ -5,7 +5,8 @@ cmake_minimum_required(VERSION 2.8)
 file(GLOB SRC_LIST "./*.cpp"
     "AVNAppLibs/SocketStreamers/UDPReceiver/*.cpp"
     "AVNAppLibs/SocketStreamers/TCPServer/*.cpp"
-    "AVNUtilLibs/Socket/InterruptableBlockingSockets/*.cpp")
+    "AVNUtilLibs/Sockets/InterruptibleBlockingSockets/*.cpp",
+    "AVNUtilLibs/Sockets/InterruptibleBlockingSocketAcceptors/*.cpp")
 
 #If Windows link Boost statically so we don't have to distribute DLLs
 if(WIN32)

@@ -11,17 +11,18 @@ using namespace std;
 
 int main()
 {
-    cout << "| ROACH Aquisition Server |" << endl;
+    cout << endl;
     cout << "|-------------------------|" << endl;
+    cout << "| ROACH Aquisition Server |" << endl;
+    cout << "|-------------------------|" << endl << endl;
 
     {
-        cRoachAquisitionServer oServer(string("10.0.0.3"), 60001);
+        cRoachAquisitionServer oServer(string("10.0.0.3"), 60000, string("10.0.0.2"), 60001);
 
         cin.get();
     }
 
-    cout << "Exiting cleanly" << endl;
+    cout << endl << "Exiting cleanly..." << endl << endl;
 
     return 0;
 }
-

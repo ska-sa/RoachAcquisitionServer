@@ -9,9 +9,11 @@
 //Local includes:
 #include "RoachAquisitionServer.h"
 
-cRoachAquisitionServer::cRoachAquisitionServer(const string &strRoachTGBEAddress, uint16_t u16RoachTGBEPort) :
+cRoachAquisitionServer::cRoachAquisitionServer(const string &strLocalInterface, uint16_t u16LocalPort, const string &strRoachTGBEAddress, uint16_t u16RoachTGBEPort) :
     m_strRoachTGBEAddress(strRoachTGBEAddress),
-    m_u16RoachTGBEPort(u16RoachTGBEPort)
+    m_u16RoachTGBEPort(u16RoachTGBEPort),
+    m_strLocalInterface(strLocalInterface),
+    m_u16LocalPort(u16LocalPort)
 {
     start();
 }
@@ -21,13 +23,13 @@ cRoachAquisitionServer::~cRoachAquisitionServer()
     m_pUDPReceiver.reset();
     m_pTCPForwardingServer.reset();
 
-    cout << "All members deleted." << endl;
+    cout << "cRoachAquisitionServer::~cRoachAquisitionServer(): All memory cleaned up." << endl;
 }
 
 void cRoachAquisitionServer::start()
 {
     m_pTCPForwardingServer = boost::make_shared<cTCPForwardingServer>("0.0.0.0", 60001, 2);
-    m_pUDPReceiver.reset(new cUDPReceiver(m_strRoachTGBEAddress, m_u16RoachTGBEPort));
+    m_pUDPReceiver.reset(new cUDPReceiver(m_strLocalInterface, m_u16LocalPort, m_strRoachTGBEAddress, m_u16RoachTGBEPort));
 
     m_pUDPReceiver->registerCallbackHandler(m_pTCPForwardingServer);
 

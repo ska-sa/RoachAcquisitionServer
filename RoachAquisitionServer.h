@@ -32,7 +32,7 @@ typedef unsigned __int64 uint64_t;
 class cRoachAquisitionServer
 {
 public:
-    explicit cRoachAquisitionServer(const std::string &strRoachTGBEAddress, uint16_t u16RoachTGBEPort);
+    explicit cRoachAquisitionServer(const std::string &strLocalInterface, uint16_t u16LocalPort, const std::string &strRoachTGBEAddress, uint16_t u16RoachTGBEPort);
     ~cRoachAquisitionServer();
 
     void                                                start();
@@ -45,6 +45,9 @@ private:
 
     std::string                                         m_strRoachTGBEAddress;
     uint16_t                                            m_u16RoachTGBEPort;
+
+    std::string                                         m_strLocalInterface;
+    uint16_t                                            m_u16LocalPort;
 };
 
 #endif //ROACH_AQUISITION_SERVER_H

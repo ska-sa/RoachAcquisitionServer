@@ -1,6 +1,6 @@
-[submodule "AVNUtilLibs/Socket"]
-	path = AVNUtilLibs/Socket
-	url = ssh://git@brains/gitRepos/CPP/AVNUtilLibs/Socket.git
+[submodule "AVNUtilLibs/Sockets"]
+	path = AVNUtilLibs/Sockets
+	url = ssh://git@brains/gitRepos/CPP/AVNUtilLibs/Sockets.git
 [submodule "AVNUtilLibs/DataStructures"]
 	path = AVNUtilLibs/DataStructures
 	url = ssh://git@brains/gitRepos/CPP/AVNUtilLibs/DataStructures.git
