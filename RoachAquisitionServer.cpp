@@ -20,8 +20,7 @@ cRoachAquisitionServer::cRoachAquisitionServer(const string &strLocalInterface, 
 
 cRoachAquisitionServer::~cRoachAquisitionServer()
 {
-    m_pUDPReceiver.reset();
-    m_pTCPForwardingServer.reset();
+    shutdown();
 
     cout << "cRoachAquisitionServer::~cRoachAquisitionServer(): All memory cleaned up." << endl;
 }
@@ -39,6 +38,7 @@ void cRoachAquisitionServer::start()
 
 void cRoachAquisitionServer::shutdown()
 {
+    m_pUDPReceiver->deregisterCallbackHandler(m_pTCPForwardingServer);
     m_pUDPReceiver.reset();
     m_pTCPForwardingServer.reset();
 }
