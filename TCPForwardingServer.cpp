@@ -14,7 +14,7 @@ cTCPForwardingServer::~cTCPForwardingServer()
 {
 }
 
-bool cTCPForwardingServer::offloadData_callback(char* cpData, uint32_t u32Size_B)
+void cTCPForwardingServer::offloadData_callback(char* cpData, uint32_t u32Size_B)
 {
-    return writeData(cpData, u32Size_B);
+    writeData(cpData, u32Size_B);
 }

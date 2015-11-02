@@ -7,3 +7,9 @@
 [submodule "AVNAppLibs/SocketStreamers"]
 	path = AVNAppLibs/SocketStreamers
 	url = ssh://git@brains/gitRepos/CPP/AVNAppLibs/SocketStreamers.git
+[submodule "AVNDataTypes/SpectrometerDataStream"]
+	path = AVNDataTypes/SpectrometerDataStream
+	url = ssh://git@brains/gitRepos/CPP/AVNDataTypes/SpectrometerDataStream.git
+[submodule "AVNUtilLibs/Timestamp"]
+	path = AVNUtilLibs/Timestamp
+	url = ssh://git@brains/gitRepos/CPP/AVNUtilLibs/Timestamp.git
