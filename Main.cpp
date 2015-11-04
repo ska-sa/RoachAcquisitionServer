@@ -5,24 +5,32 @@
 //Library includes
 
 //Local includes
-#include "RoachAquisitionServer.h"
+#include "RoachAcquisitionServer.h"
 
 using namespace std;
 
 int main()
 {
     cout << endl;
-    cout << "|-------------------------|" << endl;
-    cout << "| ROACH Aquisition Server |" << endl;
-    cout << "|-------------------------|" << endl << endl;
+    cout << "   ___  ___   _   ___ _  _     _                _    _ _   _            ___                                  " << endl;
+    cout << "  | _ \\/ _ \\ /_\\ / __| || |   /_\\  __ __ _ _  _(_)__(_) |_(_)___ _ _   / __| ___ _ ___ _____ _ _         " << endl;
+    cout << "  |   / (_) / _ \\ (__| __ |  / _ \\/ _/ _` | || | (_-< |  _| / _ \\ ' \\  \\__ \\/ -_) '_\\ V / -_) '_|     " << endl;
+    cout << "  |_|_\\\\___/_/ \\_\\___|_||_| /_/ \\_\\__\\__, |\\_,_|_/__/_|\\__|_\\___/_||_| |___/\\___|_|  \\_/\\___|_| " << endl;
+    cout << "                                        |_|                                                                  " << endl;
+    cout << "||-----------------------------------------------------------------------------------------------||" << endl;
+    cout << endl;
 
     {
-        cRoachAquisitionServer oServer(string("10.0.0.3"), 60000, string("10.0.0.2"), 60001);
+        cRoachAcquisitionServer oServer(string("10.0.0.3"), 60000, string("10.0.0.2"), 60001);
 
         cin.get();
+
+        cout << endl;
+        cout << "-----------------------------------------" << endl;
+        cout << "Shutdown down RoachAcquisition server...." << endl;
     }
 
-    cout << endl << "Exiting cleanly..." << endl << endl;
+    cout << endl << "Exited cleanly." << endl << endl;
 
     return 0;
 }

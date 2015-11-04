@@ -1,6 +1,8 @@
 project(RoachAcquisitionServer)
 cmake_minimum_required(VERSION 2.8)
 
+set(CMAKE_VERBOSE_MAKEFILE ON)
+
 ##Add the source files we want to build (best done explicitly)
 file(GLOB SRC_LIST "./*.cpp"
     "AVNAppLibs/SocketStreamers/SocketReceiverBase.cpp"
@@ -8,6 +10,7 @@ file(GLOB SRC_LIST "./*.cpp"
     "AVNAppLibs/SocketStreamers/UDPReceiver/*.cpp"
     "AVNAppLibs/SocketStreamers/TCPServer/*.cpp"
     "AVNDataTypes/SpectrometerDataStream/*.cpp"
+    "AVNUtilLibs/Timestamp/Timestamp.cpp"
     "AVNUtilLibs/Sockets/InterruptibleBlockingSockets/*.cpp"
     "AVNUtilLibs/Sockets/InterruptibleBlockingSocketAcceptors/*.cpp")
 
@@ -19,7 +22,7 @@ if(WIN32)
 endif()
 
 #The Boost libraries
-find_package(Boost COMPONENTS system thread REQUIRED)
+find_package(Boost COMPONENTS system thread date_time REQUIRED)
 
 #HDF5
 find_package(HDF5 COMPONENTS C HL REQUIRED)
@@ -40,7 +43,7 @@ add_executable(${PROJECT_NAME} ${SRC_LIST})
 if(CMAKE_THREAD_LIBS_INIT)
   target_link_libraries(${PROJECT_NAME} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES} ${HDF5_LIBRARIES})
 else()
-    target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES} hdf5_hl.so)
+    target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
 endif()
 
 ## Set the directory where the binaries will be stored
@@ -56,4 +59,18 @@ if(NOT CMAKE_BUILD_TYPE)
         set(CMAKE_BUILD_TYPE "Release")
 endif()
 
+## Compiler flags
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -O0")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O2")
+
+if(CMAKE_BUILD_TYPE MATCHES "Debug")
+    message(STATUS "Debug compiler flags are:   " ${CMAKE_CXX_FLAGS_DEBUG} ${CMAKE_CXX_FLAGS})
+
+elseif(CMAKE_BUILD_TYPE MATCHES "Release")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s")  ## Strip binary
+    message(STATUS "Release compiler flags are: " ${CMAKE_CXX_FLAGS_Release} ${CMAKE_CXX_FLAGS})
+
+endif()
+
 message(STATUS "Make generation finished for build type " ${CMAKE_BUILD_TYPE})
+

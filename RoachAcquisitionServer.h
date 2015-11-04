@@ -1,5 +1,5 @@
-#ifndef ROACH_AQUISITION_SERVER_H
-#define ROACH_AQUISITION_SERVER_H
+#ifndef ROACH_ACQUISITION_SERVER_H
+#define ROACH_ACQUISITION_SERVER_H
 
 //System includes
 #ifdef _WIN32
@@ -28,12 +28,13 @@ typedef unsigned __int64 uint64_t;
 //Local includes
 #include "AVNAppLibs/SocketStreamers/UDPReceiver/UDPReceiver.h"
 #include "TCPForwardingServer.h"
+#include "HDF5FileWriter.h"
 
-class cRoachAquisitionServer
+class cRoachAcquisitionServer
 {
 public:
-    explicit cRoachAquisitionServer(const std::string &strLocalInterface, uint16_t u16LocalPort, const std::string &strRoachTGBEAddress, uint16_t u16RoachTGBEPort);
-    ~cRoachAquisitionServer();
+    explicit cRoachAcquisitionServer(const std::string &strLocalInterface, uint16_t u16LocalPort, const std::string &strRoachTGBEAddress, uint16_t u16RoachTGBEPort);
+    ~cRoachAcquisitionServer();
 
     void                                                start();
     void                                                shutdown();
@@ -42,6 +43,7 @@ private:
 
     boost::scoped_ptr<cUDPReceiver>                     m_pUDPReceiver;
     boost::shared_ptr<cTCPForwardingServer>             m_pTCPForwardingServer;
+    boost::shared_ptr<cHDF5FileWriter>                  m_pHDF5FileWriter;
 
     std::string                                         m_strRoachTGBEAddress;
     uint16_t                                            m_u16RoachTGBEPort;
@@ -50,4 +52,4 @@ private:
     uint16_t                                            m_u16LocalPort;
 };
 
-#endif //ROACH_AQUISITION_SERVER_H
+#endif //ROACH_ACQUISITION_SERVER_H
