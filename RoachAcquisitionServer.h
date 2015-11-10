@@ -21,7 +21,6 @@ typedef unsigned __int64 uint64_t;
 
 //Library include:
 #ifndef Q_MOC_RUN //Qt's MOC and Boost have some issues don't let MOC process boost headers
-#include <boost/scoped_ptr.hpp>
 #include <boost/shared_ptr.hpp>
 #endif
 
@@ -29,6 +28,7 @@ typedef unsigned __int64 uint64_t;
 #include "AVNAppLibs/SocketStreamers/UDPReceiver/UDPReceiver.h"
 #include "TCPForwardingServer.h"
 #include "HDF5FileWriter.h"
+#include "KATCPServer.h"
 
 class cRoachAcquisitionServer
 {
@@ -41,9 +41,10 @@ public:
 
 private:
 
-    boost::scoped_ptr<cUDPReceiver>                     m_pUDPReceiver;
+    boost::shared_ptr<cUDPReceiver>                     m_pUDPReceiver;
     boost::shared_ptr<cTCPForwardingServer>             m_pTCPForwardingServer;
     boost::shared_ptr<cHDF5FileWriter>                  m_pHDF5FileWriter;
+    boost::shared_ptr<cKATCPServer>                     m_pKATCPServer;
 
     std::string                                         m_strRoachTGBEAddress;
     uint16_t                                            m_u16RoachTGBEPort;

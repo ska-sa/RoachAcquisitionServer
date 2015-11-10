@@ -39,14 +39,17 @@ class cHDF5FileWriter : public cSpectrometerDataStreamInterpreter::cCallbackInte
     //The entire class hierachy will probably need to be reconsidered in time.
 
 public:
-    cHDF5FileWriter();
+    cHDF5FileWriter(const std::string &strRecordingDirectory);
     ~cHDF5FileWriter();
 
-    void                                            startRecording(const std::string &strDirectory, const std::string &strFilenamePrefix, int64_t i64StartTime_us, int64_t i64Duration_us);
+    void                                            startRecording(const std::string &strFilenamePrefix, int64_t i64StartTime_us, int64_t i64Duration_us);
     void                                            stopRecording();
+    void                                            setRecordingDirectory(const std::string &strRecordingDirectory);
 
     //Public thread safe accessors
     bool                                            isRecordingEnabled();
+
+    int64_t                                         getRecordedDuration_us();
 
     //Re-implemented callback functions
     //Data is pushed into this function by the SpectrometerDataStreamInterpreter when a complete data frame is ready
@@ -84,10 +87,14 @@ private:
     std::string                                     m_strFilenamePrefix;
     std::string                                     m_strFilename;
 
-    int64_t                                         m_i64StartTime_us;
+    int64_t                                         m_i64RequestedStartTime_us;
+    int64_t                                         m_i64ActualStartTime_us;
     int64_t                                         m_i64Duration_us;
     int64_t                                         m_i64StopTime_us;
 
+    int64_t                                         m_i64RecordedDuration_us;
+
+    int64_t                                         m_i64LastPrintTime_us;
 
     //State machine
     void                                            setState(state eState);
@@ -96,6 +103,8 @@ private:
 
     //Private thread safe accessors
     bool                                            rejectData();
+
+    void                                            setRecordedDuration_us(int64_t i64Duration_us);
 
 };
 
