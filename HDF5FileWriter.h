@@ -31,7 +31,7 @@ typedef unsigned __int64 uint64_t;
 #include "AVNDataTypes/SpectrometerDataStream/SpectrometerHDF5OutputFile.h"
 
 class cHDF5FileWriter : public cSpectrometerDataStreamInterpreter::cCallbackInterface,
-        public cUDPReceiver::cCallbackInterface
+        public cUDPReceiver::cDataCallbackInterface
 {
     //cSpectrometerDataStreamInterpreter actually implements cUDPReceiver::cCallbackInterface as well and could therefore be connected directly to the UDPReceiver to get
     //the datastream from the Roach. However in the design of the class hierachy it made more sense that this HDF5Writer be the class to interface with the UDPReceiver and
