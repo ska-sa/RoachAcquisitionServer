@@ -8,6 +8,7 @@
 //Local includes
 #include "KATCPServer.h"
 #include "AVNUtilLibs/Timestamp/Timestamp.h"
+#include "AVNUtilLibs/Sockets/InterruptibleBlockingSockets/InterruptibleBlockingTCPSocket.h"
 
 using namespace std;
 
@@ -65,6 +66,8 @@ void cKATCPServer::serverThreadFunction()
     {
         cout << "cKATCPServer::cKATCPServer(): Error starting KATCP server." << endl;
     }
+
+    cout << "cKATCPServer::serverThreadFunction(): Exiting thread function." << endl;
 }
 
 void cKATCPServer::startServer(const string &strInterface, uint16_t u16Port, uint32_t u32MaxClients)
@@ -84,11 +87,19 @@ void cKATCPServer::stopServer()
 {
     cout << "cKATCPServer::stopServer() Stopping KATCP server..." << endl;
 
-    exited_katcp(m_pKATCPDispatch);
-    shutdown_katcp(m_pKATCPDispatch);
+    terminate_katcp(m_pKATCPDispatch, KATCP_EXIT_ABORT); //Stops server
 
+    //Make socket connection to KATCP server to force its main loop to exit
+    {
+        cout << "Connect temporary socket to KATCP server to for it to evaluate shutdown request..." << endl;
+        cInterruptibleBlockingTCPSocket oTempSocket(m_strListenInterface, m_u16Port);
+    }
+
+    //Now we can join the server thread
     m_pKATCPThread->join();
     m_pKATCPThread.reset();
+
+    shutdown_katcp(m_pKATCPDispatch); //Cleans up memory of the dispatch struct
 
     cout << "cKATCPServer::stopServer() KATCP server stopped." << endl;
 }

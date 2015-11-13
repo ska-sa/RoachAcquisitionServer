@@ -21,14 +21,17 @@ typedef unsigned __int64 uint64_t;
 
 //Library includes
 #include <hdf5.h>
-#include <boost/scoped_ptr.hpp>
+#ifndef Q_MOC_RUN //Qt's MOC and Boost have some issues don't let MOC process boost headers
+#include <boost/shared_ptr.hpp>
+#endif
 
 //Local includes
 #include "AVNAppLibs/SocketStreamers/UDPReceiver/UDPReceiver.h"
 #include "AVNDataTypes/SpectrometerDataStream/SpectrometerDataStreamInterpreter.h"
 #include "AVNDataTypes/SpectrometerDataStream/SpectrometerHDF5OutputFile.h"
 
-class cHDF5FileWriter : public cSpectrometerDataStreamInterpreter::cCallbackInterface, public cUDPReceiver::cCallbackInterface
+class cHDF5FileWriter : public cSpectrometerDataStreamInterpreter::cCallbackInterface,
+        public cUDPReceiver::cCallbackInterface
 {
     //cSpectrometerDataStreamInterpreter actually implements cUDPReceiver::cCallbackInterface as well and could therefore be connected directly to the UDPReceiver to get
     //the datastream from the Roach. However in the design of the class hierachy it made more sense that this HDF5Writer be the class to interface with the UDPReceiver and
@@ -60,6 +63,8 @@ public:
 
     std::string                                     makeFilename(const std::string &strDirectory, const std::string &strPrefix, int64_t i64Timestamp_us);
 
+    void                                            waitForFileClosed();
+
     enum state
     {
         IDLE = 0,
@@ -69,12 +74,11 @@ public:
     };
 
 private:
-
     int64_t                                         m_i64LastTimestamp_us;
     int64_t                                         m_i64FrameInterval_us;
     uint32_t                                        m_u32FrameSize_nVal;
     AVN::Spectrometer::digitiserType                m_eLastDigitiserType;
-    bool                                            m_eStreamChanged;
+    bool                                            m_bStreamChanged;
 
     cSpectrometerDataStreamInterpreter              m_oDataStreamInterpreter;
 

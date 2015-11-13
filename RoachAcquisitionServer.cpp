@@ -51,8 +51,17 @@ void cRoachAcquisitionServer::start()
 }
 
 void cRoachAcquisitionServer::shutdown()
-{
-    m_pUDPReceiver->deregisterCallbackHandler(m_pTCPForwardingServer);
+{   
+    //Delete all components...
+    m_pHDF5FileWriter->stopRecording();
+    m_pHDF5FileWriter->waitForFileClosed(); //This class requires callback pushes to change state so block here until it has reach an idle state
+
     m_pUDPReceiver.reset();
     m_pTCPForwardingServer.reset();
+    m_pKATCPServer.reset();
+    m_pHDF5FileWriter.reset();
+
+    cout << std::flush;
+
+    cout << "cRoachAcquisitionServer::shutdown() all components deleted." << endl;
 }

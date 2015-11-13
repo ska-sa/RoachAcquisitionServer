@@ -9,24 +9,27 @@
 //Local includes
 #include "HDF5FileWriter.h"
 #include "AVNUtilLibs/Timestamp/Timestamp.h"
+#include "AVNDataTypes/SpectrometerDataStream/SpectrometerDefinitions.h"
 
 using namespace std;
 
 cHDF5FileWriter::cHDF5FileWriter(const string &strRecordingDirectory) :
-    m_eStreamChanged(false),
+    m_bStreamChanged(false),
     m_strRecordingDirectory(strRecordingDirectory),
     m_strFilename(string("Undefined")),
-    m_i64LastPrintTime_us(0)
+    m_i64LastPrintTime_us(0),
+    m_eState(IDLE)
 {
-    boost::shared_ptr<cHDF5FileWriter> pThis;
-    pThis.reset(this);
-
-    m_oDataStreamInterpreter.registerCallbackHandler(pThis); //Have data stream handler push interpreted packet data back to this class.
+    m_oDataStreamInterpreter.registerCallbackHandler(this); //Have data stream handler push interpreted packet data back to this class.
 }
 
 cHDF5FileWriter::~cHDF5FileWriter()
 {
     stopRecording();
+
+    m_oDataStreamInterpreter.setIsRunning(false);
+
+    cout << "cHDF5FileWriter::~cHDF5FileWriter() exiting." << endl;
 }
 
 void cHDF5FileWriter::startRecording(const string &strFilenamePrefix, int64_t i64StartTime_us, int64_t i64Duration_us)
@@ -48,6 +51,9 @@ void cHDF5FileWriter::startRecording(const string &strFilenamePrefix, int64_t i6
 
 void cHDF5FileWriter::stopRecording()
 {
+    if(getState() == IDLE)
+        return;
+
     setState(REQUEST_STOP);
 }
 
@@ -74,35 +80,37 @@ void cHDF5FileWriter::getNextFrame_callback(const std::vector<int> &vi32Chan0, c
 {
     //Update the frame rate and the frame size every frame and check for changes
 
-    if(m_i64FrameInterval_us != oHeader.getTimestamp_us() - m_i64LastTimestamp_us)
+    if( abs( m_i64FrameInterval_us - (oHeader.getTimestamp_us() - m_i64LastTimestamp_us) ) > 1 )
     {
+        //Allow difference of 1 due to rounding errors in microsec timestamp resolution.
+        //This will also trigger a new file if any sort of stream discontinuity occurs.
+
+        cout << "getNextFrame_callback(): Detected stream change in frame update interval. Was " << m_i64FrameInterval_us << " got " <<  oHeader.getTimestamp_us() - m_i64LastTimestamp_us << endl;
+
         m_i64FrameInterval_us = oHeader.getTimestamp_us() - m_i64LastTimestamp_us;
-        m_eStreamChanged = true;
+        m_bStreamChanged = true;
     }
     else
     {
-        m_eStreamChanged = false;
+        m_bStreamChanged = false;
     }
 
 
     if(m_u32FrameSize_nVal != vi32Chan0.size())
     {
+        cout << "getNextFrame_callback(): Detected stream change in frame size. Was " << m_u32FrameSize_nVal << " got " << vi32Chan0.size() << endl;
+
         m_u32FrameSize_nVal = vi32Chan0.size();
-        m_eStreamChanged = true;
-    }
-    else
-    {
-        m_eStreamChanged = m_eStreamChanged || false;
+        m_bStreamChanged = true;
     }
 
     if(m_eLastDigitiserType != (AVN::Spectrometer::digitiserType)oHeader.getDigitiserType())
     {
+        cout << "getNextFrame_callback(): Detected stream change in digitiser. Was \"" << AVN::Spectrometer::digitiserTypeToString(m_eLastDigitiserType)
+             << "\" got \"" << AVN::Spectrometer::digitiserTypeToString(oHeader.getDigitiserType()) << "\"" << endl;
+
         m_eLastDigitiserType = (AVN::Spectrometer::digitiserType)oHeader.getDigitiserType();
-        m_eStreamChanged = true;
-    }
-    else
-    {
-        m_eStreamChanged = m_eStreamChanged || false;
+        m_bStreamChanged = true;
     }
 
     m_i64LastTimestamp_us = oHeader.getTimestamp_us();
@@ -139,7 +147,7 @@ void cHDF5FileWriter::getNextFrame_callback(const std::vector<int> &vi32Chan0, c
         m_i64ActualStartTime_us = m_i64LastTimestamp_us;
         m_strFilename = makeFilename(m_strRecordingDirectory, m_strFilenamePrefix, m_i64ActualStartTime_us);
 
-        m_pHDF5File = boost::make_shared<cSpectrometerHDF5OutputFile>(m_strFilename, m_eLastDigitiserType);
+        m_pHDF5File = boost::make_shared<cSpectrometerHDF5OutputFile>(m_strFilename, m_eLastDigitiserType, m_u32FrameSize_nVal);
 
         if(m_i64Duration_us)
         {
@@ -152,7 +160,21 @@ void cHDF5FileWriter::getNextFrame_callback(const std::vector<int> &vi32Chan0, c
 
         setState(RECORDING);
 
+        m_bStreamChanged = false; //Might be the first frame after a change
+
         cout << "cHDF5FileWriter::getNextFrame_callback(): Starting recording for file " << m_strFilename << endl;
+        cout << endl;
+        cout << "Recording:" << endl;
+        cout << "--------- " << endl;
+        cout << "Start time: " << AVN::stringFromTimestamp_full(m_i64ActualStartTime_us) << endl;
+        if(m_i64StopTime_us == LLONG_MAX)
+        {
+            cout << "Stop time: On user request." << endl;
+        }
+        else
+        {
+            cout << "Stop time: " << AVN::stringFromTimestamp_full(m_i64StopTime_us) << endl;
+        }
 
         //Note, no break here as we want to save this frame anyway, so execute the RECORDING STATE block as well
     }
@@ -160,7 +182,7 @@ void cHDF5FileWriter::getNextFrame_callback(const std::vector<int> &vi32Chan0, c
     case RECORDING:
     {
         //Check if parameters have changed if so break and start a new file.
-        if(m_eStreamChanged)
+        if(m_bStreamChanged)
         {
             cout << "cHDF5FileWriter::getNextFrame_callback(): Dectect stream change closing file " << m_strFilename << endl;
             m_pHDF5File.reset(); //Closes current HDF5 file.
@@ -177,11 +199,19 @@ void cHDF5FileWriter::getNextFrame_callback(const std::vector<int> &vi32Chan0, c
 
         if(m_i64LastTimestamp_us - m_i64LastPrintTime_us > 500000) //Limit this output to ever 500 ms
         {
-            cout << "Recording..."
-                 << " | Time now : " << AVN::stringFromTimestamp_full(m_i64LastTimestamp_us)
-                 << " | Stop time : " << AVN::stringFromTimestamp_full(m_i64StopTime_us)
-                 << " | Time to stop : " << AVN::stringFromTimeDuration(m_i64StopTime_us - m_i64LastTimestamp_us)
-                 << "\r" << std::flush;
+            if(m_i64StopTime_us == LLONG_MAX)
+            {
+                cout << "Last timestamp : " << AVN::stringFromTimestamp_full(m_i64LastTimestamp_us)
+                     << " | Elapsed time: " << AVN::stringFromTimeDuration(m_i64LastTimestamp_us - m_i64ActualStartTime_us)
+                     << "\r" << std::flush;
+            }
+            else
+            {
+                cout << "Last timestamp : " << AVN::stringFromTimestamp_full(m_i64LastTimestamp_us)
+                     << " | Elapsed time: " << AVN::stringFromTimeDuration(m_i64LastTimestamp_us - m_i64ActualStartTime_us)
+                     << " | Time to stop : " << AVN::stringFromTimeDuration(m_i64StopTime_us - m_i64LastTimestamp_us)
+                     << "\r" << std::flush;
+            }
 
             m_i64LastPrintTime_us = m_i64LastTimestamp_us;
         }
@@ -192,7 +222,7 @@ void cHDF5FileWriter::getNextFrame_callback(const std::vector<int> &vi32Chan0, c
         //Check the duration of recording. Stop if necessary.
         if(m_i64LastTimestamp_us >= m_i64StopTime_us)
         {
-            cout << endl;
+            cout << endl << endl;
             setState(REQUEST_STOP);
         }
 
@@ -265,4 +295,17 @@ bool cHDF5FileWriter::isRecordingEnabled()
     else
         return true;
 
+}
+
+void cHDF5FileWriter::waitForFileClosed()
+{
+    if(getState() != IDLE)
+    {
+        cout << "cHDF5FileWriter::waitForFileClose() Waiting for HDF5 file to close" << endl;
+    }
+    while(getState() != IDLE)
+    {
+        boost::this_thread::sleep(boost::posix_time::milliseconds(100));
+    }
+    cout << "cHDF5FileWriter::waitForFileClose() HDF5 file is closed." << endl;
 }
