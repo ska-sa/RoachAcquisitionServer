@@ -32,6 +32,9 @@ cKATCPServer::cKATCPServer()
 cKATCPServer::~cKATCPServer()
 {
     stopServer();
+
+    if(m_pFileWriter.get())
+        m_pFileWriter->deregisterCallbackHandler(this);
 }
 
 void cKATCPServer::serverThreadFunction()
@@ -55,6 +58,7 @@ void cKATCPServer::serverThreadFunction()
 
     register_katcp(m_pKATCPDispatch, "?startRecording",   "start data recording to HDF5", &cKATCPServer::startRecording_callback);
     register_katcp(m_pKATCPDispatch, "?stopRecording",   "stop data recording to HDF5", &cKATCPServer::stopRecording_callback);
+    register_katcp(m_pKATCPDispatch, "?getRecordingInfo",   "get info about current recording", &cKATCPServer::getRecordingInfo_callback);
 
     //Make a server listening interface from hostname and port string
     stringstream oSSServer;
@@ -87,11 +91,11 @@ void cKATCPServer::stopServer()
 {
     cout << "cKATCPServer::stopServer() Stopping KATCP server..." << endl;
 
-    terminate_katcp(m_pKATCPDispatch, KATCP_EXIT_ABORT); //Stops server
+    terminate_katcp(m_pKATCPDispatch, KATCP_EXIT_QUIT); //Stops server
 
     //Make socket connection to KATCP server to force its main loop to exit
     {
-        cout << "Connect temporary socket to KATCP server to for it to evaluate shutdown request..." << endl;
+        cout << "Connect temporary socket to KATCP server to force it to evaluate shutdown request..." << endl;
         cInterruptibleBlockingTCPSocket oTempSocket(m_strListenInterface, m_u16Port);
     }
 
@@ -107,9 +111,12 @@ void cKATCPServer::stopServer()
 void cKATCPServer::setFileWriter(boost::shared_ptr<cHDF5FileWriter> pFileWriter)
 {
     m_pFileWriter = pFileWriter;
+
+    if(m_pFileWriter.get())
+        m_pFileWriter->registerCallbackHandler(this);
 }
 
-int32_t cKATCPServer::startRecording_callback(struct katcp_dispatch *pKATCPDispatch, int32_t i32Argc)
+int32_t cKATCPServer::startRecording_callback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC)
 {
     cout << "cKATCPServer::startRecording_callback()" << endl;
 
@@ -120,16 +127,16 @@ int32_t cKATCPServer::startRecording_callback(struct katcp_dispatch *pKATCPDispa
         return KATCP_RESULT_FAIL;
     }
 
-    if(i32Argc > 4)
+    if(i32ArgC > 4)
     {
         //Redundant arguments
-        log_message_katcp(pKATCPDispatch, KATCP_LEVEL_WARN, NULL, "startRecording: Warning %i redundant argument(s) for stop recording, ignoring.", i32Argc - 4);
+        log_message_katcp(pKATCPDispatch, KATCP_LEVEL_WARN, NULL, "startRecording: Warning %i redundant argument(s) for stop recording, ignoring.", i32ArgC - 4);
     }
     string strFilePrefix("");
     int64_t i64StartTime_us = 0;
     int64_t i64Duration_us = 0;
 
-    if(i32Argc >= 2)
+    if(i32ArgC >= 2)
     {
         try
         {
@@ -142,10 +149,10 @@ int32_t cKATCPServer::startRecording_callback(struct katcp_dispatch *pKATCPDispa
         }
     }
 
-    if(i32Argc >= 3)
+    if(i32ArgC >= 3)
         i64StartTime_us = strtoll(arg_string_katcp(pKATCPDispatch, 2), NULL, 10);
 
-    if(i32Argc >= 4)
+    if(i32ArgC >= 4)
         i64Duration_us = strtoll(arg_string_katcp(pKATCPDispatch, 3), NULL, 10);
 
 
@@ -161,7 +168,7 @@ int32_t cKATCPServer::startRecording_callback(struct katcp_dispatch *pKATCPDispa
     return KATCP_RESULT_OK;
 }
 
-int32_t cKATCPServer::stopRecording_callback(struct katcp_dispatch *pKATCPDispatch, int32_t i32Argc)
+int32_t cKATCPServer::stopRecording_callback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC)
 {
     cout << "cKATCPServer::stopRecording_callback()" << endl;
 
@@ -172,10 +179,10 @@ int32_t cKATCPServer::stopRecording_callback(struct katcp_dispatch *pKATCPDispat
         return KATCP_RESULT_FAIL;
     }
 
-    if(i32Argc > 1)
+    if(i32ArgC > 1)
     {
         //Redundant arguments
-        log_message_katcp(pKATCPDispatch, KATCP_LEVEL_WARN, NULL, "stopRecording: Warning, %i redundant argument(s) for stop recording, ignoring.", i32Argc - 1);
+        log_message_katcp(pKATCPDispatch, KATCP_LEVEL_WARN, NULL, "stopRecording: Warning, %i redundant argument(s) for stop recording, ignoring.", i32ArgC - 1);
     }
 
     if(!m_pFileWriter->isRecordingEnabled())
@@ -188,4 +195,33 @@ int32_t cKATCPServer::stopRecording_callback(struct katcp_dispatch *pKATCPDispat
     m_pFileWriter->stopRecording();
 
     return KATCP_RESULT_OK;
+}
+
+int32_t cKATCPServer::getRecordingInfo_callback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC)
+{
+    if(m_pFileWriter->isRecordingEnabled())
+    {
+        send_katcp( pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_STRING, "#recordingInfo",
+                    KATCP_FLAG_STRING, "%s", m_pFileWriter->getFilename().c_str(),
+                    KATCP_FLAG_STRING, "%lli", m_pFileWriter->getRecordingStartTime_us(),
+                    KATCP_FLAG_STRING, "%lli", m_pFileWriter->getRecordedDuration_us(),
+                    KATCP_FLAG_STRING, "%lli", m_pFileWriter->getRecordingStopTime_us(),
+                    KATCP_FLAG_LAST | KATCP_FLAG_STRING, "%lli", m_pFileWriter->getRecordingTimeLeft_us() );
+    }
+    else
+    {
+        send_katcp(pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_STRING, "#recordingInfo",
+                   KATCP_FLAG_LAST  | KATCP_FLAG_STRING, "not recording");
+    }
+    return KATCP_RESULT_OK;
+}
+
+void cKATCPServer::recordingStarted()
+{
+    send_katcp( pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_LAST | KATCP_FLAG_STRING, "#recordingStarted" );
+}
+
+void cKATCPServer::recordingStopped()
+{
+    send_katcp(pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_LAST | KATCP_FLAG_STRING, "#recordingStopped");
 }

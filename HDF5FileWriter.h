@@ -42,6 +42,12 @@ class cHDF5FileWriter : public cSpectrometerDataStreamInterpreter::cCallbackInte
     //The entire class hierachy will probably need to be reconsidered in time.
 
 public:
+    class cCallbackInterface
+    {
+        virtual void recordingStarted() = 0;
+        virtual void recordingStopped() = 0;
+    };
+
     cHDF5FileWriter(const std::string &strRecordingDirectory);
     ~cHDF5FileWriter();
 
@@ -52,7 +58,12 @@ public:
     //Public thread safe accessors
     bool                                            isRecordingEnabled();
 
+    int64_t                                         getRecordingStartTime_us();
     int64_t                                         getRecordedDuration_us();
+    int64_t                                         getRecordingStopTime_us();
+    int64_t                                         getRecordingTimeLeft_us();
+
+    std::string                                     getFilename();
 
     //Re-implemented callback functions
     //Data is pushed into this function by the SpectrometerDataStreamInterpreter when a complete data frame is ready
@@ -64,6 +75,11 @@ public:
     std::string                                     makeFilename(const std::string &strDirectory, const std::string &strPrefix, int64_t i64Timestamp_us);
 
     void                                            waitForFileClosed();
+
+    void                                            registerCallbackHandler(cCallbackInterface *pNewHandler);
+    void                                            registerCallbackHandler(boost::shared_ptr<cCallbackInterface> pNewHandler);
+    void                                            deregisterCallbackHandler(cCallbackInterface *pHandler);
+    void                                            deregisterCallbackHandler(boost::shared_ptr<cCallbackInterface> pHandler);
 
     enum state
     {
@@ -110,6 +126,13 @@ private:
 
     void                                            setRecordedDuration_us(int64_t i64Duration_us);
 
+    //Callback handlers
+    std::vector<cCallbackInterface*>                    m_vpCallbackHandlers;
+    std::vector<boost::shared_ptr<cCallbackInterface> > m_vpCallbackHandlers_shared;
+    boost::shared_mutex                                 m_oCallbackHandlersMutex;
+
+    void                                                notifyAllRecordingStart();
+    void                                                notifyAllRecordingStopped();
 };
 
 #endif //

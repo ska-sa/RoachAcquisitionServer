@@ -3,6 +3,7 @@
 
 //System includes
 #include <string>
+#include <vector>
 
 #ifdef _WIN32
 #include <stdint.h>
@@ -37,7 +38,7 @@ extern "C" {
 //This means only a single instance of this class can exist but this should suite just about every use case.
 //It seems unlikely that an application would require multiple servers. In this case the class can, however, be cloned.
 
-class cKATCPServer
+class cKATCPServer : public cHDF5FileWriter::cCallbackInterface
 {
 public:
     cKATCPServer(const std::string &strListenInterface = std::string("0.0.0.0"), uint16_t u16Port = 7147, uint32_t u32MaxClients = 1);
@@ -55,8 +56,9 @@ protected:
     static struct katcp_dispatch                *m_pKATCPDispatch;
 
     //KATCTP callbacks
-    static int32_t                              startRecording_callback(struct katcp_dispatch *pKATCPDispatch, int32_t i32Argc);
-    static int32_t                              stopRecording_callback(struct katcp_dispatch *pKATCPDispatch, int32_t i32Argc);
+    static int32_t                              startRecording_callback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
+    static int32_t                              stopRecording_callback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
+    static int32_t                              getRecordingInfo_callback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
 
     static boost::shared_ptr<cHDF5FileWriter>   m_pFileWriter;
 
@@ -67,6 +69,10 @@ protected:
     static std::string                          m_strListenInterface;
     static uint16_t                             m_u16Port;
     static uint32_t                             m_u32MaxClients;
+
+    //Notification callback interface from HDF5Writer
+    void recordingStarted();
+    void recordingStopped();
 };
 
 #endif // KATCTP_SERVER_H

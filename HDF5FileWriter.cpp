@@ -163,6 +163,9 @@ void cHDF5FileWriter::getNextFrame_callback(const std::vector<int> &vi32Chan0, c
         m_bStreamChanged = false; //Might be the first frame after a change
 
         cout << "cHDF5FileWriter::getNextFrame_callback(): Starting recording for file " << m_strFilename << endl;
+
+        notifyAllRecordingStopped();
+
         cout << endl;
         cout << "Recording:" << endl;
         cout << "--------- " << endl;
@@ -240,6 +243,8 @@ void cHDF5FileWriter::getNextFrame_callback(const std::vector<int> &vi32Chan0, c
 
         setState(IDLE);
 
+        notifyAllRecordingStopped();
+
         break;
     }
 
@@ -281,11 +286,39 @@ void cHDF5FileWriter::setRecordedDuration_us(int64_t i64Duration_us)
     m_i64RecordedDuration_us = i64Duration_us;
 }
 
+int64_t cHDF5FileWriter::getRecordingStartTime_us()
+{
+    boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+    return m_i64ActualStartTime_us;
+}
+
 int64_t cHDF5FileWriter::getRecordedDuration_us()
 {
     boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
 
     return m_i64RecordedDuration_us;
+}
+
+int64_t  cHDF5FileWriter::getRecordingStopTime_us()
+{
+    boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+    return m_i64StopTime_us;
+}
+
+int64_t  cHDF5FileWriter::getRecordingTimeLeft_us()
+{
+    boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+    return m_i64StopTime_us - m_i64LastTimestamp_us;
+}
+
+std::string cHDF5FileWriter::getFilename()
+{
+    boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+    return m_strFilename;
 }
 
 bool cHDF5FileWriter::isRecordingEnabled()
@@ -308,4 +341,102 @@ void cHDF5FileWriter::waitForFileClosed()
         boost::this_thread::sleep(boost::posix_time::milliseconds(100));
     }
     cout << "cHDF5FileWriter::waitForFileClose() HDF5 file is closed." << endl;
+}
+
+void cHDF5FileWriter::registerCallbackHandler(cCallbackInterface *pNewHandler)
+{
+    boost::unique_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
+
+    m_vpCallbackHandlers.push_back(pNewHandler);
+
+    cout << "cHDF5FileWriter::::registerCallbackHandler(): Successfully registered callback handler: " << pNewHandler << endl;
+}
+
+void cHDF5FileWriter::registerCallbackHandler(boost::shared_ptr<cCallbackInterface> pNewHandler)
+{
+    boost::unique_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
+
+    m_vpCallbackHandlers_shared.push_back(pNewHandler);
+
+    cout << "cHDF5FileWriter::::registerCallbackHandler(): Successfully registered callback handler: " << pNewHandler.get() << endl;
+}
+
+void cHDF5FileWriter::deregisterCallbackHandler(cCallbackInterface *pHandler)
+{
+    boost::unique_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
+    bool bSuccess = false;
+
+    //Search for matching pointer values and erase
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size();)
+    {
+        if(m_vpCallbackHandlers[ui] == pHandler)
+        {
+            m_vpCallbackHandlers.erase(m_vpCallbackHandlers.begin() + ui);
+
+            cout << "cHDF5FileWriter::deregisterCallbackHandler(): Deregistered callback handler: " << pHandler << endl;
+            bSuccess = true;
+        }
+        else
+        {
+            ui++;
+        }
+    }
+
+    if(!bSuccess)
+    {
+        cout << "cHDF5FileWriter::::deregisterCallbackHandler(): Warning: Deregistering callback handler: " << pHandler << " failed. Object instance not found." << endl;
+    }
+}
+
+void cHDF5FileWriter::deregisterCallbackHandler(boost::shared_ptr<cCallbackInterface> pHandler)
+{
+    boost::unique_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
+    bool bSuccess = false;
+
+    //Search for matching pointer values and erase
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size();)
+    {
+        if(m_vpCallbackHandlers_shared[ui].get() == pHandler.get())
+        {
+            m_vpCallbackHandlers_shared.erase(m_vpCallbackHandlers_shared.begin() + ui);
+
+            cout << "cHDF5FileWriter::deregisterCallbackHandler(): Deregistered callback handler: " << pHandler.get() << endl;
+            bSuccess = true;
+        }
+        else
+        {
+            ui++;
+        }
+    }
+
+    if(!bSuccess)
+    {
+        cout << "cHDF5FileWriter::deregisterCallbackHandler(): Warning: Deregistering callback handler: " << pHandler.get() << " failed. Object instance not found." << endl;
+    }
+}
+
+void cHDF5FileWriter::notifyAllRecordingStart()
+{
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
+    {
+        m_vpCallbackHandlers[ui]->recordingStarted();
+    }
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
+    {
+        m_vpCallbackHandlers[ui]->recordingStarted();
+    }
+}
+
+void cHDF5FileWriter::notifyAllRecordingStopped()
+{
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
+    {
+        m_vpCallbackHandlers[ui]->recordingStopped();
+    }
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
+    {
+        m_vpCallbackHandlers[ui]->recordingStopped();
+    }
 }
