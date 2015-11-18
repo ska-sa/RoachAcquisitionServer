@@ -4,6 +4,9 @@
 #include <stdlib.h>
 
 //Library includes
+extern "C" {
+#include <katpriv.h>
+}
 
 //Local includes
 #include "KATCPServer.h"
@@ -19,6 +22,7 @@ boost::scoped_ptr<boost::thread>        cKATCPServer::m_pKATCPThread;
 std::string                             cKATCPServer::m_strListenInterface;
 uint16_t                                cKATCPServer::m_u16Port;
 uint32_t                                cKATCPServer::m_u32MaxClients;
+cKATCPServer::cHDF5FileWriterNotifier   cKATCPServer::m_oHDF5FileWriterNotifier;
 
 cKATCPServer::cKATCPServer(const string &strInterface, uint16_t u16Port, uint32_t u32MaxClients)
 {
@@ -34,7 +38,7 @@ cKATCPServer::~cKATCPServer()
     stopServer();
 
     if(m_pFileWriter.get())
-        m_pFileWriter->deregisterCallbackHandler(this);
+        m_pFileWriter->deregisterCallbackHandler(&m_oHDF5FileWriterNotifier);
 }
 
 void cKATCPServer::serverThreadFunction()
@@ -56,9 +60,10 @@ void cKATCPServer::serverThreadFunction()
     //Add a version number to KATCTP server
     add_version_katcp(m_pKATCPDispatch, "RoachAcquisitionServer", 0, "0.1", &oSSCompileTime.str()[0]);
 
-    register_katcp(m_pKATCPDispatch, "?startRecording",   "start data recording to HDF5", &cKATCPServer::startRecording_callback);
-    register_katcp(m_pKATCPDispatch, "?stopRecording",   "stop data recording to HDF5", &cKATCPServer::stopRecording_callback);
-    register_katcp(m_pKATCPDispatch, "?getRecordingInfo",   "get info about current recording", &cKATCPServer::getRecordingInfo_callback);
+    register_katcp(m_pKATCPDispatch, "?startRecording", "start data recording to HDF5", &cKATCPServer::startRecording_callback);
+    register_katcp(m_pKATCPDispatch, "?stopRecording",  "stop data recording to HDF5", &cKATCPServer::stopRecording_callback);
+    register_katcp(m_pKATCPDispatch, "?getRecordingInfo", "get info about current recording", &cKATCPServer::getRecordingInfo_callback);
+    register_katcp(m_pKATCPDispatch, "?getRecordingStatus", "is recording or not", &cKATCPServer::getRecordingStatus_callback);
 
     //Make a server listening interface from hostname and port string
     stringstream oSSServer;
@@ -113,7 +118,7 @@ void cKATCPServer::setFileWriter(boost::shared_ptr<cHDF5FileWriter> pFileWriter)
     m_pFileWriter = pFileWriter;
 
     if(m_pFileWriter.get())
-        m_pFileWriter->registerCallbackHandler(this);
+        m_pFileWriter->registerCallbackHandler(&m_oHDF5FileWriterNotifier);
 }
 
 int32_t cKATCPServer::startRecording_callback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC)
@@ -197,31 +202,74 @@ int32_t cKATCPServer::stopRecording_callback(struct katcp_dispatch *pKATCPDispat
     return KATCP_RESULT_OK;
 }
 
+int32_t cKATCPServer::getRecordingStatus_callback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC)
+{
+    if(m_pFileWriter->isRecordingEnabled())
+    {
+        send_katcp(pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_LAST | KATCP_FLAG_STRING, "#recordingStarted");
+    }
+    else
+    {
+        send_katcp(pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_LAST | KATCP_FLAG_STRING, "#recordingStopped");
+    }
+
+    return KATCP_RESULT_OK;
+}
+
+
 int32_t cKATCPServer::getRecordingInfo_callback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC)
 {
     if(m_pFileWriter->isRecordingEnabled())
     {
-        send_katcp( pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_STRING, "#recordingInfo",
-                    KATCP_FLAG_STRING, "%s", m_pFileWriter->getFilename().c_str(),
-                    KATCP_FLAG_STRING, "%lli", m_pFileWriter->getRecordingStartTime_us(),
-                    KATCP_FLAG_STRING, "%lli", m_pFileWriter->getRecordedDuration_us(),
-                    KATCP_FLAG_STRING, "%lli", m_pFileWriter->getRecordingStopTime_us(),
-                    KATCP_FLAG_LAST | KATCP_FLAG_STRING, "%lli", m_pFileWriter->getRecordingTimeLeft_us() );
+        send_katcp( pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_STRING, "#recordingInfo");
+        append_args_katcp(pKATCPDispatch, KATCP_FLAG_STRING, "%s", m_pFileWriter->getFilename().c_str());
+        append_args_katcp(pKATCPDispatch, KATCP_FLAG_STRING, "%lli", m_pFileWriter->getRecordingStartTime_us());
+        append_args_katcp(pKATCPDispatch, KATCP_FLAG_STRING, "%lli", m_pFileWriter->getRecordedDuration_us());
+        append_args_katcp(pKATCPDispatch, KATCP_FLAG_STRING, "%lli", m_pFileWriter->getRecordingStopTime_us());
+        append_args_katcp(pKATCPDispatch, KATCP_FLAG_LAST | KATCP_FLAG_STRING, "%lli", m_pFileWriter->getRecordingTimeLeft_us() );
     }
     else
     {
         send_katcp(pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_STRING, "#recordingInfo",
                    KATCP_FLAG_LAST  | KATCP_FLAG_STRING, "not recording");
     }
+
     return KATCP_RESULT_OK;
 }
 
-void cKATCPServer::recordingStarted()
+void cKATCPServer::cHDF5FileWriterNotifier::recordingStarted()
 {
-    send_katcp( pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_LAST | KATCP_FLAG_STRING, "#recordingStarted" );
+    struct katcp_shared *s;
+    struct katcp_dispatch *dx;
+
+    s = m_pKATCPDispatch->d_shared;
+
+    //Send to each client
+    for(uint32_t ui = 0; ui < s->s_used; ui++)
+    {
+        dx = s->s_clients[ui];
+        send_katcp(dx, KATCP_FLAG_FIRST | KATCP_FLAG_LAST | KATCP_FLAG_STRING, "#recordingStarted");
+        write_katcp(dx); //Required to flush
+    }
+
+    cout << "cKATCPServer::cHDF5FileWriterNotifier::recordingStarted() Got notification, sent KATCP notification message to all clients." << endl;
 }
 
-void cKATCPServer::recordingStopped()
+void cKATCPServer::cHDF5FileWriterNotifier::recordingStopped()
 {
-    send_katcp(pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_LAST | KATCP_FLAG_STRING, "#recordingStopped");
+    struct katcp_shared *s;
+    struct katcp_dispatch *dx;
+
+    s = m_pKATCPDispatch->d_shared;
+
+    //Send to each client
+    for(uint32_t ui = 0; ui < s->s_used; ui++)
+    {
+        dx = s->s_clients[ui];
+        send_katcp( dx, KATCP_FLAG_FIRST | KATCP_FLAG_LAST | KATCP_FLAG_STRING, "#recordingStopped");
+        write_katcp(dx); //Required to flush
+    }
+
+    cout << "cKATCPServer::cHDF5FileWriterNotifier::recordingStopped() Got notification, sent broadcast KATCP message" << endl;
 }
+

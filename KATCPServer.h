@@ -38,10 +38,20 @@ extern "C" {
 //This means only a single instance of this class can exist but this should suite just about every use case.
 //It seems unlikely that an application would require multiple servers. In this case the class can, however, be cloned.
 
-class cKATCPServer : public cHDF5FileWriter::cCallbackInterface
+class cKATCPServer
 {
 public:
-    cKATCPServer(const std::string &strListenInterface = std::string("0.0.0.0"), uint16_t u16Port = 7147, uint32_t u32MaxClients = 1);
+    //cKATCPServer is pure static and therefore cannot derive the non-static callback interface.
+    //Define a new non-static derived class here and create an instance as a static member in the cKATCPServer class.
+
+    class cHDF5FileWriterNotifier : public cHDF5FileWriter::cCallbackInterface
+    {
+        //Notification callback interface from HDF5Writer
+        void recordingStarted();
+        void recordingStopped();
+    };
+
+    cKATCPServer(const std::string &strListenInterface = std::string("0.0.0.0"), uint16_t u16Port = 7147, uint32_t u32MaxClients = 5);
     cKATCPServer();
     ~cKATCPServer();
 
@@ -51,6 +61,8 @@ public:
     static void                                 stopServer();
 
 protected:
+    static cHDF5FileWriterNotifier              m_oHDF5FileWriterNotifier;
+
     static void                                 serverThreadFunction();
 
     static struct katcp_dispatch                *m_pKATCPDispatch;
@@ -59,6 +71,7 @@ protected:
     static int32_t                              startRecording_callback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
     static int32_t                              stopRecording_callback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
     static int32_t                              getRecordingInfo_callback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
+    static int32_t                              getRecordingStatus_callback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
 
     static boost::shared_ptr<cHDF5FileWriter>   m_pFileWriter;
 
@@ -70,9 +83,6 @@ protected:
     static uint16_t                             m_u16Port;
     static uint32_t                             m_u32MaxClients;
 
-    //Notification callback interface from HDF5Writer
-    void recordingStarted();
-    void recordingStopped();
 };
 
 #endif // KATCTP_SERVER_H

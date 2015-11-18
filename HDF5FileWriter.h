@@ -44,6 +44,7 @@ class cHDF5FileWriter : public cSpectrometerDataStreamInterpreter::cCallbackInte
 public:
     class cCallbackInterface
     {
+    public:
         virtual void recordingStarted() = 0;
         virtual void recordingStopped() = 0;
     };
@@ -131,7 +132,7 @@ private:
     std::vector<boost::shared_ptr<cCallbackInterface> > m_vpCallbackHandlers_shared;
     boost::shared_mutex                                 m_oCallbackHandlersMutex;
 
-    void                                                notifyAllRecordingStart();
+    void                                                notifyAllRecordingStarted();
     void                                                notifyAllRecordingStopped();
 };
 

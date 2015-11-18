@@ -20,8 +20,14 @@ int main()
     cout << "||-----------------------------------------------------------------------------------------------||" << endl;
     cout << endl;
 
+    cout << "Build date: " << __DATE__ << " " << __TIME__ << endl;
+
+    cout << endl;
+
     {
-        cRoachAcquisitionServer oServer(string("10.0.0.3"), 60000, string("10.0.0.2"), 60001);
+        cout << "Starting Roach Aquisition Server..." << endl;
+
+        cRoachAcquisitionServer oServer(string("10.0.0.4"), 60000, string("10.0.0.2"), 60001);
 
         cin.get();
 

@@ -61,6 +61,15 @@ void cHDF5FileWriter::setState(state eState)
 {
     boost::unique_lock<boost::shared_mutex>  oLock(m_oMutex);
     m_eState = eState;
+
+    //For when recording is starting
+    if(m_eState == REQUEST_START)
+    {
+        m_strFilename = string("");
+        m_i64ActualStartTime_us = 0;
+
+        notifyAllRecordingStarted();
+    }
 }
 
 cHDF5FileWriter::state cHDF5FileWriter::getState()
@@ -124,6 +133,8 @@ void cHDF5FileWriter::getNextFrame_callback(const std::vector<int> &vi32Chan0, c
 
     case REQUEST_START:
     {
+        //Note notification callbacks for entering this state are triggered from the set state function.
+
         if(m_i64RequestedStartTime_us > m_i64LastTimestamp_us)
         {
             if(m_i64LastTimestamp_us - m_i64LastPrintTime_us > 500000) //Limit this output to ever 500 ms
@@ -135,6 +146,7 @@ void cHDF5FileWriter::getNextFrame_callback(const std::vector<int> &vi32Chan0, c
                      << "\r" << std::flush;
 
                 m_i64LastPrintTime_us = m_i64LastTimestamp_us;
+                setRecordedDuration_us(m_i64LastTimestamp_us - m_i64RequestedStartTime_us);
             }
 
             //We haven't reach the request start time yet ignore this data...
@@ -163,8 +175,6 @@ void cHDF5FileWriter::getNextFrame_callback(const std::vector<int> &vi32Chan0, c
         m_bStreamChanged = false; //Might be the first frame after a change
 
         cout << "cHDF5FileWriter::getNextFrame_callback(): Starting recording for file " << m_strFilename << endl;
-
-        notifyAllRecordingStopped();
 
         cout << endl;
         cout << "Recording:" << endl;
@@ -349,7 +359,7 @@ void cHDF5FileWriter::registerCallbackHandler(cCallbackInterface *pNewHandler)
 
     m_vpCallbackHandlers.push_back(pNewHandler);
 
-    cout << "cHDF5FileWriter::::registerCallbackHandler(): Successfully registered callback handler: " << pNewHandler << endl;
+    cout << "cHDF5FileWriter::registerCallbackHandler(): Successfully registered callback handler: " << pNewHandler << endl;
 }
 
 void cHDF5FileWriter::registerCallbackHandler(boost::shared_ptr<cCallbackInterface> pNewHandler)
@@ -358,7 +368,7 @@ void cHDF5FileWriter::registerCallbackHandler(boost::shared_ptr<cCallbackInterfa
 
     m_vpCallbackHandlers_shared.push_back(pNewHandler);
 
-    cout << "cHDF5FileWriter::::registerCallbackHandler(): Successfully registered callback handler: " << pNewHandler.get() << endl;
+    cout << "cHDF5FileWriter::registerCallbackHandler(): Successfully registered callback handler: " << pNewHandler.get() << endl;
 }
 
 void cHDF5FileWriter::deregisterCallbackHandler(cCallbackInterface *pHandler)
@@ -415,7 +425,7 @@ void cHDF5FileWriter::deregisterCallbackHandler(boost::shared_ptr<cCallbackInter
     }
 }
 
-void cHDF5FileWriter::notifyAllRecordingStart()
+void cHDF5FileWriter::notifyAllRecordingStarted()
 {
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
     {

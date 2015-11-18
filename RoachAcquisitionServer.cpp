@@ -33,7 +33,7 @@ void cRoachAcquisitionServer::start()
 
     //Data output handlers
     m_pTCPForwardingServer = boost::make_shared<cTCPForwardingServer>("0.0.0.0", 60001, 2);
-    m_pHDF5FileWriter      = boost::make_shared<cHDF5FileWriter>(std::string("/usr2/charles/ctong/HDF5Output"));
+    m_pHDF5FileWriter      = boost::make_shared<cHDF5FileWriter>(std::string("/home/avnuser/Data/RoachAquisition"));
 
     //Register the output handlers to get data from the input handler
     m_pUDPReceiver->registerDataCallbackHandler(m_pTCPForwardingServer);
