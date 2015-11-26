@@ -22,7 +22,7 @@ if(WIN32)
 endif()
 
 #The Boost libraries
-find_package(Boost COMPONENTS system thread date_time REQUIRED)
+find_package(Boost COMPONENTS system thread date_time program_options REQUIRED)
 
 #HDF5
 find_package(HDF5 COMPONENTS C HL REQUIRED)
