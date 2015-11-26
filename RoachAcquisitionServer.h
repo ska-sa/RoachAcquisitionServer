@@ -33,8 +33,12 @@ typedef unsigned __int64 uint64_t;
 class cRoachAcquisitionServer
 {
 public:
-    explicit cRoachAcquisitionServer(const std::string &strLocalInterface, uint16_t u16LocalPort, const std::string &strRoachTGBEAddress, uint16_t u16RoachTGBEPort);
+    explicit cRoachAcquisitionServer(const std::string &strLocalInterface, uint16_t u16LocalPort, const std::string &strRoachTGBEAddress, uint16_t u16RoachTGBEPort,
+                                     const std::string strClientInterface, uint16_t u16ClientDataPort);
     ~cRoachAcquisitionServer();
+
+    void                                                startKATCPServer(std::string strInterface, uint16_t u16Port);
+    void                                                stopKATCPServer();
 
     void                                                start();
     void                                                shutdown();
@@ -51,6 +55,9 @@ private:
 
     std::string                                         m_strLocalInterface;
     uint16_t                                            m_u16LocalPort;
+
+    std::string                                         m_strClientInterface;
+    uint16_t                                            m_u16ClientDataPort;
 };
 
 #endif //ROACH_ACQUISITION_SERVER_H

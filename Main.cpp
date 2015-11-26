@@ -34,55 +34,39 @@ int main(int iArgC, char *pcaArgV[])
 
     cout << endl;
 
+    string strLocalInterface;
+    uint16_t u16LocalPort;
+    string strRoachInterface;
+    uint16_t u16RoachPort;
+    string strClientInterface;
+    uint16_t u16DataPort;
+    uint16_t u16KATCPPort;
+
     boost::program_options::options_description oOptions("Options");
     oOptions.add_options()
-            ("help", "Print this message")
-            ("la", boost::program_options::value<string>(), "Local interface address (10 GbE)")
-            ("lp", boost::program_options::value<uint16_t>(), "Local port (destination port in the Roach TGbE core)")
-            ("ra", boost::program_options::value<string>(), "Roach host address (10 GbE)")
-            ("rp", boost::program_options::value<uint16_t>(), "Roach port (source port in the Roach TGbE core)");
+            ("help,h", "Print this message")
+            ("local-interface,l", boost::program_options::value<string>(&strLocalInterface)->default_value(string("10.0.0.4")), "Address of local 10 GbE interface to which the Roach is connected.")
+            ("udp-destination-port,d", boost::program_options::value<uint16_t>(&u16LocalPort)->default_value(60000), "Local UDP port to receive data on (destination port in the Roach TGbE core).")
+            ("roach-address,r", boost::program_options::value<string>(&strRoachInterface)->default_value(string("10.0.0.2")), "IP address of the Roach's 10 GbE port connected to this computer.")
+            ("udp-source-port,s", boost::program_options::value<uint16_t>(&u16RoachPort)->default_value(60001), "UDP Port on the Roach from which to packets are sent (source port in the Roach TGbE core).")
+            ("client-interface,c", boost::program_options::value<string>(&strClientInterface)->default_value(string("0.0.0.0")), "Local interface to listen for client connections (data and KATCP).")
+            ("data-port,d", boost::program_options::value<uint16_t>(&u16DataPort)->default_value(60001), "Local TCP port to listen for client data connections on.")
+            ("katcp-port,k", boost::program_options::value<uint16_t>(&u16KATCPPort)->default_value(7147), "Local TCP port to listen for client KATCP connections on.");
 
     boost::program_options::variables_map oVariableMap;
     boost::program_options::parsed_options oParsed = boost::program_options::command_line_parser(iArgC, pcaArgV).options(oOptions).allow_unregistered().run();
     boost::program_options::store(oParsed, oVariableMap);
     vector<string> vstrUnreckognisedOptions = boost::program_options::collect_unrecognized(oParsed.options, boost::program_options::include_positional); //Store all unrecognised arguments in vector of strings.
-
-    string strLocalInterface("10.0.0.4");
-    uint16_t u16LocalPort = 60000;
-    string strRoachInterface("10.0.0.2");
-    uint16_t u16RoachPort = 60000;
+    boost::program_options::notify(oVariableMap);
 
     if (oVariableMap.count("help"))
     {
-        cout << "Usage:" << endl;
         cout << oOptions << endl;
-        cout << "Example (these are also the default values if ommited):" << endl;
-        cout << "\t" << pcaArgV[0] << " --la=" << strLocalInterface << " --lp=" << u16LocalPort << " --ra=" << strRoachInterface << " --rp=" << u16RoachPort << endl;
         cout << endl;
         cout << "Note press any key during program operation for clean shutdown. Press Ctrl + C to terminate immediately." << endl;
         cout << endl;
 
         return 1;
-    }
-
-    if (oVariableMap.count("la"))
-    {
-        strLocalInterface = oVariableMap["la"].as<string>();
-    }
-
-    if (oVariableMap.count("lp"))
-    {
-        u16LocalPort = oVariableMap["lp"].as<uint16_t>();
-    }
-
-    if (oVariableMap.count("la"))
-    {
-        strRoachInterface = oVariableMap["ra"].as<string>();
-    }
-
-    if (oVariableMap.count("rp"))
-    {
-        u16RoachPort = oVariableMap["rp"].as<uint16_t>();
     }
 
     if(vstrUnreckognisedOptions.size())
@@ -94,7 +78,7 @@ int main(int iArgC, char *pcaArgV[])
             cout << vstrUnreckognisedOptions[ui] << " ";
 
         cout << endl;
-        cout << "Ensure to precede each argument with \"--\" and assign value with \"=\" where relevant." << endl;
+        cout << "Will apply default values where necessary." << endl;
         cout << endl;
 
         for(uint32_t ui = 5; ui > 0; ui--)
@@ -110,7 +94,8 @@ int main(int iArgC, char *pcaArgV[])
     {
         cout << "Starting Roach Aquisition Server..." << endl;
 
-        cRoachAcquisitionServer oServer(strLocalInterface, u16LocalPort, strRoachInterface, u16RoachPort);
+        cRoachAcquisitionServer oServer(strLocalInterface, u16LocalPort, strRoachInterface, u16RoachPort, strClientInterface, u16DataPort);
+        oServer.startKATCPServer(strClientInterface, u16KATCPPort);
 
         cin.get();
 
