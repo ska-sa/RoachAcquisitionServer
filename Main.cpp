@@ -50,8 +50,8 @@ int main(int iArgC, char *pcaArgV[])
             ("roach-address,r", boost::program_options::value<string>(&strRoachInterface)->default_value(string("10.0.0.2")), "IP address of the Roach's 10 GbE port connected to this computer.")
             ("udp-source-port,s", boost::program_options::value<uint16_t>(&u16RoachPort)->default_value(60001), "UDP Port on the Roach from which to packets are sent (source port in the Roach TGbE core).")
             ("client-interface,c", boost::program_options::value<string>(&strClientInterface)->default_value(string("0.0.0.0")), "Local interface to listen for client connections (data and KATCP).")
-            ("data-port,d", boost::program_options::value<uint16_t>(&u16DataPort)->default_value(60001), "Local TCP port to listen for client data connections on.")
-            ("katcp-port,k", boost::program_options::value<uint16_t>(&u16KATCPPort)->default_value(7147), "Local TCP port to listen for client KATCP connections on.");
+            ("data-port,d", boost::program_options::value<uint16_t>(&u16DataPort)->default_value(60001), "Local TCP port to listen for client data connections.")
+            ("katcp-port,k", boost::program_options::value<uint16_t>(&u16KATCPPort)->default_value(7147), "Local TCP port to listen for client KATCP connections.");
 
     boost::program_options::variables_map oVariableMap;
     boost::program_options::parsed_options oParsed = boost::program_options::command_line_parser(iArgC, pcaArgV).options(oOptions).allow_unregistered().run();
