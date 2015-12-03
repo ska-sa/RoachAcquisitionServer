@@ -164,8 +164,8 @@ int32_t cKATCPServer::startRecording_callback(struct katcp_dispatch *pKATCPDispa
     cout << "--------------------------------------------------------------" << endl;
     cout << "cKATCPServer::startRecording_callback() Got request to record:" << endl;
     cout << "File prefix = " << strFilePrefix << endl;
-    cout << "Start time  = " << i64StartTime_us << "(" << AVN::stringFromTimestamp_full(i64StartTime_us) << ")" << endl;
-    cout << "Duration    = " << i64Duration_us << "(" << AVN::stringFromTimeDuration(i64Duration_us) << ")" << endl;
+    cout << "Start time  = " << i64StartTime_us << " (" << AVN::stringFromTimestamp_full(i64StartTime_us) << ")" << endl;
+    cout << "Duration    = " << i64Duration_us << " (" << AVN::stringFromTimeDuration(i64Duration_us) << ")" << endl;
     cout << "--------------------------------------------------------------" << endl;
 
     m_pFileWriter->startRecording(strFilePrefix, i64StartTime_us, i64Duration_us);
