@@ -13,3 +13,9 @@
 [submodule "AVNUtilLibs/Timestamp"]
 	path = AVNUtilLibs/Timestamp
 	url = ssh://git@brains/gitRepos/CPP/AVNUtilLibs/Timestamp.git
+[submodule "AVNUtilLibs/CoordinatePosition"]
+	path = AVNUtilLibs/CoordinatePosition
+	url = ssh://git@brains/gitRepos/CPP/AVNUtilLibs/CoordinatePosition.git
+[submodule "AVNAppLibs/KATCP"]
+	path = AVNAppLibs/KATCP
+	url = ssh://git@brains/gitRepos/CPP/AVNAppLibs/KATCP.git

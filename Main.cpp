@@ -34,13 +34,17 @@ int main(int iArgC, char *pcaArgV[])
 
     cout << endl;
 
-    string strLocalInterface;
-    uint16_t u16LocalPort;
-    string strRoachInterface;
-    uint16_t u16RoachPort;
-    string strClientInterface;
-    uint16_t u16DataPort;
-    uint16_t u16KATCPPort;
+    string      strLocalInterface;
+    uint16_t    u16LocalPort;
+    string      strRoachInterface;
+    uint16_t    u16RoachPort;
+    string      strClientInterface;
+    uint16_t    u16DataPort;
+    uint16_t    u16KATCPPort;
+    string      strStationControllerAddress;
+    uint16_t    u16StationControllerPort;
+    string      strROACHPowerPCAddress;
+    uint16_t    u16ROACHTCPBorphPort;
 
     boost::program_options::options_description oOptions("Options");
     oOptions.add_options()
@@ -51,7 +55,11 @@ int main(int iArgC, char *pcaArgV[])
             ("udp-source-port,s", boost::program_options::value<uint16_t>(&u16RoachPort)->default_value(60001), "UDP Port on the Roach from which to packets are sent (source port in the Roach TGbE core).")
             ("client-interface,c", boost::program_options::value<string>(&strClientInterface)->default_value(string("0.0.0.0")), "Local interface to listen for client connections (data and KATCP).")
             ("data-port,d", boost::program_options::value<uint16_t>(&u16DataPort)->default_value(60001), "Local TCP port to listen for client data connections.")
-            ("katcp-port,k", boost::program_options::value<uint16_t>(&u16KATCPPort)->default_value(7147), "Local TCP port to listen for client KATCP connections.");
+            ("katcp-port,k", boost::program_options::value<uint16_t>(&u16KATCPPort)->default_value(7147), "Local TCP port to listen for client KATCP connections.")
+            ("station-controller-address,t", boost::program_options::value<string>(&strStationControllerAddress), "Address of station controller machine, providing antenna aspect information etc.")
+            ("station-controller-port,u", boost::program_options::value<uint16_t>(&u16StationControllerPort)->default_value(7147), "Port to use for connection to station controller PC.")
+            ("roach-ppc-address,v", boost::program_options::value<string>(&strROACHPowerPCAddress), "Address of ROACH PowerPC 1GigE interface, providing TCPBorph access.")
+            ("roach-tcpborph-port,w", boost::program_options::value<uint16_t>(&u16ROACHTCPBorphPort)->default_value(7147), "Port to use for connection to ROACH TCPBorph server.");
 
     boost::program_options::variables_map oVariableMap;
     boost::program_options::parsed_options oParsed = boost::program_options::command_line_parser(iArgC, pcaArgV).options(oOptions).allow_unregistered().run();
@@ -96,6 +104,17 @@ int main(int iArgC, char *pcaArgV[])
 
         cRoachAcquisitionServer oServer(strLocalInterface, u16LocalPort, strRoachInterface, u16RoachPort, strClientInterface, u16DataPort);
         oServer.startKATCPServer(strClientInterface, u16KATCPPort);
+
+        //Connect TCP clients to station controller and ROACH TCPBorph server if addresses are specified
+        if(oVariableMap.count("station-controller-address"))
+        {
+            oServer.startRoachKATCPClient(strStationControllerAddress, u16StationControllerPort);
+        }
+
+        if(oVariableMap.count("roach-ppc-address"))
+        {
+            oServer.startStationControllerKATCPClient(strROACHPowerPCAddress, u16ROACHTCPBorphPort);
+        }
 
         cin.get();
 

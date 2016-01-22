@@ -44,9 +44,6 @@ void cRoachAcquisitionServer::start()
 
     m_pUDPReceiver->startCallbackOffloading();
     m_pUDPReceiver->startReceiving();
-
-    //Testing
-    //m_pHDF5FileWriter->startRecording(std::string("HDF5_Test_"), AVN::getTimeNow_us() + 3000000LL, 500000000LL);
 }
 
 void cRoachAcquisitionServer::shutdown()
@@ -59,6 +56,9 @@ void cRoachAcquisitionServer::shutdown()
     m_pTCPForwardingServer.reset();
     m_pKATCPServer.reset();
     m_pHDF5FileWriter.reset();
+
+    m_pRoachKATCPClient.reset();
+    m_pStationControllerKATCPClient.reset();
 
     cout << std::flush;
 
@@ -74,11 +74,82 @@ void cRoachAcquisitionServer::startKATCPServer(std::string strInterface, uint16_
     }
 
     //Start the KATCP control and monitoring server
-    m_pKATCPServer          = boost::make_shared<cKATCPServer>(string("0.0.0.0"), 7147);
+    m_pKATCPServer = boost::make_shared<cKATCPServer>(strInterface, u16Port);
+
+    //Connect file writer
     m_pKATCPServer->setFileWriter(m_pHDF5FileWriter);
+
+    //If available connect to KATCP clients
+    if(m_pRoachKATCPClient.get())
+    {
+        m_pKATCPServer->setRoachKATCPClient(m_pRoachKATCPClient);
+    }
+
+    if(m_pStationControllerKATCPClient.get())
+    {
+        m_pKATCPServer->setStationControllerKATCPClient(m_pStationControllerKATCPClient);
+    }
 }
 
 void cRoachAcquisitionServer::stopKATCPServer()
 {
     m_pKATCPServer.reset();
+}
+
+void cRoachAcquisitionServer::startRoachKATCPClient(std::string strServerAddress, uint16_t u16Port)
+{
+    if(m_pRoachKATCPClient.get())
+    {
+        cout << "cRoachAcquisitionServer::startKATCPClient_roach(): KATCP client already running. Ignoring." << endl;
+        return;
+    }
+
+    //Start the KATCP client connection to Roach
+    m_pRoachKATCPClient = boost::make_shared<cRoachKATCPClient>(strServerAddress, u16Port);
+
+    //Connection to server if available
+    if(m_pKATCPServer.get())
+    {
+        m_pKATCPServer->setRoachKATCPClient(m_pRoachKATCPClient);
+    }
+}
+
+void cRoachAcquisitionServer::stopRoachKATCPClient()
+{
+    //Disconnect from server if available
+    if(m_pKATCPServer.get())
+    {
+        m_pKATCPServer->setRoachKATCPClient(boost::make_shared<cRoachKATCPClient>());
+    }
+
+    m_pRoachKATCPClient.reset();
+}
+
+void cRoachAcquisitionServer::startStationControllerKATCPClient(std::string strServerAddress, uint16_t u16Port)
+{
+    if(m_pStationControllerKATCPClient.get())
+    {
+        cout << "cRoachAcquisitionServer::startKATCPClient_stationController(): KATCP client already running. Ignoring." << endl;
+        return;
+    }
+
+    //Start the KATCP client connection to Roach
+    m_pStationControllerKATCPClient = boost::make_shared<cStationControllerKATCPClient>(strServerAddress, u16Port);
+
+    //Connection to server if available
+    if(m_pKATCPServer.get())
+    {
+        m_pKATCPServer->setStationControllerKATCPClient(m_pStationControllerKATCPClient);
+    }
+}
+
+void cRoachAcquisitionServer::stopStationControllerKATCPClient()
+{
+    //Disconnect from server if available
+    if(m_pKATCPServer.get())
+    {
+        m_pKATCPServer->setStationControllerKATCPClient(boost::make_shared<cStationControllerKATCPClient>());
+    }
+
+    m_pStationControllerKATCPClient.reset();
 }

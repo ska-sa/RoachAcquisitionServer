@@ -9,10 +9,14 @@ file(GLOB SRC_LIST "./*.cpp"
     "AVNAppLibs/SocketStreamers/*.cpp"
     "AVNAppLibs/SocketStreamers/UDPReceiver/*.cpp"
     "AVNAppLibs/SocketStreamers/TCPServer/*.cpp"
+    "AVNAppLibs/KATCP/*.cpp"
     "AVNDataTypes/SpectrometerDataStream/*.cpp"
     "AVNUtilLibs/Timestamp/Timestamp.cpp"
     "AVNUtilLibs/Sockets/InterruptibleBlockingSockets/*.cpp"
-    "AVNUtilLibs/Sockets/InterruptibleBlockingSocketAcceptors/*.cpp")
+    "AVNUtilLibs/Sockets/InterruptibleBlockingSocketAcceptors/*.cpp"
+    "AVNUtilLibs/CoordinatePosition/*.cpp")
+
+add_definitions(-DUSE_BOOST_TIME) #Use boost library for current time derivation in AVNUtilLibs/Timestamp/Timestamp.cpp
 
 #If Windows link Boost and HDF5 statically so we don't have to distribute DLLs
 if(WIN32)
@@ -22,7 +26,7 @@ if(WIN32)
 endif()
 
 #The Boost libraries
-find_package(Boost COMPONENTS system thread date_time program_options REQUIRED)
+find_package(Boost COMPONENTS system thread date_time program_options filesystem REQUIRED)
 
 #HDF5
 find_package(HDF5 COMPONENTS C HL REQUIRED)

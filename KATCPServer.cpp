@@ -8,6 +8,8 @@ extern "C" {
 #include <katpriv.h>
 }
 
+#include <boost/filesystem.hpp>
+
 //Local includes
 #include "KATCPServer.h"
 #include "AVNUtilLibs/Timestamp/Timestamp.h"
@@ -16,13 +18,16 @@ extern "C" {
 using namespace std;
 
 //Define static members of cKATCPServer:
-struct katcp_dispatch                   *cKATCPServer::m_pKATCPDispatch;
-boost::shared_ptr<cHDF5FileWriter>      cKATCPServer::m_pFileWriter;
-boost::scoped_ptr<boost::thread>        cKATCPServer::m_pKATCPThread;
-std::string                             cKATCPServer::m_strListenInterface;
-uint16_t                                cKATCPServer::m_u16Port;
-uint32_t                                cKATCPServer::m_u32MaxClients;
-cKATCPServer::cHDF5FileWriterNotifier   cKATCPServer::m_oHDF5FileWriterNotifier;
+cKATCPServer::cHDF5FileWriterCallbackHandler        cKATCPServer::m_oHDF5FileWriterCallBackHandler;
+cKATCPServer::cKATCPClientCallbackHandler           cKATCPServer::m_oKATCPClientCallbackHandler;
+struct katcp_dispatch                               *cKATCPServer::m_pKATCPDispatch;
+boost::shared_ptr<cHDF5FileWriter>                  cKATCPServer::m_pFileWriter;
+boost::shared_ptr<cRoachKATCPClient>                cKATCPServer::m_pRoachKATCPClient;
+boost::shared_ptr<cStationControllerKATCPClient>    cKATCPServer::m_pStationControllerKATCPClient;
+boost::scoped_ptr<boost::thread>                    cKATCPServer::m_pKATCPThread;
+std::string                                         cKATCPServer::m_strListenInterface;
+uint16_t                                            cKATCPServer::m_u16Port;
+uint32_t                                            cKATCPServer::m_u32MaxClients;
 
 cKATCPServer::cKATCPServer(const string &strInterface, uint16_t u16Port, uint32_t u32MaxClients)
 {
@@ -38,7 +43,7 @@ cKATCPServer::~cKATCPServer()
     stopServer();
 
     if(m_pFileWriter.get())
-        m_pFileWriter->deregisterCallbackHandler(&m_oHDF5FileWriterNotifier);
+        m_pFileWriter->deregisterCallbackHandler(&m_oHDF5FileWriterCallBackHandler);
 }
 
 void cKATCPServer::serverThreadFunction()
@@ -60,10 +65,11 @@ void cKATCPServer::serverThreadFunction()
     //Add a version number to KATCTP server
     add_version_katcp(m_pKATCPDispatch, "RoachAcquisitionServer", 0, "0.1", &oSSCompileTime.str()[0]);
 
-    register_katcp(m_pKATCPDispatch, "?startRecording", "start data recording to HDF5", &cKATCPServer::startRecording_callback);
-    register_katcp(m_pKATCPDispatch, "?stopRecording",  "stop data recording to HDF5", &cKATCPServer::stopRecording_callback);
-    register_katcp(m_pKATCPDispatch, "?getRecordingInfo", "get info about current recording", &cKATCPServer::getRecordingInfo_callback);
-    register_katcp(m_pKATCPDispatch, "?getRecordingStatus", "is recording or not", &cKATCPServer::getRecordingStatus_callback);
+
+    register_katcp(m_pKATCPDispatch, "?startRecording", "start data recording to HDF5", &cKATCPServer::startRecording_KATCPCallback);
+    register_katcp(m_pKATCPDispatch, "?stopRecording",  "stop data recording to HDF5", &cKATCPServer::stopRecording_KATCPCallback);
+    register_katcp(m_pKATCPDispatch, "?getRecordingInfo", "get info about current recording", &cKATCPServer::getRecordingInfo_KATCPCallback);
+    register_katcp(m_pKATCPDispatch, "?getRecordingStatus", "is recording or not", &cKATCPServer::getRecordingStatus_KATCPCallback);
 
     //Make a server listening interface from hostname and port string
     stringstream oSSServer;
@@ -118,12 +124,30 @@ void cKATCPServer::setFileWriter(boost::shared_ptr<cHDF5FileWriter> pFileWriter)
     m_pFileWriter = pFileWriter;
 
     if(m_pFileWriter.get())
-        m_pFileWriter->registerCallbackHandler(&m_oHDF5FileWriterNotifier);
+        m_pFileWriter->registerCallbackHandler(&m_oHDF5FileWriterCallBackHandler);
 }
 
-int32_t cKATCPServer::startRecording_callback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC)
+void cKATCPServer::setRoachKATCPClient(boost::shared_ptr<cRoachKATCPClient> pKATCPClient)
 {
-    cout << "cKATCPServer::startRecording_callback()" << endl;
+    m_pRoachKATCPClient = pKATCPClient;
+
+    if(m_pRoachKATCPClient.get())
+    {
+        m_pRoachKATCPClient->registerCallbackHandler(&m_oKATCPClientCallbackHandler);
+    }
+}
+
+void cKATCPServer::setStationControllerKATCPClient(boost::shared_ptr<cStationControllerKATCPClient> pKATCPClient)
+{
+    m_pStationControllerKATCPClient = pKATCPClient;
+
+    if(m_pStationControllerKATCPClient.get())
+        m_pStationControllerKATCPClient->registerCallbackHandler(&m_oKATCPClientCallbackHandler);
+}
+
+int32_t cKATCPServer::startRecording_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC)
+{
+    cout << "cKATCPServer::startRecording_KATCPCallback()" << endl;
 
     if(!m_pFileWriter.get())
     {
@@ -173,9 +197,9 @@ int32_t cKATCPServer::startRecording_callback(struct katcp_dispatch *pKATCPDispa
     return KATCP_RESULT_OK;
 }
 
-int32_t cKATCPServer::stopRecording_callback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC)
+int32_t cKATCPServer::stopRecording_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC)
 {
-    cout << "cKATCPServer::stopRecording_callback()" << endl;
+    cout << "cKATCPServer::stopRecording_KATCPCallback()" << endl;
 
     if(!m_pFileWriter.get())
     {
@@ -202,7 +226,7 @@ int32_t cKATCPServer::stopRecording_callback(struct katcp_dispatch *pKATCPDispat
     return KATCP_RESULT_OK;
 }
 
-int32_t cKATCPServer::getRecordingStatus_callback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC)
+int32_t cKATCPServer::getRecordingStatus_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC)
 {
     if(m_pFileWriter->isRecordingEnabled())
     {
@@ -217,7 +241,7 @@ int32_t cKATCPServer::getRecordingStatus_callback(struct katcp_dispatch *pKATCPD
 }
 
 
-int32_t cKATCPServer::getRecordingInfo_callback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC)
+int32_t cKATCPServer::getRecordingInfo_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC)
 {
     if(m_pFileWriter->isRecordingEnabled())
     {
@@ -226,18 +250,20 @@ int32_t cKATCPServer::getRecordingInfo_callback(struct katcp_dispatch *pKATCPDis
         append_args_katcp(pKATCPDispatch, KATCP_FLAG_STRING, "%lli", m_pFileWriter->getRecordingStartTime_us());
         append_args_katcp(pKATCPDispatch, KATCP_FLAG_STRING, "%lli", m_pFileWriter->getRecordedDuration_us());
         append_args_katcp(pKATCPDispatch, KATCP_FLAG_STRING, "%lli", m_pFileWriter->getRecordingStopTime_us());
-        append_args_katcp(pKATCPDispatch, KATCP_FLAG_LAST | KATCP_FLAG_STRING, "%lli", m_pFileWriter->getRecordingTimeLeft_us() );
+        append_args_katcp(pKATCPDispatch, KATCP_FLAG_STRING, "%lli", m_pFileWriter->getRecordingTimeLeft_us());
+        append_args_katcp(pKATCPDispatch, KATCP_FLAG_LAST | KATCP_FLAG_STRING, "%llu", boost::filesystem::space(m_pFileWriter->getRecordingDirectory()).available);
     }
     else
     {
-        send_katcp(pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_STRING, "#recordingInfo",
-                   KATCP_FLAG_LAST  | KATCP_FLAG_STRING, "not recording");
+        send_katcp(pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_STRING, "#recordingInfo");
+        append_args_katcp(pKATCPDispatch, KATCP_FLAG_STRING, "not recording");
+        append_args_katcp(pKATCPDispatch, KATCP_FLAG_LAST | KATCP_FLAG_STRING, "%llu", boost::filesystem::space(m_pFileWriter->getRecordingDirectory()).available);
     }
 
     return KATCP_RESULT_OK;
 }
 
-void cKATCPServer::cHDF5FileWriterNotifier::recordingStarted()
+void cKATCPServer::cHDF5FileWriterCallbackHandler::recordingStarted_callback()
 {
     struct katcp_shared *s;
     struct katcp_dispatch *dx;
@@ -255,7 +281,7 @@ void cKATCPServer::cHDF5FileWriterNotifier::recordingStarted()
     cout << "cKATCPServer::cHDF5FileWriterNotifier::recordingStarted() Got notification, sent KATCP notification message to all clients." << endl;
 }
 
-void cKATCPServer::cHDF5FileWriterNotifier::recordingStopped()
+void cKATCPServer::cHDF5FileWriterCallbackHandler::recordingStopped_callback()
 {
     struct katcp_shared *s;
     struct katcp_dispatch *dx;
@@ -273,3 +299,181 @@ void cKATCPServer::cHDF5FileWriterNotifier::recordingStopped()
     cout << "cKATCPServer::cHDF5FileWriterNotifier::recordingStopped() Got notification, sent broadcast KATCP message" << endl;
 }
 
+void cKATCPServer::cKATCPClientCallbackHandler::connected_callback(bool bConnected)
+{
+    send_katcp( m_pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_STRING, "#connectedToStationController");
+    if(bConnected)
+    {
+        append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_LAST | KATCP_FLAG_STRING, "1");
+    }
+    else
+    {
+        append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_LAST | KATCP_FLAG_STRING, "0");
+    }
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::startRecording_callback(const string &strFilePrefix, int64_t i64StartTime_us, int64_t i64Duration_us)
+{
+    //Not used. Note, the HDF5FileWriter class is also a callback handler for KATCPClient so it get this callback to too and reacts to it there.
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::stopRecording_callback()
+{
+    //Not used. Note, the HDF5FileWriter class is also a callback handler for KATCPClient so it get this callback to too and reacts to it there.
+}
+
+void  cKATCPServer::cKATCPClientCallbackHandler::requestedAntennaAzEl_callback(int64_t i64Timestamp_us, double dAzimuth_deg, double dElevation_deg)
+{
+    send_katcp( m_pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_STRING, "#requestedAntennaAzEl");
+    append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_STRING, "%lli", i64Timestamp_us);
+    append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_STRING, "%f", dAzimuth_deg);
+    append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_LAST | KATCP_FLAG_STRING, "%f",dElevation_deg);
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::actualAntennaAzEl_callback(int64_t i64Timestamp_us, double dAzimuth_deg, double dElevation_deg)
+{
+    send_katcp( m_pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_STRING, "#actualAntennaAzEl");
+    append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_STRING, "%lli", i64Timestamp_us);
+    append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_STRING, "%f", dAzimuth_deg);
+    append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_LAST | KATCP_FLAG_STRING, "%f",dElevation_deg);
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::actualSourceOffsetAzEl_callback(int64_t i64Timestamp_us, double dAzimuthOffset_deg, double dElevationOffset_deg)
+{
+    send_katcp( m_pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_STRING, "#actualSourceOffsetAzEl");
+    append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_STRING, "%lli", i64Timestamp_us);
+    append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_STRING, "%f", dAzimuthOffset_deg);
+    append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_LAST | KATCP_FLAG_STRING, "%f",dElevationOffset_deg);
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::actualAntennaRADec_callback(int64_t i64Timestamp_us, double dRighAscension_deg, double dDeclination_deg)
+{
+    send_katcp( m_pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_STRING, "#actualAntennaRADec");
+    append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_STRING, "%lli", i64Timestamp_us);
+    append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_STRING, "%f", dRighAscension_deg);
+    append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_LAST | KATCP_FLAG_STRING, "%f",dDeclination_deg);
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::antennaStatus_callback(int64_t i64Timestamp_us, int32_t i32AntennaStatus, const string &strStatus)
+{
+    send_katcp( m_pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_STRING, "#antennaStatus");
+    append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_STRING, "%lli", i64Timestamp_us);
+    append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_STRING, "%i",i32AntennaStatus);
+    append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_LAST | KATCP_FLAG_STRING, "%s", strStatus.c_str());
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::motorTorques_callback(int64_t i64Timestamp_us, double dAz0_Nm, double dAz1_Nm, double dEl0_Nm, double dEl1_Nm)
+{
+    send_katcp( m_pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_STRING, "#motorTorques");
+    append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_STRING, "%lli", i64Timestamp_us);
+    append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_STRING, "%f", dAz0_Nm);
+    append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_STRING, "%f", dAz1_Nm);
+    append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_STRING, "%f", dEl0_Nm);
+    append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_LAST | KATCP_FLAG_STRING, "%f", dEl1_Nm);
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::appliedPointingModel_callback(const string &strModelName, const vector<double> &vdPointingModelParams)
+{
+    send_katcp( m_pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_STRING, "#appliedPointingModel");
+    append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_STRING, "%s", strModelName.c_str());
+    for(uint32_t i = 0; i < (uint32_t)vdPointingModelParams.size() -1; i++)
+    {
+        append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_STRING, "%f", vdPointingModelParams[i]);
+    }
+    append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_LAST | KATCP_FLAG_STRING, "%f",vdPointingModelParams[vdPointingModelParams.size() -1]);
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::noiseDiodeSoftwareState_callback(int64_t i64Timestamp_us, int32_t i32NoiseDiodeState)
+{
+    send_katcp( m_pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_STRING, "#noiseDiodeSoftwareState");
+    append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_STRING, "%lli", i64Timestamp_us);
+    append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_LAST | KATCP_FLAG_STRING, "%i",i32NoiseDiodeState);
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::noiseDiodeSource_callback(int64_t i64Timestamp_us, int32_t i32NoiseDiodeSource, const string &strNoiseSource)
+{
+    send_katcp( m_pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_STRING, "#noiseDiodeSource");
+    append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_STRING, "%lli", i64Timestamp_us);
+    append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_STRING, "%i",i32NoiseDiodeSource);
+    append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_LAST | KATCP_FLAG_STRING, "%s",strNoiseSource.c_str());
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::noiseDiodeCurrent_callback(int64_t i64Timestamp_us, double dNoiseDiodeCurrent_A)
+{
+    send_katcp( m_pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_STRING, "#noideDiodeCurrent");
+    append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_STRING, "%lli", i64Timestamp_us);
+    append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_LAST | KATCP_FLAG_STRING, "%f",dNoiseDiodeCurrent_A);
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::sourceSelection_callback(int64_t i64Timestamp_us, const std::string &strSourceName, double dRighAscension_deg, double dDeclination_deg)
+{
+    send_katcp( m_pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_STRING, "#sourceSelection");
+    append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_STRING, "%lli", i64Timestamp_us);
+    append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_STRING, "%s", strSourceName.c_str());
+    append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_STRING, "%f", dRighAscension_deg);
+    append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_LAST | KATCP_FLAG_STRING, "%f",dDeclination_deg);
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::frequencyRF_callback(int64_t i64Timestamp_us, double dFreqencyRF_MHz)
+{
+    send_katcp( m_pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_STRING, "#frequencyRF");
+    append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_STRING, "%lli", i64Timestamp_us);
+    append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_LAST | KATCP_FLAG_STRING, "%f",dFreqencyRF_MHz);
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::frequencyLOs_callback(int64_t i64Timestamp_us, double dFrequencyLO1_MHz, double dFrequencyLO2_MHz)
+{
+    send_katcp( m_pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_STRING, "#frequencyLOs");
+    append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_STRING, "%lli", i64Timestamp_us);
+    append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_STRING, "%f",dFrequencyLO1_MHz);
+    append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_LAST | KATCP_FLAG_STRING, "%f",dFrequencyLO2_MHz);
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::bandwidthIF_callback(int64_t i64Timestamp_us, double dBandwidthIF_MHz)
+{
+    send_katcp( m_pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_STRING, "#bandwidthIF");
+    append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_STRING, "%lli", i64Timestamp_us);
+    append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_LAST | KATCP_FLAG_STRING, "%f",dBandwidthIF_MHz);
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::accumulationLength_callback(int64_t i64Timestamp_us, uint32_t u32NFrames)
+{
+    send_katcp( m_pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_STRING, "#accumulationLength");
+    append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_STRING, "%lli", i64Timestamp_us);
+    append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_LAST | KATCP_FLAG_STRING, "%u",u32NFrames);
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::narrowBandChannelSelect_callback(int64_t i64Timestamp_us, uint32_t u32ChannelNo)
+{
+    send_katcp( m_pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_STRING, "#narrowBandChannelSelect");
+    append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_STRING, "%lli", i64Timestamp_us);
+    append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_LAST | KATCP_FLAG_STRING, "%u",u32ChannelNo);
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::frequencyFs_callback(double dFrequencyFs_MHz)
+{
+    send_katcp( m_pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_STRING, "#frequencyFs");
+    append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_LAST | KATCP_FLAG_STRING, "%f",dFrequencyFs_MHz);
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::sizeOfFFTs_callback(uint32_t u32CoarseSize_nSamp, uint32_t u32FineSize_nSamp)
+{
+    send_katcp( m_pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_STRING, "#sizeOfFFTs");
+    append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_STRING, "%u", u32CoarseSize_nSamp);
+    append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_LAST | KATCP_FLAG_STRING, "%u",u32FineSize_nSamp);
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::coarseFFTShiftMask_callback(int64_t i64Timestamp_us, uint32_t u32ShiftMask)
+{
+    send_katcp( m_pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_STRING, "#coarseFFTShift");
+    append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_STRING, "%lli", i64Timestamp_us);
+    append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_LAST | KATCP_FLAG_STRING, "%u", u32ShiftMask);
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::adcAttenuation_callback(int64_t i64Timestamp_us, double dAttenuationChan0_dB, double dAttenuationChan1_dB)
+{
+    send_katcp( m_pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_STRING, "#adcAttenuation");
+    append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_STRING, "%lli", i64Timestamp_us);
+    append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_STRING, "%f", dAttenuationChan0_dB);
+    append_args_katcp(m_pKATCPDispatch, KATCP_FLAG_LAST | KATCP_FLAG_STRING, "%f",dAttenuationChan1_dB);
+}
