@@ -17,6 +17,7 @@ file(GLOB SRC_LIST "./*.cpp"
     "AVNUtilLibs/CoordinatePosition/*.cpp")
 
 add_definitions(-DUSE_BOOST_TIME) #Use boost library for current time derivation in AVNUtilLibs/Timestamp/Timestamp.cpp
+add_definitions(-DKATCP_USE_FLOATS) #Adding floating point support for KATCP sensors
 
 #If Windows link Boost and HDF5 statically so we don't have to distribute DLLs
 if(WIN32)

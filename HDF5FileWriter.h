@@ -30,10 +30,12 @@ typedef unsigned __int64 uint64_t;
 #include "AVNDataTypes/SpectrometerDataStream/SpectrometerDataStreamInterpreter.h"
 #include "AVNDataTypes/SpectrometerDataStream/SpectrometerHDF5OutputFile.h"
 #include "StationControllerKATCPClient.h"
+#include "RoachKATCPClient.h"
 
 class cHDF5FileWriter : public cSpectrometerDataStreamInterpreter::cCallbackInterface,
         public cUDPReceiver::cDataCallbackInterface,
-        public cStationControllerKATCPClient::cCallbackInterface
+        public cStationControllerKATCPClient::cCallbackInterface,
+        public cRoachKATCPClient::cCallbackInterface
 {
     //cSpectrometerDataStreamInterpreter actually implements cUDPReceiver::cCallbackInterface as well and could therefore be connected directly to the UDPReceiver to get
     //the datastream from the Roach. However in the design of the class hierachy it made more sense that this HDF5Writer be the class to interface with the UDPReceiver and
@@ -47,11 +49,11 @@ public:
     class cCallbackInterface
     {
     public:
-        virtual void recordingStarted_callback() = 0;
-        virtual void recordingStopped_callback() = 0;
+        virtual void                                    recordingStarted_callback() = 0;
+        virtual void                                    recordingStopped_callback() = 0;
     };
 
-    cHDF5FileWriter(const std::string &strRecordingDirectory);
+    cHDF5FileWriter(const std::string &strRecordingDirectory, uint32_t u32FileSizeLimit_MB);
     ~cHDF5FileWriter();
 
     void                                                startRecording(const std::string &strFilenamePrefix, int64_t i64StartTime_us, int64_t i64Duration_us);
@@ -68,50 +70,67 @@ public:
 
     std::string                                         getFilename();
     std::string                                         getRecordingDirectory();
+    uint64_t                                            getCurrentFileSize_B();
+    double                                              getCurrentFileSize_MB();
 
     //Re-implemented callback functions
     //Data is pushed into this function by the SpectrometerDataStreamInterpreter when a complete data frame is ready
-    virtual void                                        getNextFrame_callback(const std::vector<int> &vi32Chan0, const std::vector<int> &vi32Chan1, const std::vector<int> &vi32Chan2, std::vector<int> &vi32Chan3,
-                                                                              const cSpectrometerHeader &oHeader);
+    void                                                getNextFrame_callback(const std::vector<int> &vi32Chan0, const std::vector<int> &vi32Chan1,
+                                                                             const std::vector<int> &vi32Chan2, std::vector<int> &vi32Chan3,
+                                                                             const cSpectrometerHeader &oHeader);
 
-    virtual void                                        offloadData_callback(char* cpData, uint32_t u32Size_B);
+    void                                                offloadData_callback(char* cpData, uint32_t u32Size_B);
 
     //Callbacks implement for KATCPClient callback interface. These pass information to be stored to HDF5 file:
     void                                                connected_callback(bool bConnected);
 
+    //File recording control
     void                                                startRecording_callback(const std::string &strFilePrefix, int64_t i64StartTime_us, int64_t i64Duration_us);
     void                                                stopRecording_callback();
 
-    void                                                requestedAntennaAzEl_callback(int64_t i64Timestamp_us,
-                                                                                      double dAzimuth_deg, double dElevation_deg);
-    void                                                actualAntennaAzEl_callback(int64_t i64Timestamp_us,
-                                                                                   double dAzimuth_deg, double dElevation_deg);
-    void                                                actualSourceOffsetAzEl_callback(int64_t i64Timestamp_us,
-                                                                                        double dAzimuthOffset_deg, double dElevationOffset_deg);
-    void                                                actualAntennaRADec_callback(int64_t i64Timestamp_us,
-                                                                                    double dRighAscension_deg, double dDeclination_deg);
+    //Antenna values
+    void                                                requestedAntennaAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg);
+    void                                                requestedAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg);
+    void                                                actualAntennaAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg);
+    void                                                actualAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg);
+    void                                                actualSourceOffsetAz_callback(int64_t i64Timestamp_us, double dAzimuthOffset_deg);
+    void                                                actualSourceOffsetEl_callback(int64_t i64Timestamp_us, double dElevationOffset_deg);
+    void                                                actualAntennaRA_callback(int64_t i64Timestamp_us, double dRighAscension_deg);
+    void                                                actualAntennaDec_callback(int64_t i64Timestamp_us, double dDeclination_deg);
 
-    void                                                antennaStatus_callback(int64_t i64Timestamp_us, int32_t i32AntennaStatus, const std::string &strAntennaStatus);
-    void                                                motorTorques_callback(int64_t i64Timestamp_us, double dAz0_Nm, double dAz1_Nm, double dEl0_Nm, double dEl1_Nm);
+    void                                                antennaStatus_callback(int64_t i64Timestamp_us, const std::string &strStatus);
+    void                                                motorTorqueAzMaster_callback(int64_t i64Timestamp_us, double dAzMaster_mNm);
+    void                                                motorTorqueAzSlave_callback(int64_t i64Timestamp_us, double dAzSlave_mNm);
+    void                                                motorTorqueElMaster_callback(int64_t i64Timestamp_us, double dElMaster_mNm);
+    void                                                motorTorqueElSlave_callback(int64_t i64Timestamp_us, double dElSlave_mNm);
     void                                                appliedPointingModel_callback(const std::string &strModelName, const std::vector<double> &vdPointingModelParams);
 
+    //Noise diode values
     void                                                noiseDiodeSoftwareState_callback(int64_t i64Timestamp_us, int32_t i32NoiseDiodeState);
-    void                                                noiseDiodeSource_callback(int64_t i64Timestamp_us, int32_t i32NoiseDiodeSource, const std::string &strNoiseSource);
+    void                                                noiseDiodeSource_callback(int64_t i64Timestamp_us, const std::string &strNoiseSource);
     void                                                noiseDiodeCurrent_callback(int64_t i64Timestamp_us, double dNoiseDiodeCurrent_A);
 
+    //Global experiment values
     void                                                sourceSelection_callback(int64_t i64Timestamp_us, const std::string &strSourceName, double dRighAscension_deg, double dDeclination_deg);
 
 
-    void                                                frequencyRF_callback(int64_t i64Timestamp_us, double dFreqencyRF_MHz);
-    void                                                frequencyLOs_callback(int64_t i64Timestamp_us, double dFrequencyLO1_MHz, double dFrequencyLO2_MHz);
-    void                                                bandwidthIF_callback(int64_t i64Timestamp_us, double dBandwidthIF_MHz);
+    //RF values
+    void                                                frequencyRFChan0_callback(int64_t i64Timestamp_us, double dFreqencyRFChan0_MHz);
+    void                                                frequencyRFChan1_callback(int64_t i64Timestamp_us, double dFreqencyRFChan1_MHz);
+    void                                                frequencyLO0Chan0_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_MHz);
+    void                                                frequencyLO0Chan1_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_MHz);
+    void                                                frequencyLO1_callback(int64_t i64Timestamp_us, double dFrequencyLO1_MHz);
+    void                                                receiverBandwidthChan0_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan0_MHz);
+    void                                                receiverBandwidthChan1_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan1_MHz);
 
-    void                                                accumulationLength_callback(int64_t i64Timestamp_us, uint32_t u32NSamples);
-    void                                                narrowBandChannelSelect_callback(int64_t i64Timestamp_us, uint32_t u32ChannelNo);
+    void                                                accumulationLength_callback(int64_t i64Timestamp_us, uint32_t u32NFrames);
+    void                                                coarseChannelSelect_callback(int64_t i64Timestamp_us, uint32_t u32ChannelNo);
     void                                                frequencyFs_callback(double dFrequencyFs_MHz);
-    void                                                sizeOfFFTs_callback(uint32_t u32CoarseSize_nSamp, uint32_t u32FineSize_nSamp);
+    void                                                sizeOfCoarseFFT_callback(uint32_t u32SizeOfCoarseFFT_nSamp);
+    void                                                sizeOfFineFFT_callback(uint32_t u32FineFFTSize_nSamp);
     void                                                coarseFFTShiftMask_callback(int64_t i64Timestamp_us, uint32_t u32ShiftMask);
-    void                                                adcAttenuation_callback(int64_t i64Timestamp_us, double dAttenuationChan0_dB, double dAttenuationChan1_dB);
+    void                                                attenuationADCChan0_callback(int64_t i64Timestamp_us, double dADCAttenuationChan0_dB);
+    void                                                attenuationADCChan1_callback(int64_t i64Timestamp_us, double dADCAttenuationChan1_dB);
 
     //Other public functions
     std::string                                         makeFilename(const std::string &strDirectory, const std::string &strPrefix, int64_t i64Timestamp_us);
@@ -146,6 +165,7 @@ private:
 
     //Recording parameters
     std::string                                         m_strRecordingDirectory;
+    uint32_t                                            m_u32FileSizeLimit_MB;
     std::string                                         m_strFilenamePrefix;
     std::string                                         m_strFilename;
 

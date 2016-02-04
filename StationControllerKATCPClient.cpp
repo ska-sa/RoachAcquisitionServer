@@ -8,11 +8,6 @@
 
 using namespace std;
 
-cStationControllerKATCPClient::cStationControllerKATCPClient(const string &strServerAddress, uint16_t u16Port) :
-    cKATCPClientBase(strServerAddress, u16Port)
-{
-}
-
 cStationControllerKATCPClient::cStationControllerKATCPClient() :
     cKATCPClientBase()
 {
@@ -26,34 +21,16 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
 {
     try
     {
-        if( !vstrTokens[0].compare("#requestedAntennaAzEl") )
+        if( !vstrTokens[0].compare("#connected") )
         {
-            sendRequestedAntennaAzEl( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL), strtod(vstrTokens[3].c_str(), NULL) );
-            return;
-        }
-    }
-    catch(out_of_range &oError)
-    {
-    }
-
-
-    try
-    {
-        if(!vstrTokens[0].compare("#actualAntennaAzEl"))
-        {
-            sendActualAntennaAzEl( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL), strtod(vstrTokens[3].c_str(), NULL) );
-            return;
-        }
-    }
-    catch(out_of_range &oError)
-    {
-    }
-
-    try
-    {
-        if(!vstrTokens[0].compare("#actualSourceOffsetAzEl"))
-        {
-            sendActualSourceOffsetAzEl( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL), strtod(vstrTokens[3].c_str(), NULL) );
+            if( !vstrTokens[1].compare("1") )
+            {
+                sendConnected(true);
+            }
+            else
+            {
+                sendConnected(false);
+            }
             return;
         }
     }
@@ -63,9 +40,117 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
 
     try
     {
-        if(!vstrTokens[0].compare("#actualAntennaRADec"))
+        if( !vstrTokens[0].compare("#startRecording") )
         {
-            sendActualAntennaRADec( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL), strtod(vstrTokens[3].c_str(), NULL) );
+            sendStartRecording(vstrTokens[1], strtoll(vstrTokens[2].c_str(), NULL, 10), strtoll(vstrTokens[3].c_str(), NULL, 10) );
+            return;
+        }
+    }
+    catch(out_of_range &oError)
+    {
+    }
+
+    try
+    {
+        if( !vstrTokens[0].compare("#stopRecording") )
+        {
+            sendStopRecording();
+            return;
+        }
+    }
+    catch(out_of_range &oError)
+    {
+    }
+
+    try
+    {
+        if( !vstrTokens[0].compare("#requestedAntennaAz") )
+        {
+            sendRequestedAntennaAz( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
+            return;
+        }
+    }
+    catch(out_of_range &oError)
+    {
+    }
+
+    try
+    {
+        if( !vstrTokens[0].compare("#requestedAntennaEl") )
+        {
+            sendRequestedAntennaEl( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
+            return;
+        }
+    }
+    catch(out_of_range &oError)
+    {
+    }
+
+    try
+    {
+        if(!vstrTokens[0].compare("#actualAntennaAz"))
+        {
+            sendActualAntennaAz( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
+            return;
+        }
+    }
+    catch(out_of_range &oError)
+    {
+    }
+
+    try
+    {
+        if(!vstrTokens[0].compare("#actualAntennaAz"))
+        {
+            sendActualAntennaEl( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
+            return;
+        }
+    }
+    catch(out_of_range &oError)
+    {
+    }
+
+    try
+    {
+        if(!vstrTokens[0].compare("#actualSourceOffsetAz"))
+        {
+            sendActualSourceOffsetAz( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
+            return;
+        }
+    }
+    catch(out_of_range &oError)
+    {
+    }
+
+    try
+    {
+        if(!vstrTokens[0].compare("#actualSourceOffsetEl"))
+        {
+            sendActualSourceOffsetEl( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
+            return;
+        }
+    }
+    catch(out_of_range &oError)
+    {
+    }
+
+    try
+    {
+        if(!vstrTokens[0].compare("#actualAntennaRA"))
+        {
+            sendActualAntennaRA( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
+            return;
+        }
+    }
+    catch(out_of_range &oError)
+    {
+    }
+
+    try
+    {
+        if(!vstrTokens[0].compare("#actualAntennaDec"))
+        {
+            sendActualAntennaDec( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
             return;
         }
     }
@@ -77,7 +162,7 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
     {
         if(!vstrTokens[0].compare("#antennaStatus"))
         {
-            sendAntennaStatus( strtoll(vstrTokens[1].c_str(), NULL, 10), strtol(vstrTokens[2].c_str(), NULL, 10), vstrTokens[3] );
+            sendAntennaStatus( strtoll(vstrTokens[1].c_str(), NULL, 10), vstrTokens[2] );
             return;
         }
     }
@@ -87,16 +172,45 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
 
     try
     {
-        if(!vstrTokens[0].compare("#motorTorques"))
+        if(!vstrTokens[0].compare("#motorTorqueAzMaster"))
         {
-            double dAz0_Nm, dAz1_Nm, dEl0_Nm, dEl1_Nm;
+            sendMotorTorqueAzMaster( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
+            return;
+        }
+    }
+    catch(out_of_range &oError)
+    {
+    }
 
-            dAz0_Nm =  strtod(vstrTokens[2].c_str(), NULL);
-            dAz1_Nm =  strtod(vstrTokens[3].c_str(), NULL);
-            dEl0_Nm =  strtod(vstrTokens[4].c_str(), NULL);
-            dEl1_Nm =  strtod(vstrTokens[5].c_str(), NULL);
+    try
+    {
+        if(!vstrTokens[0].compare("#motorTorqueAzSlave"))
+        {
+            sendMotorTorqueAzSlave( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
+            return;
+        }
+    }
+    catch(out_of_range &oError)
+    {
+    }
 
-            sendMotorTorques( strtoll(vstrTokens[1].c_str(), NULL, 10), dAz0_Nm, dAz1_Nm, dEl0_Nm, dEl1_Nm);
+    try
+    {
+        if(!vstrTokens[0].compare("#motorTorqueElMaster"))
+        {
+            sendMotorTorqueElMaster( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
+            return;
+        }
+    }
+    catch(out_of_range &oError)
+    {
+    }
+
+    try
+    {
+        if(!vstrTokens[0].compare("#motorTorqueElSlave"))
+        {
+            sendMotorTorqueElSlave( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
             return;
         }
     }
@@ -140,7 +254,7 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
     {
         if(!vstrTokens[0].compare("#noiseDiodeSource"))
         {
-            sendNoiseDiodeSource( strtoll(vstrTokens[1].c_str(), NULL, 10), strtol(vstrTokens[2].c_str(), NULL, 10), vstrTokens[3] );
+            sendNoiseDiodeSource( strtoll(vstrTokens[1].c_str(), NULL, 10), vstrTokens[3] );
             return;
         }
     }
@@ -174,9 +288,9 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
 
     try
     {
-        if(!vstrTokens[0].compare("#frequencyRF"))
+        if(!vstrTokens[0].compare("#frequencyRFChan0"))
         {
-            sendFrequencyRF( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
+            sendFrequencyRFChan0( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
             return;
         }
     }
@@ -186,9 +300,9 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
 
     try
     {
-        if(!vstrTokens[0].compare("#frequencyLOs"))
+        if(!vstrTokens[0].compare("#frequencyRFChan1"))
         {
-            sendFrequencyLOs( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL), strtod(vstrTokens[2].c_str(), NULL) );
+            sendFrequencyRFChan1( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
             return;
         }
     }
@@ -198,9 +312,57 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
 
     try
     {
-        if(!vstrTokens[0].compare("#bandwidthIF"))
+        if(!vstrTokens[0].compare("#frequencyLO0Chan0"))
         {
-            sendBandwidthIF( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
+            sendFrequencyLO0Chan0( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
+            return;
+        }
+    }
+    catch(out_of_range &oError)
+    {
+    }
+
+    try
+    {
+        if(!vstrTokens[0].compare("#frequencyLO0Chan1"))
+        {
+            sendFrequencyLO0Chan1( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
+            return;
+        }
+    }
+    catch(out_of_range &oError)
+    {
+    }
+
+    try
+    {
+        if(!vstrTokens[0].compare("#frequencyLO1"))
+        {
+            sendFrequencyLO1( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
+            return;
+        }
+    }
+    catch(out_of_range &oError)
+    {
+    }
+
+    try
+    {
+        if(!vstrTokens[0].compare("#receiverBandwidthChan0"))
+        {
+            sendReceiverBandwidthChan0( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
+            return;
+        }
+    }
+    catch(out_of_range &oError)
+    {
+    }
+
+    try
+    {
+        if(!vstrTokens[0].compare("#receiverBandwidthChan1"))
+        {
+            sendReceiverBandwidthChan1( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
             return;
         }
     }
@@ -249,7 +411,7 @@ void  cStationControllerKATCPClient::sendStopRecording()
     }
 }
 
-void cStationControllerKATCPClient::sendRequestedAntennaAzEl(int64_t i64Timestamp_us, double dAzimuth_deg, double dElevation_deg)
+void cStationControllerKATCPClient::sendRequestedAntennaAz(int64_t i64Timestamp_us,double dAzimuth_deg)
 {
     boost::shared_lock<boost::shared_mutex> oLock;
 
@@ -259,17 +421,17 @@ void cStationControllerKATCPClient::sendRequestedAntennaAzEl(int64_t i64Timestam
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
     {
         cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
-        pHandler->requestedAntennaAzEl_callback(i64Timestamp_us, dAzimuth_deg, dElevation_deg);
+        pHandler->requestedAntennaAz_callback(i64Timestamp_us, dAzimuth_deg);
     }
 
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
     {
         boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
-        pHandler->requestedAntennaAzEl_callback(i64Timestamp_us, dAzimuth_deg, dElevation_deg);
+        pHandler->requestedAntennaAz_callback(i64Timestamp_us, dAzimuth_deg);
     }
 }
 
-void cStationControllerKATCPClient::sendActualAntennaAzEl(int64_t i64Timestamp_us, double dAzimuth_deg, double dElevation_deg)
+void cStationControllerKATCPClient::sendRequestedAntennaEl(int64_t i64Timestamp_us,double dElevation_deg)
 {
     boost::shared_lock<boost::shared_mutex> oLock;
 
@@ -279,17 +441,17 @@ void cStationControllerKATCPClient::sendActualAntennaAzEl(int64_t i64Timestamp_u
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
     {
         cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
-        pHandler->actualAntennaAzEl_callback(i64Timestamp_us, dAzimuth_deg, dElevation_deg);
+        pHandler->requestedAntennaEl_callback(i64Timestamp_us, dElevation_deg);
     }
 
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
     {
         boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
-        pHandler->actualAntennaAzEl_callback(i64Timestamp_us, dAzimuth_deg, dElevation_deg);
+        pHandler->requestedAntennaEl_callback(i64Timestamp_us, dElevation_deg);
     }
 }
 
-void cStationControllerKATCPClient::sendActualSourceOffsetAzEl(int64_t i64Timestamp_us, double dAzimuthOffset_deg, double dElevationOffset_deg)
+void cStationControllerKATCPClient::sendActualAntennaAz(int64_t i64Timestamp_us,double dAzimuth_deg)
 {
     boost::shared_lock<boost::shared_mutex> oLock;
 
@@ -299,17 +461,17 @@ void cStationControllerKATCPClient::sendActualSourceOffsetAzEl(int64_t i64Timest
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
     {
         cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
-        pHandler->actualSourceOffsetAzEl_callback(i64Timestamp_us, dAzimuthOffset_deg, dElevationOffset_deg);
+        pHandler->actualAntennaAz_callback(i64Timestamp_us, dAzimuth_deg);
     }
 
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
     {
         boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
-        pHandler->actualSourceOffsetAzEl_callback(i64Timestamp_us, dAzimuthOffset_deg, dElevationOffset_deg);
+        pHandler->actualAntennaAz_callback(i64Timestamp_us, dAzimuth_deg);
     }
 }
 
-void cStationControllerKATCPClient::sendActualAntennaRADec(int64_t i64Timestamp_us, double dRighAscension_deg, double dDeclination_deg)
+void cStationControllerKATCPClient::sendActualAntennaEl(int64_t i64Timestamp_us,double dElevation_deg)
 {
     boost::shared_lock<boost::shared_mutex> oLock;
 
@@ -319,17 +481,17 @@ void cStationControllerKATCPClient::sendActualAntennaRADec(int64_t i64Timestamp_
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
     {
         cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
-        pHandler->actualAntennaRADec_callback(i64Timestamp_us, dRighAscension_deg, dDeclination_deg);
+        pHandler->actualAntennaEl_callback(i64Timestamp_us, dElevation_deg);
     }
 
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
     {
         boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
-        pHandler->actualAntennaRADec_callback(i64Timestamp_us, dRighAscension_deg, dDeclination_deg);
+        pHandler->actualAntennaEl_callback(i64Timestamp_us, dElevation_deg);
     }
 }
 
-void cStationControllerKATCPClient::sendAntennaStatus(int64_t i64Timestamp_us, int32_t i32AntennaStatus, std::string strAntennaStatus)
+void cStationControllerKATCPClient::sendActualSourceOffsetAz(int64_t i64Timestamp_us, double dAzimuthOffset_deg)
 {
     boost::shared_lock<boost::shared_mutex> oLock;
 
@@ -339,17 +501,17 @@ void cStationControllerKATCPClient::sendAntennaStatus(int64_t i64Timestamp_us, i
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
     {
         cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
-        pHandler->antennaStatus_callback(i64Timestamp_us, i32AntennaStatus, strAntennaStatus);
+        pHandler->actualSourceOffsetAz_callback(i64Timestamp_us, dAzimuthOffset_deg);
     }
 
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
     {
         boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
-        pHandler->antennaStatus_callback(i64Timestamp_us, i32AntennaStatus, strAntennaStatus);
+        pHandler->actualSourceOffsetAz_callback(i64Timestamp_us, dAzimuthOffset_deg);
     }
 }
 
-void cStationControllerKATCPClient::sendMotorTorques(int64_t i64Timestamp_us, double dAz0_Nm, double dAz1_Nm, double dEl0_Nm, double dEl1_Nm)
+void cStationControllerKATCPClient::sendActualSourceOffsetEl(int64_t i64Timestamp_us, double dElevationOffset_deg)
 {
     boost::shared_lock<boost::shared_mutex> oLock;
 
@@ -359,13 +521,153 @@ void cStationControllerKATCPClient::sendMotorTorques(int64_t i64Timestamp_us, do
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
     {
         cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
-        pHandler->motorTorques_callback(i64Timestamp_us, dAz0_Nm, dAz1_Nm, dEl0_Nm, dEl1_Nm);
+        pHandler->actualSourceOffsetEl_callback(i64Timestamp_us, dElevationOffset_deg);
     }
 
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
     {
         boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
-        pHandler->motorTorques_callback(i64Timestamp_us, dAz0_Nm, dAz1_Nm, dEl0_Nm, dEl1_Nm);
+        pHandler->actualSourceOffsetEl_callback(i64Timestamp_us, dElevationOffset_deg);
+    }
+}
+
+void cStationControllerKATCPClient::sendActualAntennaRA(int64_t i64Timestamp_us, double dRighAscension_deg)
+{
+    boost::shared_lock<boost::shared_mutex> oLock;
+
+    //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
+    //to call function added in the derived version of the callback handler interface class
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
+    {
+        cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
+        pHandler->actualAntennaRA_callback(i64Timestamp_us, dRighAscension_deg);
+    }
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
+    {
+        boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
+        pHandler->actualAntennaRA_callback(i64Timestamp_us, dRighAscension_deg);
+    }
+}
+
+void cStationControllerKATCPClient::sendActualAntennaDec(int64_t i64Timestamp_us, double dDeclination_deg)
+{
+    boost::shared_lock<boost::shared_mutex> oLock;
+
+    //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
+    //to call function added in the derived version of the callback handler interface class
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
+    {
+        cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
+        pHandler->actualAntennaDec_callback(i64Timestamp_us, dDeclination_deg);
+    }
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
+    {
+        boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
+        pHandler->actualAntennaDec_callback(i64Timestamp_us, dDeclination_deg);
+    }
+}
+
+void cStationControllerKATCPClient::sendAntennaStatus(int64_t i64Timestamp_us, std::string strAntennaStatus)
+{
+    boost::shared_lock<boost::shared_mutex> oLock;
+
+    //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
+    //to call function added in the derived version of the callback handler interface class
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
+    {
+        cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
+        pHandler->antennaStatus_callback(i64Timestamp_us, strAntennaStatus);
+    }
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
+    {
+        boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
+        pHandler->antennaStatus_callback(i64Timestamp_us, strAntennaStatus);
+    }
+}
+
+void cStationControllerKATCPClient::sendMotorTorqueAzMaster(int64_t i64Timestamp_us, double dAzMaster_nNm)
+{
+    boost::shared_lock<boost::shared_mutex> oLock;
+
+    //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
+    //to call function added in the derived version of the callback handler interface class
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
+    {
+        cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
+        pHandler->motorTorqueAzMaster_callback(i64Timestamp_us, dAzMaster_nNm);
+    }
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
+    {
+        boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
+        pHandler->motorTorqueAzMaster_callback(i64Timestamp_us, dAzMaster_nNm);
+    }
+}
+
+void cStationControllerKATCPClient::sendMotorTorqueAzSlave(int64_t i64Timestamp_us, double dAzSlave_nNm)
+{
+    boost::shared_lock<boost::shared_mutex> oLock;
+
+    //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
+    //to call function added in the derived version of the callback handler interface class
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
+    {
+        cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
+        pHandler->motorTorqueAzSlave_callback(i64Timestamp_us, dAzSlave_nNm);
+    }
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
+    {
+        boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
+        pHandler->motorTorqueAzSlave_callback(i64Timestamp_us, dAzSlave_nNm);
+    }
+}
+
+void cStationControllerKATCPClient::sendMotorTorqueElMaster(int64_t i64Timestamp_us, double dElMaster_nNm)
+{
+    boost::shared_lock<boost::shared_mutex> oLock;
+
+    //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
+    //to call function added in the derived version of the callback handler interface class
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
+    {
+        cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
+        pHandler->motorTorqueElMaster_callback(i64Timestamp_us, dElMaster_nNm);
+    }
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
+    {
+        boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
+        pHandler->motorTorqueElMaster_callback(i64Timestamp_us, dElMaster_nNm);
+    }
+}
+
+void cStationControllerKATCPClient::sendMotorTorqueElSlave(int64_t i64Timestamp_us, double dElSlave_nNm)
+{
+    boost::shared_lock<boost::shared_mutex> oLock;
+
+    //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
+    //to call function added in the derived version of the callback handler interface class
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
+    {
+        cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
+        pHandler->motorTorqueElSlave_callback(i64Timestamp_us, dElSlave_nNm);
+    }
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
+    {
+        boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
+        pHandler->motorTorqueElSlave_callback(i64Timestamp_us, dElSlave_nNm);
     }
 }
 
@@ -409,7 +711,7 @@ void cStationControllerKATCPClient::sendNoiseDiodeSoftwareState(int64_t i64Times
     }
 }
 
-void cStationControllerKATCPClient::sendNoiseDiodeSource(int64_t i64Timestamp_us, int32_t i32NoiseDiodeSource, const string &strNoiseSource)
+void cStationControllerKATCPClient::sendNoiseDiodeSource(int64_t i64Timestamp_us, const string &strNoiseSource)
 {
     boost::shared_lock<boost::shared_mutex> oLock;
 
@@ -419,13 +721,13 @@ void cStationControllerKATCPClient::sendNoiseDiodeSource(int64_t i64Timestamp_us
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
     {
         cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
-        pHandler->noiseDiodeSource_callback(i64Timestamp_us, i32NoiseDiodeSource, strNoiseSource);
+        pHandler->noiseDiodeSource_callback(i64Timestamp_us, strNoiseSource);
     }
 
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
     {
         boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
-        pHandler->noiseDiodeSource_callback(i64Timestamp_us, i32NoiseDiodeSource, strNoiseSource);
+        pHandler->noiseDiodeSource_callback(i64Timestamp_us, strNoiseSource);
     }
 }
 
@@ -470,7 +772,7 @@ void cStationControllerKATCPClient::sendSourceSelection(int64_t i64Timestamp_us,
 }
 
 
-void cStationControllerKATCPClient::sendFrequencyRF(int64_t i64Timestamp_us, double dFreqencyRF_MHz)
+void cStationControllerKATCPClient::sendFrequencyRFChan0(int64_t i64Timestamp_us, double dFreqencyRFChan0_MHz)
 {
     boost::shared_lock<boost::shared_mutex> oLock;
 
@@ -480,17 +782,17 @@ void cStationControllerKATCPClient::sendFrequencyRF(int64_t i64Timestamp_us, dou
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
     {
         cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
-        pHandler->frequencyRF_callback(i64Timestamp_us, dFreqencyRF_MHz);
+        pHandler->frequencyRFChan0_callback(i64Timestamp_us, dFreqencyRFChan0_MHz);
     }
 
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
     {
         boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
-        pHandler->frequencyRF_callback(i64Timestamp_us, dFreqencyRF_MHz);
+        pHandler->frequencyRFChan0_callback(i64Timestamp_us, dFreqencyRFChan0_MHz);
     }
 }
 
-void cStationControllerKATCPClient::sendFrequencyLOs(int64_t i64Timestamp_us, double dFrequencyLO1_MHz, double dFrequencyLO2_MHz)
+void cStationControllerKATCPClient::sendFrequencyRFChan1(int64_t i64Timestamp_us, double dFreqencyRFChan1_MHz)
 {
     boost::shared_lock<boost::shared_mutex> oLock;
 
@@ -500,17 +802,17 @@ void cStationControllerKATCPClient::sendFrequencyLOs(int64_t i64Timestamp_us, do
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
     {
         cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
-        pHandler->frequencyLOs_callback(i64Timestamp_us, dFrequencyLO1_MHz, dFrequencyLO2_MHz);
+        pHandler->frequencyRFChan1_callback(i64Timestamp_us, dFreqencyRFChan1_MHz);
     }
 
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
     {
         boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
-        pHandler->frequencyLOs_callback(i64Timestamp_us, dFrequencyLO1_MHz, dFrequencyLO2_MHz);
+        pHandler->frequencyRFChan1_callback(i64Timestamp_us, dFreqencyRFChan1_MHz);
     }
 }
 
-void cStationControllerKATCPClient::sendBandwidthIF(int64_t i64Timestamp_us, double dBandwidthIF_MHz)
+void cStationControllerKATCPClient::sendFrequencyLO0Chan0(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_MHz)
 {
     boost::shared_lock<boost::shared_mutex> oLock;
 
@@ -520,12 +822,92 @@ void cStationControllerKATCPClient::sendBandwidthIF(int64_t i64Timestamp_us, dou
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
     {
         cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
-        pHandler->bandwidthIF_callback(i64Timestamp_us, dBandwidthIF_MHz);
+        pHandler->frequencyLO0Chan0_callback(i64Timestamp_us, dFrequencyLO0Chan0_MHz);
     }
 
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
     {
         boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
-        pHandler->bandwidthIF_callback(i64Timestamp_us, dBandwidthIF_MHz);
+        pHandler->frequencyLO0Chan0_callback(i64Timestamp_us, dFrequencyLO0Chan0_MHz);
+    }
+}
+
+void cStationControllerKATCPClient::sendFrequencyLO0Chan1(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_MHz)
+{
+    boost::shared_lock<boost::shared_mutex> oLock;
+
+    //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
+    //to call function added in the derived version of the callback handler interface class
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
+    {
+        cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
+        pHandler->frequencyLO0Chan1_callback(i64Timestamp_us, dFrequencyLO0Chan1_MHz);
+    }
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
+    {
+        boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
+        pHandler->frequencyLO0Chan1_callback(i64Timestamp_us, dFrequencyLO0Chan1_MHz);
+    }
+}
+
+void cStationControllerKATCPClient::sendFrequencyLO1(int64_t i64Timestamp_us, double dFrequencyLO1_MHz)
+{
+    boost::shared_lock<boost::shared_mutex> oLock;
+
+    //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
+    //to call function added in the derived version of the callback handler interface class
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
+    {
+        cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
+        pHandler->frequencyLO1_callback(i64Timestamp_us, dFrequencyLO1_MHz);
+    }
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
+    {
+        boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
+        pHandler->frequencyLO1_callback(i64Timestamp_us, dFrequencyLO1_MHz);
+    }
+}
+
+void cStationControllerKATCPClient::sendReceiverBandwidthChan0(int64_t i64Timestamp_us, double dReceiverBandwidthChan0_MHz)
+{
+    boost::shared_lock<boost::shared_mutex> oLock;
+
+    //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
+    //to call function added in the derived version of the callback handler interface class
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
+    {
+        cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
+        pHandler->receiverBandwidthChan0_callback(i64Timestamp_us, dReceiverBandwidthChan0_MHz);
+    }
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
+    {
+        boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
+        pHandler->receiverBandwidthChan0_callback(i64Timestamp_us, dReceiverBandwidthChan0_MHz);
+    }
+}
+
+void cStationControllerKATCPClient::sendReceiverBandwidthChan1(int64_t i64Timestamp_us, double dReceiverBandwidthChan1_MHz)
+{
+    boost::shared_lock<boost::shared_mutex> oLock;
+
+    //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
+    //to call function added in the derived version of the callback handler interface class
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
+    {
+        cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
+        pHandler->receiverBandwidthChan1_callback(i64Timestamp_us, dReceiverBandwidthChan1_MHz);
+    }
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
+    {
+        boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
+        pHandler->receiverBandwidthChan1_callback(i64Timestamp_us, dReceiverBandwidthChan1_MHz);
     }
 }

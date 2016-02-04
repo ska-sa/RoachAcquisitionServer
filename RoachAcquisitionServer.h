@@ -36,7 +36,8 @@ class cRoachAcquisitionServer
 {
 public:
     explicit cRoachAcquisitionServer(const std::string &strLocalInterface, uint16_t u16LocalPort, const std::string &strRoachTGBEAddress, uint16_t u16RoachTGBEPort,
-                                     const std::string strClientInterface, uint16_t u16ClientDataPort);
+                                     const std::string &strClientInterface, uint16_t u16ClientDataPort,
+                                     const std::string &strRecordingDir, uint32_t u32MaxFileSize_MB);
     ~cRoachAcquisitionServer();
 
     void                                                startKATCPServer(std::string strInterface, uint16_t u16Port);
@@ -68,6 +69,9 @@ private:
 
     std::string                                         m_strClientInterface;
     uint16_t                                            m_u16ClientDataPort;
+
+    std::string                                         m_strRecordingDir;
+    uint32_t                                            m_u32MaxFileSize_MB;
 };
 
 #endif //ROACH_ACQUISITION_SERVER_H
