@@ -19,3 +19,9 @@
 [submodule "AVNAppLibs/KATCP"]
 	path = AVNAppLibs/KATCP
 	url = ssh://git@brains/gitRepos/CPP/AVNAppLibs/KATCP.git
+[submodule "AVNUtilLibs/DirectoryContents"]
+	path = AVNUtilLibs/DirectoryContents
+	url = ssh://git@brains/gitRepos/CPP/AVNUtilLibs/DirectoryContents.git
+[submodule "AVNUtilLibs/Filename"]
+	path = AVNUtilLibs/Filename
+	url = ssh://git@brains/gitRepos/CPP/AVNUtilLibs/Filename.git

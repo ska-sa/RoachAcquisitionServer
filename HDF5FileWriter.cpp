@@ -493,7 +493,7 @@ void cHDF5FileWriter::notifyAllRecordingStopped()
 }
 
 //Callbacks implement for KATCPClient callback interface. These pass information to be stored to HDF5 file:
-void cHDF5FileWriter::connected_callback(bool bConnected)
+void cHDF5FileWriter::connected_callback(bool bConnected, const std::string &strHostAddress, uint16_t u16Port, const std::string &strDescription)
 {
     //Not used
 }
@@ -778,3 +778,24 @@ void cHDF5FileWriter::attenuationADCChan1_callback(int64_t i64Timestamp_us, doub
 
     m_pHDF5File->addAttenuationADCChan1(i64Timestamp_us, dADCAttenuationChan1_dB);
 }
+
+void cHDF5FileWriter::overflowsRegs_callback(int64_t i64Timestamp_us, uint32_t u32OverflowRegs)
+{
+    //TODO
+}
+
+void cHDF5FileWriter::eth10GbEUp_callback(int64_t i64Timestamp_us, bool bEth10GbEUp)
+{
+    //TODO
+}
+
+void cHDF5FileWriter::ppsCount_callback(int64_t i64Timestamp_us, uint32_t u32PPSCount)
+{
+    //TODO
+}
+
+void cHDF5FileWriter::clockFrequency_callback(int64_t i64Timestamp_us, uint32_t u32ClockFrequency_Hz)
+{
+    //TODO
+}
+

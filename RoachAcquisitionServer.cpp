@@ -12,7 +12,8 @@
 
 cRoachAcquisitionServer::cRoachAcquisitionServer(const string &strLocalInterface, uint16_t u16LocalPort, const string &strRoachTGBEAddress, uint16_t u16RoachTGBEPort,
                                                  const string &strClientInterface, uint16_t u16ClientDataPort,
-                                                 const string &strRecordingDir, uint32_t u32MaxFileSize_MB) :
+                                                 const string &strRecordingDir, uint32_t u32MaxFileSize_MB,
+                                                 const string &strRoachGatewareDir) :
     m_strRoachTGBEAddress(strRoachTGBEAddress),
     m_u16RoachTGBEPort(u16RoachTGBEPort),
     m_strLocalInterface(strLocalInterface),
@@ -20,7 +21,8 @@ cRoachAcquisitionServer::cRoachAcquisitionServer(const string &strLocalInterface
     m_strClientInterface(strClientInterface),
     m_u16ClientDataPort(u16ClientDataPort),
     m_strRecordingDir(strRecordingDir),
-    m_u32MaxFileSize_MB(u32MaxFileSize_MB)
+    m_u32MaxFileSize_MB(u32MaxFileSize_MB),
+    m_strRoachGatewareDir(strRoachGatewareDir)
 {
     start();
 }
@@ -76,7 +78,7 @@ void cRoachAcquisitionServer::startKATCPServer(std::string strInterface, uint16_
     }
 
     //Start the KATCP control and monitoring server
-    m_pKATCPServer = boost::make_shared<cKATCPServer>(strInterface, u16Port);
+    m_pKATCPServer = boost::make_shared<cKATCPServer>(strInterface, u16Port, 10, m_strRoachGatewareDir);
 
     //Connect file writer
     m_pKATCPServer->setFileWriter(m_pHDF5FileWriter);
@@ -106,10 +108,13 @@ void cRoachAcquisitionServer::startRoachKATCPClient(std::string strServerAddress
         return;
     }
 
+    m_strRoachKATCPAddress = strServerAddress;
+    m_u16RoachKATCPPort = u16Port;
+
     //Start the KATCP client connection to Roach
     cout << "cRoachAcquisitionServer::startRoachKATCPClient(): Starting KATCP client for ROACH TCPBorph." << endl;
     m_pRoachKATCPClient = boost::make_shared<cRoachKATCPClient>();
-    m_pRoachKATCPClient->connect(strServerAddress, u16Port);
+    m_pRoachKATCPClient->registerConnectionCallbackHandler(this); //Register this as a callback hander (for handling unsolicited disconnects)
 
     //The cKATCPClientBase::CallInterface implementation needs to be passed as base pointer type.
     //Because the HDF5FileWriter derives 2 variations of cKATCPClientBase::CallInterface derivations,
@@ -124,10 +129,15 @@ void cRoachAcquisitionServer::startRoachKATCPClient(std::string strServerAddress
     {
         m_pKATCPServer->setRoachKATCPClient(m_pRoachKATCPClient);
     }
+
+    m_pRoachKATCPClient->connect(m_strRoachKATCPAddress, m_u16RoachKATCPPort, string("roach"));
 }
 
 void cRoachAcquisitionServer::stopRoachKATCPClient()
 {
+    //Disconnect this as a callback hander (for handling unsolicited disconnects)
+    m_pStationControllerKATCPClient->deregisterConnectionCallbackHandler(this);
+
     //Disconnect from server if available
     if(m_pKATCPServer.get())
     {
@@ -145,10 +155,13 @@ void cRoachAcquisitionServer::startStationControllerKATCPClient(std::string strS
         return;
     }
 
+    m_strStationControllerKATCPAddress = strServerAddress;
+    m_u16StationControllerKATCPPort = u16Port;
+
     //Start the KATCP client connection to Roach
     cout << "cRoachAcquisitionServer::startStationControllerKATCPClient(): Starting KATCP client for station controller." << endl;
     m_pStationControllerKATCPClient = boost::make_shared<cStationControllerKATCPClient>();
-    m_pStationControllerKATCPClient->connect(strServerAddress, u16Port);
+    m_pStationControllerKATCPClient->registerConnectionCallbackHandler(this); //Register this as a callback hander (for handling unsolicited disconnects)
 
     //The cKATCPClientBase::CallInterface implementation needs to be passed as base pointer type.
     //Because the HDF5FileWriter derives 2 variations of cKATCPClientBase::CallInterface derivations,
@@ -165,10 +178,15 @@ void cRoachAcquisitionServer::startStationControllerKATCPClient(std::string strS
     {
         m_pKATCPServer->setStationControllerKATCPClient(m_pStationControllerKATCPClient);
     }
+
+    m_pStationControllerKATCPClient->connect(m_strStationControllerKATCPAddress, m_u16StationControllerKATCPPort, string("stationController"));
 }
 
 void cRoachAcquisitionServer::stopStationControllerKATCPClient()
 {
+    //Disconnect this as a callback hander (for handling unsolicited disconnects)
+    m_pStationControllerKATCPClient->deregisterConnectionCallbackHandler(this);
+
     //Disconnect from server if available
     if(m_pKATCPServer.get())
     {
@@ -176,4 +194,22 @@ void cRoachAcquisitionServer::stopStationControllerKATCPClient()
     }
 
     m_pStationControllerKATCPClient.reset();
+}
+
+void cRoachAcquisitionServer::connected_callback(bool bConnected, const std::string &strHostAddress, uint16_t u16Port, const std::string &strDescription)
+{
+    if(!bConnected)
+    {
+        cout << "cRoachAcquisitionServer::connected_callback() Got unsoliced disconnect from KATCPClient for " << strDescription << ". Attempting to reconnect." << endl;
+
+        if(!strDescription.compare("roach"))
+        {
+            m_pRoachKATCPClient->connect(m_strRoachKATCPAddress, m_u16RoachKATCPPort, string("roach"));
+        }
+
+        if(!strDescription.compare("stationController"))
+        {
+            m_pStationControllerKATCPClient->connect(m_strStationControllerKATCPAddress, m_u16StationControllerKATCPPort, string("stationController"));
+        }
+    }
 }

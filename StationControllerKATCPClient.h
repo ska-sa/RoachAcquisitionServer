@@ -16,8 +16,6 @@ public:
     class cCallbackInterface : public cKATCPClientBase::cCallbackInterface
     {
     public:
-        virtual void                                    connected_callback(bool bConnected) = 0;
-
         //File recording control
         virtual void                                    startRecording_callback(const std::string &strFilePrefix, int64_t i64StartTime_us, int64_t i64Duration_us) = 0;
         virtual void                                    stopRecording_callback() = 0;

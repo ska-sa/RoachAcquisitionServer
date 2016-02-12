@@ -63,6 +63,7 @@ public:
     {
         //Locals for station controller values
         bool                                                m_bStationControllerKATCPConnected;
+        std::string                                         m_strStationControllerAddress;
         double                                              m_dRequestedAntennaAz_deg;
         double                                              m_dRequestedAntennaEl_deg;
         double                                              m_dActualAntennaAz_deg;
@@ -91,7 +92,7 @@ public:
 
         //Callback functions called from the Station controller KATCPClient
 
-        void                                                connected_callback(bool bConnected);
+        void                                                connected_callback(bool bConnected, const std::string &strHostAddress, uint16_t u16Port, const std::string &strDescription);
 
         //File recording control
         void                                                startRecording_callback(const std::string &strFilePrefix, int64_t i64StartTime_us, int64_t i64Duration_us);
@@ -134,17 +135,28 @@ public:
 
         //Locals for ROACH values
         bool                                                m_bRoachKATCPConnected;
-        uint32_t                                            m_u32AccumulationLength_nFrames;
-        uint32_t                                            m_u32CoarseChannelSelection;
+        std::string                                         m_strRoachAddress;
+        bool                                                m_bStokesEnabled;
+        int32_t                                             m_i32AccumulationLength_nFrames;
+        int32_t                                             m_i32CoarseChannelSelection;
         double                                              m_dFrequencyFs_MHz;
-        uint32_t                                            m_u32SizeOfCoarseFFT_nSamp;
-        uint32_t                                            m_u32SizeOfFineFFT_nSamp;
-        uint32_t                                            m_u32CoarseFFTShiftMask;
+        int32_t                                             m_i32SizeOfCoarseFFT_nSamp;
+        int32_t                                             m_i32SizeOfFineFFT_nSamp;
+        int32_t                                             m_i32CoarseFFTShiftMask;
         double                                              m_dADCAttenuationChan0_dB;
         double                                              m_dADCAttenuationChan1_dB;
+        bool                                                m_bNoiseDiodeEnabled;
+        bool                                                m_bNoiseDiodeDutyCycleEnabled;
+        int32_t                                             m_i32NoiseDiodeDutyCycleOnDuration_nAccums;
+        int32_t                                             m_i32NoiseDiodeDutyCycleOffDuration_nAccums;
+        int32_t                                             m_i32OverflowRegs;
+        bool                                                m_bEth10GbEUp;
+        int32_t                                             m_i32PPSCount;
+        int32_t                                             m_i32ClockFrequency;
         boost::mutex                                        m_oRoachMutex;
 
         //Callback functions from the Roach KATCP client
+        void                                                stokesEnabled_callback(int64_t i64Timestamp_us, bool bEnabled);
         void                                                accumulationLength_callback(int64_t i64Timestamp_us, uint32_t u32NFrames);
         void                                                coarseChannelSelect_callback(int64_t i64Timestamp_us, uint32_t u32ChannelNo);
         void                                                frequencyFs_callback(double dFrequencyFs_MHz);
@@ -153,10 +165,17 @@ public:
         void                                                coarseFFTShiftMask_callback(int64_t i64Timestamp_us, uint32_t u32ShiftMask);
         void                                                attenuationADCChan0_callback(int64_t i64Timestamp_us, double dADCAttenuationChan0_dB);
         void                                                attenuationADCChan1_callback(int64_t i64Timestamp_us, double dADCAttenuationChan1_dB);
+        void                                                noiseDiodeEnabled_callback(int64_t i64Timestamp_us, bool bNoideDiodeEnabled);
+        void                                                noiseDiodeDutyCycleEnabled_callback(int64_t i64Timestamp_us, bool bNoiseDiodeDutyCyleEnabled);
+        void                                                noiseDiodeDutyCycleOnDuration_callback(int64_t i64Timestamp_us, uint32_t u32NAccums);
+        void                                                noiseDiodeDutyCycleOffDuration_callback(int64_t i64Timestamp_us, uint32_t u32NAccums);
+        void                                                overflowsRegs_callback(int64_t i64Timestamp_us, uint32_t u32OverflowRegs);
+        void                                                eth10GbEUp_callback(int64_t i64Timestamp_us, bool bEth10GbEUp);
+        void                                                ppsCount_callback(int64_t i64Timestamp_us, uint32_t u32PPSCount);
+        void                                                clockFrequency_callback(int64_t i64Timestamp_us, uint32_t u32ClockFrequency_Hz);
     };
 
-    cKATCPServer(const std::string &strListenInterface = std::string("0.0.0.0"), uint16_t u16Port = 7147, uint32_t u32MaxClients = 5);
-    cKATCPServer();
+    cKATCPServer(const std::string &strListenInterface = std::string("0.0.0.0"), uint16_t u16Port = 7147, uint32_t u32MaxClients = 5, const string &strRoachGatewareDirectory = std::string(""));
     ~cKATCPServer();
 
     static void                                             setFileWriter(boost::shared_ptr<cHDF5FileWriter> pFileWriter);
@@ -176,11 +195,25 @@ protected:
     static struct katcp_dispatch                            *m_pKATCPDispatch;
 
     //KATCTP server callbacks
-    //Command functions:
+    //Recording functions:
     static int32_t                                          startRecording_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
     static int32_t                                          stopRecording_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
     static int32_t                                          getRecordingInfo_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
     static int32_t                                          getRecordingStatus_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
+    //Controlling of Roach
+    static int32_t                                          getRoachGatewareList_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
+    static int32_t                                          roachProgram_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
+    static int32_t                                          roachSetStokesEnabled_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
+    static int32_t                                          roachSetAccumulationLength_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
+    static int32_t                                          roachSetCoarseChannelSelect_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
+    static int32_t                                          roachSetCoarseFFTShiftMask_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
+    static int32_t                                          roachSetADC0Attenuation_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
+    static int32_t                                          roachSetADC1Attenuation_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
+    static int32_t                                          roachSetNoiseDiodeEnabled_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
+    static int32_t                                          roachSetNoiseDiodeDutyCycleEnabled_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
+    static int32_t                                          roachSetNoiseDiodeDutyCycleOnDuration_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
+    static int32_t                                          roachSetNoiseDiodeDutyCycleOffDuration_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
+
 
     //Sensor get functions (Use by KATCP to read sensor values. Requires thread safe access where necessary)
     //Station controller values:
@@ -221,7 +254,8 @@ protected:
     static double                                           getReceiverBandwidthChan1(struct katcp_dispatch *pD, struct katcp_acquire *pA);
 
     //Roach values:
-    static int                                              getIsRoachKATCPConnected(struct katcp_dispatch *pD, katcp_acquire *pA);
+    static int32_t                                          getIsRoachKATCPConnected(struct katcp_dispatch *pD, katcp_acquire *pA);
+    static int32_t                                          getStokesEnabled(struct katcp_dispatch *pD, katcp_acquire *pA);
     static int32_t                                          getAccumulationLength_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
     static int32_t                                          getCoarseChannelSelect_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
     static double                                           getFrequencyFs_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
@@ -230,6 +264,14 @@ protected:
     static int32_t                                          getCoarseFFTShiftMask_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
     static double                                           getADCAttenuationChan0_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
     static double                                           getADCAttenuationChan1_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+    static int32_t                                          getNoiseDiodeEnabled_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+    static int32_t                                          getNoiseDiodeDutyCycleEnabled_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+    static int32_t                                          getNoiseDiodeDutyCycleOnDuration_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+    static int32_t                                          getNoiseDiodeDutyCycleOffDuration_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+    static int32_t                                          getOverflowsRegs_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+    static int32_t                                          getEth10GbEUp_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+    static int32_t                                          getPPSCount_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+    static int32_t                                          getClockFrequency_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
 
     static boost::shared_ptr<cHDF5FileWriter>               m_pFileWriter;
     static boost::shared_ptr<cRoachKATCPClient>             m_pRoachKATCPClient;
@@ -242,6 +284,7 @@ protected:
     static std::string                                      m_strListenInterface;
     static uint16_t                                         m_u16Port;
     static uint32_t                                         m_u32MaxClients;
+    static std::string                                      m_strRoachGatewareDirectory;
 
 };
 

@@ -14,7 +14,9 @@ file(GLOB SRC_LIST "./*.cpp"
     "AVNUtilLibs/Timestamp/Timestamp.cpp"
     "AVNUtilLibs/Sockets/InterruptibleBlockingSockets/*.cpp"
     "AVNUtilLibs/Sockets/InterruptibleBlockingSocketAcceptors/*.cpp"
-    "AVNUtilLibs/CoordinatePosition/*.cpp")
+    "AVNUtilLibs/CoordinatePosition/*.cpp"
+    "AVNUtilLibs/DirectoryContents/*.cpp"
+    "AVNUtilLibs/Filename/*.cpp")
 
 add_definitions(-DUSE_BOOST_TIME) #Use boost library for current time derivation in AVNUtilLibs/Timestamp/Timestamp.cpp
 add_definitions(-DKATCP_USE_FLOATS) #Adding floating point support for KATCP sensors

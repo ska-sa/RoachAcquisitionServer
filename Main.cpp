@@ -12,14 +12,24 @@
 #include <boost/program_options.hpp>
 #include <boost/thread.hpp>
 #include <boost/filesystem.hpp>
+#include <signal.h>
 
 //Local includes
 #include "RoachAcquisitionServer.h"
 
 using namespace std;
 
+volatile sig_atomic_t flag = 0;
+void catchControlC(int iSig)
+{
+  flag = 1;
+}
+
 int main(int iArgC, char *pchaArgV[])
 {
+    // Register signals
+    signal(SIGINT, catchControlC);
+
     //Banner
 
     cout << endl;
@@ -46,6 +56,7 @@ int main(int iArgC, char *pchaArgV[])
     uint16_t    u16StationControllerPort;
     string      strROACHPowerPCAddress;
     uint16_t    u16ROACHTCPBorphPort;
+    string      strRoachGatewareDirectory;
     string      strRecordingDir;
     uint32_t    u32MaxFileSize_MB;
 
@@ -63,6 +74,7 @@ int main(int iArgC, char *pchaArgV[])
             ("station-controller-port,u", boost::program_options::value<uint16_t>(&u16StationControllerPort)->default_value(7147), "Port to use for connection to station controller PC.")
             ("roach-ppc-address,v", boost::program_options::value<string>(&strROACHPowerPCAddress), "Address of ROACH PowerPC 1GigE interface, providing TCPBorph access.")
             ("roach-tcpborph-port,w", boost::program_options::value<uint16_t>(&u16ROACHTCPBorphPort)->default_value(7147), "Port to use for connection to ROACH TCPBorph server.")
+            ("roach-gateway-dir,g", boost::program_options::value<string>(&strRoachGatewareDirectory)->default_value(string("/home/avnuser/RoachLaunchers")), "Directory containing Roach launcher script and FPG file s.")
             ("recording-dir,p", boost::program_options::value<string>(&strRecordingDir)->default_value(string("/home/avnuser/Data/RoachAquisition")), "Path to directory where HDF5 will be recorded.")
             ("max-file-size,q", boost::program_options::value<uint32_t>(&u32MaxFileSize_MB)->default_value(1024), "Maximum HDF5 file size in MB. A new files will be created after this limit is reached (give or take metadata size). 0 implies no limit.");
 
@@ -77,7 +89,7 @@ int main(int iArgC, char *pchaArgV[])
     {
         cout << oOptions << endl;
         cout << endl;
-        cout << "Note press any ENTER during program operation for clean shutdown. Press Ctrl + C to terminate immediately." << endl;
+        cout << "Note Control-C during program operation for clean shutdown. This may take a few seconds. Press Ctrl + C again to terminate immediately (current recordings may not be saved)." << endl;
         cout << endl;
 
         return 1;
@@ -121,7 +133,8 @@ int main(int iArgC, char *pchaArgV[])
         cRoachAcquisitionServer oServer(strTenGbELocalInterface, u16TenGbELocalPort,
                                         strRoachTenGbEInterface, u16RoachTenGbEPort,
                                         strServerInterface, u16ServerDataPort,
-                                        strRecordingDir, u32MaxFileSize_MB);
+                                        strRecordingDir, u32MaxFileSize_MB,
+                                        strRoachGatewareDirectory);
 
         oServer.startKATCPServer(strServerInterface, u16ServerKATCPPort);
 
@@ -136,7 +149,18 @@ int main(int iArgC, char *pchaArgV[])
             oServer.startRoachKATCPClient(strROACHPowerPCAddress, u16ROACHTCPBorphPort);
         }
 
-        cin.get();
+        //Block until control - C
+        while(1)
+        {
+            if(flag)
+            {
+                cout << "Caught control-C..." << endl;
+                signal(SIGINT, SIG_DFL); //Clear signal handler so that subsequent control-C kills the program
+                break;
+            }
+
+            boost::this_thread::sleep(boost::posix_time::milliseconds(500));
+        }
 
         cout << endl;
         cout << "----------------------------------------" << endl;

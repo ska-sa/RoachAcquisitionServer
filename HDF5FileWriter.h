@@ -82,7 +82,7 @@ public:
     void                                                offloadData_callback(char* cpData, uint32_t u32Size_B);
 
     //Callbacks implement for KATCPClient callback interface. These pass information to be stored to HDF5 file:
-    void                                                connected_callback(bool bConnected);
+    void                                                connected_callback(bool bConnected, const std::string &strHostAddress, uint16_t u16Port, const std::string &strDescription);
 
     //File recording control
     void                                                startRecording_callback(const std::string &strFilePrefix, int64_t i64StartTime_us, int64_t i64Duration_us);
@@ -123,6 +123,10 @@ public:
     void                                                receiverBandwidthChan0_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan0_MHz);
     void                                                receiverBandwidthChan1_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan1_MHz);
 
+    //Roach register values
+    //The data mode is spliced into the Roach 10 GbE data stream and interpreted from there so it is not necessary to implement these functions:
+    void                                                stokesEnabled_callback(int64_t i64Timestamp_us, bool bEnabled){}
+    /////////////////////////////
     void                                                accumulationLength_callback(int64_t i64Timestamp_us, uint32_t u32NFrames);
     void                                                coarseChannelSelect_callback(int64_t i64Timestamp_us, uint32_t u32ChannelNo);
     void                                                frequencyFs_callback(double dFrequencyFs_MHz);
@@ -131,6 +135,16 @@ public:
     void                                                coarseFFTShiftMask_callback(int64_t i64Timestamp_us, uint32_t u32ShiftMask);
     void                                                attenuationADCChan0_callback(int64_t i64Timestamp_us, double dADCAttenuationChan0_dB);
     void                                                attenuationADCChan1_callback(int64_t i64Timestamp_us, double dADCAttenuationChan1_dB);
+    //The noise diode information is spliced into the Roach 10 GbE data stream and interpreted from there so it is not necessary to implement these functions:
+    void                                                noiseDiodeEnabled_callback(int64_t i64Timestamp_us, bool bNoideDiodeEnabled){}
+    void                                                noiseDiodeDutyCycleEnabled_callback(int64_t i64Timestamp_us, bool bNoiseDiodeDutyCyleEnabled){}
+    void                                                noiseDiodeDutyCycleOnDuration_callback(int64_t i64Timestamp_us, uint32_t u32NAccums){}
+    void                                                noiseDiodeDutyCycleOffDuration_callback(int64_t i64Timestamp_us, uint32_t u32NAccums){}
+    ////////////////////////////
+    void                                                overflowsRegs_callback(int64_t i64Timestamp_us, uint32_t u32OverflowRegs);
+    void                                                eth10GbEUp_callback(int64_t i64Timestamp_us, bool bEth10GbEUp);
+    void                                                ppsCount_callback(int64_t i64Timestamp_us, uint32_t u32PPSCount);
+    void                                                clockFrequency_callback(int64_t i64Timestamp_us, uint32_t u32ClockFrequency_Hz);
 
     //Other public functions
     std::string                                         makeFilename(const std::string &strDirectory, const std::string &strPrefix, int64_t i64Timestamp_us);

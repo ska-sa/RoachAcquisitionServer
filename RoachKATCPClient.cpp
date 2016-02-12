@@ -35,11 +35,11 @@ bool cRoachKATCPClient::readRoachRegister(const string &strRegisterName, uint32_
     oSS << strRegisterName;
     oSS << " 0 1\n"; //offset zero, word length 1. NB end of line.
 
-    m_pSocket->write(oSS.str());
+    m_pSocket->write(oSS.str(), 1000);
 
     //Read a line of KATCP response (until  "\n" is encountered)
     //This returns a vector of space-delimited tokens
-    do
+    while(1)
     {
         vstrMessageTokens = readNextKATCPMessage(1000);
 
@@ -50,9 +50,17 @@ bool cRoachKATCPClient::readRoachRegister(const string &strRegisterName, uint32_
         //            cout << vstrMessageTokens[ui] << " ";
         //        }
         //        cout << endl;
-    }
 
-    while(vstrMessageTokens[0].compare("!wordread")); //Read until the reponse
+        if(disconnectRequested())
+            return false;
+
+        if(!vstrMessageTokens.size())
+            continue;
+
+        //Read until the reponse
+        if(!vstrMessageTokens[0].compare("!wordread"))
+            break;
+    }
 
     //Return message is of format: "!wordread ok 0x0000" where 0x0000 is the corresponding hex value
     //Check that the first 2 tokens are correct and then convert the 3rd
@@ -72,24 +80,65 @@ bool cRoachKATCPClient::readRoachRegister(const string &strRegisterName, uint32_
     }
 }
 
-void cRoachKATCPClient::threadReadFunction()
+bool cRoachKATCPClient::writeRoachRegister(const std::string &strRegisterName, uint32_t u32Value)
 {
-    //Not used here. Reading and writing is done synchrously
-    //The write thread function is overloaded to do this.
-
-    cout << "cRoachKATCPClient::threadReadFunction(): Entering thread read function." << endl;
-    cout << "cRoachKATCPClient::threadReadFunction(): Leaving thread read function." << endl;
-}
-
-void cRoachKATCPClient::threadWriteFunction()
-{
-    cout << "cRoachKATCPClient::threadWriteFunction(): Entering thread write function." << endl;
-
     vector<string> vstrMessageTokens;
 
-    uint32_t u32Value = 0;
-    double dADCAttenuation_dB = 0.0;
-    uint32_t u32SleepTime_ms = 50;
+    //Contruct send command (?wordwrite <register name> <offset> <length>)
+    stringstream oSS;
+    oSS << "?wordwrite ";
+    oSS << strRegisterName;
+    oSS << " 0 "; //offset zero, word length 1.
+    oSS << u32Value;
+    oSS << "\n"; //NB end of line.
+
+    {
+        boost::unique_lock<boost::mutex> oLock(m_oKATCPMutex);
+        if(!m_pSocket->write(oSS.str(), 1000))
+        {
+            return false;
+        }
+
+        //Read the response
+        while(1)
+        {
+            vstrMessageTokens = readNextKATCPMessage(1000);
+
+                    //Debug:
+                    cout << "cRoachKATCPClient::readRoachRegister(): Got KATCP line: ";
+                    for(uint32_t ui = 0; ui < vstrMessageTokens.size(); ui++)
+                    {
+                        cout << vstrMessageTokens[ui] << " ";
+                    }
+                    cout << endl;
+
+            if(disconnectRequested())
+                return false;
+
+            if(!vstrMessageTokens.size())
+                continue;
+
+            //Read until the reponse
+            if(!vstrMessageTokens[0].compare("!wordwrite"))
+            {
+                if(!vstrMessageTokens[1].compare("ok"))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+    }
+}
+
+void cRoachKATCPClient::threadReadFunction()
+{
+    cout << "cRoachKATCPClient::threadReadFunction(): Entering thread read function." << endl;
+
+    vector<string> vstrMessageTokens;
 
     //Read KATCP header info that is sent on connect
     while(!disconnectRequested())
@@ -114,6 +163,47 @@ void cRoachKATCPClient::threadWriteFunction()
 
     while(!disconnectRequested())
     {
+      //Read all registers once and execute relevant callbacks
+      readAllRegisters(10);
+    }
+
+    cout << "cRoachKATCPClient::threadReadFunction(): Leaving thread read function." << endl;
+}
+
+void cRoachKATCPClient::threadWriteFunction()
+{
+    //Not used
+
+    cout << "cRoachKATCPClient::threadWriteFunction(): Entering thread write function." << endl;
+    cout << "cRoachKATCPClient::threadWriteFunction(): leaving thread write function." << endl;
+}
+
+void cRoachKATCPClient::readAllRegisters(uint32_t u32SleepTime_ms)
+{
+    //Attempts Reads each Roach spectrometer register of interest once and executes the relevant callback
+    //The KATCP mutex is locked before each read to allow safe multiplexing with write operations.
+
+    uint32_t u32Value = 0;
+    double dADCAttenuation_dB = 0.0;
+
+    {
+        boost::unique_lock<boost::mutex> oLock(m_oKATCPMutex);
+        if( readRoachRegister(string("stokes_enable"), u32Value) )
+        {
+            sendStokesEnabled(AVN::getTimeNow_us(), (bool)(u32Value & 0x00000001));
+            //cout << "cRoachKATCPClient::threadWriteFunction(): Wrote stokes_enable" << endl;
+        }
+        else
+        {
+            cout << "cRoachKATCPClient::threadWriteFunction(): Failed to read register: stokes_enable" << endl;
+        }
+    }
+
+    //Wait a bit before next read
+    boost::this_thread::sleep_for(boost::chrono::milliseconds(u32SleepTime_ms));
+
+    {
+        boost::unique_lock<boost::mutex> oLock(m_oKATCPMutex);
         if( readRoachRegister(string("accumulation_length"), u32Value) )
         {
             sendAccumulationLength(AVN::getTimeNow_us(), u32Value);
@@ -123,10 +213,13 @@ void cRoachKATCPClient::threadWriteFunction()
         {
             cout << "cRoachKATCPClient::threadWriteFunction(): Failed to read register: accumulation_length" << endl;
         }
+    }
 
-        //Wait a bit before next read
-        boost::this_thread::sleep_for(boost::chrono::milliseconds(u32SleepTime_ms));
+    //Wait a bit before next read
+    boost::this_thread::sleep_for(boost::chrono::milliseconds(u32SleepTime_ms));
 
+    {
+        boost::unique_lock<boost::mutex> oLock(m_oKATCPMutex);
         if( readRoachRegister(string("coarse_channel_select"), u32Value) )
         {
             sendCoarseChannelSelect(AVN::getTimeNow_us(), u32Value);
@@ -136,10 +229,13 @@ void cRoachKATCPClient::threadWriteFunction()
         {
             cout << "cRoachKATCPClient::threadWriteFunction(): Failed to read register: coarse_channel_select" << endl;
         }
+    }
 
-        //Wait a bit before next read
-        boost::this_thread::sleep_for(boost::chrono::milliseconds(u32SleepTime_ms));
+    //Wait a bit before next read
+    boost::this_thread::sleep_for(boost::chrono::milliseconds(u32SleepTime_ms));
 
+    {
+        boost::unique_lock<boost::mutex> oLock(m_oKATCPMutex);
         if( readRoachRegister(string("sampling_frequency_mhz"), u32Value) )
 
         {
@@ -150,10 +246,13 @@ void cRoachKATCPClient::threadWriteFunction()
         {
             cout << "cRoachKATCPClient::threadWriteFunction(): Failed to read register: sampling_frequency_mhz" << endl;
         }
+    }
 
-        //Wait a bit before next read
-        boost::this_thread::sleep_for(boost::chrono::milliseconds(u32SleepTime_ms));
+    //Wait a bit before next read
+    boost::this_thread::sleep_for(boost::chrono::milliseconds(u32SleepTime_ms));
 
+    {
+        boost::unique_lock<boost::mutex> oLock(m_oKATCPMutex);
         if( readRoachRegister(string("coarse_fft_size_nsamp"), u32Value))
         {
             sendSizeOfCoarseFFT(u32Value);
@@ -163,10 +262,13 @@ void cRoachKATCPClient::threadWriteFunction()
         {
             cout << "cRoachKATCPClient::threadWriteFunction(): Failed to read register: coarse_fft_size" << endl;
         }
+    }
 
-        //Wait a bit before next read
-        boost::this_thread::sleep_for(boost::chrono::milliseconds(u32SleepTime_ms));
+    //Wait a bit before next read
+    boost::this_thread::sleep_for(boost::chrono::milliseconds(u32SleepTime_ms));
 
+    {
+        boost::unique_lock<boost::mutex> oLock(m_oKATCPMutex);
         if(readRoachRegister(string("fine_fft_size_nsamp"), u32Value))
         {
             sendSizeOfFineFFT(u32Value);
@@ -176,10 +278,13 @@ void cRoachKATCPClient::threadWriteFunction()
         {
             cout << "cRoachKATCPClient::threadWriteFunction(): Failed to read register: fine_fft_size" << endl;
         }
+    }
 
-        //Wait a bit before next read
-        boost::this_thread::sleep_for(boost::chrono::milliseconds(u32SleepTime_ms));
+    //Wait a bit before next read
+    boost::this_thread::sleep_for(boost::chrono::milliseconds(u32SleepTime_ms));
 
+    {
+        boost::unique_lock<boost::mutex> oLock(m_oKATCPMutex);
         if( readRoachRegister(string("coarse_fft_shift_mask"), u32Value) )
         {
             sendCoarseFFTShiftMask(AVN::getTimeNow_us(), u32Value);
@@ -189,47 +294,205 @@ void cRoachKATCPClient::threadWriteFunction()
         {
             cout << "cRoachKATCPClient::threadWriteFunction(): Failed to read register: coarse_fft_shift_mask" << endl;
         }
+    }
 
-        //Wait a bit before next read
-        boost::this_thread::sleep_for(boost::chrono::milliseconds(u32SleepTime_ms));
+    //Wait a bit before next read
+    boost::this_thread::sleep_for(boost::chrono::milliseconds(u32SleepTime_ms));
 
-        if( readRoachRegister(string("adc0_attenuation_db"), u32Value) )
+    {
+        boost::unique_lock<boost::mutex> oLock(m_oKATCPMutex);
+        if( readRoachRegister(string("adc0_atten"), u32Value) )
         {
             //KATADC 0 dB to 31.5 dB in 0.5 dB steps (https://casper.berkeley.edu/wiki/KatADC)
             dADCAttenuation_dB = u32Value * 0.5;
             sendADCChan0Attenuation(AVN::getTimeNow_us(), dADCAttenuation_dB);
 
-            //cout << "cRoachKATCPClient::threadWriteFunction(): Wrote adc0_attentuation = " << dADCAttenuation_dB << endl;
+            //cout << "cRoachKATCPClient::threadWriteFunction(): Wrote adc0_atten = " << dADCAttenuation_dB << endl;
         }
         else
         {
-            cout << "cRoachKATCPClient::threadWriteFunction(): Failed to read register: adc0_attenuation_db" << endl;
+            cout << "cRoachKATCPClient::threadWriteFunction(): Failed to read register: adc0_atten" << endl;
         }
+    }
 
-        //Wait a bit before next read
-        boost::this_thread::sleep_for(boost::chrono::milliseconds(u32SleepTime_ms));
+    //Wait a bit before next read
+    boost::this_thread::sleep_for(boost::chrono::milliseconds(u32SleepTime_ms));
 
-        if( readRoachRegister(string("adc1_attenuation_db"), u32Value) )
+    {
+        boost::unique_lock<boost::mutex> oLock(m_oKATCPMutex);
+        if( readRoachRegister(string("adc1_atten"), u32Value) )
         {
             //KATADC 0 dB to 31.5 dB in 0.5 dB steps (https://casper.berkeley.edu/wiki/KatADC)
             dADCAttenuation_dB = u32Value * 0.5;
             sendADCChan1Attenuation(AVN::getTimeNow_us(), dADCAttenuation_dB);
 
-            //cout << "cRoachKATCPClient::threadWriteFunction(): Wrote adc1_attentuation" << endl;
+            //cout << "cRoachKATCPClient::threadWriteFunction(): Wrote adc1_atten" << endl;
         }
         else
         {
-            cout << "cRoachKATCPClient::threadWriteFunction(): Failed to read register: adc1_attenuation_db" << endl;
+            cout << "cRoachKATCPClient::threadWriteFunction(): Failed to read register: adc1_atten" << endl;
         }
-
-        //Wait a bit before next read
-        boost::this_thread::sleep_for(boost::chrono::milliseconds(u32SleepTime_ms));
     }
 
-    cout << "cRoachKATCPClient::threadWriteFunction(): Leaving thread write function." << endl;
+    //Wait a bit before next read
+    boost::this_thread::sleep_for(boost::chrono::milliseconds(u32SleepTime_ms));
+
+    {
+        boost::unique_lock<boost::mutex> oLock(m_oKATCPMutex);
+        if( readRoachRegister(string("noise_diode_en"), u32Value) )
+        {
+            sendNoiseDiodeEnabled(AVN::getTimeNow_us(), (bool)(u32Value & 0x00000001));
+
+            //cout << "cRoachKATCPClient::threadWriteFunction(): Wrote noise_diode_en" << endl;
+        }
+        else
+        {
+            cout << "cRoachKATCPClient::threadWriteFunction(): Failed to read register: noise_diode_en" << endl;
+        }
+    }
+
+    //Wait a bit before next read
+    boost::this_thread::sleep_for(boost::chrono::milliseconds(u32SleepTime_ms));
+
+    {
+        boost::unique_lock<boost::mutex> oLock(m_oKATCPMutex);
+        if( readRoachRegister(string("noise_diode_duty_cycle_en"), u32Value) )
+        {
+            sendNoiseDiodeDutyCycleEnabled(AVN::getTimeNow_us(), (bool)(u32Value & 0x00000001));
+
+            //cout << "cRoachKATCPClient::threadWriteFunction(): Wrote noise_diode_duty_cycle_en" << endl;
+        }
+        else
+        {
+            cout << "cRoachKATCPClient::threadWriteFunction(): Failed to read register: noise_diode_duty_cycle_en" << endl;
+        }
+    }
+
+    //Wait a bit before next read
+    boost::this_thread::sleep_for(boost::chrono::milliseconds(u32SleepTime_ms));
+
+    {
+        boost::unique_lock<boost::mutex> oLock(m_oKATCPMutex);
+        if( readRoachRegister(string("noise_diode_on_length"), u32Value) )
+        {
+            sendNoiseDiodeDutyCycleOnDuration(AVN::getTimeNow_us(), u32Value);
+
+            //cout << "cRoachKATCPClient::threadWriteFunction(): Wrote noise_diode_on_length " << u32Value << endl;
+        }
+        else
+        {
+            cout << "cRoachKATCPClient::threadWriteFunction(): Failed to read register: noise_diode_on_length" << endl;
+        }
+    }
+
+    //Wait a bit before next read
+    boost::this_thread::sleep_for(boost::chrono::milliseconds(u32SleepTime_ms));
+
+    {
+        boost::unique_lock<boost::mutex> oLock(m_oKATCPMutex);
+        if( readRoachRegister(string("noise_diode_off_length"), u32Value) )
+        {
+            sendNoiseDiodeDutyCycleOffDuration(AVN::getTimeNow_us(), u32Value);
+
+            //cout << "cRoachKATCPClient::threadWriteFunction(): Wrote noise_diode_off_length" << endl;
+        }
+        else
+        {
+            cout << "cRoachKATCPClient::threadWriteFunction(): Failed to read register: noise_diode_off_length" << endl;
+        }
+    }
+
+    //Wait a bit before next read
+    boost::this_thread::sleep_for(boost::chrono::milliseconds(u32SleepTime_ms));
+
+    {
+        boost::unique_lock<boost::mutex> oLock(m_oKATCPMutex);
+        if( readRoachRegister(string("overflows"), u32Value) )
+        {
+            sendOverflowsRegs(AVN::getTimeNow_us(), u32Value);
+
+            //cout << "cRoachKATCPClient::threadWriteFunction(): Wrote overflows" << endl;
+        }
+        else
+        {
+            cout << "cRoachKATCPClient::threadWriteFunction(): Failed to read register: overflows" << endl;
+        }
+    }
+
+    //Wait a bit before next read
+    boost::this_thread::sleep_for(boost::chrono::milliseconds(u32SleepTime_ms));
+
+    {
+        boost::unique_lock<boost::mutex> oLock(m_oKATCPMutex);
+        if( readRoachRegister(string("tgbe0_linkup"), u32Value) )
+        {
+            sendEth10GbEUp(AVN::getTimeNow_us(), u32Value);
+
+            //cout << "cRoachKATCPClient::threadWriteFunction(): Wrote tgbe0_linkup" << endl;
+        }
+        else
+        {
+            cout << "cRoachKATCPClient::threadWriteFunction(): Failed to read register: tgbe0_linkup" << endl;
+        }
+    }
+
+    //Wait a bit before next read
+    boost::this_thread::sleep_for(boost::chrono::milliseconds(u32SleepTime_ms));
+
+    {
+        boost::unique_lock<boost::mutex> oLock(m_oKATCPMutex);
+        if( readRoachRegister(string("pps_cnt"), u32Value) )
+        {
+            sendPPSCount(AVN::getTimeNow_us(), u32Value);
+
+            //cout << "cRoachKATCPClient::threadWriteFunction(): Wrote pps_cnt" << endl;
+        }
+        else
+        {
+            cout << "cRoachKATCPClient::threadWriteFunction(): Failed to read register: pps_cnt" << endl;
+        }
+    }
+
+    //Wait a bit before next read
+    boost::this_thread::sleep_for(boost::chrono::milliseconds(u32SleepTime_ms));
+
+    {
+        boost::unique_lock<boost::mutex> oLock(m_oKATCPMutex);
+        if( readRoachRegister(string("clk_frequency"), u32Value) )
+        {
+            sendClockFrequency(AVN::getTimeNow_us(), u32Value);
+
+            //cout << "cRoachKATCPClient::threadWriteFunction(): Wrote clk_frequency" << endl;
+        }
+        else
+        {
+            cout << "cRoachKATCPClient::threadWriteFunction(): Failed to read register: clk_frequency" << endl;
+        }
+    }
+
+    //Wait a bit before next read
+    boost::this_thread::sleep_for(boost::chrono::milliseconds(u32SleepTime_ms));
 }
 
+void cRoachKATCPClient::sendStokesEnabled(int64_t i64Timestamp_us, bool bEnabled)
+{
+    boost::shared_lock<boost::shared_mutex> oLock;
 
+    //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
+    //to call function added in the derived version of the callback handler interface class
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
+    {
+        cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
+        pHandler->stokesEnabled_callback(i64Timestamp_us, bEnabled);
+    }
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
+    {
+        boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
+        pHandler->stokesEnabled_callback(i64Timestamp_us, bEnabled);
+    }
+}
 
 void cRoachKATCPClient::sendAccumulationLength(int64_t i64Timestamp_us, uint32_t u32NFrames)
 {
@@ -382,12 +645,171 @@ void cRoachKATCPClient::sendADCChan1Attenuation(int64_t i64Timestamp_us, double 
     {
         cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
         pHandler->attenuationADCChan1_callback(i64Timestamp_us, dAttenuationChan1_dB);
-        //pHandler->adcAttenuation_callback(0, 0.0, 0.0);
     }
 
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
     {
         boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
         pHandler->attenuationADCChan1_callback(i64Timestamp_us, dAttenuationChan1_dB);
+    }
+}
+
+void cRoachKATCPClient::sendNoiseDiodeEnabled(int64_t i64Timestamp_us, bool bNoiseDiodeEnabled)
+{
+    boost::shared_lock<boost::shared_mutex> oLock;
+
+    //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
+    //to call function added in the derived version of the callback handler interface class
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
+    {
+        cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
+        pHandler->noiseDiodeEnabled_callback(i64Timestamp_us, bNoiseDiodeEnabled);
+    }
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
+    {
+        boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
+        pHandler->noiseDiodeEnabled_callback(i64Timestamp_us, bNoiseDiodeEnabled);
+    }
+}
+
+void cRoachKATCPClient::sendNoiseDiodeDutyCycleEnabled(int64_t i64Timestamp_us, bool bNoiseDiodeDutyCyleEnabled)
+{
+    boost::shared_lock<boost::shared_mutex> oLock;
+
+    //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
+    //to call function added in the derived version of the callback handler interface class
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
+    {
+        cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
+        pHandler->noiseDiodeDutyCycleEnabled_callback(i64Timestamp_us, bNoiseDiodeDutyCyleEnabled);
+    }
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
+    {
+        boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
+        pHandler->noiseDiodeDutyCycleEnabled_callback(i64Timestamp_us, bNoiseDiodeDutyCyleEnabled);
+    }
+}
+
+void cRoachKATCPClient::sendNoiseDiodeDutyCycleOnDuration(int64_t i64Timestamp_us, uint32_t u32NAccums)
+{
+    boost::shared_lock<boost::shared_mutex> oLock;
+
+    //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
+    //to call function added in the derived version of the callback handler interface class
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
+    {
+        cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
+        pHandler->noiseDiodeDutyCycleOnDuration_callback(i64Timestamp_us, u32NAccums);
+    }
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
+    {
+        boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
+        pHandler->noiseDiodeDutyCycleOnDuration_callback(i64Timestamp_us, u32NAccums);
+    }
+}
+
+void cRoachKATCPClient::sendNoiseDiodeDutyCycleOffDuration(int64_t i64Timestamp_us, uint32_t u32NAccums)
+{
+    boost::shared_lock<boost::shared_mutex> oLock;
+
+    //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
+    //to call function added in the derived version of the callback handler interface class
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
+    {
+        cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
+        pHandler->noiseDiodeDutyCycleOffDuration_callback(i64Timestamp_us, u32NAccums);
+    }
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
+    {
+        boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
+        pHandler->noiseDiodeDutyCycleOffDuration_callback(i64Timestamp_us, u32NAccums);
+    }
+}
+
+void cRoachKATCPClient::sendOverflowsRegs(int64_t i64Timestamp_us, uint32_t u32OverflowRegs)
+{
+    boost::shared_lock<boost::shared_mutex> oLock;
+
+    //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
+    //to call function added in the derived version of the callback handler interface class
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
+    {
+        cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
+        pHandler->overflowsRegs_callback(i64Timestamp_us, u32OverflowRegs);
+    }
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
+    {
+        boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
+        pHandler->overflowsRegs_callback(i64Timestamp_us, u32OverflowRegs);
+    }
+}
+
+void cRoachKATCPClient::sendEth10GbEUp(int64_t i64Timestamp_us, bool bEth10GbEUp)
+{
+    boost::shared_lock<boost::shared_mutex> oLock;
+
+    //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
+    //to call function added in the derived version of the callback handler interface class
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
+    {
+        cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
+        pHandler->eth10GbEUp_callback(i64Timestamp_us, bEth10GbEUp);
+    }
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
+    {
+        boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
+        pHandler->eth10GbEUp_callback(i64Timestamp_us, bEth10GbEUp);
+    }
+}
+
+void cRoachKATCPClient::sendPPSCount(int64_t i64Timestamp_us, uint32_t u32PPSCount)
+{
+    boost::shared_lock<boost::shared_mutex> oLock;
+
+    //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
+    //to call function added in the derived version of the callback handler interface class
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
+    {
+        cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
+        pHandler->ppsCount_callback(i64Timestamp_us, u32PPSCount);
+    }
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
+    {
+        boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
+        pHandler->ppsCount_callback(i64Timestamp_us, u32PPSCount);
+    }
+}
+
+void cRoachKATCPClient::sendClockFrequency(int64_t i64Timestamp_us, uint32_t u32ClockFrequency_Hz)
+{
+    boost::shared_lock<boost::shared_mutex> oLock;
+
+    //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
+    //to call function added in the derived version of the callback handler interface class
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
+    {
+        cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
+        pHandler->clockFrequency_callback(i64Timestamp_us, u32ClockFrequency_Hz);
+    }
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
+    {
+        boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
+        pHandler->clockFrequency_callback(i64Timestamp_us, u32ClockFrequency_Hz);
     }
 }

@@ -32,12 +32,13 @@ typedef unsigned __int64 uint64_t;
 #include "RoachKATCPClient.h"
 #include "StationControllerKATCPClient.h"
 
-class cRoachAcquisitionServer
+class cRoachAcquisitionServer : public cKATCPClientBase::cConnectionCallbackInterface
 {
 public:
     explicit cRoachAcquisitionServer(const std::string &strLocalInterface, uint16_t u16LocalPort, const std::string &strRoachTGBEAddress, uint16_t u16RoachTGBEPort,
                                      const std::string &strClientInterface, uint16_t u16ClientDataPort,
-                                     const std::string &strRecordingDir, uint32_t u32MaxFileSize_MB);
+                                     const std::string &strRecordingDir, uint32_t u32MaxFileSize_MB,
+                                     const string &strRoachGatewareDir);
     ~cRoachAcquisitionServer();
 
     void                                                startKATCPServer(std::string strInterface, uint16_t u16Port);
@@ -53,6 +54,9 @@ public:
     void                                                shutdown();
 
 private:
+
+    //Callback function to handle KATCP disconnectsl
+    void                                                connected_callback(bool bConnected, const std::string &strHostAddress, uint16_t u16Port, const std::string &strDescription);
 
     boost::shared_ptr<cUDPReceiver>                     m_pUDPReceiver;
     boost::shared_ptr<cTCPForwardingServer>             m_pTCPForwardingServer;
@@ -72,6 +76,14 @@ private:
 
     std::string                                         m_strRecordingDir;
     uint32_t                                            m_u32MaxFileSize_MB;
+
+    std::string                                         m_strRoachKATCPAddress;
+    uint16_t                                            m_u16RoachKATCPPort;
+
+    std::string                                         m_strStationControllerKATCPAddress;
+    uint16_t                                            m_u16StationControllerKATCPPort;
+
+    std::string                                         m_strRoachGatewareDir;
 };
 
 #endif //ROACH_ACQUISITION_SERVER_H
