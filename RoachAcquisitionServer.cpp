@@ -59,7 +59,9 @@ void cRoachAcquisitionServer::shutdown()
 
     m_pUDPReceiver.reset();
     m_pTCPForwardingServer.reset();
+    stopRoachKATCPClient();
     m_pRoachKATCPClient.reset();
+    stopStationControllerKATCPClient();
     m_pStationControllerKATCPClient.reset();
     m_pKATCPServer.reset();
     m_pHDF5FileWriter.reset();
@@ -135,8 +137,12 @@ void cRoachAcquisitionServer::startRoachKATCPClient(std::string strServerAddress
 
 void cRoachAcquisitionServer::stopRoachKATCPClient()
 {
+    //Check for valid pointer to object
+    if(!m_pRoachKATCPClient.get())
+        return;
+
     //Disconnect this as a callback hander (for handling unsolicited disconnects)
-    m_pStationControllerKATCPClient->deregisterConnectionCallbackHandler(this);
+    m_pRoachKATCPClient->deregisterConnectionCallbackHandler(this);
 
     //Disconnect from server if available
     if(m_pKATCPServer.get())
@@ -184,6 +190,10 @@ void cRoachAcquisitionServer::startStationControllerKATCPClient(std::string strS
 
 void cRoachAcquisitionServer::stopStationControllerKATCPClient()
 {
+    //Check for valid pointer to object
+    if(!m_pStationControllerKATCPClient.get())
+        return;
+
     //Disconnect this as a callback hander (for handling unsolicited disconnects)
     m_pStationControllerKATCPClient->deregisterConnectionCallbackHandler(this);
 

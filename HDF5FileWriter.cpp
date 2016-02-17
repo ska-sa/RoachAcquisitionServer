@@ -96,7 +96,7 @@ void cHDF5FileWriter::getNextFrame_callback(const std::vector<int> &vi32Chan0, c
         //Allow difference of 1 due to rounding errors in microsec timestamp resolution.
         //This will also trigger a new file if any sort of stream discontinuity occurs.
 
-        cout << "getNextFrame_callback(): Detected stream change in frame update interval. Was " << m_i64FrameInterval_us << " got " <<  oHeader.getTimestamp_us() - m_i64LastTimestamp_us << endl;
+        cout << "cHDF5FileWriter::getNextFrame_callback(): Detected stream change in frame update interval. Was " << m_i64FrameInterval_us << " got " <<  oHeader.getTimestamp_us() - m_i64LastTimestamp_us << endl;
 
         m_i64FrameInterval_us = oHeader.getTimestamp_us() - m_i64LastTimestamp_us;
         m_bStreamChanged = true;
@@ -109,7 +109,7 @@ void cHDF5FileWriter::getNextFrame_callback(const std::vector<int> &vi32Chan0, c
 
     if(m_u32FrameSize_nVal != vi32Chan0.size())
     {
-        cout << "getNextFrame_callback(): Detected stream change in frame size. Was " << m_u32FrameSize_nVal << " got " << vi32Chan0.size() << endl;
+        cout << "cHDF5FileWriter::getNextFrame_callback(): Detected stream change in frame size. Was " << m_u32FrameSize_nVal << " got " << vi32Chan0.size() << endl;
 
         m_u32FrameSize_nVal = vi32Chan0.size();
         m_bStreamChanged = true;
@@ -117,7 +117,7 @@ void cHDF5FileWriter::getNextFrame_callback(const std::vector<int> &vi32Chan0, c
 
     if(m_eLastDigitiserType != (AVN::Spectrometer::digitiserType)oHeader.getDigitiserType())
     {
-        cout << "getNextFrame_callback(): Detected stream change in digitiser. Was \"" << AVN::Spectrometer::digitiserTypeToString(m_eLastDigitiserType)
+        cout << "cHDF5FileWriter::getNextFrame_callback(): Detected stream change in digitiser. Was \"" << AVN::Spectrometer::digitiserTypeToString(m_eLastDigitiserType)
              << "\" got \"" << AVN::Spectrometer::digitiserTypeToString(oHeader.getDigitiserType()) << "\"" << endl;
 
         m_eLastDigitiserType = (AVN::Spectrometer::digitiserType)oHeader.getDigitiserType();

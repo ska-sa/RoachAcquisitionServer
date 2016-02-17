@@ -154,6 +154,7 @@ int main(int iArgC, char *pchaArgV[])
         {
             if(flag)
             {
+                cout << endl;
                 cout << "Caught control-C..." << endl;
                 signal(SIGINT, SIG_DFL); //Clear signal handler so that subsequent control-C kills the program
                 break;
@@ -163,8 +164,8 @@ int main(int iArgC, char *pchaArgV[])
         }
 
         cout << endl;
-        cout << "----------------------------------------" << endl;
         cout << "Shutting down RoachAcquisition server..." << endl;
+        cout << "----------------------------------------" << endl;
         cout << endl;
     }
 

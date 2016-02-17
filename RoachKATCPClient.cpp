@@ -186,6 +186,8 @@ void cRoachKATCPClient::readAllRegisters(uint32_t u32SleepTime_ms)
     uint32_t u32Value = 0;
     double dADCAttenuation_dB = 0.0;
 
+    if(disconnectRequested())
+        return;
     {
         boost::unique_lock<boost::mutex> oLock(m_oKATCPMutex);
         if( readRoachRegister(string("stokes_enable"), u32Value) )
@@ -202,6 +204,8 @@ void cRoachKATCPClient::readAllRegisters(uint32_t u32SleepTime_ms)
     //Wait a bit before next read
     boost::this_thread::sleep_for(boost::chrono::milliseconds(u32SleepTime_ms));
 
+    if(disconnectRequested())
+        return;
     {
         boost::unique_lock<boost::mutex> oLock(m_oKATCPMutex);
         if( readRoachRegister(string("accumulation_length"), u32Value) )
@@ -218,6 +222,8 @@ void cRoachKATCPClient::readAllRegisters(uint32_t u32SleepTime_ms)
     //Wait a bit before next read
     boost::this_thread::sleep_for(boost::chrono::milliseconds(u32SleepTime_ms));
 
+    if(disconnectRequested())
+        return;
     {
         boost::unique_lock<boost::mutex> oLock(m_oKATCPMutex);
         if( readRoachRegister(string("coarse_channel_select"), u32Value) )
@@ -234,6 +240,8 @@ void cRoachKATCPClient::readAllRegisters(uint32_t u32SleepTime_ms)
     //Wait a bit before next read
     boost::this_thread::sleep_for(boost::chrono::milliseconds(u32SleepTime_ms));
 
+    if(disconnectRequested())
+        return;
     {
         boost::unique_lock<boost::mutex> oLock(m_oKATCPMutex);
         if( readRoachRegister(string("sampling_frequency_mhz"), u32Value) )
@@ -251,6 +259,8 @@ void cRoachKATCPClient::readAllRegisters(uint32_t u32SleepTime_ms)
     //Wait a bit before next read
     boost::this_thread::sleep_for(boost::chrono::milliseconds(u32SleepTime_ms));
 
+    if(disconnectRequested())
+        return;
     {
         boost::unique_lock<boost::mutex> oLock(m_oKATCPMutex);
         if( readRoachRegister(string("coarse_fft_size_nsamp"), u32Value))
@@ -267,6 +277,8 @@ void cRoachKATCPClient::readAllRegisters(uint32_t u32SleepTime_ms)
     //Wait a bit before next read
     boost::this_thread::sleep_for(boost::chrono::milliseconds(u32SleepTime_ms));
 
+    if(disconnectRequested())
+        return;
     {
         boost::unique_lock<boost::mutex> oLock(m_oKATCPMutex);
         if(readRoachRegister(string("fine_fft_size_nsamp"), u32Value))
@@ -283,6 +295,8 @@ void cRoachKATCPClient::readAllRegisters(uint32_t u32SleepTime_ms)
     //Wait a bit before next read
     boost::this_thread::sleep_for(boost::chrono::milliseconds(u32SleepTime_ms));
 
+    if(disconnectRequested())
+        return;
     {
         boost::unique_lock<boost::mutex> oLock(m_oKATCPMutex);
         if( readRoachRegister(string("coarse_fft_shift_mask"), u32Value) )
@@ -299,6 +313,8 @@ void cRoachKATCPClient::readAllRegisters(uint32_t u32SleepTime_ms)
     //Wait a bit before next read
     boost::this_thread::sleep_for(boost::chrono::milliseconds(u32SleepTime_ms));
 
+    if(disconnectRequested())
+        return;
     {
         boost::unique_lock<boost::mutex> oLock(m_oKATCPMutex);
         if( readRoachRegister(string("adc0_atten"), u32Value) )
@@ -318,6 +334,8 @@ void cRoachKATCPClient::readAllRegisters(uint32_t u32SleepTime_ms)
     //Wait a bit before next read
     boost::this_thread::sleep_for(boost::chrono::milliseconds(u32SleepTime_ms));
 
+    if(disconnectRequested())
+        return;
     {
         boost::unique_lock<boost::mutex> oLock(m_oKATCPMutex);
         if( readRoachRegister(string("adc1_atten"), u32Value) )
@@ -337,6 +355,8 @@ void cRoachKATCPClient::readAllRegisters(uint32_t u32SleepTime_ms)
     //Wait a bit before next read
     boost::this_thread::sleep_for(boost::chrono::milliseconds(u32SleepTime_ms));
 
+    if(disconnectRequested())
+        return;
     {
         boost::unique_lock<boost::mutex> oLock(m_oKATCPMutex);
         if( readRoachRegister(string("noise_diode_en"), u32Value) )
@@ -354,6 +374,8 @@ void cRoachKATCPClient::readAllRegisters(uint32_t u32SleepTime_ms)
     //Wait a bit before next read
     boost::this_thread::sleep_for(boost::chrono::milliseconds(u32SleepTime_ms));
 
+    if(disconnectRequested())
+        return;
     {
         boost::unique_lock<boost::mutex> oLock(m_oKATCPMutex);
         if( readRoachRegister(string("noise_diode_duty_cycle_en"), u32Value) )
@@ -388,6 +410,8 @@ void cRoachKATCPClient::readAllRegisters(uint32_t u32SleepTime_ms)
     //Wait a bit before next read
     boost::this_thread::sleep_for(boost::chrono::milliseconds(u32SleepTime_ms));
 
+    if(disconnectRequested())
+        return;
     {
         boost::unique_lock<boost::mutex> oLock(m_oKATCPMutex);
         if( readRoachRegister(string("noise_diode_off_length"), u32Value) )
@@ -405,6 +429,8 @@ void cRoachKATCPClient::readAllRegisters(uint32_t u32SleepTime_ms)
     //Wait a bit before next read
     boost::this_thread::sleep_for(boost::chrono::milliseconds(u32SleepTime_ms));
 
+    if(disconnectRequested())
+        return;
     {
         boost::unique_lock<boost::mutex> oLock(m_oKATCPMutex);
         if( readRoachRegister(string("overflows"), u32Value) )
@@ -422,6 +448,8 @@ void cRoachKATCPClient::readAllRegisters(uint32_t u32SleepTime_ms)
     //Wait a bit before next read
     boost::this_thread::sleep_for(boost::chrono::milliseconds(u32SleepTime_ms));
 
+    if(disconnectRequested())
+        return;
     {
         boost::unique_lock<boost::mutex> oLock(m_oKATCPMutex);
         if( readRoachRegister(string("tgbe0_linkup"), u32Value) )
@@ -439,23 +467,27 @@ void cRoachKATCPClient::readAllRegisters(uint32_t u32SleepTime_ms)
     //Wait a bit before next read
     boost::this_thread::sleep_for(boost::chrono::milliseconds(u32SleepTime_ms));
 
+    if(disconnectRequested())
+        return;
     {
         boost::unique_lock<boost::mutex> oLock(m_oKATCPMutex);
         if( readRoachRegister(string("pps_cnt"), u32Value) )
         {
             sendPPSCount(AVN::getTimeNow_us(), u32Value);
 
-            //cout << "cRoachKATCPClient::threadWriteFunction(): Wrote pps_cnt" << endl;
+            //cout << "cRoachKATCPClient::threadWriteFunction(): Wrote pps_cnt: " << u32Value << endl;
         }
         else
         {
-            cout << "cRoachKATCPClient::threadWriteFunction(): Failed to read register: pps_cnt" << endl;
+            cout << "cRoachKATCPClient::threadWriteFunction(): Failed to read register: pps_cnt " << endl;
         }
     }
 
     //Wait a bit before next read
     boost::this_thread::sleep_for(boost::chrono::milliseconds(u32SleepTime_ms));
 
+    if(disconnectRequested())
+        return;
     {
         boost::unique_lock<boost::mutex> oLock(m_oKATCPMutex);
         if( readRoachRegister(string("clk_frequency"), u32Value) )
