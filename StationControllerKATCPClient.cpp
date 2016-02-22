@@ -21,25 +21,6 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
 {
     try
     {
-        if( !vstrTokens[0].compare("#connected") )
-        {
-            if( !vstrTokens[1].compare("1") )
-            {
-                sendConnected(true);
-            }
-            else
-            {
-                sendConnected(false);
-            }
-            return;
-        }
-    }
-    catch(out_of_range &oError)
-    {
-    }
-
-    try
-    {
         if( !vstrTokens[0].compare("#startRecording") )
         {
             sendStartRecording(vstrTokens[1], strtoll(vstrTokens[2].c_str(), NULL, 10), strtoll(vstrTokens[3].c_str(), NULL, 10) );
