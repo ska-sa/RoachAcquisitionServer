@@ -354,7 +354,7 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
 
 void  cStationControllerKATCPClient::sendStartRecording(const std::string &strFilePrefix, int64_t i64StartTime_us, int64_t i64Duration_us)
 {
-    boost::shared_lock<boost::shared_mutex> oLock;
+    boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
 
     //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
     //to call function added in the derived version of the callback handler interface class
@@ -374,7 +374,7 @@ void  cStationControllerKATCPClient::sendStartRecording(const std::string &strFi
 
 void  cStationControllerKATCPClient::sendStopRecording()
 {
-    boost::shared_lock<boost::shared_mutex> oLock;
+    boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
 
     //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
     //to call function added in the derived version of the callback handler interface class
@@ -394,7 +394,7 @@ void  cStationControllerKATCPClient::sendStopRecording()
 
 void cStationControllerKATCPClient::sendRequestedAntennaAz(int64_t i64Timestamp_us,double dAzimuth_deg)
 {
-    boost::shared_lock<boost::shared_mutex> oLock;
+    boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
 
     //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
     //to call function added in the derived version of the callback handler interface class
@@ -414,7 +414,7 @@ void cStationControllerKATCPClient::sendRequestedAntennaAz(int64_t i64Timestamp_
 
 void cStationControllerKATCPClient::sendRequestedAntennaEl(int64_t i64Timestamp_us,double dElevation_deg)
 {
-    boost::shared_lock<boost::shared_mutex> oLock;
+    boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
 
     //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
     //to call function added in the derived version of the callback handler interface class
@@ -434,7 +434,7 @@ void cStationControllerKATCPClient::sendRequestedAntennaEl(int64_t i64Timestamp_
 
 void cStationControllerKATCPClient::sendActualAntennaAz(int64_t i64Timestamp_us,double dAzimuth_deg)
 {
-    boost::shared_lock<boost::shared_mutex> oLock;
+    boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
 
     //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
     //to call function added in the derived version of the callback handler interface class
@@ -454,7 +454,7 @@ void cStationControllerKATCPClient::sendActualAntennaAz(int64_t i64Timestamp_us,
 
 void cStationControllerKATCPClient::sendActualAntennaEl(int64_t i64Timestamp_us,double dElevation_deg)
 {
-    boost::shared_lock<boost::shared_mutex> oLock;
+    boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
 
     //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
     //to call function added in the derived version of the callback handler interface class
@@ -474,7 +474,7 @@ void cStationControllerKATCPClient::sendActualAntennaEl(int64_t i64Timestamp_us,
 
 void cStationControllerKATCPClient::sendActualSourceOffsetAz(int64_t i64Timestamp_us, double dAzimuthOffset_deg)
 {
-    boost::shared_lock<boost::shared_mutex> oLock;
+    boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
 
     //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
     //to call function added in the derived version of the callback handler interface class
@@ -494,7 +494,7 @@ void cStationControllerKATCPClient::sendActualSourceOffsetAz(int64_t i64Timestam
 
 void cStationControllerKATCPClient::sendActualSourceOffsetEl(int64_t i64Timestamp_us, double dElevationOffset_deg)
 {
-    boost::shared_lock<boost::shared_mutex> oLock;
+    boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
 
     //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
     //to call function added in the derived version of the callback handler interface class
@@ -514,7 +514,7 @@ void cStationControllerKATCPClient::sendActualSourceOffsetEl(int64_t i64Timestam
 
 void cStationControllerKATCPClient::sendActualAntennaRA(int64_t i64Timestamp_us, double dRighAscension_deg)
 {
-    boost::shared_lock<boost::shared_mutex> oLock;
+    boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
 
     //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
     //to call function added in the derived version of the callback handler interface class
@@ -534,7 +534,7 @@ void cStationControllerKATCPClient::sendActualAntennaRA(int64_t i64Timestamp_us,
 
 void cStationControllerKATCPClient::sendActualAntennaDec(int64_t i64Timestamp_us, double dDeclination_deg)
 {
-    boost::shared_lock<boost::shared_mutex> oLock;
+    boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
 
     //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
     //to call function added in the derived version of the callback handler interface class
@@ -554,7 +554,7 @@ void cStationControllerKATCPClient::sendActualAntennaDec(int64_t i64Timestamp_us
 
 void cStationControllerKATCPClient::sendAntennaStatus(int64_t i64Timestamp_us, std::string strAntennaStatus)
 {
-    boost::shared_lock<boost::shared_mutex> oLock;
+    boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
 
     //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
     //to call function added in the derived version of the callback handler interface class
@@ -574,7 +574,7 @@ void cStationControllerKATCPClient::sendAntennaStatus(int64_t i64Timestamp_us, s
 
 void cStationControllerKATCPClient::sendMotorTorqueAzMaster(int64_t i64Timestamp_us, double dAzMaster_nNm)
 {
-    boost::shared_lock<boost::shared_mutex> oLock;
+    boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
 
     //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
     //to call function added in the derived version of the callback handler interface class
@@ -594,7 +594,7 @@ void cStationControllerKATCPClient::sendMotorTorqueAzMaster(int64_t i64Timestamp
 
 void cStationControllerKATCPClient::sendMotorTorqueAzSlave(int64_t i64Timestamp_us, double dAzSlave_nNm)
 {
-    boost::shared_lock<boost::shared_mutex> oLock;
+    boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
 
     //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
     //to call function added in the derived version of the callback handler interface class
@@ -614,7 +614,7 @@ void cStationControllerKATCPClient::sendMotorTorqueAzSlave(int64_t i64Timestamp_
 
 void cStationControllerKATCPClient::sendMotorTorqueElMaster(int64_t i64Timestamp_us, double dElMaster_nNm)
 {
-    boost::shared_lock<boost::shared_mutex> oLock;
+    boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
 
     //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
     //to call function added in the derived version of the callback handler interface class
@@ -634,7 +634,7 @@ void cStationControllerKATCPClient::sendMotorTorqueElMaster(int64_t i64Timestamp
 
 void cStationControllerKATCPClient::sendMotorTorqueElSlave(int64_t i64Timestamp_us, double dElSlave_nNm)
 {
-    boost::shared_lock<boost::shared_mutex> oLock;
+    boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
 
     //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
     //to call function added in the derived version of the callback handler interface class
@@ -654,7 +654,7 @@ void cStationControllerKATCPClient::sendMotorTorqueElSlave(int64_t i64Timestamp_
 
 void cStationControllerKATCPClient::sendAppliedPointingModel(const string &strModelName, const vector<double> &vdPointingModelParams)
 {
-    boost::shared_lock<boost::shared_mutex> oLock;
+    boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
 
     //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
     //to call function added in the derived version of the callback handler interface class
@@ -674,7 +674,7 @@ void cStationControllerKATCPClient::sendAppliedPointingModel(const string &strMo
 
 void cStationControllerKATCPClient::sendNoiseDiodeSoftwareState(int64_t i64Timestamp_us, int32_t i32NoiseDiodeState)
 {
-    boost::shared_lock<boost::shared_mutex> oLock;
+    boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
 
     //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
     //to call function added in the derived version of the callback handler interface class
@@ -694,7 +694,7 @@ void cStationControllerKATCPClient::sendNoiseDiodeSoftwareState(int64_t i64Times
 
 void cStationControllerKATCPClient::sendNoiseDiodeSource(int64_t i64Timestamp_us, const string &strNoiseSource)
 {
-    boost::shared_lock<boost::shared_mutex> oLock;
+    boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
 
     //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
     //to call function added in the derived version of the callback handler interface class
@@ -714,7 +714,7 @@ void cStationControllerKATCPClient::sendNoiseDiodeSource(int64_t i64Timestamp_us
 
 void cStationControllerKATCPClient::sendNoiseDiodeCurrent(int64_t i64Timestamp_us, double dNoiseDiodeCurrent_A)
 {
-    boost::shared_lock<boost::shared_mutex> oLock;
+    boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
 
     //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
     //to call function added in the derived version of the callback handler interface class
@@ -734,7 +734,7 @@ void cStationControllerKATCPClient::sendNoiseDiodeCurrent(int64_t i64Timestamp_u
 
 void cStationControllerKATCPClient::sendSourceSelection(int64_t i64Timestamp_us, const string &strSourceName, double dRighAscension_deg, double dDeclination_deg)
 {
-    boost::shared_lock<boost::shared_mutex> oLock;
+    boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
 
     //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
     //to call function added in the derived version of the callback handler interface class
@@ -755,7 +755,7 @@ void cStationControllerKATCPClient::sendSourceSelection(int64_t i64Timestamp_us,
 
 void cStationControllerKATCPClient::sendFrequencyRFChan0(int64_t i64Timestamp_us, double dFreqencyRFChan0_MHz)
 {
-    boost::shared_lock<boost::shared_mutex> oLock;
+    boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
 
     //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
     //to call function added in the derived version of the callback handler interface class
@@ -775,7 +775,7 @@ void cStationControllerKATCPClient::sendFrequencyRFChan0(int64_t i64Timestamp_us
 
 void cStationControllerKATCPClient::sendFrequencyRFChan1(int64_t i64Timestamp_us, double dFreqencyRFChan1_MHz)
 {
-    boost::shared_lock<boost::shared_mutex> oLock;
+    boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
 
     //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
     //to call function added in the derived version of the callback handler interface class
@@ -795,7 +795,7 @@ void cStationControllerKATCPClient::sendFrequencyRFChan1(int64_t i64Timestamp_us
 
 void cStationControllerKATCPClient::sendFrequencyLO0Chan0(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_MHz)
 {
-    boost::shared_lock<boost::shared_mutex> oLock;
+    boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
 
     //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
     //to call function added in the derived version of the callback handler interface class
@@ -815,7 +815,7 @@ void cStationControllerKATCPClient::sendFrequencyLO0Chan0(int64_t i64Timestamp_u
 
 void cStationControllerKATCPClient::sendFrequencyLO0Chan1(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_MHz)
 {
-    boost::shared_lock<boost::shared_mutex> oLock;
+    boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
 
     //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
     //to call function added in the derived version of the callback handler interface class
@@ -835,7 +835,7 @@ void cStationControllerKATCPClient::sendFrequencyLO0Chan1(int64_t i64Timestamp_u
 
 void cStationControllerKATCPClient::sendFrequencyLO1(int64_t i64Timestamp_us, double dFrequencyLO1_MHz)
 {
-    boost::shared_lock<boost::shared_mutex> oLock;
+    boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
 
     //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
     //to call function added in the derived version of the callback handler interface class
@@ -855,7 +855,7 @@ void cStationControllerKATCPClient::sendFrequencyLO1(int64_t i64Timestamp_us, do
 
 void cStationControllerKATCPClient::sendReceiverBandwidthChan0(int64_t i64Timestamp_us, double dReceiverBandwidthChan0_MHz)
 {
-    boost::shared_lock<boost::shared_mutex> oLock;
+    boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
 
     //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
     //to call function added in the derived version of the callback handler interface class
@@ -875,7 +875,7 @@ void cStationControllerKATCPClient::sendReceiverBandwidthChan0(int64_t i64Timest
 
 void cStationControllerKATCPClient::sendReceiverBandwidthChan1(int64_t i64Timestamp_us, double dReceiverBandwidthChan1_MHz)
 {
-    boost::shared_lock<boost::shared_mutex> oLock;
+    boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
 
     //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
     //to call function added in the derived version of the callback handler interface class
