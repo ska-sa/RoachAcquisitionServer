@@ -66,146 +66,323 @@ void cKATCPServer::serverThreadFunction()
     oSSCompileTime << string(__TIME__);
 
     //Add a version number to KATCTP server
-    add_version_katcp(m_pKATCPDispatch, "RoachAcquisitionServer", 0, "0.1", &oSSCompileTime.str()[0]);
+    add_version_katcp(m_pKATCPDispatch, const_cast<char*>("RoachAcquisitionServer"), 0, const_cast<char*>("0.1"), &oSSCompileTime.str()[0]);
 
     //Declare sensors
     //Station controller
-    register_boolean_sensor_katcp(m_pKATCPDispatch, 0, "stationControllerConnected", "Is the RoachAcquisitionServer connected to the StationController's KATCP server", "none",
+    register_boolean_sensor_katcp(m_pKATCPDispatch, 0,
+                                  const_cast<char*>("stationControllerConnected"),
+                                  const_cast<char*>("Is the RoachAcquisitionServer connected to the StationController's KATCP server"),
+                                  const_cast<char*>("none"),
                                   &getIsStationControllerKATCPConnected, NULL, NULL);
 
-    register_double_sensor_katcp(m_pKATCPDispatch, 0, "requestedAntennaAz", "requested antenna azimuth after the pointing model", "degrees",
+    register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                 const_cast<char*>("requestedAntennaAz"),
+                                 const_cast<char*>("requested antenna azimuth after the pointing model"),
+                                 const_cast<char*>("degrees"),
                                  &getRequestedAntennaAz, NULL, NULL, 0.0, 360.0, NULL);
 
-    register_double_sensor_katcp(m_pKATCPDispatch, 0, "requestedAntennaEl", "requested antenna elevation after the pointing model", "degrees",
+    register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                 const_cast<char*>("requestedAntennaEl"),
+                                 const_cast<char*>("requested antenna elevation after the pointing model"),
+                                                   const_cast<char*>("degrees"),
                                  &getRequestedAntennaEl, NULL, NULL, 0.0, 90.0, NULL);
 
-    register_double_sensor_katcp(m_pKATCPDispatch, 0, "actualAntennaAz", "actual antenna azimuth after the pointing model", "degrees",
+    register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                 const_cast<char*>("actualAntennaAz"),
+                                 const_cast<char*>("actual antenna azimuth after the pointing model"),
+                                 const_cast<char*>("degrees"),
                                  &getActualAntennaAz, NULL, NULL, 0.0, 360.0, NULL);
 
-    register_double_sensor_katcp(m_pKATCPDispatch, 0, "actualAntennaEl", "actual antenna elevation after the pointing model", "degrees",
+    register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                 const_cast<char*>("actualAntennaEl"),
+                                 const_cast<char*>("actual antenna elevation after the pointing model"),
+                                 const_cast<char*>("degrees"),
                                  &getActualAntennaEl, NULL, NULL, 0.0, 90.0, NULL);
 
-    register_double_sensor_katcp(m_pKATCPDispatch, 0, "actualSourceOffsetAz", "actual azimuth offset from the source", "degrees",
+    register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                 const_cast<char*>("actualSourceOffsetAz"),
+                                 const_cast<char*>("actual azimuth offset from the source"),
+                                 const_cast<char*>("degrees"),
                                  &getActualSourceOffsetAz, NULL, NULL, -90.0, 90.0, NULL);
 
-    register_double_sensor_katcp(m_pKATCPDispatch, 0, "actualSourceOffsetEl", "actual elevation offset from the source", "degrees",
+    register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                 const_cast<char*>("actualSourceOffsetEl"),
+                                 const_cast<char*>("actual elevation offset from the source"),
+                                 const_cast<char*>("degrees"),
                                  &getActualSourceOffsetEl, NULL, NULL, -90.0, 90.0, NULL);
 
-    register_double_sensor_katcp(m_pKATCPDispatch, 0, "actualAntennaRA", "actual antenna right ascension", "degrees",
+    register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                 const_cast<char*>("actualAntennaRA"),
+                                 const_cast<char*>("actual antenna right ascension"),
+                                 const_cast<char*>("degrees"),
                                  &getActualAntennaRA, NULL, NULL, -90.0, 90.0, NULL);
 
-    register_double_sensor_katcp(m_pKATCPDispatch, 0, "actualAntennaDec", "actual antenna declination", "degrees",
+    register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                 const_cast<char*>("actualAntennaDec"),
+                                 const_cast<char*>("actual antenna declination"),
+                                 const_cast<char*>("degrees"),
                                  &getActualAntennaDec, NULL, NULL, 0.0, 360.0, NULL);
 
-    register_double_sensor_katcp(m_pKATCPDispatch, 0, "motorTorqueAzMaster", "torque of master azimuth motor", "mNm",
+    register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                 const_cast<char*>("motorTorqueAzMaster"),
+                                 const_cast<char*>("torque of master azimuth motor"),
+                                 const_cast<char*>("mNm"),
                                  &getMotorTorqueAzMaster, NULL, NULL, -3600.0, 3600.0, NULL);
 
-    register_double_sensor_katcp(m_pKATCPDispatch, 0, "motorTorqueAzSlave", "torque of slave azimuth motor", "mNm",
+    register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                 const_cast<char*>("motorTorqueAzSlave"),
+                                 const_cast<char*>("torque of slave azimuth motor"),
+                                 const_cast<char*>("mNm"),
                                  &getMotorTorqueAzSlave, NULL, NULL, -3600.0, 3600.0, NULL);
 
-    register_double_sensor_katcp(m_pKATCPDispatch, 0, "motorTorqueElMaster", "torque of master elevation motor", "mNm",
+    register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                 const_cast<char*>("motorTorqueElMaster"),
+                                 const_cast<char*>("torque of master elevation motor"),
+                                 const_cast<char*>("mNm"),
                                  &getMotorTorqueElMaster, NULL, NULL, -3600.0, 3600.0, NULL);
 
-    register_double_sensor_katcp(m_pKATCPDispatch, 0, "motorTorqueElSlave", "torque of slave elevation motor", "mNm",
+    register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                 const_cast<char*>("motorTorqueElSlave"),
+                                 const_cast<char*>("torque of slave elevation motor"),
+                                 const_cast<char*>("mNm"),
                                  &getMotorTorqueElSlave, NULL, NULL, -3600.0, 3600.0, NULL);
 
-    register_integer_sensor_katcp(m_pKATCPDispatch, 0, "noiseDiodeSoftwareState", "the state of the noise diode (on/off) when under FieldSystem control", "none",
+    register_integer_sensor_katcp(m_pKATCPDispatch, 0,
+                                  const_cast<char*>("noiseDiodeSoftwareState"),
+                                  const_cast<char*>("the state of the noise diode (on/off) when under FieldSystem control"),
+                                  const_cast<char*>("none"),
                                   &getNoiseDiodeSoftwareState, NULL, NULL, -1, 1, NULL);
 
-    register_double_sensor_katcp(m_pKATCPDispatch, 0, "noiseDiodeCurrent", "the current draw through the noise diode(s)", "A",
+    register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                 const_cast<char*>("noiseDiodeCurrent"),
+                                 const_cast<char*>("the current draw through the noise diode(s)"),
+                                 const_cast<char*>("A"),
                                  &getMotorTorqueElSlave, NULL, NULL, 0.0, 5.0, NULL);
 
-    register_double_sensor_katcp(m_pKATCPDispatch, 0, "frequencyRFChan0", "the centre frequency of RF mapped to final IF output channel 0", "MHz",
+    register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                 const_cast<char*>("frequencyRFChan0"),
+                                 const_cast<char*>("the centre frequency of RF mapped to final IF output channel 0"),
+                                 const_cast<char*>("MHz"),
                                  &getFrequencyRFChan0, NULL, NULL, 4800.0, 7000.0, NULL);
 
-    register_double_sensor_katcp(m_pKATCPDispatch, 0, "frequencyRFChan1", "the centre frequency of RF mapped to final IF output channel 1", "MHz",
+    register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                 const_cast<char*>("frequencyRFChan1"),
+                                 const_cast<char*>("the centre frequency of RF mapped to final IF output channel 1"),
+                                 const_cast<char*>("MHz"),
                                  &getFrequencyRFChan1, NULL, NULL, 4800.0, 7000.0, NULL);
 
-    register_double_sensor_katcp(m_pKATCPDispatch, 0, "frequencyLO0Chan0", "the frequency for the first LO in RF input channel 0", "MHz",
+    register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                 const_cast<char*>("frequencyLO0Chan0"),
+                                 const_cast<char*>("the frequency for the first LO in RF input channel 0"),
+                                 const_cast<char*>("MHz"),
                                  &getFrequencyLO0Chan0, NULL, NULL, 0, 7000.0, NULL);
 
-    register_double_sensor_katcp(m_pKATCPDispatch, 0, "frequencyLO0Chan0", "the frequency for the first LO in RF input channel 1", "MHz",
+    register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                 const_cast<char*>("frequencyLO0Chan0"),
+                                 const_cast<char*>("the frequency for the first LO in RF input channel 1"),
+                                 const_cast<char*>("MHz"),
                                  &getFrequencyLO1, NULL, NULL, 0, 7000.0, NULL);
 
-    register_double_sensor_katcp(m_pKATCPDispatch, 0, "receiverBandwidthChan0", "the bandwidth available to the final IF output channel 0", "MHz",
+    register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                 const_cast<char*>("receiverBandwidthChan0"),
+                                 const_cast<char*>("the bandwidth available to the final IF output channel 0"),
+                                 const_cast<char*>("MHz"),
                                  &getReceiverBandwidthChan0, NULL, NULL, 0, 7000.0, NULL);
 
-    register_double_sensor_katcp(m_pKATCPDispatch, 0, "receiverBandwidthChan1", "the bandwidth available to the final IF output channel 1", "MHz",
+    register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                 const_cast<char*>("receiverBandwidthChan1"),
+                                 const_cast<char*>("the bandwidth available to the final IF output channel 1"),
+                                 const_cast<char*>("MHz"),
                                  &getReceiverBandwidthChan1, NULL, NULL, 0, 7000.0, NULL);
 
 
     //ROACH
-    register_boolean_sensor_katcp(m_pKATCPDispatch, 0, "roachConnected", "Is the RoachAcquisitionServer connected to the ROACH's KATCP server", "none",
+    register_boolean_sensor_katcp(m_pKATCPDispatch, 0,
+                                  const_cast<char*>("roachConnected"),
+                                  const_cast<char*>("Is the RoachAcquisitionServer connected to the ROACH's KATCP server"),
+                                  const_cast<char*>("none"),
                                   &getIsRoachKATCPConnected, NULL, NULL);
 
-    register_boolean_sensor_katcp(m_pKATCPDispatch, 0, "roachStokesEnabled", "Is the ROACH spitting out LRQU data. (Otherwise LRPP)", "none",
+    register_boolean_sensor_katcp(m_pKATCPDispatch, 0,
+                                  const_cast<char*>("roachStokesEnabled"),
+                                  const_cast<char*>("Is the ROACH spitting out LRQU data. (Otherwise LRPP)"),
+                                  const_cast<char*>("none"),
                                   &getStokesEnabled, NULL, NULL);
 
-    register_integer_sensor_katcp(m_pKATCPDispatch, 0, "roachAccumulationLength", "number of FFT frames accumulated after the final PFB-FFT stage", "none",
+    register_integer_sensor_katcp(m_pKATCPDispatch, 0,
+                                  const_cast<char*>("roachAccumulationLength"),
+                                  const_cast<char*>("number of FFT frames accumulated after the final PFB-FFT stage"),
+                                  const_cast<char*>("none"),
                                   &getAccumulationLength_KATCPCallback, NULL, NULL, 0, INT_MAX, NULL);
 
-    register_integer_sensor_katcp(m_pKATCPDispatch, 0, "roachCoarseChannelSelect", "cannonical coarse FFT bin no. selected for narrow band FFT processing", "none",
+    register_integer_sensor_katcp(m_pKATCPDispatch, 0,
+                                  const_cast<char*>("roachCoarseChannelSelect"),
+                                  const_cast<char*>("cannonical coarse FFT bin no. selected for narrow band FFT processing"),
+                                  const_cast<char*>("none"),
                                   &getCoarseChannelSelect_KATCPCallback, NULL, NULL, 0, INT_MAX, NULL);
 
-    register_double_sensor_katcp(m_pKATCPDispatch, 0, "roachFrequencyFs", "ADC sample rate", "MHz",
+    register_double_sensor_katcp(m_pKATCPDispatch, 0, const_cast<char*>("roachFrequencyFs"),
+                                 const_cast<char*>("ADC sample rate"),
+                                 const_cast<char*>("MHz"),
                                  &getFrequencyFs_KATCPCallback, NULL, NULL, 800.0, 800.0, NULL);
 
-    register_integer_sensor_katcp(m_pKATCPDispatch, 0, "roachSizeOfCoarseFFT", "Size of the the coarse FFT", "no. of input time domain samples",
+    register_integer_sensor_katcp(m_pKATCPDispatch, 0,
+                                  const_cast<char*>("roachSizeOfCoarseFFT"),
+                                  const_cast<char*>("Size of the the coarse FFT"),
+                                  const_cast<char*>("no. of input time domain samples"),
                                   &getSizeOfCoarseFFT_KATCPCallback, NULL, NULL, 0, INT_MAX, NULL);
 
-    register_integer_sensor_katcp(m_pKATCPDispatch, 0, "roachSizeOfFineFFT", "Size of the fine FFTs", "no. of input time domain samples",
+    register_integer_sensor_katcp(m_pKATCPDispatch, 0,
+                                  const_cast<char*>("roachSizeOfFineFFT"),
+                                  const_cast<char*>("Size of the fine FFTs"),
+                                  const_cast<char*>("no. of input time domain samples"),
                                   &getSizeOfFineFFT_KATCPCallback, NULL, NULL, 0, INT_MAX, NULL);
 
-    register_integer_sensor_katcp(m_pKATCPDispatch, 0, "roachCoarseFFTShiftMask", "Mask determining the scaling with the FFT stages", "none",
+    register_integer_sensor_katcp(m_pKATCPDispatch, 0,
+                                  const_cast<char*>("roachCoarseFFTShiftMask"),
+                                  const_cast<char*>("Mask determining the scaling with the FFT stages"),
+                                  const_cast<char*>("none"),
                                   &getCoarseFFTShiftMask_KATCPCallback, NULL, NULL, 0, INT_MAX, NULL);
 
-    register_double_sensor_katcp(m_pKATCPDispatch, 0, "roachAttenuationADCChan0", "Attenuation of ADC channel 0", "dB",
+    register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                 const_cast<char*>("roachAttenuationADCChan0"),
+                                 const_cast<char*>("Attenuation of ADC channel 0"),
+                                 const_cast<char*>("dB"),
                                  &getADCAttenuationChan0_KATCPCallback, NULL, NULL, 0, 31.5, NULL); //Assume KATADC
 
-    register_double_sensor_katcp(m_pKATCPDispatch, 0, "roachAttenuationADCChan1", "Attenuation of ADC channel 1", "dB",
+    register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                 const_cast<char*>("roachAttenuationADCChan1"),
+                                 const_cast<char*>("Attenuation of ADC channel 1"),
+                                 const_cast<char*>("dB"),
                                  &getADCAttenuationChan1_KATCPCallback, NULL, NULL, 0, 31.5, NULL); //Assume KATADC
 
-    register_boolean_sensor_katcp(m_pKATCPDispatch, 0, "roachNoiseDiodeEnabled", "Is the Roach's noise diode control enabled", "none",
+    register_boolean_sensor_katcp(m_pKATCPDispatch, 0,
+                                  const_cast<char*>("roachNoiseDiodeEnabled"),
+                                  const_cast<char*>("Is the Roach's noise diode control enabled"),
+                                  const_cast<char*>("none"),
                                   &getNoiseDiodeEnabled_KATCPCallback, NULL, NULL);
 
-    register_boolean_sensor_katcp(m_pKATCPDispatch, 0, "roachNoiseDiodeDutyCycleEnabled", "Is the Roach generating a sample-clock synchronous duty cycle for the noise diode", "none",
+    register_boolean_sensor_katcp(m_pKATCPDispatch, 0, const_cast<char*>("roachNoiseDiodeDutyCycleEnabled"),
+                                  const_cast<char*>("Is the Roach generating a sample-clock synchronous duty cycle for the noise diode"),
+                                  const_cast<char*>("none"),
                                   &getNoiseDiodeDutyCycleEnabled_KATCPCallback, NULL, NULL);
 
-    register_integer_sensor_katcp(m_pKATCPDispatch, 0, "roachNoiseDiodeDutyCycleOnDuration", "Duration of the ON part of the Roach noise diode duty cycle", "no. of accumulations",
+    register_integer_sensor_katcp(m_pKATCPDispatch, 0,
+                                  const_cast<char*>("roachNoiseDiodeDutyCycleOnDuration"),
+                                  const_cast<char*>("Duration of the ON part of the Roach noise diode duty cycle"),
+                                  const_cast<char*>("no. of accumulations"),
                                   &getNoiseDiodeDutyCycleOnDuration_KATCPCallback, NULL, NULL, 0, INT_MAX, NULL);
 
-    register_integer_sensor_katcp(m_pKATCPDispatch, 0, "roachNoiseDiodeDutyCycleOffDuration", "Duration of the OFF part of the Roach noise diode duty cycle", "no. of accumulations",
+    register_integer_sensor_katcp(m_pKATCPDispatch, 0,
+                                  const_cast<char*>("roachNoiseDiodeDutyCycleOffDuration"),
+                                  const_cast<char*>("Duration of the OFF part of the Roach noise diode duty cycle"),
+                                  const_cast<char*>("no. of accumulations"),
                                   &getNoiseDiodeDutyCycleOffDuration_KATCPCallback, NULL, NULL, 0, INT_MAX, NULL);
 
-    register_integer_sensor_katcp(m_pKATCPDispatch, 0, "roachOverflowRegs", "Overflow registers", "none",
+    register_integer_sensor_katcp(m_pKATCPDispatch, 0,
+                                  const_cast<char*>("roachOverflowRegs"),
+                                  const_cast<char*>("Overflow registers"),
+                                  const_cast<char*>("none"),
                                   &getOverflowsRegs_KATCPCallback, NULL, NULL, 0, INT_MAX, NULL);
 
-    register_boolean_sensor_katcp(m_pKATCPDispatch, 0, "roachEth10GbEUp", "Is the relevant Roach 10GbE port for the current gateware link up", "none",
+    register_boolean_sensor_katcp(m_pKATCPDispatch, 0,
+                                  const_cast<char*>("roachEth10GbEUp"),
+                                  const_cast<char*>("Is the relevant Roach 10GbE port for the current gateware link up"),
+                                  const_cast<char*>("none"),
                                   &getEth10GbEUp_KATCPCallback, NULL, NULL);
 
-    register_integer_sensor_katcp(m_pKATCPDispatch, 0, "roachPPSCount", "A count of the received PPS edges", "none",
+    register_integer_sensor_katcp(m_pKATCPDispatch, 0,
+                                  const_cast<char*>("roachPPSCount"),
+                                  const_cast<char*>("A count of the received PPS edges"),
+                                  const_cast<char*>("none"),
                                   &getPPSCount_KATCPCallback, NULL, NULL, 0, INT_MAX, NULL);
 
-    register_integer_sensor_katcp(m_pKATCPDispatch, 0, "roachClockFrequency", "The clock frequency of the FPGA", "Hz",
+    register_integer_sensor_katcp(m_pKATCPDispatch, 0,
+                                  const_cast<char*>("roachClockFrequency"),
+                                  const_cast<char*>("The clock frequency of the FPGA"),
+                                  const_cast<char*>("Hz"),
                                   &getClockFrequency_KATCPCallback, NULL, NULL, 200000000, 200000000, NULL);
 
-    register_katcp(m_pKATCPDispatch, "?startRecording", "start data recording to HDF5", &cKATCPServer::startRecording_KATCPCallback);
-    register_katcp(m_pKATCPDispatch, "?stopRecording",  "stop data recording to HDF5", &cKATCPServer::stopRecording_KATCPCallback);
-    register_katcp(m_pKATCPDispatch, "?getRecordingInfo", "get info about current recording.", &cKATCPServer::getRecordingInfo_KATCPCallback);
-    register_katcp(m_pKATCPDispatch, "?getRecordingStatus", "is recording or not", &cKATCPServer::getRecordingStatus_KATCPCallback);
+    register_katcp(m_pKATCPDispatch,
+                   const_cast<char*>("?startRecording"),
+                   const_cast<char*>("start data recording to HDF5"),
+                   &cKATCPServer::startRecording_KATCPCallback);
 
-    register_katcp(m_pKATCPDispatch, "?getRoachGatewareList", "Retrieve a list of gateware that can be used with the Roach", &cKATCPServer::getRoachGatewareList_KATCPCallback);
-    register_katcp(m_pKATCPDispatch, "?programRoach", "Program the Roach by specifying a launch script", &cKATCPServer::roachProgram_KATCPCallback);
-    register_katcp(m_pKATCPDispatch, "?setRoachStokesEnabled", "Enable stokes calculation to output LRQU (otherwise LRPP)", &cKATCPServer::roachSetStokesEnabled_KATCPCallback);
-    register_katcp(m_pKATCPDispatch, "?setRoachAccumulationLength", "number of accumulations after final FFT stage", &cKATCPServer::roachSetAccumulationLength_KATCPCallback);
-    register_katcp(m_pKATCPDispatch, "?setRoachCoarseChannelSelect", "coarse FFT cannonical channel number to use for fine FFT input", &cKATCPServer::roachSetCoarseChannelSelect_KATCPCallback);
-    register_katcp(m_pKATCPDispatch, "?setRoachCoarseFFTMask", "Shift mask for coarse FFT", &cKATCPServer::roachSetCoarseFFTShiftMask_KATCPCallback);
-    register_katcp(m_pKATCPDispatch, "?setRoachADC0Attenuation", "Attenuation of ADC0 (0.5 dB per step max 31.5 dB)", &cKATCPServer::roachSetADC0Attenuation_KATCPCallback);
-    register_katcp(m_pKATCPDispatch, "?setRoachADC1Attenuation", "Attenuation of ADC1 (0.5 dB per step max 31.5 dB)", &cKATCPServer::roachSetADC1Attenuation_KATCPCallback);
-    register_katcp(m_pKATCPDispatch, "?setRoachNoiseDiodeEnabled", "Enable noise diode", &cKATCPServer::roachSetNoiseDiodeEnabled_KATCPCallback);
-    register_katcp(m_pKATCPDispatch, "?setRoachNoiseDiodeDutyCycleEnabled", "Enable noise diode duty cycle mode", &cKATCPServer::roachSetNoiseDiodeDutyCycleEnabled_KATCPCallback);
-    register_katcp(m_pKATCPDispatch, "?setRoachNoiseDiodeDutyCycleOnDuration", "number of accumulations that noise diode is on in duty cycle mode", &cKATCPServer::roachSetNoiseDiodeDutyCycleOnDuration_KATCPCallback);
-    register_katcp(m_pKATCPDispatch, "?setRoachNoiseDiodeDutyCycleOffDuration", "number of accumulations that noise diode is off in duty cycle mode", &cKATCPServer::roachSetNoiseDiodeDutyCycleOffDuration_KATCPCallback);
+    register_katcp(m_pKATCPDispatch,
+                   const_cast<char*>("?stopRecording"),
+                   const_cast<char*>("stop data recording to HDF5"),
+                   &cKATCPServer::stopRecording_KATCPCallback);
+
+    register_katcp(m_pKATCPDispatch,
+                   const_cast<char*>("?getRecordingInfo"),
+                   const_cast<char*>("get info about current recording."),
+                   &cKATCPServer::getRecordingInfo_KATCPCallback);
+
+    register_katcp(m_pKATCPDispatch,
+                   const_cast<char*>("?getRecordingStatus"),
+                   const_cast<char*>("is recording or not"),
+                   &cKATCPServer::getRecordingStatus_KATCPCallback);
+
+    register_katcp(m_pKATCPDispatch,
+                   const_cast<char*>("?getRoachGatewareList"),
+                   const_cast<char*>("Retrieve a list of gateware that can be used with the Roach"),
+                   &cKATCPServer::getRoachGatewareList_KATCPCallback);
+
+    register_katcp(m_pKATCPDispatch,
+                   const_cast<char*>("?programRoach"),
+                   const_cast<char*>("Program the Roach by specifying a launch script"),
+                   &cKATCPServer::roachProgram_KATCPCallback);
+
+    register_katcp(m_pKATCPDispatch,
+                   const_cast<char*>("?setRoachStokesEnabled"),
+                   const_cast<char*>("Enable stokes calculation to output LRQU (otherwise LRPP)"),
+                   &cKATCPServer::roachSetStokesEnabled_KATCPCallback);
+
+    register_katcp(m_pKATCPDispatch,
+                   const_cast<char*>("?setRoachAccumulationLength"),
+                   const_cast<char*>("number of accumulations after final FFT stage"),
+                   &cKATCPServer::roachSetAccumulationLength_KATCPCallback);
+
+    register_katcp(m_pKATCPDispatch,
+                   const_cast<char*>("?setRoachCoarseChannelSelect"),
+                   const_cast<char*>("coarse FFT cannonical channel number to use for fine FFT input"),
+                   &cKATCPServer::roachSetCoarseChannelSelect_KATCPCallback);
+
+    register_katcp(m_pKATCPDispatch,
+                   const_cast<char*>("?setRoachCoarseFFTMask"),
+                   const_cast<char*>("Shift mask for coarse FFT"),
+                   &cKATCPServer::roachSetCoarseFFTShiftMask_KATCPCallback);
+
+    register_katcp(m_pKATCPDispatch,
+                   const_cast<char*>("?setRoachADC0Attenuation"),
+                   const_cast<char*>("Attenuation of ADC0 (0.5 dB per step max 31.5 dB)"),
+                   &cKATCPServer::roachSetADC0Attenuation_KATCPCallback);
+
+    register_katcp(m_pKATCPDispatch,
+                   const_cast<char*>("?setRoachADC1Attenuation"),
+                   const_cast<char*>("Attenuation of ADC1 (0.5 dB per step max 31.5 dB)"),
+                   &cKATCPServer::roachSetADC1Attenuation_KATCPCallback);
+
+    register_katcp(m_pKATCPDispatch,
+                   const_cast<char*>("?setRoachNoiseDiodeEnabled"),
+                   const_cast<char*>("Enable noise diode"),
+                   &cKATCPServer::roachSetNoiseDiodeEnabled_KATCPCallback);
+
+    register_katcp(m_pKATCPDispatch,
+                   const_cast<char*>("?setRoachNoiseDiodeDutyCycleEnabled"),
+                   const_cast<char*>("Enable noise diode duty cycle mode"),
+                   &cKATCPServer::roachSetNoiseDiodeDutyCycleEnabled_KATCPCallback);
+
+    register_katcp(m_pKATCPDispatch,
+                   const_cast<char*>("?setRoachNoiseDiodeDutyCycleOnDuration"),
+                   const_cast<char*>("number of accumulations that noise diode is on in duty cycle mode"),
+                   &cKATCPServer::roachSetNoiseDiodeDutyCycleOnDuration_KATCPCallback);
+
+    register_katcp(m_pKATCPDispatch,
+                   const_cast<char*>("?setRoachNoiseDiodeDutyCycleOffDuration"),
+                   const_cast<char*>("number of accumulations that noise diode is off in duty cycle mode"),
+                   &cKATCPServer::roachSetNoiseDiodeDutyCycleOffDuration_KATCPCallback);
 
     //Make a server listening interface from hostname and port string
     stringstream oSSServer;
@@ -296,14 +473,14 @@ int32_t cKATCPServer::startRecording_KATCPCallback(struct katcp_dispatch *pKATCP
     if(!m_pFileWriter.get())
     {
         //No file writer set. Do nothing
-        log_message_katcp(pKATCPDispatch, KATCP_LEVEL_ERROR, NULL, "startRecording: No file recorder object set.");
+        log_message_katcp(pKATCPDispatch, KATCP_LEVEL_ERROR, NULL, const_cast<char*>("startRecording: No file recorder object set."));
         return KATCP_RESULT_FAIL;
     }
 
     if(i32ArgC > 4)
     {
         //Redundant arguments
-        log_message_katcp(pKATCPDispatch, KATCP_LEVEL_WARN, NULL, "startRecording: Warning %i redundant argument(s) for stop recording, ignoring.", i32ArgC - 4);
+        log_message_katcp(pKATCPDispatch, KATCP_LEVEL_WARN, NULL, const_cast<char*>("startRecording: Warning %i redundant argument(s) for stop recording, ignoring."), i32ArgC - 4);
     }
     string strFilePrefix("");
     int64_t i64StartTime_us = 0;
@@ -348,20 +525,20 @@ int32_t cKATCPServer::stopRecording_KATCPCallback(struct katcp_dispatch *pKATCPD
     if(!m_pFileWriter.get())
     {
         //No file writer set. Do nothing
-        log_message_katcp(pKATCPDispatch, KATCP_LEVEL_ERROR, NULL, "stopRecording: No file recorder object set.");
+        log_message_katcp(pKATCPDispatch, KATCP_LEVEL_ERROR, NULL, const_cast<char*>("stopRecording: No file recorder object set."));
         return KATCP_RESULT_FAIL;
     }
 
     if(i32ArgC > 1)
     {
         //Redundant arguments
-        log_message_katcp(pKATCPDispatch, KATCP_LEVEL_WARN, NULL, "stopRecording: Warning, %i redundant argument(s) for stop recording, ignoring.", i32ArgC - 1);
+        log_message_katcp(pKATCPDispatch, KATCP_LEVEL_WARN, NULL, const_cast<char*>("stopRecording: Warning, %i redundant argument(s) for stop recording, ignoring."), i32ArgC - 1);
     }
 
     if(!m_pFileWriter->isRecordingEnabled())
     {
         //Redundant arguments
-        log_message_katcp(pKATCPDispatch, KATCP_LEVEL_WARN, NULL, "stopRecording: Warning, server is not currently recording");
+        log_message_katcp(pKATCPDispatch, KATCP_LEVEL_WARN, NULL, const_cast<char*>("stopRecording: Warning, server is not currently recording"));
         return KATCP_RESULT_FAIL;
     }
 
@@ -374,11 +551,11 @@ int32_t cKATCPServer::getRecordingStatus_KATCPCallback(struct katcp_dispatch *pK
 {
     if(m_pFileWriter->isRecordingEnabled())
     {
-        send_katcp(pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_LAST | KATCP_FLAG_STRING, "#recordingStarted");
+        send_katcp(pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_LAST | KATCP_FLAG_STRING, const_cast<char*>("#recordingStarted"));
     }
     else
     {
-        send_katcp(pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_LAST | KATCP_FLAG_STRING, "#recordingStopped");
+        send_katcp(pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_LAST | KATCP_FLAG_STRING, const_cast<char*>("#recordingStopped"));
     }
 
     return KATCP_RESULT_OK;
@@ -390,19 +567,19 @@ int32_t cKATCPServer::getRecordingInfo_KATCPCallback(struct katcp_dispatch *pKAT
     if(m_pFileWriter->isRecordingEnabled())
     {
         send_katcp( pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_STRING, "#recordingInfo");
-        append_args_katcp(pKATCPDispatch, KATCP_FLAG_STRING, "%s", m_pFileWriter->getFilename().c_str());
-        append_args_katcp(pKATCPDispatch, KATCP_FLAG_STRING, "%lli", m_pFileWriter->getRecordingStartTime_us());
-        append_args_katcp(pKATCPDispatch, KATCP_FLAG_STRING, "%lli", m_pFileWriter->getRecordedDuration_us());
-        append_args_katcp(pKATCPDispatch, KATCP_FLAG_STRING, "%lli", m_pFileWriter->getRecordingStopTime_us());
-        append_args_katcp(pKATCPDispatch, KATCP_FLAG_STRING, "%lli", m_pFileWriter->getRecordingTimeLeft_us());
-        append_args_katcp(pKATCPDispatch, KATCP_FLAG_STRING, "%llu", m_pFileWriter->getCurrentFileSize_B());
-        append_args_katcp(pKATCPDispatch, KATCP_FLAG_LAST | KATCP_FLAG_STRING, "%llu", boost::filesystem::space(m_pFileWriter->getRecordingDirectory()).available);
+        append_args_katcp(pKATCPDispatch, KATCP_FLAG_STRING, const_cast<char*>("%s"), m_pFileWriter->getFilename().c_str());
+        append_args_katcp(pKATCPDispatch, KATCP_FLAG_STRING, const_cast<char*>("%lli"), m_pFileWriter->getRecordingStartTime_us());
+        append_args_katcp(pKATCPDispatch, KATCP_FLAG_STRING, const_cast<char*>("%lli"), m_pFileWriter->getRecordedDuration_us());
+        append_args_katcp(pKATCPDispatch, KATCP_FLAG_STRING, const_cast<char*>("%lli"), m_pFileWriter->getRecordingStopTime_us());
+        append_args_katcp(pKATCPDispatch, KATCP_FLAG_STRING, const_cast<char*>("%lli"), m_pFileWriter->getRecordingTimeLeft_us());
+        append_args_katcp(pKATCPDispatch, KATCP_FLAG_STRING, const_cast<char*>("%llu"), m_pFileWriter->getCurrentFileSize_B());
+        append_args_katcp(pKATCPDispatch, KATCP_FLAG_LAST | KATCP_FLAG_STRING, const_cast<char*>("%llu"), boost::filesystem::space(m_pFileWriter->getRecordingDirectory()).available);
     }
     else
     {
         send_katcp(pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_STRING, "#recordingInfo");
-        append_args_katcp(pKATCPDispatch, KATCP_FLAG_STRING, "not recording");
-        append_args_katcp(pKATCPDispatch, KATCP_FLAG_LAST | KATCP_FLAG_STRING, "%llu", boost::filesystem::space(m_pFileWriter->getRecordingDirectory()).available);
+        append_args_katcp(pKATCPDispatch, KATCP_FLAG_STRING, const_cast<char*>("not recording"));
+        append_args_katcp(pKATCPDispatch, KATCP_FLAG_LAST | KATCP_FLAG_STRING, const_cast<char*>("%llu"), boost::filesystem::space(m_pFileWriter->getRecordingDirectory()).available);
     }
 
     return KATCP_RESULT_OK;
@@ -421,7 +598,7 @@ int32_t cKATCPServer::getRoachGatewareList_KATCPCallback(struct katcp_dispatch *
     }
     catch(cDirectoryContentsException oE)
     {
-        log_message_katcp(pKATCPDispatch, KATCP_LEVEL_ERROR, NULL, "getRoachGatewareList: Could not access directory.");
+        log_message_katcp(pKATCPDispatch, KATCP_LEVEL_ERROR, NULL, const_cast<char*>("getRoachGatewareList: Could not access directory."));
         return KATCP_RESULT_FAIL;
     }
 
@@ -458,9 +635,9 @@ int32_t cKATCPServer::getRoachGatewareList_KATCPCallback(struct katcp_dispatch *
         send_katcp( pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_STRING, "#roachGatewareList");
         for(int32_t i = 0; i < (int32_t)vstrValidFilenames.size() - 1; i++)
         {
-            append_args_katcp(pKATCPDispatch, KATCP_FLAG_STRING, "%s", vstrValidFilenames[i].c_str());
+            append_args_katcp(pKATCPDispatch, KATCP_FLAG_STRING, const_cast<char*>("%s"), vstrValidFilenames[i].c_str());
         }
-        append_args_katcp(pKATCPDispatch, KATCP_FLAG_LAST | KATCP_FLAG_STRING, "%s", vstrValidFilenames[vstrValidFilenames.size() - 1].c_str());
+        append_args_katcp(pKATCPDispatch, KATCP_FLAG_LAST | KATCP_FLAG_STRING, const_cast<char*>("%s"), vstrValidFilenames[vstrValidFilenames.size() - 1].c_str());
     }
     else
     {
@@ -474,7 +651,7 @@ int32_t cKATCPServer::roachProgram_KATCPCallback(struct katcp_dispatch *pKATCPDi
 {
     if(i32ArgC != 2)
     {
-        log_message_katcp(pKATCPDispatch, KATCP_LEVEL_ERROR, NULL, "roachProgram: Incorrect number of arguments.");
+        log_message_katcp(pKATCPDispatch, KATCP_LEVEL_ERROR, NULL, const_cast<char*>("roachProgram: Incorrect number of arguments."));
         return KATCP_RESULT_FAIL;
     }
 
@@ -498,7 +675,7 @@ int32_t cKATCPServer::roachSetStokesEnabled_KATCPCallback(struct katcp_dispatch 
     if(!m_pRoachKATCPClient.get())
     {
         //No file writer set. Do nothing
-        log_message_katcp(pKATCPDispatch, KATCP_LEVEL_ERROR, NULL, "setRoachStokesEnabled: No KATCPclient object for Roach control set.");
+        log_message_katcp(pKATCPDispatch, KATCP_LEVEL_ERROR, NULL, const_cast<char*>("setRoachStokesEnabled: No KATCPclient object for Roach control set."));
         return KATCP_RESULT_FAIL;
     }
 
@@ -517,7 +694,7 @@ int32_t cKATCPServer::roachSetAccumulationLength_KATCPCallback(struct katcp_disp
     if(!m_pRoachKATCPClient.get())
     {
         //No file writer set. Do nothing
-        log_message_katcp(pKATCPDispatch, KATCP_LEVEL_ERROR, NULL, "setRoachAccumulationLength: No KATCPclient object for Roach control set.");
+        log_message_katcp(pKATCPDispatch, KATCP_LEVEL_ERROR, NULL, const_cast<char*>("setRoachAccumulationLength: No KATCPclient object for Roach control set."));
         return KATCP_RESULT_FAIL;
     }
 
@@ -536,7 +713,7 @@ int32_t cKATCPServer::roachSetCoarseChannelSelect_KATCPCallback(struct katcp_dis
     if(!m_pRoachKATCPClient.get())
     {
         //No file writer set. Do nothing
-        log_message_katcp(pKATCPDispatch, KATCP_LEVEL_ERROR, NULL, "setRoachCoarseChannelSelect: No KATCPclient object for Roach control set.");
+        log_message_katcp(pKATCPDispatch, KATCP_LEVEL_ERROR, NULL, const_cast<char*>("setRoachCoarseChannelSelect: No KATCPclient object for Roach control set."));
         return KATCP_RESULT_FAIL;
     }
 
@@ -555,7 +732,7 @@ int32_t cKATCPServer::roachSetCoarseFFTShiftMask_KATCPCallback(struct katcp_disp
     if(!m_pRoachKATCPClient.get())
     {
         //No file writer set. Do nothing
-        log_message_katcp(pKATCPDispatch, KATCP_LEVEL_ERROR, NULL, "setRoachCoarseFFTMask: No KATCPclient object for Roach control set.");
+        log_message_katcp(pKATCPDispatch, KATCP_LEVEL_ERROR, NULL, const_cast<char*>("setRoachCoarseFFTMask: No KATCPclient object for Roach control set."));
         return KATCP_RESULT_FAIL;
     }
 
@@ -574,7 +751,7 @@ int32_t cKATCPServer::roachSetADC0Attenuation_KATCPCallback(struct katcp_dispatc
     if(!m_pRoachKATCPClient.get())
     {
         //No file writer set. Do nothing
-        log_message_katcp(pKATCPDispatch, KATCP_LEVEL_ERROR, NULL, "setRoachADC0Attenuation: No KATCPclient object for Roach control set.");
+        log_message_katcp(pKATCPDispatch, KATCP_LEVEL_ERROR, NULL, const_cast<char*>("setRoachADC0Attenuation: No KATCPclient object for Roach control set."));
         return KATCP_RESULT_FAIL;
     }
 
@@ -593,7 +770,7 @@ int32_t cKATCPServer::roachSetADC1Attenuation_KATCPCallback(struct katcp_dispatc
     if(!m_pRoachKATCPClient.get())
     {
         //No file writer set. Do nothing
-        log_message_katcp(pKATCPDispatch, KATCP_LEVEL_ERROR, NULL, "setRoachADC1Attenuation: No KATCPclient object for Roach control set.");
+        log_message_katcp(pKATCPDispatch, KATCP_LEVEL_ERROR, NULL, const_cast<char*>("setRoachADC1Attenuation: No KATCPclient object for Roach control set."));
         return KATCP_RESULT_FAIL;
     }
 
@@ -612,7 +789,7 @@ int32_t cKATCPServer::roachSetNoiseDiodeEnabled_KATCPCallback(struct katcp_dispa
     if(!m_pRoachKATCPClient.get())
     {
         //No file writer set. Do nothing
-        log_message_katcp(pKATCPDispatch, KATCP_LEVEL_ERROR, NULL, "setRoachNoiseDiodeEnabled: No KATCPclient object for Roach control set.");
+        log_message_katcp(pKATCPDispatch, KATCP_LEVEL_ERROR, NULL, const_cast<char*>("setRoachNoiseDiodeEnabled: No KATCPclient object for Roach control set."));
         return KATCP_RESULT_FAIL;
     }
 
@@ -631,7 +808,7 @@ int32_t cKATCPServer::roachSetNoiseDiodeDutyCycleEnabled_KATCPCallback(struct ka
     if(!m_pRoachKATCPClient.get())
     {
         //No file writer set. Do nothing
-        log_message_katcp(pKATCPDispatch, KATCP_LEVEL_ERROR, NULL, "setRoachNoiseDiodeDutyCycleEnabled: No KATCPclient object for Roach control set.");
+        log_message_katcp(pKATCPDispatch, KATCP_LEVEL_ERROR, NULL, const_cast<char*>("setRoachNoiseDiodeDutyCycleEnabled: No KATCPclient object for Roach control set."));
         return KATCP_RESULT_FAIL;
     }
 
@@ -650,7 +827,7 @@ int32_t cKATCPServer::roachSetNoiseDiodeDutyCycleOnDuration_KATCPCallback(struct
     if(!m_pRoachKATCPClient.get())
     {
         //No file writer set. Do nothing
-        log_message_katcp(pKATCPDispatch, KATCP_LEVEL_ERROR, NULL, "setRoachNoiseDiodeDutyCycleOnDuration: No KATCPclient object for Roach control set.");
+        log_message_katcp(pKATCPDispatch, KATCP_LEVEL_ERROR, NULL, const_cast<char*>("setRoachNoiseDiodeDutyCycleOnDuration: No KATCPclient object for Roach control set."));
         return KATCP_RESULT_FAIL;
     }
 
@@ -669,7 +846,7 @@ int32_t cKATCPServer::roachSetNoiseDiodeDutyCycleOffDuration_KATCPCallback(struc
     if(!m_pRoachKATCPClient.get())
     {
         //No file writer set. Do nothing
-        log_message_katcp(pKATCPDispatch, KATCP_LEVEL_ERROR, NULL, "setRoachNoiseDiodeDutyCycleOffDuration: No KATCPclient object for Roach control set.");
+        log_message_katcp(pKATCPDispatch, KATCP_LEVEL_ERROR, NULL, const_cast<char*>("setRoachNoiseDiodeDutyCycleOffDuration: No KATCPclient object for Roach control set."));
         return KATCP_RESULT_FAIL;
     }
 
