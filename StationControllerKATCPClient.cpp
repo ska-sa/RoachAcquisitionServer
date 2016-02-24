@@ -19,337 +19,208 @@ cStationControllerKATCPClient::~cStationControllerKATCPClient()
 
 void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vstrTokens)
 {
-    try
+
+
+    if( !vstrTokens[0].compare("#startRecording") )
     {
-        if( !vstrTokens[0].compare("#startRecording") )
+        sendStartRecording(vstrTokens[1], strtoll(vstrTokens[2].c_str(), NULL, 10), strtoll(vstrTokens[3].c_str(), NULL, 10) );
+        return;
+    }
+
+    if( !vstrTokens[0].compare("#stopRecording") )
+    {
+        sendStopRecording();
+        return;
+    }
+
+
+    if( !vstrTokens[0].compare("#requestedAntennaAz") )
+    {
+        sendRequestedAntennaAz( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
+        return;
+    }
+
+
+    if( !vstrTokens[0].compare("#requestedAntennaEl") )
+    {
+        sendRequestedAntennaEl( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
+        return;
+    }
+
+
+    if(!vstrTokens[0].compare("#actualAntennaAz"))
+    {
+        sendActualAntennaAz( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
+        return;
+    }
+
+
+    if(!vstrTokens[0].compare("#actualAntennaAz"))
+    {
+        sendActualAntennaEl( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
+        return;
+    }
+
+
+    if(!vstrTokens[0].compare("#actualSourceOffsetAz"))
+    {
+        sendActualSourceOffsetAz( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
+        return;
+    }
+
+
+    if(!vstrTokens[0].compare("#actualSourceOffsetEl"))
+    {
+        sendActualSourceOffsetEl( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
+        return;
+    }
+
+
+    if(!vstrTokens[0].compare("#actualAntennaRA"))
+    {
+        sendActualAntennaRA( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
+        return;
+    }
+
+
+    if(!vstrTokens[0].compare("#actualAntennaDec"))
+    {
+        sendActualAntennaDec( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
+        return;
+    }
+
+
+    if(!vstrTokens[0].compare("#antennaStatus"))
+    {
+        sendAntennaStatus( strtoll(vstrTokens[1].c_str(), NULL, 10), vstrTokens[2] );
+        return;
+    }
+
+
+    if(!vstrTokens[0].compare("#motorTorqueAzMaster"))
+    {
+        sendMotorTorqueAzMaster( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
+        return;
+    }
+
+
+
+    if(!vstrTokens[0].compare("#motorTorqueAzSlave"))
+    {
+        sendMotorTorqueAzSlave( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
+        return;
+    }
+
+
+    if(!vstrTokens[0].compare("#motorTorqueElMaster"))
+    {
+        sendMotorTorqueElMaster( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
+        return;
+    }
+
+    if(!vstrTokens[0].compare("#motorTorqueElSlave"))
+    {
+        sendMotorTorqueElSlave( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
+        return;
+    }
+
+
+    if(!vstrTokens[0].compare("#appliedPointingModel"))
+    {
+        string strPointingModelName = vstrTokens[1];
+
+        vector<double> vdPointingModel;
+        for(uint32_t ui = 2; ui < vstrTokens.size(); ui++)
         {
-            sendStartRecording(vstrTokens[1], strtoll(vstrTokens[2].c_str(), NULL, 10), strtoll(vstrTokens[3].c_str(), NULL, 10) );
-            return;
+            vdPointingModel.push_back( strtod(vstrTokens[ui].c_str(), NULL) );
         }
-    }
-    catch(out_of_range &oError)
-    {
+
+        sendAppliedPointingModel( strPointingModelName, vdPointingModel );
+        return;
     }
 
-    try
+
+
+    if(!vstrTokens[0].compare("#noiseDiodeSoftwareState"))
     {
-        if( !vstrTokens[0].compare("#stopRecording") )
-        {
-            sendStopRecording();
-            return;
-        }
-    }
-    catch(out_of_range &oError)
-    {
+        sendNoiseDiodeSoftwareState( strtoll(vstrTokens[1].c_str(), NULL, 10), strtol(vstrTokens[2].c_str(), NULL, 10) );
+        return;
     }
 
-    try
+
+    if(!vstrTokens[0].compare("#noiseDiodeSource"))
     {
-        if( !vstrTokens[0].compare("#requestedAntennaAz") )
-        {
-            sendRequestedAntennaAz( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
-            return;
-        }
-    }
-    catch(out_of_range &oError)
-    {
+        sendNoiseDiodeSource( strtoll(vstrTokens[1].c_str(), NULL, 10), vstrTokens[3] );
+        return;
     }
 
-    try
+
+    if(!vstrTokens[0].compare("#noideDiodeCurrent"))
     {
-        if( !vstrTokens[0].compare("#requestedAntennaEl") )
-        {
-            sendRequestedAntennaEl( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
-            return;
-        }
-    }
-    catch(out_of_range &oError)
-    {
+        sendNoiseDiodeCurrent( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
+        return;
     }
 
-    try
+
+
+    if(!vstrTokens[0].compare("#sourceSelection"))
     {
-        if(!vstrTokens[0].compare("#actualAntennaAz"))
-        {
-            sendActualAntennaAz( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
-            return;
-        }
-    }
-    catch(out_of_range &oError)
-    {
+        sendSourceSelection( strtoll(vstrTokens[1].c_str(), NULL, 10), vstrTokens[2], strtod(vstrTokens[3].c_str(), NULL), strtod(vstrTokens[4].c_str(), NULL) );
+        return;
     }
 
-    try
+
+    if(!vstrTokens[0].compare("#frequencyRFChan0"))
     {
-        if(!vstrTokens[0].compare("#actualAntennaAz"))
-        {
-            sendActualAntennaEl( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
-            return;
-        }
-    }
-    catch(out_of_range &oError)
-    {
+        sendFrequencyRFChan0( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
+        return;
     }
 
-    try
+
+
+    if(!vstrTokens[0].compare("#frequencyRFChan1"))
     {
-        if(!vstrTokens[0].compare("#actualSourceOffsetAz"))
-        {
-            sendActualSourceOffsetAz( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
-            return;
-        }
-    }
-    catch(out_of_range &oError)
-    {
+        sendFrequencyRFChan1( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
+        return;
     }
 
-    try
+
+
+    if(!vstrTokens[0].compare("#frequencyLO0Chan0"))
     {
-        if(!vstrTokens[0].compare("#actualSourceOffsetEl"))
-        {
-            sendActualSourceOffsetEl( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
-            return;
-        }
-    }
-    catch(out_of_range &oError)
-    {
+        sendFrequencyLO0Chan0( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
+        return;
     }
 
-    try
+
+    if(!vstrTokens[0].compare("#frequencyLO0Chan1"))
     {
-        if(!vstrTokens[0].compare("#actualAntennaRA"))
-        {
-            sendActualAntennaRA( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
-            return;
-        }
-    }
-    catch(out_of_range &oError)
-    {
+        sendFrequencyLO0Chan1( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
+        return;
     }
 
-    try
+
+    if(!vstrTokens[0].compare("#frequencyLO1"))
     {
-        if(!vstrTokens[0].compare("#actualAntennaDec"))
-        {
-            sendActualAntennaDec( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
-            return;
-        }
-    }
-    catch(out_of_range &oError)
-    {
+        sendFrequencyLO1( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
+        return;
     }
 
-    try
+
+    if(!vstrTokens[0].compare("#receiverBandwidthChan0"))
     {
-        if(!vstrTokens[0].compare("#antennaStatus"))
-        {
-            sendAntennaStatus( strtoll(vstrTokens[1].c_str(), NULL, 10), vstrTokens[2] );
-            return;
-        }
-    }
-    catch(out_of_range &oError)
-    {
+        sendReceiverBandwidthChan0( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
+        return;
     }
 
-    try
+
+
+    if(!vstrTokens[0].compare("#receiverBandwidthChan1"))
     {
-        if(!vstrTokens[0].compare("#motorTorqueAzMaster"))
-        {
-            sendMotorTorqueAzMaster( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
-            return;
-        }
-    }
-    catch(out_of_range &oError)
-    {
+        sendReceiverBandwidthChan1( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
+        return;
     }
 
-    try
-    {
-        if(!vstrTokens[0].compare("#motorTorqueAzSlave"))
-        {
-            sendMotorTorqueAzSlave( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
-            return;
-        }
-    }
-    catch(out_of_range &oError)
-    {
-    }
-
-    try
-    {
-        if(!vstrTokens[0].compare("#motorTorqueElMaster"))
-        {
-            sendMotorTorqueElMaster( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
-            return;
-        }
-    }
-    catch(out_of_range &oError)
-    {
-    }
-
-    try
-    {
-        if(!vstrTokens[0].compare("#motorTorqueElSlave"))
-        {
-            sendMotorTorqueElSlave( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
-            return;
-        }
-    }
-    catch(out_of_range &oError)
-    {
-    }
-
-    try
-    {
-        if(!vstrTokens[0].compare("#appliedPointingModel"))
-        {
-            string strPointingModelName = vstrTokens[1];
-
-            vector<double> vdPointingModel;
-            for(uint32_t ui = 2; ui < vstrTokens.size(); ui++)
-            {
-                vdPointingModel.push_back( strtod(vstrTokens[ui].c_str(), NULL) );
-            }
-
-            sendAppliedPointingModel( strPointingModelName, vdPointingModel );
-            return;
-        }
-    }
-    catch(out_of_range &oError)
-    {
-    }
-
-    try
-    {
-        if(!vstrTokens[0].compare("#noiseDiodeSoftwareState"))
-        {
-            sendNoiseDiodeSoftwareState( strtoll(vstrTokens[1].c_str(), NULL, 10), strtol(vstrTokens[2].c_str(), NULL, 10) );
-            return;
-        }
-    }
-    catch(out_of_range &oError)
-    {
-    }
-
-    try
-    {
-        if(!vstrTokens[0].compare("#noiseDiodeSource"))
-        {
-            sendNoiseDiodeSource( strtoll(vstrTokens[1].c_str(), NULL, 10), vstrTokens[3] );
-            return;
-        }
-    }
-    catch(out_of_range &oError)
-    {
-    }
-
-    try
-    {
-        if(!vstrTokens[0].compare("#noideDiodeCurrent"))
-        {
-            sendNoiseDiodeCurrent( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
-            return;
-        }
-    }
-    catch(out_of_range &oError)
-    {
-    }
-
-    try
-    {
-        if(!vstrTokens[0].compare("#sourceSelection"))
-        {
-            sendSourceSelection( strtoll(vstrTokens[1].c_str(), NULL, 10), vstrTokens[2], strtod(vstrTokens[3].c_str(), NULL), strtod(vstrTokens[4].c_str(), NULL) );
-            return;
-        }
-    }
-    catch(out_of_range &oError)
-    {
-    }
-
-    try
-    {
-        if(!vstrTokens[0].compare("#frequencyRFChan0"))
-        {
-            sendFrequencyRFChan0( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
-            return;
-        }
-    }
-    catch(out_of_range &oError)
-    {
-    }
-
-    try
-    {
-        if(!vstrTokens[0].compare("#frequencyRFChan1"))
-        {
-            sendFrequencyRFChan1( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
-            return;
-        }
-    }
-    catch(out_of_range &oError)
-    {
-    }
-
-    try
-    {
-        if(!vstrTokens[0].compare("#frequencyLO0Chan0"))
-        {
-            sendFrequencyLO0Chan0( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
-            return;
-        }
-    }
-    catch(out_of_range &oError)
-    {
-    }
-
-    try
-    {
-        if(!vstrTokens[0].compare("#frequencyLO0Chan1"))
-        {
-            sendFrequencyLO0Chan1( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
-            return;
-        }
-    }
-    catch(out_of_range &oError)
-    {
-    }
-
-    try
-    {
-        if(!vstrTokens[0].compare("#frequencyLO1"))
-        {
-            sendFrequencyLO1( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
-            return;
-        }
-    }
-    catch(out_of_range &oError)
-    {
-    }
-
-    try
-    {
-        if(!vstrTokens[0].compare("#receiverBandwidthChan0"))
-        {
-            sendReceiverBandwidthChan0( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
-            return;
-        }
-    }
-    catch(out_of_range &oError)
-    {
-    }
-
-    try
-    {
-        if(!vstrTokens[0].compare("#receiverBandwidthChan1"))
-        {
-            sendReceiverBandwidthChan1( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
-            return;
-        }
-    }
-    catch(out_of_range &oError)
-    {
-    }
 }
 
 void  cStationControllerKATCPClient::sendStartRecording(const std::string &strFilePrefix, int64_t i64StartTime_us, int64_t i64Duration_us)

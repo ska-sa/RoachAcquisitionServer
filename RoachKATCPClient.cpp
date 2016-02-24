@@ -136,6 +136,9 @@ bool cRoachKATCPClient::writeRoachRegister(const std::string &strRegisterName, u
 
 void cRoachKATCPClient::threadReadFunction()
 {
+    // ROACH KATCP communication is synchronous, so it's all handled in the read thread.
+    // In contrast to the station control one which may arbitrarily send subscribed values.
+
     cout << "cRoachKATCPClient::threadReadFunction(): Entering thread read function." << endl;
 
     vector<string> vstrMessageTokens;
@@ -174,8 +177,8 @@ void cRoachKATCPClient::threadWriteFunction()
 {
     //Not used
 
-    cout << "cRoachKATCPClient::threadWriteFunction(): Entering thread write function." << endl;
-    cout << "cRoachKATCPClient::threadWriteFunction(): leaving thread write function." << endl;
+    cout << "cRoachKATCPClient::threadWriteFunction(): Entering thread write function. (Unused)" << endl;
+    cout << "cRoachKATCPClient::threadWriteFunction(): Leaving thread write function. (Unused)" << endl;
 }
 
 void cRoachKATCPClient::readAllRegisters(uint32_t u32SleepTime_ms)
