@@ -32,7 +32,7 @@ typedef unsigned __int64 uint64_t;
 #include "RoachKATCPClient.h"
 #include "StationControllerKATCPClient.h"
 
-class cRoachAcquisitionServer : public cKATCPClientBase::cConnectionCallbackInterface
+class cRoachAcquisitionServer
 {
 public:
     explicit cRoachAcquisitionServer(const std::string &strLocalInterface, uint16_t u16LocalPort, const std::string &strRoachTGBEAddress, uint16_t u16RoachTGBEPort,
@@ -54,9 +54,6 @@ public:
     void                                                shutdown();
 
 private:
-
-    //Callback function to handle KATCP disconnectsl
-    void                                                connected_callback(bool bConnected, const std::string &strHostAddress, uint16_t u16Port, const std::string &strDescription);
 
     boost::shared_ptr<cUDPReceiver>                     m_pUDPReceiver;
     boost::shared_ptr<cTCPForwardingServer>             m_pTCPForwardingServer;
