@@ -62,7 +62,12 @@ public:
 
 private:
     //Implement from base class
+    void                                                onConnected();
     void                                                processKATCPMessage(const std::vector<std::string> &vstrMessageTokens);
+
+    //Print KATCP Debug information
+    void                                                printVersion(const std::string &strVersion);
+    void                                                printBuildState(const std::string &strBuilState);
 
     //Notifications sent to all callback handlers:
 

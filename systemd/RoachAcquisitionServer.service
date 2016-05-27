@@ -2,7 +2,7 @@
 Description=Roach Acquisition Server
 
 [Service]
-ExecStart=/usr/bin/RoachAcquisitionServer -v catseye
+ExecStart=/usr/bin/RoachAcquisitionServer -v catseye -g /home/avnuser/AVNSoftware/RoachLaunchers -t optimus -u 1234
 Restart=on-failure
 RestartSec=10
 KillSignal=SIGINT

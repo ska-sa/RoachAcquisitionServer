@@ -17,13 +17,87 @@ cStationControllerKATCPClient::~cStationControllerKATCPClient()
 {
 }
 
+void cStationControllerKATCPClient::onConnected()
+{
+    //This is where we're going to send sensor-sampling messages to the server
+    vector<string> vstrSensorNames;
+    //vstrSensorNames.push_back("startRecording");
+
+    //vstrSensorNames.push_back("stopRecording");
+    vstrSensorNames.push_back("requestedAntennaAz");
+    vstrSensorNames.push_back("requestedAntennaEl");
+    vstrSensorNames.push_back("actualAntennaAz");
+    vstrSensorNames.push_back("actualAntennaEl");
+    vstrSensorNames.push_back("actualSourceOffsetAz");
+    vstrSensorNames.push_back("actualSourceOffsetEl");
+    vstrSensorNames.push_back("actualAntennaRA");
+    vstrSensorNames.push_back("actualAntennaDec");
+    vstrSensorNames.push_back("antennaStatus");
+    vstrSensorNames.push_back("motorTorqueAzMaster");
+    vstrSensorNames.push_back("motorTorqueAzSlave");
+    vstrSensorNames.push_back("motorTorqueElMaster");
+    vstrSensorNames.push_back("motorTorqueElSlave");
+    // vstrSensorNames.push_back("appliedPointingModel");
+    vstrSensorNames.push_back("noiseDiodeSoftwareState");
+    vstrSensorNames.push_back("noiseDiodeSource");
+    vstrSensorNames.push_back("noideDiodeCurrent");
+    // vstrSensorNames.push_back("sourceSelection");
+    vstrSensorNames.push_back("frequencyRFChan0");
+    vstrSensorNames.push_back("frequencyRFChan1");
+    vstrSensorNames.push_back("frequencyLO0RFChan0");
+    vstrSensorNames.push_back("frequencyLO0RFChan1");
+    vstrSensorNames.push_back("frequencyLO1");
+    vstrSensorNames.push_back("receiverBandwidthChan0");
+    vstrSensorNames.push_back("receiverBandwidthChan1");
+
+    for (uint32_t ui = 0; ui < vstrSensorNames.size(); ui++)
+    {
+        stringstream oSS;
+        oSS << "?sensor-sampling ";
+        oSS << vstrSensorNames[ui];
+        oSS << " auto\n";
+
+        sendKATCPMessage(oSS.str());
+    }
+
+}
+
 void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vstrTokens)
 {
 
+    //Debug
+    cout << "cStationControllerKATCPClient::processKATCPMessage(): KATCP message received: ";
+    for (uint32_t ui = 0; ui < vstrTokens.size(); ui++)
+    {
+     cout << vstrTokens[ui] << " ";
+    }
+    cout << endl;
+
+    // This must come first!
+    // The katcp server on the station controller sends #version and #build-state tokens on connection.
+    // If they get through to the next tests, then the program segfaults because
+    if( !vstrTokens[0].compare("#version") )
+    {
+        printVersion(vstrTokens[1]);
+        return;
+    }
+
+    if( !vstrTokens[0].compare("#build-state") )
+    {
+        printBuildState(vstrTokens[1]);
+        return;
+    }
+
+    if (!vstrTokens[0].compare("!sensor-sampling"))
+    {
+        // Do nothing, this is just the inform from the server.
+        return;
+    }
 
     if( !vstrTokens[0].compare("#startRecording") )
     {
-        sendStartRecording(vstrTokens[1], strtoll(vstrTokens[2].c_str(), NULL, 10), strtoll(vstrTokens[3].c_str(), NULL, 10) );
+        // I'm commenting this out for now, so that NQ and I can determine whether this is in u-seconds or not. - JNS
+        //sendStartRecording(vstrTokens[1], strtoll(vstrTokens[2].c_str(), NULL, 10), strtoll(vstrTokens[3].c_str(), NULL, 10) );
         return;
     }
 
@@ -33,99 +107,110 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
         return;
     }
 
-
-    if( !vstrTokens[0].compare("#requestedAntennaAz") )
+    if(vstrTokens.size() < 5)
     {
-        sendRequestedAntennaAz( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
+        cout << "cStationControllerKATCPClient::processKATCPMessage(): Error! Unknown KATCP message received: ";
+        for (uint32_t ui = 0; ui < vstrTokens.size(); ui++)
+        {
+            cout << vstrTokens[ui] << " ";
+        }
+        cout << endl;
         return;
     }
 
 
-    if( !vstrTokens[0].compare("#requestedAntennaEl") )
+    if( !vstrTokens[3].compare("requestedAntennaAz") )
     {
-        sendRequestedAntennaEl( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
+        sendRequestedAntennaAz( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[5].c_str(), NULL) );
         return;
     }
 
 
-    if(!vstrTokens[0].compare("#actualAntennaAz"))
+    if( !vstrTokens[3].compare("requestedAntennaEl") )
     {
-        sendActualAntennaAz( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
+        sendRequestedAntennaEl( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[5].c_str(), NULL) );
         return;
     }
 
 
-    if(!vstrTokens[0].compare("#actualAntennaAz"))
+    if(!vstrTokens[3].compare("actualAntennaAz"))
     {
-        sendActualAntennaEl( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
+        sendActualAntennaAz( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[5].c_str(), NULL) );
         return;
     }
 
 
-    if(!vstrTokens[0].compare("#actualSourceOffsetAz"))
+    if(!vstrTokens[3].compare("actualAntennaEl"))
     {
-        sendActualSourceOffsetAz( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
+        sendActualAntennaEl( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[5].c_str(), NULL) );
         return;
     }
 
 
-    if(!vstrTokens[0].compare("#actualSourceOffsetEl"))
+    if(!vstrTokens[3].compare("actualSourceOffsetAz"))
     {
-        sendActualSourceOffsetEl( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
+        sendActualSourceOffsetAz( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[5].c_str(), NULL) );
         return;
     }
 
 
-    if(!vstrTokens[0].compare("#actualAntennaRA"))
+    if(!vstrTokens[3].compare("actualSourceOffsetEl"))
     {
-        sendActualAntennaRA( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
+        sendActualSourceOffsetEl( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[5].c_str(), NULL) );
         return;
     }
 
 
-    if(!vstrTokens[0].compare("#actualAntennaDec"))
+    if(!vstrTokens[3].compare("actualAntennaRA"))
     {
-        sendActualAntennaDec( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
+        sendActualAntennaRA( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[5].c_str(), NULL) );
         return;
     }
 
 
-    if(!vstrTokens[0].compare("#antennaStatus"))
+    if(!vstrTokens[3].compare("actualAntennaDec"))
     {
-        sendAntennaStatus( strtoll(vstrTokens[1].c_str(), NULL, 10), vstrTokens[2] );
+        sendActualAntennaDec( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[5].c_str(), NULL) );
         return;
     }
 
 
-    if(!vstrTokens[0].compare("#motorTorqueAzMaster"))
+    if(!vstrTokens[3].compare("antennaStatus"))
     {
-        sendMotorTorqueAzMaster( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
+        sendAntennaStatus( strtoll(vstrTokens[1].c_str(), NULL, 10), vstrTokens[5] );
+        return;
+    }
+
+
+    if(!vstrTokens[3].compare("motorTorqueAzMaster"))
+    {
+        sendMotorTorqueAzMaster( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[5].c_str(), NULL) );
         return;
     }
 
 
 
-    if(!vstrTokens[0].compare("#motorTorqueAzSlave"))
+    if(!vstrTokens[3].compare("motorTorqueAzSlave"))
     {
-        sendMotorTorqueAzSlave( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
+        sendMotorTorqueAzSlave( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[5].c_str(), NULL) );
         return;
     }
 
 
-    if(!vstrTokens[0].compare("#motorTorqueElMaster"))
+    if(!vstrTokens[3].compare("motorTorqueElMaster"))
     {
-        sendMotorTorqueElMaster( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
+        sendMotorTorqueElMaster( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[5].c_str(), NULL) );
         return;
     }
 
-    if(!vstrTokens[0].compare("#motorTorqueElSlave"))
+    if(!vstrTokens[3].compare("motorTorqueElSlave"))
     {
-        sendMotorTorqueElSlave( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
+        sendMotorTorqueElSlave( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[5].c_str(), NULL) );
         return;
     }
 
 
-    if(!vstrTokens[0].compare("#appliedPointingModel"))
+    if(!vstrTokens[3].compare("appliedPointingModel"))
     {
         string strPointingModelName = vstrTokens[1];
 
@@ -141,21 +226,21 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
 
 
 
-    if(!vstrTokens[0].compare("#noiseDiodeSoftwareState"))
+    if(!vstrTokens[3].compare("noiseDiodeSoftwareState"))
     {
         sendNoiseDiodeSoftwareState( strtoll(vstrTokens[1].c_str(), NULL, 10), strtol(vstrTokens[2].c_str(), NULL, 10) );
         return;
     }
 
 
-    if(!vstrTokens[0].compare("#noiseDiodeSource"))
+    if(!vstrTokens[3].compare("noiseDiodeSource"))
     {
         sendNoiseDiodeSource( strtoll(vstrTokens[1].c_str(), NULL, 10), vstrTokens[3] );
         return;
     }
 
 
-    if(!vstrTokens[0].compare("#noideDiodeCurrent"))
+    if(!vstrTokens[3].compare("noideDiodeCurrent"))
     {
         sendNoiseDiodeCurrent( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
         return;
@@ -163,14 +248,14 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
 
 
 
-    if(!vstrTokens[0].compare("#sourceSelection"))
+    if(!vstrTokens[3].compare("sourceSelection"))
     {
         sendSourceSelection( strtoll(vstrTokens[1].c_str(), NULL, 10), vstrTokens[2], strtod(vstrTokens[3].c_str(), NULL), strtod(vstrTokens[4].c_str(), NULL) );
         return;
     }
 
 
-    if(!vstrTokens[0].compare("#frequencyRFChan0"))
+    if(!vstrTokens[3].compare("frequencyRFChan0"))
     {
         sendFrequencyRFChan0( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
         return;
@@ -178,7 +263,7 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
 
 
 
-    if(!vstrTokens[0].compare("#frequencyRFChan1"))
+    if(!vstrTokens[3].compare("frequencyRFChan1"))
     {
         sendFrequencyRFChan1( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
         return;
@@ -186,28 +271,28 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
 
 
 
-    if(!vstrTokens[0].compare("#frequencyLO0Chan0"))
+    if(!vstrTokens[3].compare("frequencyLO0RFChan0"))
     {
         sendFrequencyLO0Chan0( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
         return;
     }
 
 
-    if(!vstrTokens[0].compare("#frequencyLO0Chan1"))
+    if(!vstrTokens[3].compare("frequencyLO0RFChan1"))
     {
         sendFrequencyLO0Chan1( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
         return;
     }
 
 
-    if(!vstrTokens[0].compare("#frequencyLO1"))
+    if(!vstrTokens[3].compare("frequencyLO1"))
     {
         sendFrequencyLO1( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
         return;
     }
 
 
-    if(!vstrTokens[0].compare("#receiverBandwidthChan0"))
+    if(!vstrTokens[3].compare("receiverBandwidthChan0"))
     {
         sendReceiverBandwidthChan0( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
         return;
@@ -215,12 +300,22 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
 
 
 
-    if(!vstrTokens[0].compare("#receiverBandwidthChan1"))
+    if(!vstrTokens[3].compare("receiverBandwidthChan1"))
     {
         sendReceiverBandwidthChan1( strtoll(vstrTokens[1].c_str(), NULL, 10), strtod(vstrTokens[2].c_str(), NULL) );
         return;
     }
 
+}
+
+void cStationControllerKATCPClient::printVersion(const std::string &strVersion)
+{
+    cout << "cStationControllerKATCPClient::processKATCPMessage(): KATCP client connected to Station Controller, version " << strVersion << endl;
+}
+
+void cStationControllerKATCPClient::printBuildState(const std::string &strBuildState)
+{
+    cout << "cStationControllerKATCPClient::processKATCPMessage(): Station Controller build state: " << strBuildState << endl;
 }
 
 void  cStationControllerKATCPClient::sendStartRecording(const std::string &strFilePrefix, int64_t i64StartTime_us, int64_t i64Duration_us)

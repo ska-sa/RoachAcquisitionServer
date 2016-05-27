@@ -75,7 +75,7 @@ int main(int iArgC, char *pchaArgV[])
             ("roach-ppc-address,v", boost::program_options::value<string>(&strROACHPowerPCAddress), "Address of ROACH PowerPC 1GigE interface, providing TCPBorph access.")
             ("roach-tcpborph-port,w", boost::program_options::value<uint16_t>(&u16ROACHTCPBorphPort)->default_value(7147), "Port to use for connection to ROACH TCPBorph server.")
             ("roach-gateway-dir,g", boost::program_options::value<string>(&strRoachGatewareDirectory)->default_value(string("/home/avnuser/RoachLaunchers")), "Directory containing Roach launcher script and FPG file s.")
-            ("recording-dir,p", boost::program_options::value<string>(&strRecordingDir)->default_value(string("/home/avnuser/Data/RoachAquisition")), "Path to directory where HDF5 will be recorded.")
+            ("recording-dir,p", boost::program_options::value<string>(&strRecordingDir)->default_value(string("/home/avnuser/Data/RoachAcquisition")), "Path to directory where HDF5 will be recorded.")
             ("max-file-size,q", boost::program_options::value<uint32_t>(&u32MaxFileSize_MB)->default_value(1024), "Maximum HDF5 file size in MB. A new files will be created after this limit is reached (give or take metadata size). 0 implies no limit.");
 
 
@@ -128,7 +128,7 @@ int main(int iArgC, char *pchaArgV[])
 
 
     {
-        cout << "Starting Roach Aquisition Server..." << endl;
+        cout << "Starting Roach Acquisition Server..." << endl;
 
         cRoachAcquisitionServer oServer(strTenGbELocalInterface, u16TenGbELocalPort,
                                         strRoachTenGbEInterface, u16RoachTenGbEPort,
