@@ -69,6 +69,7 @@ private:
     void                                                sendEth10GbEUp(int64_t i64Timestamp_us, bool bEth10GbEUp);
     void                                                sendPPSCount(int64_t i64Timestamp_us, uint32_t u32PPSCount);
     void                                                sendClockFrequency(int64_t i64Timestamp_us, uint32_t u32ClockFrequency_Hz);
+
 };
 
 #endif // ROACH_KATCP_CLIENT_H

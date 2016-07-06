@@ -38,7 +38,7 @@ void cHDF5FileWriter::startRecording(const string &strFilenamePrefix, int64_t i6
 {
     if(getState() != IDLE)
     {
-        cout << "Warning HDF5 recording is currently active ignoring." << endl;
+        cout << "Warning: HDF5 recording is currently active. Ignoring startRecording request." << endl;
         return;
     }
 
@@ -61,6 +61,7 @@ void cHDF5FileWriter::stopRecording()
 
 void cHDF5FileWriter::setState(state eState)
 {
+    //cout << "cHDF5FileWriter::setState(): Setting state to " << eState << endl;
     boost::unique_lock<boost::shared_mutex>  oLock(m_oMutex);
     m_eState = eState;
 
@@ -77,6 +78,7 @@ void cHDF5FileWriter::setState(state eState)
 cHDF5FileWriter::state cHDF5FileWriter::getState()
 {
     boost::shared_lock<boost::shared_mutex>  oLock(m_oMutex);
+    //cout << "cHDF5FileWriter::getState(): current state: " << m_eState << endl;
     return m_eState;
 }
 
@@ -515,108 +517,108 @@ void cHDF5FileWriter::stopRecording_callback()
     stopRecording();
 }
 
-void cHDF5FileWriter::requestedAntennaAz_callback(int64_t i64Timestamp_us,double dAzimuth_deg)
+void cHDF5FileWriter::requestedAntennaAz_callback(int64_t i64Timestamp_us,double dAzimuth_deg, const string &strStatus)
 {
     if(getState() != RECORDING) //Don't log if we are not recording
         return;
 
-    m_pHDF5File->addRequestedAntennaAz(i64Timestamp_us, dAzimuth_deg);
+    m_pHDF5File->addRequestedAntennaAz(i64Timestamp_us, dAzimuth_deg, strStatus);
 }
 
-void cHDF5FileWriter::requestedAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg)
+void cHDF5FileWriter::requestedAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const string &strStatus)
 {
     if(getState() != RECORDING) //Don't log if we are not recording
         return;
 
-    m_pHDF5File->addRequestedAntennaEl(i64Timestamp_us, dElevation_deg);
+    m_pHDF5File->addRequestedAntennaEl(i64Timestamp_us, dElevation_deg, strStatus);
 }
 
-void cHDF5FileWriter::actualAntennaAz_callback(int64_t i64Timestamp_us,double dAzimuth_deg)
+void cHDF5FileWriter::actualAntennaAz_callback(int64_t i64Timestamp_us,double dAzimuth_deg, const string &strStatus)
 {
     if(getState() != RECORDING) //Don't log if we are not recording
         return;
 
-    m_pHDF5File->addActualAntennaAz(i64Timestamp_us, dAzimuth_deg);
+    m_pHDF5File->addActualAntennaAz(i64Timestamp_us, dAzimuth_deg, strStatus);
 }
 
-void cHDF5FileWriter::actualAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg)
+void cHDF5FileWriter::actualAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const string &strStatus)
 {
     if(getState() != RECORDING) //Don't log if we are not recording
         return;
 
-    m_pHDF5File->addActualAntennaEl(i64Timestamp_us, dElevation_deg);
+    m_pHDF5File->addActualAntennaEl(i64Timestamp_us, dElevation_deg, strStatus);
 }
 
-void cHDF5FileWriter::actualSourceOffsetAz_callback(int64_t i64Timestamp_us,double dAzimuthOffset_deg)
+void cHDF5FileWriter::actualSourceOffsetAz_callback(int64_t i64Timestamp_us,double dAzimuthOffset_deg, const string &strStatus)
 {
     if(getState() != RECORDING) //Don't log if we are not recording
         return;
 
-    m_pHDF5File->addActualSourceOffsetAz(i64Timestamp_us, dAzimuthOffset_deg);
+    m_pHDF5File->addActualSourceOffsetAz(i64Timestamp_us, dAzimuthOffset_deg, strStatus);
 }
 
-void cHDF5FileWriter::actualSourceOffsetEl_callback(int64_t i64Timestamp_us, double dElevationOffset_deg)
+void cHDF5FileWriter::actualSourceOffsetEl_callback(int64_t i64Timestamp_us, double dElevationOffset_deg, const string &strStatus)
 {
     if(getState() != RECORDING) //Don't log if we are not recording
         return;
 
-    m_pHDF5File->addActualSourceOffsetEl(i64Timestamp_us, dElevationOffset_deg);
+    m_pHDF5File->addActualSourceOffsetEl(i64Timestamp_us, dElevationOffset_deg, strStatus);
 }
 
-void cHDF5FileWriter::actualAntennaRA_callback(int64_t i64Timestamp_us,double dRighAscension_deg)
+void cHDF5FileWriter::actualAntennaRA_callback(int64_t i64Timestamp_us,double dRighAscension_deg, const string &strStatus)
 {
     if(getState() != RECORDING) //Don't log if we are not recording
         return;
 
-    m_pHDF5File->addActualAntennaRA(i64Timestamp_us, dRighAscension_deg);
+    m_pHDF5File->addActualAntennaRA(i64Timestamp_us, dRighAscension_deg, strStatus);
 }
 
-void cHDF5FileWriter::actualAntennaDec_callback(int64_t i64Timestamp_us, double dDeclination_deg)
+void cHDF5FileWriter::actualAntennaDec_callback(int64_t i64Timestamp_us, double dDeclination_deg, const string &strStatus)
 {
     if(getState() != RECORDING) //Don't log if we are not recording
         return;
 
-    m_pHDF5File->addActualAntennaDec(i64Timestamp_us, dDeclination_deg);
+    m_pHDF5File->addActualAntennaDec(i64Timestamp_us, dDeclination_deg, strStatus);
 }
 
-void cHDF5FileWriter::antennaStatus_callback(int64_t i64Timestamp_us, const string &strAntennaStatus)
+void cHDF5FileWriter::antennaStatus_callback(int64_t i64Timestamp_us, const string &strAntennaStatus, const string &strStatus)
 {
     if(getState() != RECORDING) //Don't log if we are not recording
         return;
 
-    m_pHDF5File->addAntennaStatus(i64Timestamp_us, strAntennaStatus);
+    m_pHDF5File->addAntennaStatus(i64Timestamp_us, strAntennaStatus, strStatus);
 }
 
-void cHDF5FileWriter::motorTorqueAzMaster_callback(int64_t i64Timestamp_us, double dAzMaster_mNm)
+void cHDF5FileWriter::motorTorqueAzMaster_callback(int64_t i64Timestamp_us, double dAzMaster_mNm, const string &strStatus)
 {
     if(getState() != RECORDING) //Don't log if we are not recording
         return;
 
-    m_pHDF5File->motorTorqueAzMaster(i64Timestamp_us, dAzMaster_mNm);
+    m_pHDF5File->motorTorqueAzMaster(i64Timestamp_us, dAzMaster_mNm, strStatus);
 }
 
-void cHDF5FileWriter::motorTorqueAzSlave_callback(int64_t i64Timestamp_us, double dAzSlave_mNm)
+void cHDF5FileWriter::motorTorqueAzSlave_callback(int64_t i64Timestamp_us, double dAzSlave_mNm, const string &strStatus)
 {
     if(getState() != RECORDING) //Don't log if we are not recording
         return;
 
-    m_pHDF5File->motorTorqueAzSlave(i64Timestamp_us, dAzSlave_mNm);
+    m_pHDF5File->motorTorqueAzSlave(i64Timestamp_us, dAzSlave_mNm, strStatus);
 }
 
-void cHDF5FileWriter::motorTorqueElMaster_callback(int64_t i64Timestamp_us, double dElMaster_mNm)
+void cHDF5FileWriter::motorTorqueElMaster_callback(int64_t i64Timestamp_us, double dElMaster_mNm, const string &strStatus)
 {
     if(getState() != RECORDING) //Don't log if we are not recording
         return;
 
-    m_pHDF5File->motorTorqueElMaster(i64Timestamp_us, dElMaster_mNm);
+    m_pHDF5File->motorTorqueElMaster(i64Timestamp_us, dElMaster_mNm, strStatus);
 }
 
-void cHDF5FileWriter::motorTorqueElSlave_callback(int64_t i64Timestamp_us, double dElSlave_mNm)
+void cHDF5FileWriter::motorTorqueElSlave_callback(int64_t i64Timestamp_us, double dElSlave_mNm, const string &strStatus)
 {
     if(getState() != RECORDING) //Don't log if we are not recording
         return;
 
-    m_pHDF5File->motorTorqueElSlave(i64Timestamp_us, dElSlave_mNm);
+    m_pHDF5File->motorTorqueElSlave(i64Timestamp_us, dElSlave_mNm, strStatus);
 }
 
 void cHDF5FileWriter::appliedPointingModel_callback(const string &strModelName, const vector<double> &vdPointingModelParams)
@@ -627,28 +629,28 @@ void cHDF5FileWriter::appliedPointingModel_callback(const string &strModelName, 
     m_pHDF5File->setAppliedPointingModel(strModelName, vdPointingModelParams);
 }
 
-void cHDF5FileWriter::noiseDiodeSoftwareState_callback(int64_t i64Timestamp_us, int32_t i32NoiseDiodeState)
+void cHDF5FileWriter::noiseDiodeSoftwareState_callback(int64_t i64Timestamp_us, int32_t i32NoiseDiodeState, const string &strStatus)
 {
     if(getState() != RECORDING) //Don't log if we are not recording
         return;
 
-    m_pHDF5File->addNoiseDiodeSoftwareState(i64Timestamp_us, i32NoiseDiodeState);
+    m_pHDF5File->addNoiseDiodeSoftwareState(i64Timestamp_us, i32NoiseDiodeState, strStatus);
 }
 
-void cHDF5FileWriter::noiseDiodeSource_callback(int64_t i64Timestamp_us, const string &strNoiseSource)
+void cHDF5FileWriter::noiseDiodeSource_callback(int64_t i64Timestamp_us, const string &strNoiseSource, const string &strStatus)
 {
     if(getState() != RECORDING) //Don't log if we are not recording
         return;
 
-    m_pHDF5File->addNoiseDiodeSource(i64Timestamp_us, strNoiseSource);
+    m_pHDF5File->addNoiseDiodeSource(i64Timestamp_us, strNoiseSource, strStatus);
 }
 
-void cHDF5FileWriter::noiseDiodeCurrent_callback(int64_t i64Timestamp_us, double dNoiseDiodeCurrent_A)
+void cHDF5FileWriter::noiseDiodeCurrent_callback(int64_t i64Timestamp_us, double dNoiseDiodeCurrent_A, const string &strStatus)
 {
     if(getState() != RECORDING) //Don't log if we are not recording
         return;
 
-    m_pHDF5File->addNoiseDiodeCurrent(i64Timestamp_us, dNoiseDiodeCurrent_A);
+    m_pHDF5File->addNoiseDiodeCurrent(i64Timestamp_us, dNoiseDiodeCurrent_A, strStatus);
 }
 
 void cHDF5FileWriter::sourceSelection_callback(int64_t i64Timestamp_us, const string &strSourceName, double dRighAscension_deg, double dDeclination_deg)
@@ -659,60 +661,60 @@ void cHDF5FileWriter::sourceSelection_callback(int64_t i64Timestamp_us, const st
     m_pHDF5File->addSourceSelection(i64Timestamp_us, strSourceName, dRighAscension_deg, dDeclination_deg);
 }
 
-void cHDF5FileWriter::frequencyRFChan0_callback(int64_t i64Timestamp_us, double dFreqencyRFChan0_MHz)
+void cHDF5FileWriter::frequencyRFChan0_callback(int64_t i64Timestamp_us, double dFreqencyRFChan0_MHz, const string &strStatus)
 {
     if(getState() != RECORDING) //Don't log if we are not recording
         return;
 
-    m_pHDF5File->addFrequencyRFChan0(i64Timestamp_us, dFreqencyRFChan0_MHz);
+    m_pHDF5File->addFrequencyRFChan0(i64Timestamp_us, dFreqencyRFChan0_MHz, strStatus);
 }
 
-void cHDF5FileWriter::frequencyRFChan1_callback(int64_t i64Timestamp_us, double dFreqencyRFChan1_MHz)
+void cHDF5FileWriter::frequencyRFChan1_callback(int64_t i64Timestamp_us, double dFreqencyRFChan1_MHz, const string &strStatus)
 {
     if(getState() != RECORDING) //Don't log if we are not recording
         return;
 
-    m_pHDF5File->addFrequencyRFChan1(i64Timestamp_us, dFreqencyRFChan1_MHz);
+    m_pHDF5File->addFrequencyRFChan1(i64Timestamp_us, dFreqencyRFChan1_MHz, strStatus);
 }
 
-void cHDF5FileWriter::frequencyLO0Chan0_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_MHz)
+void cHDF5FileWriter::frequencyLO0Chan0_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_MHz, const string &strStatus)
 {
     if(getState() != RECORDING) //Don't log if we are not recording
         return;
 
-    m_pHDF5File->addFrequencyLO0Chan0(i64Timestamp_us, dFrequencyLO0Chan0_MHz);
+    m_pHDF5File->addFrequencyLO0Chan0(i64Timestamp_us, dFrequencyLO0Chan0_MHz, strStatus);
 }
 
-void cHDF5FileWriter::frequencyLO0Chan1_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_MHz)
+void cHDF5FileWriter::frequencyLO0Chan1_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_MHz, const string &strStatus)
 {
     if(getState() != RECORDING) //Don't log if we are not recording
         return;
 
-    m_pHDF5File->addFrequencyLO0Chan0(i64Timestamp_us, dFrequencyLO0Chan1_MHz);
+    m_pHDF5File->addFrequencyLO0Chan0(i64Timestamp_us, dFrequencyLO0Chan1_MHz, strStatus);
 }
 
-void cHDF5FileWriter::frequencyLO1_callback(int64_t i64Timestamp_us, double dFrequencyLO1_MHz)
+void cHDF5FileWriter::frequencyLO1_callback(int64_t i64Timestamp_us, double dFrequencyLO1_MHz, const string &strStatus)
 {
     if(getState() != RECORDING) //Don't log if we are not recording
         return;
 
-    m_pHDF5File->addFrequencyLO1(i64Timestamp_us, dFrequencyLO1_MHz);
+    m_pHDF5File->addFrequencyLO1(i64Timestamp_us, dFrequencyLO1_MHz, strStatus);
 }
 
-void cHDF5FileWriter::receiverBandwidthChan0_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan0_MHz)
+void cHDF5FileWriter::receiverBandwidthChan0_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan0_MHz, const string &strStatus)
 {
     if(getState() != RECORDING) //Don't log if we are not recording
         return;
 
-    m_pHDF5File->addReceiverBandwidthChan0(i64Timestamp_us, dReceiverBandwidthChan0_MHz);
+    m_pHDF5File->addReceiverBandwidthChan0(i64Timestamp_us, dReceiverBandwidthChan0_MHz, strStatus);
 }
 
-void cHDF5FileWriter::receiverBandwidthChan1_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan1_MHz)
+void cHDF5FileWriter::receiverBandwidthChan1_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan1_MHz, const string &strStatus)
 {
     if(getState() != RECORDING) //Don't log if we are not recording
         return;
 
-    m_pHDF5File->addReceiverBandwidthChan1(i64Timestamp_us, dReceiverBandwidthChan1_MHz);
+    m_pHDF5File->addReceiverBandwidthChan1(i64Timestamp_us, dReceiverBandwidthChan1_MHz, strStatus);
 }
 
 void cHDF5FileWriter::accumulationLength_callback(int64_t i64Timestamp_us, uint32_t u32NSamples)

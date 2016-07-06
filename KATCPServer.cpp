@@ -514,6 +514,12 @@ int32_t cKATCPServer::startRecording_KATCPCallback(struct katcp_dispatch *pKATCP
     cout << "--------------------------------------------------------------" << endl;
 
     m_pFileWriter->startRecording(strFilePrefix, i64StartTime_us, i64Duration_us);
+    if (m_pStationControllerKATCPClient) //i.e. if the thing has actually been connected. Otherwise it segfaults.
+    {
+        m_pStationControllerKATCPClient->subscribeSensorData();
+    }
+
+
 
     return KATCP_RESULT_OK;
 }
@@ -543,6 +549,10 @@ int32_t cKATCPServer::stopRecording_KATCPCallback(struct katcp_dispatch *pKATCPD
     }
 
     m_pFileWriter->stopRecording();
+    if (m_pStationControllerKATCPClient) //i.e. if the thing has actually been connected. Otherwise it segfaults.
+    {
+        m_pStationControllerKATCPClient->unsubscribeSensorData();
+    }
 
     return KATCP_RESULT_OK;
 }
@@ -1250,91 +1260,91 @@ void cKATCPServer::cKATCPClientCallbackHandler::stopRecording_callback()
     //Not used. Note, the HDF5FileWriter class is also a callback handler for KATCPClient so it get this callback to too and reacts to it there.
 }
 
-void  cKATCPServer::cKATCPClientCallbackHandler::requestedAntennaAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg)
+void  cKATCPServer::cKATCPClientCallbackHandler::requestedAntennaAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const string &strStatus)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oStationControllerMutex);
 
     m_dRequestedAntennaAz_deg = dAzimuth_deg;
 }
 
-void  cKATCPServer::cKATCPClientCallbackHandler::requestedAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg)
+void  cKATCPServer::cKATCPClientCallbackHandler::requestedAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const string &strStatusf)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oStationControllerMutex);
 
     m_dRequestedAntennaEl_deg = dElevation_deg;
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::actualAntennaAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg)
+void cKATCPServer::cKATCPClientCallbackHandler::actualAntennaAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const string &strStatus)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oStationControllerMutex);
 
     m_dActualAntennaAz_deg = dAzimuth_deg;
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::actualAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg)
+void cKATCPServer::cKATCPClientCallbackHandler::actualAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const string &strStatus)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oStationControllerMutex);
 
     m_dActualAntennaEl_deg = dElevation_deg;
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::actualSourceOffsetAz_callback(int64_t i64Timestamp_us, double dAzimuthOffset_deg)
+void cKATCPServer::cKATCPClientCallbackHandler::actualSourceOffsetAz_callback(int64_t i64Timestamp_us, double dAzimuthOffset_deg, const string &strStatus)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oStationControllerMutex);
 
     m_dActualSourceOffsetAz_deg = dAzimuthOffset_deg;
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::actualSourceOffsetEl_callback(int64_t i64Timestamp_us, double dElevationOffset_deg)
+void cKATCPServer::cKATCPClientCallbackHandler::actualSourceOffsetEl_callback(int64_t i64Timestamp_us, double dElevationOffset_deg, const string &strStatus)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oStationControllerMutex);
 
     m_dActualSourceOffsetEl_deg = dElevationOffset_deg;
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::actualAntennaRA_callback(int64_t i64Timestamp_us, double dRighAscension_deg)
+void cKATCPServer::cKATCPClientCallbackHandler::actualAntennaRA_callback(int64_t i64Timestamp_us, double dRighAscension_deg, const string &strStatus)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oStationControllerMutex);
 
     m_dActualAntennaRA_deg = dRighAscension_deg;
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::actualAntennaDec_callback(int64_t i64Timestamp_us, double dDeclination_deg)
+void cKATCPServer::cKATCPClientCallbackHandler::actualAntennaDec_callback(int64_t i64Timestamp_us, double dDeclination_deg, const string &strStatus)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oStationControllerMutex);
 
     m_dActualAntennaDec_deg = dDeclination_deg;
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::antennaStatus_callback(int64_t i64Timestamp_us, const string &strStatus)
+void cKATCPServer::cKATCPClientCallbackHandler::antennaStatus_callback(int64_t i64Timestamp_us, const string &strAntennaStatus, const string &strStatus)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oStationControllerMutex);
 
     m_strAntennaStatus = strStatus;
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::motorTorqueAzMaster_callback(int64_t i64Timestamp_us, double dAzMaster_mNm)
+void cKATCPServer::cKATCPClientCallbackHandler::motorTorqueAzMaster_callback(int64_t i64Timestamp_us, double dAzMaster_mNm, const string &strStatus)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oStationControllerMutex);
 
     m_dMotorTorqueAzMaster_mNm = dAzMaster_mNm;
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::motorTorqueAzSlave_callback(int64_t i64Timestamp_us, double dAzSlave_mNm)
+void cKATCPServer::cKATCPClientCallbackHandler::motorTorqueAzSlave_callback(int64_t i64Timestamp_us, double dAzSlave_mNm, const string &strStatus)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oStationControllerMutex);
 
     m_dMotorTorqueAzSlave_mNm = dAzSlave_mNm;
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::motorTorqueElMaster_callback(int64_t i64Timestamp_us, double dElMaster_mNm)
+void cKATCPServer::cKATCPClientCallbackHandler::motorTorqueElMaster_callback(int64_t i64Timestamp_us, double dElMaster_mNm, const string &strStatus)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oStationControllerMutex);
 
     m_dMotorTorqueElMaster_mNm = dElMaster_mNm;
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::motorTorqueElSlave_callback(int64_t i64Timestamp_us, double dElSlave_mNm)
+void cKATCPServer::cKATCPClientCallbackHandler::motorTorqueElSlave_callback(int64_t i64Timestamp_us, double dElSlave_mNm, const string &strStatus)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oStationControllerMutex);
 
@@ -1346,21 +1356,21 @@ void cKATCPServer::cKATCPClientCallbackHandler::appliedPointingModel_callback(co
     //Todo
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::noiseDiodeSoftwareState_callback(int64_t i64Timestamp_us, int32_t i32NoiseDiodeState)
+void cKATCPServer::cKATCPClientCallbackHandler::noiseDiodeSoftwareState_callback(int64_t i64Timestamp_us, int32_t i32NoiseDiodeState, const string &strStatus)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oStationControllerMutex);
 
     m_i32NoiseDiodeSoftwareState = i32NoiseDiodeState;
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::noiseDiodeSource_callback(int64_t i64Timestamp_us, const string &strNoiseDiodeSource)
+void cKATCPServer::cKATCPClientCallbackHandler::noiseDiodeSource_callback(int64_t i64Timestamp_us, const string &strNoiseDiodeSource, const string &strStatus)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oStationControllerMutex);
 
     m_strNoiseDiodeSource = strNoiseDiodeSource;
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::noiseDiodeCurrent_callback(int64_t i64Timestamp_us, double dNoiseDiodeCurrent_A)
+void cKATCPServer::cKATCPClientCallbackHandler::noiseDiodeCurrent_callback(int64_t i64Timestamp_us, double dNoiseDiodeCurrent_A, const string &strStatus)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oStationControllerMutex);
 
@@ -1372,49 +1382,49 @@ void cKATCPServer::cKATCPClientCallbackHandler::sourceSelection_callback(int64_t
     //Todo
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::frequencyRFChan0_callback(int64_t i64Timestamp_us, double dFrequencyRFChan0_MHz)
+void cKATCPServer::cKATCPClientCallbackHandler::frequencyRFChan0_callback(int64_t i64Timestamp_us, double dFrequencyRFChan0_MHz, const string &strStatus)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oStationControllerMutex);
 
     m_dFrequencyRFChan0_MHz = dFrequencyRFChan0_MHz;
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::frequencyRFChan1_callback(int64_t i64Timestamp_us, double dFrequencyRFChan1_MHz)
+void cKATCPServer::cKATCPClientCallbackHandler::frequencyRFChan1_callback(int64_t i64Timestamp_us, double dFrequencyRFChan1_MHz, const string &strStatus)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oStationControllerMutex);
 
     m_dFrequencyRFChan1_MHz = dFrequencyRFChan1_MHz;
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::frequencyLO0Chan0_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_MHz)
+void cKATCPServer::cKATCPClientCallbackHandler::frequencyLO0Chan0_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_MHz, const string &strStatus)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oStationControllerMutex);
 
     m_dFrequencyLO0Chan0_MHz = dFrequencyLO0Chan0_MHz;
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::frequencyLO0Chan1_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_MHz)
+void cKATCPServer::cKATCPClientCallbackHandler::frequencyLO0Chan1_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_MHz, const string &strStatus)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oStationControllerMutex);
 
     m_dFrequencyLO0Chan1_MHz = dFrequencyLO0Chan1_MHz;
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::frequencyLO1_callback(int64_t i64Timestamp_us, double dFrequencyLO1_MHz)
+void cKATCPServer::cKATCPClientCallbackHandler::frequencyLO1_callback(int64_t i64Timestamp_us, double dFrequencyLO1_MHz, const string &strStatus)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oStationControllerMutex);
 
     m_dFrequencyLO1_MHz = dFrequencyLO1_MHz;
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::receiverBandwidthChan0_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan0_MHz)
+void cKATCPServer::cKATCPClientCallbackHandler::receiverBandwidthChan0_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan0_MHz, const string &strStatus)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oStationControllerMutex);
 
     m_dReceiverBandwidthChan0_MHz = dReceiverBandwidthChan0_MHz;
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::receiverBandwidthChan1_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan1_MHz)
+void cKATCPServer::cKATCPClientCallbackHandler::receiverBandwidthChan1_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan1_MHz, const string &strStatus)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oStationControllerMutex);
 

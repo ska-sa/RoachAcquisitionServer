@@ -214,7 +214,7 @@ void cRoachKATCPClient::readAllRegisters(uint32_t u32SleepTime_ms)
         if( readRoachRegister(string("accumulation_length"), u32Value) )
         {
             sendAccumulationLength(AVN::getTimeNow_us(), u32Value);
-            //cout << "cRoachKATCPClient::threadWriteFunction(): Wrote accumulation_length" << endl;
+            //cout << "cRoachKATCPClient::threadWriteFunction(): Wrote accumulation_length: " << m_i32AccumulationLength_nVal << endl;
         }
         else
         {

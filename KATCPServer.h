@@ -99,39 +99,39 @@ public:
         void                                                stopRecording_callback();
 
         //Antenna values
-        void                                                requestedAntennaAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg);
-        void                                                requestedAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg);
-        void                                                actualAntennaAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg);
-        void                                                actualAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg);
-        void                                                actualSourceOffsetAz_callback(int64_t i64Timestamp_us, double dAzimuthOffset_deg);
-        void                                                actualSourceOffsetEl_callback(int64_t i64Timestamp_us, double dElevationOffset_deg);
-        void                                                actualAntennaRA_callback(int64_t i64Timestamp_us, double dRighAscension_deg);
-        void                                                actualAntennaDec_callback(int64_t i64Timestamp_us, double dDeclination_deg);
+        void                                                requestedAntennaAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus);
+        void                                                requestedAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus);
+        void                                                actualAntennaAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus);
+        void                                                actualAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus);
+        void                                                actualSourceOffsetAz_callback(int64_t i64Timestamp_us, double dAzimuthOffset_deg, const std::string &strStatus);
+        void                                                actualSourceOffsetEl_callback(int64_t i64Timestamp_us, double dElevationOffset_deg, const std::string &strStatus);
+        void                                                actualAntennaRA_callback(int64_t i64Timestamp_us, double dRighAscension_deg, const std::string &strStatus);
+        void                                                actualAntennaDec_callback(int64_t i64Timestamp_us, double dDeclination_deg, const std::string &strStatus);
 
-        void                                                antennaStatus_callback(int64_t i64Timestamp_us, const std::string &strStatus);
-        void                                                motorTorqueAzMaster_callback(int64_t i64Timestamp_us, double dAzMaster_mNm);
-        void                                                motorTorqueAzSlave_callback(int64_t i64Timestamp_us, double dAzSlave_mNm);
-        void                                                motorTorqueElMaster_callback(int64_t i64Timestamp_us, double dElMaster_mNm);
-        void                                                motorTorqueElSlave_callback(int64_t i64Timestamp_us, double dElSlave_mNm);
+        void                                                antennaStatus_callback(int64_t i64Timestamp_us, const std::string &strAntennaStatus, const std::string &strStatus);
+        void                                                motorTorqueAzMaster_callback(int64_t i64Timestamp_us, double dAzMaster_mNm, const std::string &strStatus);
+        void                                                motorTorqueAzSlave_callback(int64_t i64Timestamp_us, double dAzSlave_mNm, const std::string &strStatus);
+        void                                                motorTorqueElMaster_callback(int64_t i64Timestamp_us, double dElMaster_mNm, const std::string &strStatus);
+        void                                                motorTorqueElSlave_callback(int64_t i64Timestamp_us, double dElSlave_mNm, const std::string &strStatus);
         void                                                appliedPointingModel_callback(const std::string &strModelName, const std::vector<double> &vdPointingModelParams);
 
         //Noise diode values
-        void                                                noiseDiodeSoftwareState_callback(int64_t i64Timestamp_us, int32_t i32NoiseDiodeState);
-        void                                                noiseDiodeSource_callback(int64_t i64Timestamp_us, const std::string &strNoiseDiodeSource);
-        void                                                noiseDiodeCurrent_callback(int64_t i64Timestamp_us, double dNoiseDiodeCurrent_A);
+        void                                                noiseDiodeSoftwareState_callback(int64_t i64Timestamp_us, int32_t i32NoiseDiodeState, const std::string &strStatus);
+        void                                                noiseDiodeSource_callback(int64_t i64Timestamp_us, const std::string &strNoiseDiodeSource, const std::string &strStatus);
+        void                                                noiseDiodeCurrent_callback(int64_t i64Timestamp_us, double dNoiseDiodeCurrent_A, const std::string &strStatus);
 
         //Global experiment values
         void                                                sourceSelection_callback(int64_t i64Timestamp_us, const std::string &strSourceName, double dRighAscension_deg, double dDeclination_deg);
 
 
         //RF values
-        void                                                frequencyRFChan0_callback(int64_t i64Timestamp_us, double dFrequencyRFChan0_MHz);
-        void                                                frequencyRFChan1_callback(int64_t i64Timestamp_us, double dFrequencyRFChan1_MHz);
-        void                                                frequencyLO0Chan0_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_MHz);
-        void                                                frequencyLO0Chan1_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_MHz);
-        void                                                frequencyLO1_callback(int64_t i64Timestamp_us, double dFrequencyLO1_MHz);
-        void                                                receiverBandwidthChan0_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan0_MHz);
-        void                                                receiverBandwidthChan1_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan1_MHz);
+        void                                                frequencyRFChan0_callback(int64_t i64Timestamp_us, double dFrequencyRFChan0_MHz, const std::string &strStatus);
+        void                                                frequencyRFChan1_callback(int64_t i64Timestamp_us, double dFrequencyRFChan1_MHz, const std::string &strStatus);
+        void                                                frequencyLO0Chan0_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_MHz, const std::string &strStatus);
+        void                                                frequencyLO0Chan1_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_MHz, const std::string &strStatus);
+        void                                                frequencyLO1_callback(int64_t i64Timestamp_us, double dFrequencyLO1_MHz, const std::string &strStatus);
+        void                                                receiverBandwidthChan0_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan0_MHz, const std::string &strStatus);
+        void                                                receiverBandwidthChan1_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan1_MHz, const std::string &strStatus);
 
         //Locals for ROACH values
         bool                                                m_bRoachKATCPConnected;
