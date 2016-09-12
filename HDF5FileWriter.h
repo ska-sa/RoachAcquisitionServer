@@ -105,6 +105,12 @@ public:
     void                                                motorTorqueElSlave_callback(int64_t i64Timestamp_us, double dElSlave_mNm, const std::string &strStatus);
     void                                                appliedPointingModel_callback(const std::string &strModelName, const std::vector<double> &vdPointingModelParams);
 
+    void                                                antennaName_callback(const std::string &strAntennaName);
+    void                                                antennaDiameter_callback(const std::string &strAntennaDiameter);
+    void                                                antennaBeamwidth_callback(const std::string &strAntennaBeamwidth);
+    void                                                antennaLongitude_callback(const std::string &strAntennaLongitude);
+    void                                                antennaLatitude_callback(const std::string &strAntennaLatitude);
+
     //Noise diode values
     void                                                noiseDiodeSoftwareState_callback(int64_t i64Timestamp_us, int32_t i32NoiseDiodeState, const std::string &strStatus);
     void                                                noiseDiodeSource_callback(int64_t i64Timestamp_us, const std::string &strNoiseSource, const std::string &strStatus);

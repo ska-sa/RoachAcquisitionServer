@@ -2,6 +2,7 @@
 //System includes
 #include <sstream>
 #include <climits>
+#include <ctime>
 
 //Library include
 #include <boost/make_shared.hpp>
@@ -164,6 +165,10 @@ void cHDF5FileWriter::getNextFrame_callback(const std::vector<int> &vi32Chan0, c
         m_strFilename = makeFilename(m_strRecordingDirectory, m_strFilenamePrefix, m_i64ActualStartTime_us);
 
         m_pHDF5File = boost::make_shared<cSpectrometerHDF5OutputFile>(m_strFilename, m_eLastDigitiserType, m_u32FrameSize_nVal);
+
+        // TODO: This is a temporary fix to make KatDAL open the file properly, because we're not getting any markup labels
+        // from the Field System at the moment.
+        m_pHDF5File->addMarkupLabel(time(0)*1e6, "dummy");
 
         if(m_i64Duration_us)
         {
@@ -629,6 +634,46 @@ void cHDF5FileWriter::appliedPointingModel_callback(const string &strModelName, 
     m_pHDF5File->setAppliedPointingModel(strModelName, vdPointingModelParams);
 }
 
+void cHDF5FileWriter::antennaName_callback(const string &strAntennaName)
+{
+    if(getState() != RECORDING) //Don't log if we are not recording
+        return;
+
+    m_pHDF5File->setAntennaName(strAntennaName);
+}
+
+void cHDF5FileWriter::antennaDiameter_callback(const string &strAntennaDiameter)
+{
+    if(getState() != RECORDING) //Don't log if we are not recording
+        return;
+
+    m_pHDF5File->setAntennaBeamwidth(strAntennaDiameter);
+}
+
+void cHDF5FileWriter::antennaBeamwidth_callback(const string &strAntennaBeamwidth)
+{
+    if(getState() != RECORDING) //Don't log if we are not recording
+        return;
+
+    m_pHDF5File->setAntennaBeamwidth(strAntennaBeamwidth);
+}
+
+void cHDF5FileWriter::antennaLongitude_callback(const string &strAntennaLongitude)
+{
+    if(getState() != RECORDING) //Don't log if we are not recording
+        return;
+
+    m_pHDF5File->setAntennaLongitude(strAntennaLongitude);
+}
+
+void cHDF5FileWriter::antennaLatitude_callback(const string &strAntennaLatitude)
+{
+    if(getState() != RECORDING) //Don't log if we are not recording
+        return;
+
+    m_pHDF5File->setAntennaLatitude(strAntennaLatitude);
+}
+
 void cHDF5FileWriter::noiseDiodeSoftwareState_callback(int64_t i64Timestamp_us, int32_t i32NoiseDiodeState, const string &strStatus)
 {
     if(getState() != RECORDING) //Don't log if we are not recording
@@ -690,7 +735,7 @@ void cHDF5FileWriter::frequencyLO0Chan1_callback(int64_t i64Timestamp_us, double
     if(getState() != RECORDING) //Don't log if we are not recording
         return;
 
-    m_pHDF5File->addFrequencyLO0Chan0(i64Timestamp_us, dFrequencyLO0Chan1_MHz, strStatus);
+    m_pHDF5File->addFrequencyLO0Chan1(i64Timestamp_us, dFrequencyLO0Chan1_MHz, strStatus);
 }
 
 void cHDF5FileWriter::frequencyLO1_callback(int64_t i64Timestamp_us, double dFrequencyLO1_MHz, const string &strStatus)

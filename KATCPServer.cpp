@@ -1354,6 +1354,32 @@ void cKATCPServer::cKATCPClientCallbackHandler::motorTorqueElSlave_callback(int6
 void cKATCPServer::cKATCPClientCallbackHandler::appliedPointingModel_callback(const string &strModelName, const vector<double> &vdPointingModelParams)
 {
     //Todo
+    //JNS: Is there anything TODO here?
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::antennaName_callback(const string &strAntennaName)
+{
+    //TODO
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::antennaDiameter_callback(const std::string &strAntennaDiameter)
+{
+    //TODO
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::antennaBeamwidth_callback(const std::string &strAntennaBeamwidth)
+{
+    //TODO
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::antennaLongitude_callback(const std::string &strAntennaLongitude)
+{
+    //TODO
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::antennaLatitude_callback(const std::string &strAntennaLatitude)
+{
+    //TODO
 }
 
 void cKATCPServer::cKATCPClientCallbackHandler::noiseDiodeSoftwareState_callback(int64_t i64Timestamp_us, int32_t i32NoiseDiodeState, const string &strStatus)
