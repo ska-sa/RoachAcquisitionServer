@@ -778,12 +778,12 @@ void cHDF5FileWriter::coarseChannelSelect_callback(int64_t i64Timestamp_us, uint
     m_pHDF5File->addCoarseChannelSelect(i64Timestamp_us, u32ChannelNo);
 }
 
-void cHDF5FileWriter::frequencyFs_callback(double dFrequencyFs_MHz)
+void cHDF5FileWriter::frequencyFs_callback(double dFrequencyFs_Hz)
 {
     if(getState() != RECORDING) //Don't log if we are not recording
         return;
 
-    m_pHDF5File->setFrequencyFs(dFrequencyFs_MHz);
+    m_pHDF5File->setFrequencyFs(dFrequencyFs_Hz);
 }
 
 void cHDF5FileWriter::sizeOfCoarseFFT_callback(uint32_t u32SizeOfCoarseFFT_nSamp)

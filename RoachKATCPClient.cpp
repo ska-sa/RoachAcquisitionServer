@@ -250,8 +250,8 @@ void cRoachKATCPClient::readAllRegisters(uint32_t u32SleepTime_ms)
         if( readRoachRegister(string("sampling_frequency_mhz"), u32Value) )
 
         {
-            sendFrequencyFs((double)u32Value);
-            //cout << "cRoachKATCPClient::threadWriteFunction(): Wrote sampling_frequency_mhz" << endl;
+            sendFrequencyFs((double)u32Value * 1e6); // Datafile wants frequencies in Hz, ROACH reports them in MHz.
+            //cout << "cRoachKATCPClient::threadWriteFunction(): Wrote sampling_frequency_hz" << endl;
         }
         else
         {
@@ -569,7 +569,7 @@ void cRoachKATCPClient::sendCoarseChannelSelect(int64_t i64Timestamp_us, uint32_
     }
 }
 
-void cRoachKATCPClient::sendFrequencyFs(double dFrequencyFs_MHz)
+void cRoachKATCPClient::sendFrequencyFs(double dFrequencyFs_Hz)
 {
     boost::shared_lock<boost::shared_mutex> oLock;
 
@@ -579,13 +579,13 @@ void cRoachKATCPClient::sendFrequencyFs(double dFrequencyFs_MHz)
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
     {
         cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
-        pHandler->frequencyFs_callback(dFrequencyFs_MHz);
+        pHandler->frequencyFs_callback(dFrequencyFs_Hz);
     }
 
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
     {
         boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
-        pHandler->frequencyFs_callback(dFrequencyFs_MHz);
+        pHandler->frequencyFs_callback(dFrequencyFs_Hz);
     }
 }
 

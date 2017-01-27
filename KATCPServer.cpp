@@ -1081,7 +1081,7 @@ double cKATCPServer::getFrequencyFs_KATCPCallback(struct katcp_dispatch *pD, str
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oRoachMutex);
 
-    return m_oKATCPClientCallbackHandler.m_dFrequencyFs_MHz;
+    return m_oKATCPClientCallbackHandler.m_dFrequencyFs_Hz;
 }
 
 int32_t cKATCPServer::getSizeOfCoarseFFT_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
@@ -1478,11 +1478,11 @@ void cKATCPServer::cKATCPClientCallbackHandler::coarseChannelSelect_callback(int
     m_i32CoarseChannelSelection = u32ChannelNo;
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::frequencyFs_callback(double dFrequencyFs_MHz)
+void cKATCPServer::cKATCPClientCallbackHandler::frequencyFs_callback(double dFrequencyFs_Hz)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oRoachMutex);
 
-    m_dFrequencyFs_MHz = dFrequencyFs_MHz;
+    m_dFrequencyFs_Hz = dFrequencyFs_Hz;
 }
 
 void cKATCPServer::cKATCPClientCallbackHandler::sizeOfCoarseFFT_callback(uint32_t u32SizeOfCoarseFFT_nSamp)
