@@ -336,7 +336,7 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
         return;
     }
 
-
+    /* Marked for removal.
     if(!vstrTokens[3].compare("frequencyRFChan0"))
     {
         sendFrequencyRFChan0( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
@@ -387,6 +387,7 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
         sendReceiverBandwidthChan1( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
         return;
     }
+    */
 
     if (!vstrTokens[3].compare("antennaName"))
     {
@@ -835,6 +836,8 @@ void cStationControllerKATCPClient::sendSourceSelection(int64_t i64Timestamp_us,
     }
 }
 
+/* I think that the frequency-related functions don't need to be callbacks on the Station Controller KATCP client anymore.
+
 
 void cStationControllerKATCPClient::sendFrequencyRFChan0(int64_t i64Timestamp_us, double dFreqencyRFChan0_MHz, const string &strStatus)
 {
@@ -876,7 +879,7 @@ void cStationControllerKATCPClient::sendFrequencyRFChan1(int64_t i64Timestamp_us
     }
 }
 
-void cStationControllerKATCPClient::sendFrequencyLO0Chan0(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_MHz, const string &strStatus)
+void cStationControllerKATCPClient::sendFrequencyLO0Chan0(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_Hz, const string &strStatus)
 {
     boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
 
@@ -886,13 +889,13 @@ void cStationControllerKATCPClient::sendFrequencyLO0Chan0(int64_t i64Timestamp_u
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
     {
         cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
-        pHandler->frequencyLO0Chan0_callback(i64Timestamp_us, dFrequencyLO0Chan0_MHz, strStatus);
+        pHandler->frequencyLO0Chan0_callback(i64Timestamp_us, dFrequencyLO0Chan0_Hz, strStatus);
     }
 
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
     {
         boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
-        pHandler->frequencyLO0Chan0_callback(i64Timestamp_us, dFrequencyLO0Chan0_MHz, strStatus);
+        pHandler->frequencyLO0Chan0_callback(i64Timestamp_us, dFrequencyLO0Chan0_Hz, strStatus);
     }
 }
 
@@ -975,6 +978,8 @@ void cStationControllerKATCPClient::sendReceiverBandwidthChan1(int64_t i64Timest
         pHandler->receiverBandwidthChan1_callback(i64Timestamp_us, dReceiverBandwidthChan1_MHz, strStatus);
     }
 }
+
+*** End frequency related functions marked for removal. */
 
 
 void cStationControllerKATCPClient::sendAntennaName(const string &strAntennaName)

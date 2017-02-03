@@ -706,60 +706,64 @@ void cHDF5FileWriter::sourceSelection_callback(int64_t i64Timestamp_us, const st
     m_pHDF5File->addSourceSelection(i64Timestamp_us, strSourceName, dRighAscension_deg, dDeclination_deg);
 }
 
-void cHDF5FileWriter::frequencyRFChan0_callback(int64_t i64Timestamp_us, double dFreqencyRFChan0_MHz, const string &strStatus)
+
+//TODO: Going to need to figure out some way to record these things even if getState() != RECORDING,
+//so that there can be some kind of initial value.
+
+void cHDF5FileWriter::recordFrequencyRFChan0(int64_t i64Timestamp_us, double dFreqencyRFChan0_Hz, const string &strStatus)
 {
     if(getState() != RECORDING) //Don't log if we are not recording
         return;
 
-    m_pHDF5File->addFrequencyRFChan0(i64Timestamp_us, dFreqencyRFChan0_MHz, strStatus);
+    m_pHDF5File->addFrequencyRFChan0(i64Timestamp_us, dFreqencyRFChan0_Hz, strStatus);
 }
 
-void cHDF5FileWriter::frequencyRFChan1_callback(int64_t i64Timestamp_us, double dFreqencyRFChan1_MHz, const string &strStatus)
+void cHDF5FileWriter::recordFrequencyRFChan1(int64_t i64Timestamp_us, double dFreqencyRFChan1_Hz, const string &strStatus)
 {
     if(getState() != RECORDING) //Don't log if we are not recording
         return;
 
-    m_pHDF5File->addFrequencyRFChan1(i64Timestamp_us, dFreqencyRFChan1_MHz, strStatus);
+    m_pHDF5File->addFrequencyRFChan1(i64Timestamp_us, dFreqencyRFChan1_Hz, strStatus);
 }
 
-void cHDF5FileWriter::frequencyLO0Chan0_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_MHz, const string &strStatus)
+void cHDF5FileWriter::recordFrequencyLO0Chan0(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_Hz, const string &strStatus)
 {
     if(getState() != RECORDING) //Don't log if we are not recording
         return;
 
-    m_pHDF5File->addFrequencyLO0Chan0(i64Timestamp_us, dFrequencyLO0Chan0_MHz, strStatus);
+    m_pHDF5File->addFrequencyLO0Chan0(i64Timestamp_us, dFrequencyLO0Chan0_Hz, strStatus);
 }
 
-void cHDF5FileWriter::frequencyLO0Chan1_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_MHz, const string &strStatus)
+void cHDF5FileWriter::recordFrequencyLO0Chan1(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_Hz, const string &strStatus)
 {
     if(getState() != RECORDING) //Don't log if we are not recording
         return;
 
-    m_pHDF5File->addFrequencyLO0Chan1(i64Timestamp_us, dFrequencyLO0Chan1_MHz, strStatus);
+    m_pHDF5File->addFrequencyLO0Chan1(i64Timestamp_us, dFrequencyLO0Chan1_Hz, strStatus);
 }
 
-void cHDF5FileWriter::frequencyLO1_callback(int64_t i64Timestamp_us, double dFrequencyLO1_MHz, const string &strStatus)
+void cHDF5FileWriter::recordFrequencyLO1(int64_t i64Timestamp_us, double dFrequencyLO1_Hz, const string &strStatus)
 {
     if(getState() != RECORDING) //Don't log if we are not recording
         return;
 
-    m_pHDF5File->addFrequencyLO1(i64Timestamp_us, dFrequencyLO1_MHz, strStatus);
+    m_pHDF5File->addFrequencyLO1(i64Timestamp_us, dFrequencyLO1_Hz, strStatus);
 }
 
-void cHDF5FileWriter::receiverBandwidthChan0_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan0_MHz, const string &strStatus)
+void cHDF5FileWriter::recordReceiverBandwidthChan0(int64_t i64Timestamp_us, double dReceiverBandwidthChan0_Hz, const string &strStatus)
 {
     if(getState() != RECORDING) //Don't log if we are not recording
         return;
 
-    m_pHDF5File->addReceiverBandwidthChan0(i64Timestamp_us, dReceiverBandwidthChan0_MHz, strStatus);
+    m_pHDF5File->addReceiverBandwidthChan0(i64Timestamp_us, dReceiverBandwidthChan0_Hz, strStatus);
 }
 
-void cHDF5FileWriter::receiverBandwidthChan1_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan1_MHz, const string &strStatus)
+void cHDF5FileWriter::recordReceiverBandwidthChan1(int64_t i64Timestamp_us, double dReceiverBandwidthChan1_Hz, const string &strStatus)
 {
     if(getState() != RECORDING) //Don't log if we are not recording
         return;
 
-    m_pHDF5File->addReceiverBandwidthChan1(i64Timestamp_us, dReceiverBandwidthChan1_MHz, strStatus);
+    m_pHDF5File->addReceiverBandwidthChan1(i64Timestamp_us, dReceiverBandwidthChan1_Hz, strStatus);
 }
 
 void cHDF5FileWriter::accumulationLength_callback(int64_t i64Timestamp_us, uint32_t u32NSamples)

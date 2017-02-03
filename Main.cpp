@@ -82,7 +82,7 @@ int main(int iArgC, char *pchaArgV[])
     boost::program_options::variables_map oVariableMap;
     boost::program_options::parsed_options oParsed = boost::program_options::command_line_parser(iArgC, pchaArgV).options(oOptions).allow_unregistered().run();
     boost::program_options::store(oParsed, oVariableMap);
-    vector<string> vstrUnreckognisedOptions = boost::program_options::collect_unrecognized(oParsed.options, boost::program_options::include_positional); //Store all unrecognised arguments in vector of strings.
+    vector<string> vstrUnrecognisedOptions = boost::program_options::collect_unrecognized(oParsed.options, boost::program_options::include_positional); //Store all unrecognised arguments in vector of strings.
     boost::program_options::notify(oVariableMap);
 
     if (oVariableMap.count("help"))
@@ -95,13 +95,13 @@ int main(int iArgC, char *pchaArgV[])
         return 1;
     }
 
-    if(vstrUnreckognisedOptions.size())
+    if(vstrUnrecognisedOptions.size())
     {
         cout << "Warning!!!" << endl;
         cout << "Ignoring unrecognised commandline options: ";
 
-        for(uint32_t ui = 0; ui < vstrUnreckognisedOptions.size(); ui++)
-            cout << vstrUnreckognisedOptions[ui] << " ";
+        for(uint32_t ui = 0; ui < vstrUnrecognisedOptions.size(); ui++)
+            cout << vstrUnrecognisedOptions[ui] << " ";
 
         cout << endl;
         cout << "Will apply default values where necessary." << endl;

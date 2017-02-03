@@ -11,6 +11,9 @@ extern "C" {
 }
 
 #include <boost/filesystem.hpp>
+#include <boost/tokenizer.hpp>
+#include <boost/algorithm/string.hpp>
+#include <boost/lexical_cast.hpp>
 
 //Local includes
 #include "KATCPServer.h"
@@ -85,7 +88,7 @@ void cKATCPServer::serverThreadFunction()
     register_double_sensor_katcp(m_pKATCPDispatch, 0,
                                  const_cast<char*>("requestedAntennaEl"),
                                  const_cast<char*>("requested antenna elevation after the pointing model"),
-                                                   const_cast<char*>("degrees"),
+                                 const_cast<char*>("degrees"),
                                  &getRequestedAntennaEl, NULL, NULL, 0.0, 90.0, NULL);
 
     register_double_sensor_katcp(m_pKATCPDispatch, 0,
@@ -383,6 +386,93 @@ void cKATCPServer::serverThreadFunction()
                    const_cast<char*>("?setRoachNoiseDiodeDutyCycleOffDuration"),
                    const_cast<char*>("number of accumulations that noise diode is off in duty cycle mode"),
                    &cKATCPServer::roachSetNoiseDiodeDutyCycleOffDuration_KATCPCallback);
+
+    // Data from RF controller GUI.
+    register_katcp(m_pKATCPDispatch,
+                   const_cast<char*>("#set-valon-freq"), // This is the response from the infrastructure controller to the GUI with timestamp
+                   const_cast<char*>("Push valon frequency to datafile (sent by RF control GUI)"),
+                   &cKATCPServer::RFGUIReceiveValonFrequency_KATCPCallback);
+    register_katcp(m_pKATCPDispatch,
+                   const_cast<char*>("#set-valon-freq:_FAILED"), // An error happened for some reason, need to log this.
+                   const_cast<char*>("Push valon frequency to datafile (sent by RF control GUI)"),
+                   &cKATCPServer::RFGUIReceiveValonFrequency_KATCPCallback);
+
+
+
+    register_katcp(m_pKATCPDispatch,
+                   const_cast<char*>("#set-output"),
+                   const_cast<char*>("Process attenuation and band selection (sent by RF control GUI)"),
+                   &cKATCPServer::RFGUIReceiveSensorOutput_KATCPCallback);
+
+
+
+
+    // Ignore most of the katcp messages coming from the RF control GUI.
+    register_katcp(m_pKATCPDispatch,
+                   const_cast<char*>("#version"),
+                   const_cast<char*>("Ignored."),
+                   &cKATCPServer::RFGUIIgnore_KATCPCallback);
+    register_katcp(m_pKATCPDispatch,
+                   const_cast<char*>("#build-state"),
+                   const_cast<char*>("Ignored."),
+                   &cKATCPServer::RFGUIIgnore_KATCPCallback);
+    register_katcp(m_pKATCPDispatch,
+                   const_cast<char*>("#log"),
+                   const_cast<char*>("Ignored."),
+                   &cKATCPServer::RFGUIIgnore_KATCPCallback);
+    // Might need to look at some of the sensors in future.
+    register_katcp(m_pKATCPDispatch,
+                   const_cast<char*>("#sensor-value"),
+                   const_cast<char*>("Ignored."),
+                   &cKATCPServer::RFGUIIgnore_KATCPCallback);
+    register_katcp(m_pKATCPDispatch,
+                   const_cast<char*>("!sensor-value"),
+                   const_cast<char*>("Ignored."),
+                   &cKATCPServer::RFGUIIgnore_KATCPCallback);
+    register_katcp(m_pKATCPDispatch,
+                   const_cast<char*>("?sensor-sampling"),
+                   const_cast<char*>("Ignored."),
+                   &cKATCPServer::RFGUIIgnore_KATCPCallback);
+    register_katcp(m_pKATCPDispatch,
+                   const_cast<char*>("!sensor-sampling"),
+                   const_cast<char*>("Ignored."),
+                   &cKATCPServer::RFGUIIgnore_KATCPCallback);
+    register_katcp(m_pKATCPDispatch,
+                   const_cast<char*>("?set-output"),
+                   const_cast<char*>("Ignored."),
+                   &cKATCPServer::RFGUIIgnore_KATCPCallback);
+    register_katcp(m_pKATCPDispatch,
+                   const_cast<char*>("!set-output"),
+                   const_cast<char*>("Ignored."),
+                   &cKATCPServer::RFGUIIgnore_KATCPCallback);
+    register_katcp(m_pKATCPDispatch,
+                   const_cast<char*>("?set-valon-freq"),
+                   const_cast<char*>("Ignored."),
+                   &cKATCPServer::RFGUIIgnore_KATCPCallback);
+    register_katcp(m_pKATCPDispatch,
+                   const_cast<char*>("!set-valon-freq"),
+                   const_cast<char*>("Ignored."),
+                   &cKATCPServer::RFGUIIgnore_KATCPCallback);
+    register_katcp(m_pKATCPDispatch,
+                   const_cast<char*>("#get-valon-freq"),
+                   const_cast<char*>("Ignored."),
+                   &cKATCPServer::RFGUIIgnore_KATCPCallback);
+    register_katcp(m_pKATCPDispatch,
+                   const_cast<char*>("?get-valon-freq"),
+                   const_cast<char*>("Ignored."),
+                   &cKATCPServer::RFGUIIgnore_KATCPCallback);
+    register_katcp(m_pKATCPDispatch,
+                   const_cast<char*>("!get-valon-freq"),
+                   const_cast<char*>("Ignored."),
+                   &cKATCPServer::RFGUIIgnore_KATCPCallback);
+    register_katcp(m_pKATCPDispatch,
+                   const_cast<char*>("?set-valon-options"),
+                   const_cast<char*>("Ignored."),
+                   &cKATCPServer::RFGUIIgnore_KATCPCallback);
+    register_katcp(m_pKATCPDispatch,
+                   const_cast<char*>("!set-valon-options"),
+                   const_cast<char*>("Ignored."),
+                   &cKATCPServer::RFGUIIgnore_KATCPCallback);
 
     //Make a server listening interface from hostname and port string
     stringstream oSSServer;
@@ -869,6 +959,109 @@ int32_t cKATCPServer::roachSetNoiseDiodeDutyCycleOffDuration_KATCPCallback(struc
         return KATCP_RESULT_FAIL;
     }
 }
+
+//RF GUI information
+int32_t cKATCPServer::RFGUIIgnore_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC)
+{
+    //Most of the stuff that the RF GUI sends just needs to be ignored.
+    return KATCP_RESULT_OK;
+}
+
+int32_t cKATCPServer::RFGUIReceiveValonFrequency_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC)
+{
+    //Sometimes this fails.
+    if (string(arg_string_katcp(pKATCPDispatch, 0)) == "#set-valon-freq:_FAILED")
+    {
+        cout << "cKATCPServer::RFGUIReceiveValonFrequency_KATCPCallback(): Valon programming failed. Info to follow." << endl;
+        for (int32_t i = 1; i < i32ArgC; i++)
+        {
+            cout << "cKATCPServer::RFGUIReceiveValonFrequency_KATCPCallback(): Received katcp message: " << string(arg_string_katcp(pKATCPDispatch, i)) << endl;
+        }
+    }
+    else
+    {
+        double dTimestamp_s = strtod(arg_string_katcp(pKATCPDispatch, 1), NULL) / 1e3; // Timestamp is in milliseconds.
+        vector<string> v_strValonInfo = tokeniseString(string(arg_string_katcp(pKATCPDispatch, i32ArgC - 1)), string(" "));
+        // I read somewhere that boost's lexical_cast is slow.
+        // But it's easy and it's in a separate thread from the critical stuff,
+        // plus this will only happen on changes of frequency so I figure it's okay.
+        uint32_t u32ValonNumber = boost::lexical_cast<int>(v_strValonInfo[0]);
+        char chSynthLetter = boost::lexical_cast<char>(v_strValonInfo[1]);
+        double dSynthFrequency_Hz = boost::lexical_cast<double>(v_strValonInfo[2]);
+        string strUnit = v_strValonInfo[3];
+
+        //This shouldn't be an issue, but just in case.
+        if (strUnit == "Hz")
+            ;
+        else if (strUnit == "kHz")
+            dSynthFrequency_Hz *= 1e3;
+        else if (strUnit == "GHz")
+            dSynthFrequency_Hz *= 1e9;
+        else
+            dSynthFrequency_Hz *= 1e6; // If it's something else, just assume that it's MHz. That seems to be the standard.
+
+        //FOO_BAR: This is where we need to push this info somewhere.
+        cout << "cKATCPServer::RFGUIReceiveValonFrequency_KATCPCallback(): Received change in frequency: Valon ";
+        switch (u32ValonNumber)
+        {
+            case 0: // Front-most valon.
+            {
+                cout << "0 synth ";
+                switch (chSynthLetter)
+                {
+                    case 'a': // 5.0 GHz's oscillator
+                        cout << "a";
+                        m_pFileWriter->recordFrequencyLO0Chan0(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal"); // hardcoded to nominal for the time being.
+                        break;
+                    case 'b': // 6.7 GHz's oscillator
+                        cout << "b";
+                        m_pFileWriter->recordFrequencyLO0Chan1(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal"); // hardcoded to nominal for the time being.
+                        break;
+                    default: // This is if a problem has been encountered.
+                        cout << "UNKNOWN!";
+                        return KATCP_RESULT_INVALID;
+                        break;
+                }
+            } break;
+
+            case 1:
+            {
+                cout << "1 with synth ";
+                switch (chSynthLetter)
+                {
+                    case 'a': // Final stage oscillator
+                        cout << "a";
+                        m_pFileWriter->recordFrequencyLO1(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal");
+                        break;
+                    case 'b':
+                        cout << "b, but this is unused.";
+                    default:
+                        cout << "UNKNOWN!";
+                }
+            } break;
+
+            default:
+            {
+                cout << "Error! Unknown valon number.";
+                return KATCP_RESULT_INVALID;
+            } break;
+
+        }
+        cout << "." << endl;
+    }
+
+    return KATCP_RESULT_OK;
+}
+
+int32_t cKATCPServer::RFGUIReceiveSensorOutput_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC)
+{
+    for (int32_t i = 0; i < i32ArgC; i++)
+    {
+        cout << "cKATCPServer::RFGUIReceiveSensorOutput_KATCPCallback(): Received katcp message: " << string(arg_string_katcp(pKATCPDispatch, i)) << endl;
+    }
+    return KATCP_RESULT_OK;
+}
+
 
 //Get functions for KATCP sensors Station Controller values
 int cKATCPServer::getIsStationControllerKATCPConnected(struct katcp_dispatch *pD, katcp_acquire *pA)
@@ -1422,11 +1615,11 @@ void cKATCPServer::cKATCPClientCallbackHandler::frequencyRFChan1_callback(int64_
     m_dFrequencyRFChan1_MHz = dFrequencyRFChan1_MHz;
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::frequencyLO0Chan0_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_MHz, const string &strStatus)
+void cKATCPServer::cKATCPClientCallbackHandler::frequencyLO0Chan0_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_Hz, const string &strStatus)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oStationControllerMutex);
 
-    m_dFrequencyLO0Chan0_MHz = dFrequencyLO0Chan0_MHz;
+    m_dFrequencyLO0Chan0_MHz = dFrequencyLO0Chan0_Hz;
 }
 
 void cKATCPServer::cKATCPClientCallbackHandler::frequencyLO0Chan1_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_MHz, const string &strStatus)
@@ -1574,4 +1767,26 @@ void cKATCPServer::cKATCPClientCallbackHandler::clockFrequency_callback(int64_t 
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oRoachMutex);
 
     m_i32ClockFrequency = u32ClockFrequency_Hz;
+}
+
+
+//Plagiarised from cKATCPClientBase
+std::vector<std::string> cKATCPServer::tokeniseString(const std::string &strInputString, const std::string &strSeparators)
+{
+    //This funciton is not complete efficient due to extra memory copies of filling the std::vector
+    //It will also be copied again on return.
+    //It does simply the calling code and should be adequate in the context of most KATCP control clients.
+
+    boost::char_separator<char> oSeparators(strSeparators.c_str());
+    boost::tokenizer< boost::char_separator<char> > oTokens(strInputString, oSeparators);
+
+    vector<string> vstrTokens;
+
+    for(boost::tokenizer< boost::char_separator<char> >::iterator it = oTokens.begin(); it != oTokens.end(); ++it)
+    {
+        vstrTokens.push_back(*it);
+        boost::trim(vstrTokens.back()); //Remove any possible whitespace etc from sides of token
+    }
+
+    return vstrTokens;
 }

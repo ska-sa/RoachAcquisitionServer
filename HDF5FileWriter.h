@@ -121,13 +121,13 @@ public:
 
 
     //RF values
-    void                                                frequencyRFChan0_callback(int64_t i64Timestamp_us, double dFreqencyRFChan0_MHz, const std::string &strStatus);
-    void                                                frequencyRFChan1_callback(int64_t i64Timestamp_us, double dFreqencyRFChan1_MHz, const std::string &strStatus);
-    void                                                frequencyLO0Chan0_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_MHz, const std::string &strStatus);
-    void                                                frequencyLO0Chan1_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_MHz, const std::string &strStatus);
-    void                                                frequencyLO1_callback(int64_t i64Timestamp_us, double dFrequencyLO1_MHz, const std::string &strStatus);
-    void                                                receiverBandwidthChan0_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan0_MHz, const std::string &strStatus);
-    void                                                receiverBandwidthChan1_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan1_MHz, const std::string &strStatus);
+    void                                                recordFrequencyRFChan0(int64_t i64Timestamp_us, double dFreqencyRFChan0_Hz, const std::string &strStatus);
+    void                                                recordFrequencyRFChan1(int64_t i64Timestamp_us, double dFreqencyRFChan1_Hz, const std::string &strStatus);
+    void                                                recordFrequencyLO0Chan0(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_Hz, const std::string &strStatus);
+    void                                                recordFrequencyLO0Chan1(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_Hz, const std::string &strStatus);
+    void                                                recordFrequencyLO1(int64_t i64Timestamp_us, double dFrequencyLO1_Hz, const std::string &strStatus);
+    void                                                recordReceiverBandwidthChan0(int64_t i64Timestamp_us, double dReceiverBandwidthChan0_Hz, const std::string &strStatus);
+    void                                                recordReceiverBandwidthChan1(int64_t i64Timestamp_us, double dReceiverBandwidthChan1_Hz, const std::string &strStatus);
 
     //Roach register values
     //The data mode is spliced into the Roach 10 GbE data stream and interpreted from there so it is not necessary to implement these functions:

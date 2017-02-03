@@ -131,13 +131,13 @@ public:
 
 
         //RF values
-        void                                                frequencyRFChan0_callback(int64_t i64Timestamp_us, double dFrequencyRFChan0_MHz, const std::string &strStatus);
-        void                                                frequencyRFChan1_callback(int64_t i64Timestamp_us, double dFrequencyRFChan1_MHz, const std::string &strStatus);
-        void                                                frequencyLO0Chan0_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_MHz, const std::string &strStatus);
-        void                                                frequencyLO0Chan1_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_MHz, const std::string &strStatus);
-        void                                                frequencyLO1_callback(int64_t i64Timestamp_us, double dFrequencyLO1_MHz, const std::string &strStatus);
-        void                                                receiverBandwidthChan0_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan0_MHz, const std::string &strStatus);
-        void                                                receiverBandwidthChan1_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan1_MHz, const std::string &strStatus);
+        void                                                frequencyRFChan0_callback(int64_t i64Timestamp_us, double dFrequencyRFChan0_Hz, const std::string &strStatus);
+        void                                                frequencyRFChan1_callback(int64_t i64Timestamp_us, double dFrequencyRFChan1_Hz, const std::string &strStatus);
+        void                                                frequencyLO0Chan0_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_Hz, const std::string &strStatus);
+        void                                                frequencyLO0Chan1_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_Hz, const std::string &strStatus);
+        void                                                frequencyLO1_callback(int64_t i64Timestamp_us, double dFrequencyLO1_Hz, const std::string &strStatus);
+        void                                                receiverBandwidthChan0_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan0_Hz, const std::string &strStatus);
+        void                                                receiverBandwidthChan1_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan1_Hz, const std::string &strStatus);
 
 
         //Locals for ROACH values
@@ -194,7 +194,7 @@ public:
 
 protected:
     //Callback handlers (Need to have new actual objects here as we cannot derive the callback handler classes with this class as it is static.)
-    static cHDF5FileWriterCallbackHandler                   m_oHDF5FileWriterCallBackHandler;
+    static cHDF5FileWriterCallbackHandler                   m_oHDF5FileWriterCallBackHandler; //TODO: This needs to have a few callbacks added.
     static cKATCPClientCallbackHandler                      m_oKATCPClientCallbackHandler;
 
     static void                                             serverThreadFunction();
@@ -220,7 +220,10 @@ protected:
     static int32_t                                          roachSetNoiseDiodeDutyCycleEnabled_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
     static int32_t                                          roachSetNoiseDiodeDutyCycleOnDuration_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
     static int32_t                                          roachSetNoiseDiodeDutyCycleOffDuration_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
-
+    //RF GUI information (These should be a temporary solution)
+    static int32_t                                          RFGUIIgnore_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
+    static int32_t                                          RFGUIReceiveValonFrequency_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
+    static int32_t                                          RFGUIReceiveSensorOutput_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
 
     //Sensor get functions (Use by KATCP to read sensor values. Requires thread safe access where necessary)
     //Station controller values:
@@ -292,6 +295,9 @@ protected:
     static uint16_t                                         m_u16Port;
     static uint32_t                                         m_u32MaxClients;
     static std::string                                      m_strRoachGatewareDirectory;
+
+    //Tokenize function to split multi-word dispatches.
+    static std::vector<std::string>                         tokeniseString(const std::string &strInputString, const std::string &strSeparators);
 
 };
 
