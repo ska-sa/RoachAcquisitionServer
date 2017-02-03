@@ -34,7 +34,7 @@ typedef unsigned __int64 uint64_t;
 
 class cHDF5FileWriter : public cSpectrometerDataStreamInterpreter::cCallbackInterface,
         public cUDPReceiver::cDataCallbackInterface,
-        public cStationControllerKATCPClient::cCallbackInterface,
+        //public cStationControllerKATCPClient::cCallbackInterface,
         public cRoachKATCPClient::cCallbackInterface
 {
     //cSpectrometerDataStreamInterpreter actually implements cUDPReceiver::cCallbackInterface as well and could therefore be connected directly to the UDPReceiver to get
@@ -88,6 +88,7 @@ public:
     void                                                startRecording_callback(const std::string &strFilePrefix, int64_t i64StartTime_us, int64_t i64Duration_us);
     void                                                stopRecording_callback();
 
+    /*
     //Antenna values
     void                                                requestedAntennaAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus);
     void                                                requestedAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus);
@@ -118,7 +119,7 @@ public:
 
     //Global experiment values
     void                                                sourceSelection_callback(int64_t i64Timestamp_us, const std::string &strSourceName, double dRighAscension_deg, double dDeclination_deg);
-
+    */
 
     //RF values
     void                                                recordFrequencyRFChan0(int64_t i64Timestamp_us, double dFreqencyRFChan0_Hz, const std::string &strStatus);

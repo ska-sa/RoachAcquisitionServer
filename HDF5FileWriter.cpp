@@ -522,6 +522,7 @@ void cHDF5FileWriter::stopRecording_callback()
     stopRecording();
 }
 
+/*
 void cHDF5FileWriter::requestedAntennaAz_callback(int64_t i64Timestamp_us,double dAzimuth_deg, const string &strStatus)
 {
     if(getState() != RECORDING) //Don't log if we are not recording
@@ -705,7 +706,7 @@ void cHDF5FileWriter::sourceSelection_callback(int64_t i64Timestamp_us, const st
 
     m_pHDF5File->addSourceSelection(i64Timestamp_us, strSourceName, dRighAscension_deg, dDeclination_deg);
 }
-
+*/
 
 //TODO: Going to need to figure out some way to record these things even if getState() != RECORDING,
 //so that there can be some kind of initial value.
