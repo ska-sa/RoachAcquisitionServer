@@ -80,13 +80,13 @@ public:
         int32_t                                             m_i32NoiseDiodeSoftwareState;
         std::string                                         m_strNoiseDiodeSource;
         double                                              m_dNoiseDiodeCurrent_A;
-        double                                              m_dFrequencyRFChan0_MHz;
-        double                                              m_dFrequencyRFChan1_MHz;
-        double                                              m_dFrequencyLO0Chan0_MHz;
-        double                                              m_dFrequencyLO0Chan1_MHz;
-        double                                              m_dFrequencyLO1_MHz;
-        double                                              m_dReceiverBandwidthChan0_MHz;
-        double                                              m_dReceiverBandwidthChan1_MHz;
+        double                                              m_dFrequencyRFChan0_Hz;
+        double                                              m_dFrequencyRFChan1_Hz;
+        double                                              m_dFrequencyLO0Chan0_Hz;
+        double                                              m_dFrequencyLO0Chan1_Hz;
+        double                                              m_dFrequencyLO1_Hz;
+        double                                              m_dReceiverBandwidthChan0_Hz;
+        double                                              m_dReceiverBandwidthChan1_Hz;
         boost::mutex                                        m_oStationControllerMutex;
         //Given that there is only 1 read and 1 write thread a single mutex for all variables should suffice.
 
@@ -187,7 +187,7 @@ public:
 
     static void                                             setFileWriter(boost::shared_ptr<cHDF5FileWriter> pFileWriter);
     static void                                             setRoachKATCPClient(boost::shared_ptr<cRoachKATCPClient> pRoachKATCPClient);
-    static void                                             setStationControllerKATCPClient(boost::shared_ptr<cStationControllerKATCPClient> pKATCPClient);
+    //static void                                             setStationControllerKATCPClient(boost::shared_ptr<cStationControllerKATCPClient> pKATCPClient);
 
     static void                                             startServer(const std::string &strListenInterface, uint16_t u16Port, uint32_t u32MaxClients);
     static void                                             stopServer();
@@ -198,6 +198,7 @@ protected:
     static cKATCPClientCallbackHandler                      m_oKATCPClientCallbackHandler;
 
     static void                                             serverThreadFunction();
+    static void                                             initialSensorDataThreadFunction();
 
     static struct katcp_dispatch                            *m_pKATCPDispatch;
 
@@ -227,7 +228,7 @@ protected:
 
     //Sensor get functions (Use by KATCP to read sensor values. Requires thread safe access where necessary)
     //Station controller values:
-    static int                                              getIsStationControllerKATCPConnected(struct katcp_dispatch *pD, katcp_acquire *pA);
+    //static int                                              getIsStationControllerKATCPConnected(struct katcp_dispatch *pD, katcp_acquire *pA);
 
     //Antenna
     static double                                           getRequestedAntennaAz(struct katcp_dispatch *pD, katcp_acquire *pA);
@@ -289,6 +290,7 @@ protected:
 
     //Threads
     static boost::scoped_ptr<boost::thread>                 m_pKATCPThread;
+    static boost::shared_ptr<boost::thread>                 m_pInitialSensorDataThread;
 
     //Members description operation state
     static std::string                                      m_strListenInterface;

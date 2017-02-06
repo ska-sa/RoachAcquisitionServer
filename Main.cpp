@@ -138,11 +138,13 @@ int main(int iArgC, char *pchaArgV[])
 
         oServer.startKATCPServer(strServerInterface, u16ServerKATCPPort);
 
+        /*
         //Connect TCP clients to station controller and ROACH TCPBorph server if addresses are specified
         if(oVariableMap.count("station-controller-address"))
         {
             oServer.startStationControllerKATCPClient(strStationControllerAddress, u16StationControllerPort);
         }
+        */
 
         if(oVariableMap.count("roach-ppc-address"))
         {

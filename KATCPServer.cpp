@@ -14,6 +14,8 @@ extern "C" {
 #include <boost/tokenizer.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/thread/thread.hpp>
 
 //Local includes
 #include "KATCPServer.h"
@@ -32,6 +34,7 @@ boost::shared_ptr<cHDF5FileWriter>                  cKATCPServer::m_pFileWriter;
 boost::shared_ptr<cRoachKATCPClient>                cKATCPServer::m_pRoachKATCPClient;
 boost::shared_ptr<cStationControllerKATCPClient>    cKATCPServer::m_pStationControllerKATCPClient;
 boost::scoped_ptr<boost::thread>                    cKATCPServer::m_pKATCPThread;
+boost::shared_ptr<boost::thread>                    cKATCPServer::m_pInitialSensorDataThread;
 std::string                                         cKATCPServer::m_strListenInterface;
 uint16_t                                            cKATCPServer::m_u16Port;
 uint32_t                                            cKATCPServer::m_u32MaxClients;
@@ -73,11 +76,13 @@ void cKATCPServer::serverThreadFunction()
 
     //Declare sensors
     //Station controller
+    /*
     register_boolean_sensor_katcp(m_pKATCPDispatch, 0,
                                   const_cast<char*>("stationControllerConnected"),
                                   const_cast<char*>("Is the RoachAcquisitionServer connected to the StationController's KATCP server"),
                                   const_cast<char*>("none"),
                                   &getIsStationControllerKATCPConnected, NULL, NULL);
+                                  */
 
     register_double_sensor_katcp(m_pKATCPDispatch, 0,
                                  const_cast<char*>("requestedAntennaAz"),
@@ -163,41 +168,48 @@ void cKATCPServer::serverThreadFunction()
                                  const_cast<char*>("A"),
                                  &getMotorTorqueElSlave, NULL, NULL, 0.0, 5.0, NULL);
 
+    //TODO: Acceptable range values for the sensors before "warn" is shown. Very wide defaults right now.
     register_double_sensor_katcp(m_pKATCPDispatch, 0,
                                  const_cast<char*>("frequencyRFChan0"),
                                  const_cast<char*>("the centre frequency of RF mapped to final IF output channel 0"),
-                                 const_cast<char*>("MHz"),
-                                 &getFrequencyRFChan0, NULL, NULL, 4800.0, 7000.0, NULL);
+                                 const_cast<char*>("Hz"),
+                                 &getFrequencyRFChan0, NULL, NULL, 4.8e9, 7e9, NULL);
 
     register_double_sensor_katcp(m_pKATCPDispatch, 0,
                                  const_cast<char*>("frequencyRFChan1"),
                                  const_cast<char*>("the centre frequency of RF mapped to final IF output channel 1"),
-                                 const_cast<char*>("MHz"),
-                                 &getFrequencyRFChan1, NULL, NULL, 4800.0, 7000.0, NULL);
+                                 const_cast<char*>("Hz"),
+                                 &getFrequencyRFChan1, NULL, NULL, 4.8e9, 7e9, NULL);
 
     register_double_sensor_katcp(m_pKATCPDispatch, 0,
                                  const_cast<char*>("frequencyLO0Chan0"),
                                  const_cast<char*>("the frequency for the first LO in RF input channel 0"),
-                                 const_cast<char*>("MHz"),
-                                 &getFrequencyLO0Chan0, NULL, NULL, 0, 7000.0, NULL);
+                                 const_cast<char*>("Hz"),
+                                 &getFrequencyLO0Chan0, NULL, NULL, 0, 7e9, NULL);
 
     register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                 const_cast<char*>("frequencyLO0Chan0"),
+                                 const_cast<char*>("frequencyLO0Chan1"),
                                  const_cast<char*>("the frequency for the first LO in RF input channel 1"),
-                                 const_cast<char*>("MHz"),
-                                 &getFrequencyLO1, NULL, NULL, 0, 7000.0, NULL);
+                                 const_cast<char*>("Hz"),
+                                 &getFrequencyLO0Chan1, NULL, NULL, 0, 7e9, NULL);
+
+    register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                 const_cast<char*>("frequencyLO1"),
+                                 const_cast<char*>("the frequency for the final (IF) LO"),
+                                 const_cast<char*>("Hz"),
+                                 &getFrequencyLO1, NULL, NULL, 0, 7e9, NULL);
 
     register_double_sensor_katcp(m_pKATCPDispatch, 0,
                                  const_cast<char*>("receiverBandwidthChan0"),
                                  const_cast<char*>("the bandwidth available to the final IF output channel 0"),
-                                 const_cast<char*>("MHz"),
-                                 &getReceiverBandwidthChan0, NULL, NULL, 0, 7000.0, NULL);
+                                 const_cast<char*>("Hz"),
+                                 &getReceiverBandwidthChan0, NULL, NULL, 0, 7e9, NULL);
 
     register_double_sensor_katcp(m_pKATCPDispatch, 0,
                                  const_cast<char*>("receiverBandwidthChan1"),
                                  const_cast<char*>("the bandwidth available to the final IF output channel 1"),
-                                 const_cast<char*>("MHz"),
-                                 &getReceiverBandwidthChan1, NULL, NULL, 0, 7000.0, NULL);
+                                 const_cast<char*>("Hz"),
+                                 &getReceiverBandwidthChan1, NULL, NULL, 0, 7e9, NULL);
 
 
     //ROACH
@@ -227,7 +239,7 @@ void cKATCPServer::serverThreadFunction()
 
     register_double_sensor_katcp(m_pKATCPDispatch, 0, const_cast<char*>("roachFrequencyFs"),
                                  const_cast<char*>("ADC sample rate"),
-                                 const_cast<char*>("MHz"),
+                                 const_cast<char*>("Hz"),
                                  &getFrequencyFs_KATCPCallback, NULL, NULL, 800.0, 800.0, NULL);
 
     register_integer_sensor_katcp(m_pKATCPDispatch, 0,
@@ -397,15 +409,10 @@ void cKATCPServer::serverThreadFunction()
                    const_cast<char*>("Push valon frequency to datafile (sent by RF control GUI)"),
                    &cKATCPServer::RFGUIReceiveValonFrequency_KATCPCallback);
 
-
-
     register_katcp(m_pKATCPDispatch,
                    const_cast<char*>("#set-output"),
                    const_cast<char*>("Process attenuation and band selection (sent by RF control GUI)"),
                    &cKATCPServer::RFGUIReceiveSensorOutput_KATCPCallback);
-
-
-
 
     // Ignore most of the katcp messages coming from the RF control GUI.
     register_katcp(m_pKATCPDispatch,
@@ -418,23 +425,6 @@ void cKATCPServer::serverThreadFunction()
                    &cKATCPServer::RFGUIIgnore_KATCPCallback);
     register_katcp(m_pKATCPDispatch,
                    const_cast<char*>("#log"),
-                   const_cast<char*>("Ignored."),
-                   &cKATCPServer::RFGUIIgnore_KATCPCallback);
-    // Might need to look at some of the sensors in future.
-    register_katcp(m_pKATCPDispatch,
-                   const_cast<char*>("#sensor-value"),
-                   const_cast<char*>("Ignored."),
-                   &cKATCPServer::RFGUIIgnore_KATCPCallback);
-    register_katcp(m_pKATCPDispatch,
-                   const_cast<char*>("!sensor-value"),
-                   const_cast<char*>("Ignored."),
-                   &cKATCPServer::RFGUIIgnore_KATCPCallback);
-    register_katcp(m_pKATCPDispatch,
-                   const_cast<char*>("?sensor-sampling"),
-                   const_cast<char*>("Ignored."),
-                   &cKATCPServer::RFGUIIgnore_KATCPCallback);
-    register_katcp(m_pKATCPDispatch,
-                   const_cast<char*>("!sensor-sampling"),
                    const_cast<char*>("Ignored."),
                    &cKATCPServer::RFGUIIgnore_KATCPCallback);
     register_katcp(m_pKATCPDispatch,
@@ -486,6 +476,27 @@ void cKATCPServer::serverThreadFunction()
     }
 
     cout << "cKATCPServer::serverThreadFunction(): Exiting thread function." << endl;
+}
+
+void cKATCPServer::initialSensorDataThreadFunction()
+{
+    //Record data which was stored before the file started recording (i.e. most recent sensor data).
+    //General idea: If it's non-zero, we have received a value before the recording started.
+    //Add a timestamp ten seconds ago (to ensure that it starts a bit before the file starts) and push to the file writer.
+    boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
+
+    if (m_oKATCPClientCallbackHandler.m_dFrequencyLO0Chan0_Hz != 0.0)
+    {
+        m_pFileWriter->recordFrequencyLO0Chan0((time(0) - 10)*1e6, m_oKATCPClientCallbackHandler.m_dFrequencyLO0Chan0_Hz, "nominal");
+    }
+    if (m_oKATCPClientCallbackHandler.m_dFrequencyLO0Chan1_Hz != 0.0)
+    {
+        m_pFileWriter->recordFrequencyLO0Chan0((time(0) - 10)*1e6, m_oKATCPClientCallbackHandler.m_dFrequencyLO0Chan1_Hz, "nominal");
+    }
+    if (m_oKATCPClientCallbackHandler.m_dFrequencyLO1_Hz != 0.0)
+    {
+        m_pFileWriter->recordFrequencyLO0Chan0((time(0) - 10)*1e6, m_oKATCPClientCallbackHandler.m_dFrequencyLO1_Hz, "nominal");
+    }
 }
 
 void cKATCPServer::startServer(const string &strInterface, uint16_t u16Port, uint32_t u32MaxClients)
@@ -543,6 +554,7 @@ void cKATCPServer::setRoachKATCPClient(boost::shared_ptr<cRoachKATCPClient> pKAT
     }
 }
 
+/*
 void cKATCPServer::setStationControllerKATCPClient(boost::shared_ptr<cStationControllerKATCPClient> pKATCPClient)
 {
     m_pStationControllerKATCPClient = pKATCPClient;
@@ -555,6 +567,7 @@ void cKATCPServer::setStationControllerKATCPClient(boost::shared_ptr<cStationCon
         m_pStationControllerKATCPClient->registerCallbackHandler(pStationControllerKATCPClientCallbackHandler);
     }
 }
+*/
 
 int32_t cKATCPServer::startRecording_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC)
 {
@@ -1011,10 +1024,12 @@ int32_t cKATCPServer::RFGUIReceiveValonFrequency_KATCPCallback(struct katcp_disp
                 {
                     case 'a': // 5.0 GHz's oscillator
                         cout << "a";
+                        m_oKATCPClientCallbackHandler.frequencyLO0Chan0_callback(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal"); // Let's give this a try.
                         m_pFileWriter->recordFrequencyLO0Chan0(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal"); // hardcoded to nominal for the time being.
                         break;
                     case 'b': // 6.7 GHz's oscillator
                         cout << "b";
+                        m_oKATCPClientCallbackHandler.frequencyLO0Chan1_callback(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal"); // Let's give this a try.
                         m_pFileWriter->recordFrequencyLO0Chan1(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal"); // hardcoded to nominal for the time being.
                         break;
                     default: // This is if a problem has been encountered.
@@ -1031,6 +1046,7 @@ int32_t cKATCPServer::RFGUIReceiveValonFrequency_KATCPCallback(struct katcp_disp
                 {
                     case 'a': // Final stage oscillator
                         cout << "a";
+                        m_oKATCPClientCallbackHandler.frequencyLO1_callback(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal");
                         m_pFileWriter->recordFrequencyLO1(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal");
                         break;
                     case 'b':
@@ -1055,6 +1071,7 @@ int32_t cKATCPServer::RFGUIReceiveValonFrequency_KATCPCallback(struct katcp_disp
 
 int32_t cKATCPServer::RFGUIReceiveSensorOutput_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC)
 {
+    // TODO parse the sensor information for RF channel attenuation and band select data.
     for (int32_t i = 0; i < i32ArgC; i++)
     {
         cout << "cKATCPServer::RFGUIReceiveSensorOutput_KATCPCallback(): Received katcp message: " << string(arg_string_katcp(pKATCPDispatch, i)) << endl;
@@ -1064,6 +1081,7 @@ int32_t cKATCPServer::RFGUIReceiveSensorOutput_KATCPCallback(struct katcp_dispat
 
 
 //Get functions for KATCP sensors Station Controller values
+/*
 int cKATCPServer::getIsStationControllerKATCPConnected(struct katcp_dispatch *pD, katcp_acquire *pA)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oStationControllerMutex);
@@ -1073,6 +1091,7 @@ int cKATCPServer::getIsStationControllerKATCPConnected(struct katcp_dispatch *pD
     else
         return 0;
 }
+*/
 
 double cKATCPServer::getRequestedAntennaAz(struct katcp_dispatch *pD, katcp_acquire *pA)
 {
@@ -1190,49 +1209,49 @@ double cKATCPServer::getFrequencyRFChan0(struct katcp_dispatch *pD, katcp_acquir
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oStationControllerMutex);
 
-    return m_oKATCPClientCallbackHandler.m_dFrequencyRFChan0_MHz;
+    return m_oKATCPClientCallbackHandler.m_dFrequencyRFChan0_Hz;
 }
 
 double cKATCPServer::getFrequencyRFChan1(struct katcp_dispatch *pD, struct katcp_acquire *pA)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oStationControllerMutex);
 
-    return m_oKATCPClientCallbackHandler.m_dFrequencyRFChan1_MHz;
+    return m_oKATCPClientCallbackHandler.m_dFrequencyRFChan1_Hz;
 }
 
 double cKATCPServer::getFrequencyLO0Chan0(struct katcp_dispatch *pD, katcp_acquire *pA)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oStationControllerMutex);
 
-    return m_oKATCPClientCallbackHandler.m_dFrequencyLO0Chan0_MHz;
+    return m_oKATCPClientCallbackHandler.m_dFrequencyLO0Chan0_Hz;
 }
 
 double cKATCPServer::getFrequencyLO0Chan1(struct katcp_dispatch *pD, struct katcp_acquire *pA)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oStationControllerMutex);
 
-    return m_oKATCPClientCallbackHandler.m_dFrequencyLO0Chan1_MHz;
+    return m_oKATCPClientCallbackHandler.m_dFrequencyLO0Chan1_Hz;
 }
 
 double cKATCPServer::getFrequencyLO1(struct katcp_dispatch *pD, katcp_acquire *pA)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oStationControllerMutex);
 
-    return m_oKATCPClientCallbackHandler.m_dFrequencyLO1_MHz;
+    return m_oKATCPClientCallbackHandler.m_dFrequencyLO1_Hz;
 }
 
 double cKATCPServer::getReceiverBandwidthChan0(struct katcp_dispatch *pD, struct katcp_acquire *pA)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oStationControllerMutex);
 
-    return m_oKATCPClientCallbackHandler.m_dReceiverBandwidthChan0_MHz;
+    return m_oKATCPClientCallbackHandler.m_dReceiverBandwidthChan0_Hz;
 }
 
 double cKATCPServer::getReceiverBandwidthChan1(struct katcp_dispatch *pD, katcp_acquire *pA)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oStationControllerMutex);
 
-    return m_oKATCPClientCallbackHandler.m_dReceiverBandwidthChan1_MHz;
+    return m_oKATCPClientCallbackHandler.m_dReceiverBandwidthChan1_Hz;
 }
 
 //Get functions for KATCP sensors ROACH values
@@ -1384,6 +1403,8 @@ void cKATCPServer::cHDF5FileWriterCallbackHandler::recordingStarted_callback()
     }
 
     cout << "cKATCPServer::cHDF5FileWriterNotifier::recordingStarted() Got notification, sent KATCP notification message to all clients." << endl;
+    //m_pInitialSensorDataThread.reset(new boost::thread(&cKATCPServer::initialSensorDataThreadFunction));
+
 }
 
 void cKATCPServer::cHDF5FileWriterCallbackHandler::recordingStopped_callback()
@@ -1601,53 +1622,53 @@ void cKATCPServer::cKATCPClientCallbackHandler::sourceSelection_callback(int64_t
     //Todo
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::frequencyRFChan0_callback(int64_t i64Timestamp_us, double dFrequencyRFChan0_MHz, const string &strStatus)
+void cKATCPServer::cKATCPClientCallbackHandler::frequencyRFChan0_callback(int64_t i64Timestamp_us, double dFrequencyRFChan0_Hz, const string &strStatus)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oStationControllerMutex);
 
-    m_dFrequencyRFChan0_MHz = dFrequencyRFChan0_MHz;
+    m_dFrequencyRFChan0_Hz = dFrequencyRFChan0_Hz;
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::frequencyRFChan1_callback(int64_t i64Timestamp_us, double dFrequencyRFChan1_MHz, const string &strStatus)
+void cKATCPServer::cKATCPClientCallbackHandler::frequencyRFChan1_callback(int64_t i64Timestamp_us, double dFrequencyRFChan1_Hz, const string &strStatus)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oStationControllerMutex);
 
-    m_dFrequencyRFChan1_MHz = dFrequencyRFChan1_MHz;
+    m_dFrequencyRFChan1_Hz = dFrequencyRFChan1_Hz;
 }
 
 void cKATCPServer::cKATCPClientCallbackHandler::frequencyLO0Chan0_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_Hz, const string &strStatus)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oStationControllerMutex);
 
-    m_dFrequencyLO0Chan0_MHz = dFrequencyLO0Chan0_Hz;
+    m_dFrequencyLO0Chan0_Hz = dFrequencyLO0Chan0_Hz;
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::frequencyLO0Chan1_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_MHz, const string &strStatus)
+void cKATCPServer::cKATCPClientCallbackHandler::frequencyLO0Chan1_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_Hz, const string &strStatus)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oStationControllerMutex);
 
-    m_dFrequencyLO0Chan1_MHz = dFrequencyLO0Chan1_MHz;
+    m_dFrequencyLO0Chan1_Hz = dFrequencyLO0Chan1_Hz;
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::frequencyLO1_callback(int64_t i64Timestamp_us, double dFrequencyLO1_MHz, const string &strStatus)
+void cKATCPServer::cKATCPClientCallbackHandler::frequencyLO1_callback(int64_t i64Timestamp_us, double dFrequencyLO1_Hz, const string &strStatus)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oStationControllerMutex);
 
-    m_dFrequencyLO1_MHz = dFrequencyLO1_MHz;
+    m_dFrequencyLO1_Hz = dFrequencyLO1_Hz;
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::receiverBandwidthChan0_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan0_MHz, const string &strStatus)
+void cKATCPServer::cKATCPClientCallbackHandler::receiverBandwidthChan0_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan0_Hz, const string &strStatus)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oStationControllerMutex);
 
-    m_dReceiverBandwidthChan0_MHz = dReceiverBandwidthChan0_MHz;
+    m_dReceiverBandwidthChan0_Hz = dReceiverBandwidthChan0_Hz;
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::receiverBandwidthChan1_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan1_MHz, const string &strStatus)
+void cKATCPServer::cKATCPClientCallbackHandler::receiverBandwidthChan1_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan1_Hz, const string &strStatus)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oStationControllerMutex);
 
-    m_dReceiverBandwidthChan1_MHz = dReceiverBandwidthChan1_MHz;
+    m_dReceiverBandwidthChan1_Hz = dReceiverBandwidthChan1_Hz;
 }
 
 void cKATCPServer::cKATCPClientCallbackHandler::stokesEnabled_callback(int64_t i64Timestamp_us, bool bEnabled)
