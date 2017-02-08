@@ -61,7 +61,7 @@ public:
 
     struct cKATCPClientCallbackHandler : public cRoachKATCPClient::cCallbackInterface, public cStationControllerKATCPClient::cCallbackInterface
     {
-        //Locals for station controller values
+        //Locals for metadata sensor values
         bool                                                m_bStationControllerKATCPConnected;
         std::string                                         m_strStationControllerAddress;
         double                                              m_dRequestedAntennaAz_deg;
@@ -80,14 +80,14 @@ public:
         int32_t                                             m_i32NoiseDiodeSoftwareState;
         std::string                                         m_strNoiseDiodeSource;
         double                                              m_dNoiseDiodeCurrent_A;
-        double                                              m_dFrequencyRFChan0_Hz;
-        double                                              m_dFrequencyRFChan1_Hz;
+        bool                                                m_bBandSelectedLCP;
+        bool                                                m_bBandSelectedRCP;
         double                                              m_dFrequencyLO0Chan0_Hz;
         double                                              m_dFrequencyLO0Chan1_Hz;
         double                                              m_dFrequencyLO1_Hz;
         double                                              m_dReceiverBandwidthChan0_Hz;
         double                                              m_dReceiverBandwidthChan1_Hz;
-        boost::mutex                                        m_oStationControllerMutex;
+        boost::mutex                                        m_oSensorDataMutex;
         //Given that there is only 1 read and 1 write thread a single mutex for all variables should suffice.
 
         //Callback functions called from the Station controller KATCPClient
@@ -131,8 +131,8 @@ public:
 
 
         //RF values
-        void                                                frequencyRFChan0_callback(int64_t i64Timestamp_us, double dFrequencyRFChan0_Hz, const std::string &strStatus);
-        void                                                frequencyRFChan1_callback(int64_t i64Timestamp_us, double dFrequencyRFChan1_Hz, const std::string &strStatus);
+        void                                                bandSelectLCP_callback(int64_t i64Timestamp_us, bool bBandSelected, const std::string &strStatus);
+        void                                                bandSelectRCP_callback(int64_t i64Timestamp_us, bool bBandSelected, const std::string &strStatus);
         void                                                frequencyLO0Chan0_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_Hz, const std::string &strStatus);
         void                                                frequencyLO0Chan1_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_Hz, const std::string &strStatus);
         void                                                frequencyLO1_callback(int64_t i64Timestamp_us, double dFrequencyLO1_Hz, const std::string &strStatus);
@@ -194,7 +194,7 @@ public:
 
 protected:
     //Callback handlers (Need to have new actual objects here as we cannot derive the callback handler classes with this class as it is static.)
-    static cHDF5FileWriterCallbackHandler                   m_oHDF5FileWriterCallBackHandler; //TODO: This needs to have a few callbacks added.
+    static cHDF5FileWriterCallbackHandler                   m_oHDF5FileWriterCallBackHandler; //TODO: This needs to have a few callbacks added. I think.
     static cKATCPClientCallbackHandler                      m_oKATCPClientCallbackHandler;
 
     static void                                             serverThreadFunction();
@@ -256,8 +256,8 @@ protected:
     void                                                    getSourceSelection(int64_t i64Timestamp_us, const std::string &strSourceName, double dRighAscension_deg, double dDeclination_deg);
 
     //RFE
-    static double                                           getFrequencyRFChan0(struct katcp_dispatch *pD, struct katcp_acquire *pA);
-    static double                                           getFrequencyRFChan1(katcp_dispatch *pD, katcp_acquire *pA);
+    static double                                           getFBandSelectedLCP(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+    static double                                           getBandSelectedRCP(katcp_dispatch *pD, katcp_acquire *pA);
     static double                                           getFrequencyLO0Chan0(struct katcp_dispatch *pD, struct katcp_acquire *pA);
     static double                                           getFrequencyLO0Chan1(katcp_dispatch *pD, katcp_acquire *pA);
     static double                                           getFrequencyLO1(struct katcp_dispatch *pD, struct katcp_acquire *pA);

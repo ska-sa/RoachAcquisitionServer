@@ -122,8 +122,8 @@ public:
     */
 
     //RF values
-    void                                                recordFrequencyRFChan0(int64_t i64Timestamp_us, double dFreqencyRFChan0_Hz, const std::string &strStatus);
-    void                                                recordFrequencyRFChan1(int64_t i64Timestamp_us, double dFreqencyRFChan1_Hz, const std::string &strStatus);
+    void                                                recordFrequencySelectLCP(int64_t i64Timestamp_us, bool bFrequencySelectLCP, const std::string &strStatus);
+    void                                                recordFrequencySelectRCP(int64_t i64Timestamp_us, bool bFrequencySelectRCP, const std::string &strStatus);
     void                                                recordFrequencyLO0Chan0(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_Hz, const std::string &strStatus);
     void                                                recordFrequencyLO0Chan1(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_Hz, const std::string &strStatus);
     void                                                recordFrequencyLO1(int64_t i64Timestamp_us, double dFrequencyLO1_Hz, const std::string &strStatus);

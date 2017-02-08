@@ -708,23 +708,21 @@ void cHDF5FileWriter::sourceSelection_callback(int64_t i64Timestamp_us, const st
 }
 */
 
-//TODO: Going to need to figure out some way to record these things even if getState() != RECORDING,
-//so that there can be some kind of initial value.
 
-void cHDF5FileWriter::recordFrequencyRFChan0(int64_t i64Timestamp_us, double dFreqencyRFChan0_Hz, const string &strStatus)
+void cHDF5FileWriter::recordFrequencySelectLCP(int64_t i64Timestamp_us, bool bFrequencySelectLCP, const string &strStatus)
 {
     if(getState() != RECORDING) //Don't log if we are not recording
         return;
 
-    m_pHDF5File->addFrequencyRFChan0(i64Timestamp_us, dFreqencyRFChan0_Hz, strStatus);
+    m_pHDF5File->addFrequencySelectLCP(i64Timestamp_us, bFrequencySelectLCP, strStatus);
 }
 
-void cHDF5FileWriter::recordFrequencyRFChan1(int64_t i64Timestamp_us, double dFreqencyRFChan1_Hz, const string &strStatus)
+void cHDF5FileWriter::recordFrequencySelectRCP(int64_t i64Timestamp_us, bool bFrequencySelectLCP, const string &strStatus)
 {
     if(getState() != RECORDING) //Don't log if we are not recording
         return;
 
-    m_pHDF5File->addFrequencyRFChan1(i64Timestamp_us, dFreqencyRFChan1_Hz, strStatus);
+    m_pHDF5File->addFrequencySelectRCP(i64Timestamp_us, bFrequencySelectLCP, strStatus);
 }
 
 void cHDF5FileWriter::recordFrequencyLO0Chan0(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_Hz, const string &strStatus)
