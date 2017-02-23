@@ -483,6 +483,10 @@ void cKATCPServer::initialSensorDataThreadFunction()
     //Record data which was stored before the file started recording (i.e. most recent sensor data).
     //General idea: If it's non-zero, we have received a value before the recording started.
     //Add a timestamp ten seconds ago (to ensure that it starts a bit before the file starts) and push to the file writer.
+
+    //Sleep for a bit to ensure that the calling function is sufficiently dead. I noticed that if I tried to do this in the recordingStarted_callback then
+    //it exited without acctually accomplishing its task. So it had to be in a new thread and wait for a bit to ensure that the HDF5 file was actually created
+    //before it tries to record stuff. Weird.
     boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
 
     //Lock access for the rest of the function
@@ -494,11 +498,11 @@ void cKATCPServer::initialSensorDataThreadFunction()
     }
     if (m_oKATCPClientCallbackHandler.m_dFrequencyLO0Chan1_Hz != 0.0)
     {
-        m_pFileWriter->recordFrequencyLO0Chan0((time(0) - 10)*1e6, m_oKATCPClientCallbackHandler.m_dFrequencyLO0Chan1_Hz, "nominal");
+        m_pFileWriter->recordFrequencyLO0Chan1((time(0) - 10)*1e6, m_oKATCPClientCallbackHandler.m_dFrequencyLO0Chan1_Hz, "nominal");
     }
     if (m_oKATCPClientCallbackHandler.m_dFrequencyLO1_Hz != 0.0)
     {
-        m_pFileWriter->recordFrequencyLO0Chan0((time(0) - 10)*1e6, m_oKATCPClientCallbackHandler.m_dFrequencyLO1_Hz, "nominal");
+        m_pFileWriter->recordFrequencyLO1((time(0) - 10)*1e6, m_oKATCPClientCallbackHandler.m_dFrequencyLO1_Hz, "nominal");
     }
 
     //Won't check for defaults here, because this should be zero as a default anyway.
@@ -1029,12 +1033,12 @@ int32_t cKATCPServer::RFGUIReceiveValonFrequency_KATCPCallback(struct katcp_disp
                 switch (chSynthLetter)
                 {
                     case 'a': // 5.0 GHz's oscillator
-                        cout << "a";
+                        cout << "a: " << dSynthFrequency_Hz / 1e6 << " MHz.";
                         m_oKATCPClientCallbackHandler.frequencyLO0Chan0_callback(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal"); // Let's give this a try.
                         m_pFileWriter->recordFrequencyLO0Chan0(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal"); // hardcoded to nominal for the time being.
                         break;
                     case 'b': // 6.7 GHz's oscillator
-                        cout << "b";
+                        cout << "b: " << dSynthFrequency_Hz / 1e6 << " MHz.";
                         m_oKATCPClientCallbackHandler.frequencyLO0Chan1_callback(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal"); // Let's give this a try.
                         m_pFileWriter->recordFrequencyLO0Chan1(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal"); // hardcoded to nominal for the time being.
                         break;
@@ -1051,7 +1055,7 @@ int32_t cKATCPServer::RFGUIReceiveValonFrequency_KATCPCallback(struct katcp_disp
                 switch (chSynthLetter)
                 {
                     case 'a': // Final stage oscillator
-                        cout << "a";
+                        cout << "a: " << dSynthFrequency_Hz / 1e6 << " MHz.";
                         m_oKATCPClientCallbackHandler.frequencyLO1_callback(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal");
                         m_pFileWriter->recordFrequencyLO1(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal");
                         break;
