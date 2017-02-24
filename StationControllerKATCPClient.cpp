@@ -13,12 +13,6 @@ using namespace std;
 cStationControllerKATCPClient::cStationControllerKATCPClient() :
     cKATCPClientBase()
 {
-    m_strAntennaStatus = "";
-    m_strAppliedPointingModel = "";
-    m_strSourceSelection = "";
-    m_strAntennaDelayModel = "";
-    m_strAntennaName = "";
-
     m_vstrSensorNames.push_back("requestedAntennaAz");
     m_vstrSensorNames.push_back("requestedAntennaEl");
     m_vstrSensorNames.push_back("actualAntennaAz");
@@ -147,6 +141,7 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
         return;
     }
 
+    /* TODO: Antenna config information marked for removal. The Status one I'm still not sure what to do about though.
     if( !vstrTokens[0].compare("#antennaStatus") )
     {
         //cout << "cStationControllerKATCPClient::processKATCPMessage: Antenna status received: " << vstrTokens[1] << endl;
@@ -177,6 +172,7 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
         m_strAntennaName = vstrTokens[1];
         return;
     }
+    */
 
     // All other known KATCP messages are 5 tokens long.
     // The *1e3 next to each timestamp is because the functions take timestamps in us
@@ -248,14 +244,14 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
         return;
     }
 
-
+    /*
     if(!vstrTokens[3].compare("antennaStatus"))
     {
         cout << "cStationControllerKATCPClient::processKATCPMessage: Antenna Status command received: " << m_strAntennaStatus << endl;
         sendAntennaStatus( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, m_strAntennaStatus, vstrTokens[4].c_str() );
         return;
     }
-
+    */
 
     if(!vstrTokens[3].compare("motorTorqueAzMaster"))
     {

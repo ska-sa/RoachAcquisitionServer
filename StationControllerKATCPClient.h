@@ -132,7 +132,7 @@ private:
     void                                                sendAntennaLatitude(const std::string &strAntennaLatitude);
     void                                                sendAntennaLongitude(const std::string &strAntennaLongitude);
     void                                                sendAppliedPointingModel(const std::string &strModelName, const std::vector<double> &vdPointingModelParams);
-    */
+
 
     //Member storage vars:
     std::string                                         m_strAntennaStatus;
@@ -141,6 +141,7 @@ private:
     std::string                                         m_strSourceSelection;
     std::string                                         m_strAntennaDelayModel;
     std::string                                         m_strAntennaName;
+    */
     std::vector<std::string>                            m_vstrSensorNames;
 };
 

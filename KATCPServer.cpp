@@ -1033,12 +1033,12 @@ int32_t cKATCPServer::RFGUIReceiveValonFrequency_KATCPCallback(struct katcp_disp
                 switch (chSynthLetter)
                 {
                     case 'a': // 5.0 GHz's oscillator
-                        cout << "a: " << dSynthFrequency_Hz / 1e6 << " MHz.";
+                        cout << "a: " << dSynthFrequency_Hz / 1e6 << " MHz";
                         m_oKATCPClientCallbackHandler.frequencyLO0Chan0_callback(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal"); // Let's give this a try.
                         m_pFileWriter->recordFrequencyLO0Chan0(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal"); // hardcoded to nominal for the time being.
                         break;
                     case 'b': // 6.7 GHz's oscillator
-                        cout << "b: " << dSynthFrequency_Hz / 1e6 << " MHz.";
+                        cout << "b: " << dSynthFrequency_Hz / 1e6 << " MHz";
                         m_oKATCPClientCallbackHandler.frequencyLO0Chan1_callback(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal"); // Let's give this a try.
                         m_pFileWriter->recordFrequencyLO0Chan1(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal"); // hardcoded to nominal for the time being.
                         break;
@@ -1055,7 +1055,7 @@ int32_t cKATCPServer::RFGUIReceiveValonFrequency_KATCPCallback(struct katcp_disp
                 switch (chSynthLetter)
                 {
                     case 'a': // Final stage oscillator
-                        cout << "a: " << dSynthFrequency_Hz / 1e6 << " MHz.";
+                        cout << "a: " << dSynthFrequency_Hz / 1e6 << " MHz";
                         m_oKATCPClientCallbackHandler.frequencyLO1_callback(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal");
                         m_pFileWriter->recordFrequencyLO1(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal");
                         break;
