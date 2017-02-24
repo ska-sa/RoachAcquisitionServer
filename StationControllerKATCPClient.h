@@ -35,7 +35,6 @@ public:
         virtual void                                    motorTorqueAzSlave_callback(int64_t i64Timestamp_us, double dAzSlave_mNm, const std::string &strStatus) = 0;
         virtual void                                    motorTorqueElMaster_callback(int64_t i64Timestamp_us, double dElMaster_mNm, const std::string &strStatus) = 0;
         virtual void                                    motorTorqueElSlave_callback(int64_t i64Timestamp_us, double dElSlave_mNm, const std::string &strStatus) = 0;
-        virtual void                                    appliedPointingModel_callback(const std::string &strModelName, const std::vector<double> &vdPointingModelParams) = 0;
 
         //Noise diode values
         virtual void                                    noiseDiodeSoftwareState_callback(int64_t i64Timestamp_us, int32_t i32NoiseDiodeState, const std::string &strStatus) = 0;
@@ -57,11 +56,14 @@ public:
         virtual void                                    receiverBandwidthChan1_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan1_Hz, const std::string &strStatus) = 0;
         */
 
+        /* TODO: remove antenna configuration functions.
         virtual void                                    antennaName_callback(const std::string &strAntennaName) = 0;
         virtual void                                    antennaDiameter_callback(const std::string &strAntennaDiameter) = 0;
         virtual void                                    antennaBeamwidth_callback(const std::string &strAntennaBeamwidth) = 0;
         virtual void                                    antennaLongitude_callback(const std::string &strAntennaLongitude) = 0;
         virtual void                                    antennaLatitude_callback(const std::string &strAntennaLatitude) = 0;
+        virtual void                                    appliedPointingModel_callback(const std::string &strModelName, const std::vector<double> &vdPointingModelParams) = 0;
+        */
     };
 
     cStationControllerKATCPClient(const std::string &strServerAddress, uint16_t u16Port = 7147);
@@ -101,7 +103,6 @@ private:
     void                                                sendMotorTorqueAzSlave(int64_t i64Timestamp_us, double dAzSlave_nNm, const std::string &strStatus);
     void                                                sendMotorTorqueElMaster(int64_t i64Timestamp_us, double dElMaster_nNm, const std::string &strStatus);
     void                                                sendMotorTorqueElSlave(int64_t i64Timestamp_us, double dElSlave_nNm, const std::string &strStatus);
-    void                                                sendAppliedPointingModel(const std::string &strModelName, const std::vector<double> &vdPointingModelParams);
 
     //Noise diode values
     void                                                sendNoiseDiodeSoftwareState(int64_t i64Timestamp_us, int32_t i32NoiseDiodeState, const std::string &strStatus);
@@ -122,6 +123,7 @@ private:
     void                                                sendReceiverBandwidthChan1(int64_t i64Timestamp_us, double dReceiverBandwidthChan1_MHz, const std::string &strStatus);
     */
 
+    /* TODO: Antenna configuration info marked for removal.
     //Antenna info values
     void                                                sendAntennaName(const std::string &strAntennaName);
     void                                                sendAntennaBeamwidth(const std::string &strAntennaBeamwidth);
@@ -129,6 +131,8 @@ private:
     void                                                sendAntennaDiameter(const std::string &strAntennaDiameter);
     void                                                sendAntennaLatitude(const std::string &strAntennaLatitude);
     void                                                sendAntennaLongitude(const std::string &strAntennaLongitude);
+    void                                                sendAppliedPointingModel(const std::string &strModelName, const std::vector<double> &vdPointingModelParams);
+    */
 
     //Member storage vars:
     std::string                                         m_strAntennaStatus;

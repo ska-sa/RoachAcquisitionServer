@@ -1658,6 +1658,7 @@ void cKATCPServer::cKATCPClientCallbackHandler::motorTorqueElSlave_callback(int6
     m_dMotorTorqueAzSlave_mNm = dElSlave_mNm;
 }
 
+/* TODO: This marked for removal.
 void cKATCPServer::cKATCPClientCallbackHandler::appliedPointingModel_callback(const string &strModelName, const vector<double> &vdPointingModelParams)
 {
     //Todo
@@ -1688,6 +1689,7 @@ void cKATCPServer::cKATCPClientCallbackHandler::antennaLatitude_callback(const s
 {
     //TODO
 }
+*/
 
 void cKATCPServer::cKATCPClientCallbackHandler::noiseDiodeSoftwareState_callback(int64_t i64Timestamp_us, int32_t i32NoiseDiodeState, const string &strStatus)
 {

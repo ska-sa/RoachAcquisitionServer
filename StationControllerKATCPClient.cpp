@@ -284,7 +284,7 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
         return;
     }
 
-
+/* TODO: Antenna configuration info marked for removal from KATCP stuff.
     if(!vstrTokens[3].compare("appliedPointingModel"))
     {
         //TODO: Find out exactly what's going on here.
@@ -306,7 +306,7 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
         sendAppliedPointingModel( "vlbi", vdPointingModel );
         return;
     }
-
+*/
 
     if(!vstrTokens[3].compare("noiseDiodeSoftwareState"))
     {
@@ -736,25 +736,6 @@ void cStationControllerKATCPClient::sendMotorTorqueElSlave(int64_t i64Timestamp_
     }
 }
 
-void cStationControllerKATCPClient::sendAppliedPointingModel(const string &strModelName, const vector<double> &vdPointingModelParams)
-{
-    boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
-
-    //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
-    //to call function added in the derived version of the callback handler interface class
-
-    for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
-    {
-        cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
-        pHandler->appliedPointingModel_callback(strModelName, vdPointingModelParams);
-    }
-
-    for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
-    {
-        boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
-        pHandler->appliedPointingModel_callback(strModelName, vdPointingModelParams);
-    }
-}
 
 void cStationControllerKATCPClient::sendNoiseDiodeSoftwareState(int64_t i64Timestamp_us, int32_t i32NoiseDiodeState, const string &strStatus)
 {
@@ -981,6 +962,27 @@ void cStationControllerKATCPClient::sendReceiverBandwidthChan1(int64_t i64Timest
 
 *** End frequency related functions marked for removal. */
 
+/* Antenna configuration functions marked for removal.
+
+void cStationControllerKATCPClient::sendAppliedPointingModel(const string &strModelName, const vector<double> &vdPointingModelParams)
+{
+    boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
+
+    //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
+    //to call function added in the derived version of the callback handler interface class
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
+    {
+        cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
+        pHandler->appliedPointingModel_callback(strModelName, vdPointingModelParams);
+    }
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
+    {
+        boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
+        pHandler->appliedPointingModel_callback(strModelName, vdPointingModelParams);
+    }
+}
 
 void cStationControllerKATCPClient::sendAntennaName(const string &strAntennaName)
 {
@@ -1024,7 +1026,7 @@ void cStationControllerKATCPClient::sendAntennaBeamwidth(const string &strAntenn
 
 void cStationControllerKATCPClient::sendAntennaDelayModel(const string &strAntennaDelayModel)
 {
-    /*boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
+    boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
 
     //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
     //to call function added in the derived version of the callback handler interface class
@@ -1039,7 +1041,7 @@ void cStationControllerKATCPClient::sendAntennaDelayModel(const string &strAnten
     {
         boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
         pHandler->antennaName_callback(strAntennaName);
-    }*/
+    }
 }
 
 void cStationControllerKATCPClient::sendAntennaDiameter(const string &strAntennaDiameter)
@@ -1101,3 +1103,5 @@ void cStationControllerKATCPClient::sendAntennaLongitude(const string &strAntenn
         pHandler->antennaLongitude_callback(strAntennaLongitude);
     }
 }
+//End antenna configuration functions marked for removal. */
+
