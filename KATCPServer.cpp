@@ -233,7 +233,7 @@ void cKATCPServer::serverThreadFunction()
 
     register_integer_sensor_katcp(m_pKATCPDispatch, 0,
                                   const_cast<char*>("roachCoarseChannelSelect"),
-                                  const_cast<char*>("cannonical coarse FFT bin no. selected for narrow band FFT processing"),
+                                  const_cast<char*>("canonical coarse FFT bin no. selected for narrow band FFT processing"),
                                   const_cast<char*>("none"),
                                   &getCoarseChannelSelect_KATCPCallback, NULL, NULL, 0, INT_MAX, NULL);
 
@@ -361,7 +361,7 @@ void cKATCPServer::serverThreadFunction()
 
     register_katcp(m_pKATCPDispatch,
                    const_cast<char*>("?setRoachCoarseChannelSelect"),
-                   const_cast<char*>("coarse FFT cannonical channel number to use for fine FFT input"),
+                   const_cast<char*>("coarse FFT canonical channel number to use for fine FFT input"),
                    &cKATCPServer::roachSetCoarseChannelSelect_KATCPCallback);
 
     register_katcp(m_pKATCPDispatch,
