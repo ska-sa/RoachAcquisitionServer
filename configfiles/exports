@@ -1,0 +1,10 @@
+# /etc/exports: the access control list for filesystems which may be exported
+#		to NFS clients.  See exports(5).
+#
+# Example for NFSv2 and NFSv3:
+
+#
+
+# Share the 'roach boot' directory
+/srv/roachfs/fs 10.0.2.0/255.255.255.0(rw,subtree_check,no_root_squash,insecure)
+
