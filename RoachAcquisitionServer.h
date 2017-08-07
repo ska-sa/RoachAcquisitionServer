@@ -47,8 +47,8 @@ public:
     void                                                startRoachKATCPClient(std::string strServerAddress, uint16_t u16Port);
     void                                                stopRoachKATCPClient();
 
-    //void                                                startStationControllerKATCPClient(std::string strServerAddress, uint16_t u16Port);
-    //void                                                stopStationControllerKATCPClient();
+    void                                                startStationControllerKATCPClient(std::string strServerAddress, uint16_t u16Port);
+    void                                                stopStationControllerKATCPClient();
 
     void                                                start();
     void                                                shutdown();
@@ -60,7 +60,7 @@ private:
     boost::shared_ptr<cHDF5FileWriter>                  m_pHDF5FileWriter;
     boost::shared_ptr<cKATCPServer>                     m_pKATCPServer;
     boost::shared_ptr<cRoachKATCPClient>                m_pRoachKATCPClient;
-    //boost::shared_ptr<cStationControllerKATCPClient>    m_pStationControllerKATCPClient;
+    boost::shared_ptr<cStationControllerKATCPClient>    m_pStationControllerKATCPClient;
 
     std::string                                         m_strRoachTGBEAddress;
     uint16_t                                            m_u16RoachTGBEPort;
@@ -77,8 +77,8 @@ private:
     std::string                                         m_strRoachKATCPAddress;
     uint16_t                                            m_u16RoachKATCPPort;
 
-    //std::string                                         m_strStationControllerKATCPAddress;
-    //uint16_t                                            m_u16StationControllerKATCPPort;
+    std::string                                         m_strStationControllerKATCPAddress;
+    uint16_t                                            m_u16StationControllerKATCPPort;
 
     std::string                                         m_strRoachGatewareDir;
 };

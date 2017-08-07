@@ -565,7 +565,6 @@ void cKATCPServer::setRoachKATCPClient(boost::shared_ptr<cRoachKATCPClient> pKAT
     }
 }
 
-/*
 void cKATCPServer::setStationControllerKATCPClient(boost::shared_ptr<cStationControllerKATCPClient> pKATCPClient)
 {
     m_pStationControllerKATCPClient = pKATCPClient;
@@ -578,7 +577,6 @@ void cKATCPServer::setStationControllerKATCPClient(boost::shared_ptr<cStationCon
         m_pStationControllerKATCPClient->registerCallbackHandler(pStationControllerKATCPClientCallbackHandler);
     }
 }
-*/
 
 int32_t cKATCPServer::startRecording_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC)
 {

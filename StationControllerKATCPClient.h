@@ -46,15 +46,13 @@ public:
 
 
         //RF values
-        /* Marked for removal.
-        virtual void                                    frequencyRFChan0_callback(int64_t i64Timestamp_us, double dFreqencyRFChan0_Hz, const std::string &strStatus) = 0;
-        virtual void                                    frequencyRFChan1_callback(int64_t i64Timestamp_us, double dFreqencyRFChan1_Hz, const std::string &strStatus) = 0;
+        //virtual void                                    frequencyRFChan0_callback(int64_t i64Timestamp_us, double dFreqencyRFChan0_Hz, const std::string &strStatus) = 0;
+        //virtual void                                    frequencyRFChan1_callback(int64_t i64Timestamp_us, double dFreqencyRFChan1_Hz, const std::string &strStatus) = 0;
         virtual void                                    frequencyLO0Chan0_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_Hz, const std::string &strStatus) = 0;
         virtual void                                    frequencyLO0Chan1_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_Hz, const std::string &strStatus) = 0;
         virtual void                                    frequencyLO1_callback(int64_t i64Timestamp_us, double dFrequencyLO1_Hz, const std::string &strStatus) = 0;
         virtual void                                    receiverBandwidthChan0_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan0_Hz, const std::string &strStatus) = 0;
         virtual void                                    receiverBandwidthChan1_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan1_Hz, const std::string &strStatus) = 0;
-        */
 
         /* TODO: remove antenna configuration functions.
         virtual void                                    antennaName_callback(const std::string &strAntennaName) = 0;
@@ -113,7 +111,6 @@ private:
     void                                                sendSourceSelection(int64_t i64Timestamp_us, const std::string &strSourceName, double dRighAscension_deg, double dDeclination_deg);
 
     //RFE values
-    /* Marked for removal.
     void                                                sendFrequencyRFChan0(int64_t i64Timestamp_us, double dFreqencyRF_MHz, const std::string &strStatus);
     void                                                sendFrequencyRFChan1(int64_t i64Timestamp_us, double dFreqencyRF_MHz, const std::string &strStatus);
     void                                                sendFrequencyLO0Chan0(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_MHz, const std::string &strStatus);
@@ -121,7 +118,6 @@ private:
     void                                                sendFrequencyLO1(int64_t i64Timestamp_us, double dFrequencyLO1_MHz, const std::string &strStatus);
     void                                                sendReceiverBandwidthChan0(int64_t i64Timestamp_us, double dReceiverBandwidthChan0_MHz, const std::string &strStatus);
     void                                                sendReceiverBandwidthChan1(int64_t i64Timestamp_us, double dReceiverBandwidthChan1_MHz, const std::string &strStatus);
-    */
 
     /* TODO: Antenna configuration info marked for removal.
     //Antenna info values

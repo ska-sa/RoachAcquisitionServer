@@ -62,8 +62,8 @@ void cRoachAcquisitionServer::shutdown()
     m_pTCPForwardingServer.reset();
     stopRoachKATCPClient();
     m_pRoachKATCPClient.reset();
-    //stopStationControllerKATCPClient();
-    //m_pStationControllerKATCPClient.reset();
+    stopStationControllerKATCPClient();
+    m_pStationControllerKATCPClient.reset();
     m_pKATCPServer.reset();
     m_pHDF5FileWriter.reset();
 
@@ -92,12 +92,11 @@ void cRoachAcquisitionServer::startKATCPServer(std::string strInterface, uint16_
         m_pKATCPServer->setRoachKATCPClient(m_pRoachKATCPClient);
     }
 
-    /*
     if(m_pStationControllerKATCPClient.get())
     {
         m_pKATCPServer->setStationControllerKATCPClient(m_pStationControllerKATCPClient);
     }
-    */
+
 }
 
 void cRoachAcquisitionServer::stopKATCPServer()
@@ -152,7 +151,6 @@ void cRoachAcquisitionServer::stopRoachKATCPClient()
     m_pRoachKATCPClient.reset();
 }
 
-/*
 void cRoachAcquisitionServer::startStationControllerKATCPClient(std::string strServerAddress, uint16_t u16Port)
 {
     if(m_pStationControllerKATCPClient.get())
@@ -203,4 +201,3 @@ void cRoachAcquisitionServer::stopStationControllerKATCPClient()
 
     m_pStationControllerKATCPClient.reset();
 }
-*/

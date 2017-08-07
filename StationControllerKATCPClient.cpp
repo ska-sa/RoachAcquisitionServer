@@ -331,8 +331,7 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
         //sendSourceSelection( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, vstrTokens[2], strtod(vstrTokens[3].c_str(), NULL), strtod(vstrTokens[4].c_str(), NULL) );
         return;
     }
-
-    /* Marked for removal.
+/*
     if(!vstrTokens[3].compare("frequencyRFChan0"))
     {
         sendFrequencyRFChan0( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
@@ -346,7 +345,7 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
         sendFrequencyRFChan1( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
         return;
     }
-
+*/
 
 
     if(!vstrTokens[3].compare("frequencyLO0RFChan0"))
@@ -383,7 +382,6 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
         sendReceiverBandwidthChan1( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
         return;
     }
-    */
 
     if (!vstrTokens[3].compare("antennaName"))
     {
@@ -813,9 +811,8 @@ void cStationControllerKATCPClient::sendSourceSelection(int64_t i64Timestamp_us,
     }
 }
 
-/* I think that the frequency-related functions don't need to be callbacks on the Station Controller KATCP client anymore.
 
-
+/*
 void cStationControllerKATCPClient::sendFrequencyRFChan0(int64_t i64Timestamp_us, double dFreqencyRFChan0_MHz, const string &strStatus)
 {
     boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
@@ -855,6 +852,7 @@ void cStationControllerKATCPClient::sendFrequencyRFChan1(int64_t i64Timestamp_us
         pHandler->frequencyRFChan1_callback(i64Timestamp_us, dFreqencyRFChan1_MHz, strStatus);
     }
 }
+*/
 
 void cStationControllerKATCPClient::sendFrequencyLO0Chan0(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_Hz, const string &strStatus)
 {
@@ -956,7 +954,6 @@ void cStationControllerKATCPClient::sendReceiverBandwidthChan1(int64_t i64Timest
     }
 }
 
-*** End frequency related functions marked for removal. */
 
 /* Antenna configuration functions marked for removal.
 
