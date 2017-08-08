@@ -19,7 +19,7 @@ cRoachKATCPClient::~cRoachKATCPClient()
 
 void cRoachKATCPClient::processKATCPMessage(const std::vector<std::string> &vstrMessageTokens)
 {
-    //Note used in this implementation
+    //Not used in this implementation
 }
 
 bool cRoachKATCPClient::readRoachRegister(const string &strRegisterName, uint32_t &u32Value)

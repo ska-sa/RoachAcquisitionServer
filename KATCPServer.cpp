@@ -76,14 +76,13 @@ void cKATCPServer::serverThreadFunction()
 
     //Declare sensors
     //Station controller
-    /*
+
     register_boolean_sensor_katcp(m_pKATCPDispatch, 0,
                                   const_cast<char*>("stationControllerConnected"),
                                   const_cast<char*>("Is the RoachAcquisitionServer connected to the StationController's KATCP server"),
                                   const_cast<char*>("none"),
                                   &getIsStationControllerKATCPConnected, NULL, NULL);
-                                  */
-
+    /*
     register_double_sensor_katcp(m_pKATCPDispatch, 0,
                                  const_cast<char*>("requestedAntennaAz"),
                                  const_cast<char*>("requested antenna azimuth after the pointing model"),
@@ -210,7 +209,7 @@ void cKATCPServer::serverThreadFunction()
                                  const_cast<char*>("the bandwidth available to the final IF output channel 1"),
                                  const_cast<char*>("Hz"),
                                  &getReceiverBandwidthChan1, NULL, NULL, 0, 7e9, NULL);
-
+    */
 
     //ROACH
     register_boolean_sensor_katcp(m_pKATCPDispatch, 0,
@@ -400,6 +399,7 @@ void cKATCPServer::serverThreadFunction()
                    &cKATCPServer::roachSetNoiseDiodeDutyCycleOffDuration_KATCPCallback);
 
     // Data from RF controller GUI.
+    /*
     register_katcp(m_pKATCPDispatch,
                    const_cast<char*>("#set-valon-freq"), // This is the response from the infrastructure controller to the GUI with timestamp
                    const_cast<char*>("Push valon frequency to datafile (sent by RF control GUI)"),
@@ -463,6 +463,7 @@ void cKATCPServer::serverThreadFunction()
                    const_cast<char*>("!set-valon-options"),
                    const_cast<char*>("Ignored."),
                    &cKATCPServer::RFGUIIgnore_KATCPCallback);
+    */
 
     //Make a server listening interface from hostname and port string
     stringstream oSSServer;
@@ -1173,7 +1174,6 @@ int32_t cKATCPServer::RFGUIReceiveSensorOutput_KATCPCallback(struct katcp_dispat
 
 
 //Get functions for KATCP sensors Station Controller values
-/*
 int cKATCPServer::getIsStationControllerKATCPConnected(struct katcp_dispatch *pD, katcp_acquire *pA)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oStationControllerMutex);
@@ -1183,7 +1183,6 @@ int cKATCPServer::getIsStationControllerKATCPConnected(struct katcp_dispatch *pD
     else
         return 0;
 }
-*/
 
 double cKATCPServer::getRequestedAntennaAz(struct katcp_dispatch *pD, katcp_acquire *pA)
 {

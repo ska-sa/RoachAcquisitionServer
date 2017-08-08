@@ -38,12 +38,14 @@ cStationControllerKATCPClient::cStationControllerKATCPClient() :
     m_vstrSensorNames.push_back("frequencyLO1");
     m_vstrSensorNames.push_back("receiverBandwidthChan0");
     m_vstrSensorNames.push_back("receiverBandwidthChan1");
+/*
     m_vstrSensorNames.push_back("antennaName");
     m_vstrSensorNames.push_back("antennaBeamwidth");
     m_vstrSensorNames.push_back("antennaDelayModel");
     m_vstrSensorNames.push_back("antennaDiameter");
     m_vstrSensorNames.push_back("antennaLongitude");
     m_vstrSensorNames.push_back("antennaLatitude");
+*/
 }
 
 cStationControllerKATCPClient::~cStationControllerKATCPClient()

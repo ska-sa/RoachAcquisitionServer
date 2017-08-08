@@ -63,6 +63,7 @@ public:
     {
         //Locals for metadata sensor values
         bool                                                m_bStationControllerKATCPConnected;
+        boost::mutex                                        m_oStationControllerMutex;
         std::string                                         m_strStationControllerAddress;
         double                                              m_dRequestedAntennaAz_deg;
         double                                              m_dRequestedAntennaEl_deg;
@@ -228,7 +229,7 @@ protected:
 
     //Sensor get functions (Use by KATCP to read sensor values. Requires thread safe access where necessary)
     //Station controller values:
-    //static int                                              getIsStationControllerKATCPConnected(struct katcp_dispatch *pD, katcp_acquire *pA);
+    static int                                              getIsStationControllerKATCPConnected(struct katcp_dispatch *pD, katcp_acquire *pA);
 
     //Antenna
     static double                                           getRequestedAntennaAz(struct katcp_dispatch *pD, katcp_acquire *pA);
