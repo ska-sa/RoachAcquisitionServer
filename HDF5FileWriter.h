@@ -132,7 +132,7 @@ public:
 
     //Roach register values
     //The data mode is spliced into the Roach 10 GbE data stream and interpreted from there so it is not necessary to implement these functions:
-    void                                                stokesEnabled_callback(int64_t i64Timestamp_us, bool bEnabled){}
+    //void                                                stokesEnabled_callback(int64_t i64Timestamp_us, bool bEnabled){}
     /////////////////////////////
     void                                                accumulationLength_callback(int64_t i64Timestamp_us, uint32_t u32NFrames);
     void                                                coarseChannelSelect_callback(int64_t i64Timestamp_us, uint32_t u32ChannelNo);

@@ -1763,12 +1763,13 @@ void cKATCPServer::cKATCPClientCallbackHandler::receiverBandwidthChan1_callback(
     m_dReceiverBandwidthChan1_Hz = dReceiverBandwidthChan1_Hz;
 }
 
+/*
 void cKATCPServer::cKATCPClientCallbackHandler::stokesEnabled_callback(int64_t i64Timestamp_us, bool bEnabled)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oRoachMutex);
 
     m_bStokesEnabled = bEnabled;
-}
+}*/
 
 void cKATCPServer::cKATCPClientCallbackHandler::accumulationLength_callback(int64_t i64Timestamp_us, uint32_t u32NFrames)
 {

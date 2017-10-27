@@ -189,6 +189,7 @@ void cRoachKATCPClient::readAllRegisters(uint32_t u32SleepTime_ms)
     uint32_t u32Value = 0;
     double dADCAttenuation_dB = 0.0;
 
+    /*
     if(disconnectRequested())
         return;
     {
@@ -202,7 +203,7 @@ void cRoachKATCPClient::readAllRegisters(uint32_t u32SleepTime_ms)
         {
             cout << "cRoachKATCPClient::threadWriteFunction(): Failed to read register: stokes_enable" << endl;
         }
-    }
+    }*/
 
     //Wait a bit before next read
     boost::this_thread::sleep_for(boost::chrono::milliseconds(u32SleepTime_ms));
@@ -508,7 +509,7 @@ void cRoachKATCPClient::readAllRegisters(uint32_t u32SleepTime_ms)
     //Wait a bit before next read
     boost::this_thread::sleep_for(boost::chrono::milliseconds(u32SleepTime_ms));
 }
-
+/*
 void cRoachKATCPClient::sendStokesEnabled(int64_t i64Timestamp_us, bool bEnabled)
 {
     boost::shared_lock<boost::shared_mutex> oLock;
@@ -528,7 +529,7 @@ void cRoachKATCPClient::sendStokesEnabled(int64_t i64Timestamp_us, bool bEnabled
         pHandler->stokesEnabled_callback(i64Timestamp_us, bEnabled);
     }
 }
-
+*/
 void cRoachKATCPClient::sendAccumulationLength(int64_t i64Timestamp_us, uint32_t u32NFrames)
 {
     boost::shared_lock<boost::shared_mutex> oLock;

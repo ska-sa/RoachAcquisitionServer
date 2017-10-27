@@ -164,7 +164,7 @@ public:
         boost::mutex                                        m_oRoachMutex;
 
         //Callback functions from the Roach KATCP client
-        void                                                stokesEnabled_callback(int64_t i64Timestamp_us, bool bEnabled);
+        //void                                                stokesEnabled_callback(int64_t i64Timestamp_us, bool bEnabled);
         void                                                accumulationLength_callback(int64_t i64Timestamp_us, uint32_t u32NFrames);
         void                                                coarseChannelSelect_callback(int64_t i64Timestamp_us, uint32_t u32ChannelNo);
         void                                                frequencyFs_callback(double dFrequencyFs_Hz);

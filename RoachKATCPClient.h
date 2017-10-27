@@ -18,7 +18,7 @@ public:
     {
     public:
         //Roach values
-        virtual void                                    stokesEnabled_callback(int64_t i64Timestamp_us, bool bEnabled) = 0;
+        //virtual void                                    stokesEnabled_callback(int64_t i64Timestamp_us, bool bEnabled) = 0;
         virtual void                                    accumulationLength_callback(int64_t i64Timestamp_us, uint32_t u32NFrames) = 0;
         virtual void                                    coarseChannelSelect_callback(int64_t i64Timestamp_us, uint32_t u32ChannelNo) = 0;
         virtual void                                    frequencyFs_callback(double dFrequencyFs_Hz) = 0;
@@ -52,7 +52,7 @@ private:
     void                                                threadWriteFunction();
 
     //Roach values
-    void                                                sendStokesEnabled(int64_t i64Timestamp_us, bool bEnabled);
+    //void                                                sendStokesEnabled(int64_t i64Timestamp_us, bool bEnabled);
     void                                                sendAccumulationLength(int64_t i64Timestamp_us, uint32_t u32NFrames);
     void                                                sendCoarseChannelSelect(int64_t i64Timestamp_us, uint32_t u32ChannelNo);
     void                                                sendFrequencyFs(double dFrequencyFs_Hz);
