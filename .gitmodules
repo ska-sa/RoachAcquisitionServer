@@ -1,27 +1,27 @@
 [submodule "AVNUtilLibs/Sockets"]
 	path = AVNUtilLibs/Sockets
-	url = git@github.com:ska-sa/AVNSockets.git
+	url = https://github.com/ska-sa/AVNSockets.git
 [submodule "AVNUtilLibs/DataStructures"]
 	path = AVNUtilLibs/DataStructures
-	url = git@github.com:ska-sa/AVNDataStructures.git
+	url = https://github.com/ska-sa/AVNDataStructures.git
 [submodule "AVNAppLibs/SocketStreamers"]
 	path = AVNAppLibs/SocketStreamers
-	url = git@github.com:ska-sa/AVNSocketStreamers.git
+	url = https://github.com/ska-sa/AVNSocketStreamers.git
 [submodule "AVNDataTypes/SpectrometerDataStream"]
 	path = AVNDataTypes/SpectrometerDataStream
-	url = git@github.com:ska-sa/AVNSpectrometerDataStream.git
+	url = https://github.com/ska-sa/AVNSpectrometerDataStream.git
 [submodule "AVNUtilLibs/Timestamp"]
 	path = AVNUtilLibs/Timestamp
-	url = git@github.com:ska-sa/AVNTimestamp.git
+	url = https://github.com/ska-sa/AVNTimestamp.git
 [submodule "AVNUtilLibs/CoordinatePosition"]
 	path = AVNUtilLibs/CoordinatePosition
-	url = git@github.com:ska-sa/AVNCoordinatePosition.git
+	url = https://github.com/ska-sa/AVNCoordinatePosition.git
 [submodule "AVNAppLibs/KATCP"]
 	path = AVNAppLibs/KATCP
-	url = git@github.com:ska-sa/AVNKATCP.git
+	url = https://github.com/ska-sa/AVNKATCP.git
 [submodule "AVNUtilLibs/DirectoryContents"]
 	path = AVNUtilLibs/DirectoryContents
-	url = git@github.com:ska-sa/AVNDirectoryContents.git
+	url = https://github.com/ska-sa/AVNDirectoryContents.git
 [submodule "AVNUtilLibs/Filename"]
 	path = AVNUtilLibs/Filename
-	url = git@github.com:ska-sa/AVNFilename.git
+	url = https://github.com/ska-sa/AVNFilename.git
