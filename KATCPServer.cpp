@@ -82,6 +82,45 @@ void cKATCPServer::serverThreadFunction()
                                   const_cast<char*>("Is the RoachAcquisitionServer connected to the StationController's KATCP server"),
                                   const_cast<char*>("none"),
                                   &getIsStationControllerKATCPConnected, NULL, NULL);
+
+    //Recording info.
+    // TODO: figure out sensible min and max values for these.
+    register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                  const_cast<char*>("recordingStartTime"),
+                                  const_cast<char*>("Unix time at which the current recording started."),
+                                  const_cast<char*>("seconds"),
+                                  &getRecordingStartTime_KATCPCallback, NULL, NULL, 0, INT_MAX, NULL);
+
+    register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                  const_cast<char*>("recordingElapsedTime"),
+                                  const_cast<char*>("Duration of current recording."),
+                                  const_cast<char*>("seconds"),
+                                  &getRecordingElapsedTime_KATCPCallback, NULL, NULL, 0, INT_MAX, NULL);
+
+    register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                  const_cast<char*>("recordingStopTime"),
+                                  const_cast<char*>("Unix time at which the current recording is scheduled to stop."),
+                                  const_cast<char*>("seconds"),
+                                  &getRecordingStopTime_KATCPCallback, NULL, NULL, 0, INT_MAX, NULL);
+
+    register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                  const_cast<char*>("recordingRemainingTime"),
+                                  const_cast<char*>("Time until the current recording is scheduled to stop."),
+                                  const_cast<char*>("seconds"),
+                                  &getRecordingRemainingTime_KATCPCallback, NULL, NULL, 0, INT_MAX, NULL);
+
+    register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                  const_cast<char*>("recordingFileSize"),
+                                  const_cast<char*>("Current size of file being recorded."),
+                                  const_cast<char*>("bytes"),
+                                  &getRecordingFileSize_KATCPCallback, NULL, NULL, 0, INT_MAX, NULL);
+
+    register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                  const_cast<char*>("recordingDiskSpace"),
+                                  const_cast<char*>("Amount of disk space still available on SDB."),
+                                  const_cast<char*>("bytes"),
+                                  &getDiskSpace_KATCPCallback, NULL, NULL, 0, INT_MAX, NULL);
+
     /*
     register_double_sensor_katcp(m_pKATCPDispatch, 0,
                                  const_cast<char*>("requestedAntennaAz"),
@@ -328,10 +367,17 @@ void cKATCPServer::serverThreadFunction()
                    const_cast<char*>("stop data recording to HDF5"),
                    &cKATCPServer::stopRecording_KATCPCallback);
 
+    // For backwards compatibility
     register_katcp(m_pKATCPDispatch,
                    const_cast<char*>("?getRecordingInfo"),
                    const_cast<char*>("get info about current recording."),
-                   &cKATCPServer::getRecordingInfo_KATCPCallback);
+                   &cKATCPServer::getCurrentFilename_KATCPCallback);
+//end
+
+    register_katcp(m_pKATCPDispatch,
+                   const_cast<char*>("?getCurrentFilename"),
+                   const_cast<char*>("Get current filename."),
+                   &cKATCPServer::getCurrentFilename_KATCPCallback);
 
     register_katcp(m_pKATCPDispatch,
                    const_cast<char*>("?getRecordingStatus"),
@@ -685,6 +731,93 @@ int32_t cKATCPServer::getRecordingStatus_KATCPCallback(struct katcp_dispatch *pK
 }
 
 
+int32_t cKATCPServer::getCurrentFilename_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC)
+{
+    if(m_pFileWriter->isRecordingEnabled())
+    {
+        send_katcp( pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_STRING, "#getCurrentFilename");
+        append_args_katcp(pKATCPDispatch, KATCP_FLAG_LAST | KATCP_FLAG_STRING, const_cast<char*>("%s"), m_pFileWriter->getFilename().c_str());
+    }
+    else
+    {
+        send_katcp(pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_STRING, "#getCurrentFilename");
+        append_args_katcp(pKATCPDispatch, KATCP_FLAG_LAST | KATCP_FLAG_STRING, const_cast<char*>("not recording"));
+    }
+
+    return KATCP_RESULT_OK;
+}
+
+
+double cKATCPServer::getRecordingStartTime_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+    if(m_pFileWriter->isRecordingEnabled())
+    {
+        return (m_pFileWriter->getRecordingStartTime_us())/1e6;
+    }
+    else
+    {
+        return 0.0;
+    }
+}
+
+
+double cKATCPServer::getRecordingElapsedTime_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+    if(m_pFileWriter->isRecordingEnabled())
+    {
+        return (m_pFileWriter->getRecordedDuration_us())/1e6;
+    }
+    else
+    {
+        return 0.0;
+    }
+}
+
+
+double cKATCPServer::getRecordingStopTime_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+    if(m_pFileWriter->isRecordingEnabled())
+    {
+        return (m_pFileWriter->getRecordingStopTime_us())/1e6;
+    }
+    else
+    {
+        return 0.0;
+    }
+}
+
+
+double cKATCPServer::getRecordingRemainingTime_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+    if(m_pFileWriter->isRecordingEnabled())
+    {
+        return (m_pFileWriter->getRecordingTimeLeft_us())/1e6;
+    }
+    else
+    {
+        return 0.0;
+    }
+}
+
+
+double cKATCPServer::getRecordingFileSize_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+    if(m_pFileWriter->isRecordingEnabled())
+    {
+        return (double)(m_pFileWriter->getCurrentFileSize_B());
+    }
+    else
+    {
+        return 0.0;
+    }
+}
+
+double cKATCPServer::getDiskSpace_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+    return boost::filesystem::space(m_pFileWriter->getRecordingDirectory()).available;
+}
+
+
 int32_t cKATCPServer::getRecordingInfo_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC)
 {
     if(m_pFileWriter->isRecordingEnabled())
@@ -707,6 +840,7 @@ int32_t cKATCPServer::getRecordingInfo_KATCPCallback(struct katcp_dispatch *pKAT
 
     return KATCP_RESULT_OK;
 }
+
 
 //Controlling of Roach
 int32_t cKATCPServer::getRoachGatewareList_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC)
@@ -755,7 +889,7 @@ int32_t cKATCPServer::getRoachGatewareList_KATCPCallback(struct katcp_dispatch *
 
     if(vstrValidFilenames.size())
     {
-        send_katcp( pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_STRING, "#roachGatewareList");
+        send_katcp( pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_STRING, "#getRoachGatewareList");
         for(int32_t i = 0; i < (int32_t)vstrValidFilenames.size() - 1; i++)
         {
             append_args_katcp(pKATCPDispatch, KATCP_FLAG_STRING, const_cast<char*>("%s"), vstrValidFilenames[i].c_str());
@@ -769,6 +903,7 @@ int32_t cKATCPServer::getRoachGatewareList_KATCPCallback(struct katcp_dispatch *
 
     return KATCP_RESULT_OK;
 }
+
 
 int32_t cKATCPServer::roachProgram_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC)
 {

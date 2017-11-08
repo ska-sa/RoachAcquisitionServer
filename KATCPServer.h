@@ -208,6 +208,7 @@ protected:
     static int32_t                                          startRecording_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
     static int32_t                                          stopRecording_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
     static int32_t                                          getRecordingInfo_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
+    static int32_t                                          getCurrentFilename_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
     static int32_t                                          getRecordingStatus_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
     //Controlling of Roach
     static int32_t                                          getRoachGatewareList_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
@@ -230,6 +231,14 @@ protected:
     //Sensor get functions (Use by KATCP to read sensor values. Requires thread safe access where necessary)
     //Station controller values:
     static int                                              getIsStationControllerKATCPConnected(struct katcp_dispatch *pD, katcp_acquire *pA);
+
+    //File recording status values:
+    static double                                          getRecordingStartTime_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+    static double                                          getRecordingElapsedTime_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+    static double                                          getRecordingStopTime_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+    static double                                          getRecordingRemainingTime_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+    static double                                          getRecordingFileSize_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+    static double                                          getDiskSpace_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
 
     //Antenna
     static double                                           getRequestedAntennaAz(struct katcp_dispatch *pD, katcp_acquire *pA);
