@@ -371,7 +371,7 @@ void cKATCPServer::serverThreadFunction()
     register_katcp(m_pKATCPDispatch,
                    const_cast<char*>("?getRecordingInfo"),
                    const_cast<char*>("get info about current recording."),
-                   &cKATCPServer::getCurrentFilename_KATCPCallback);
+                   &cKATCPServer::getRecordingInfo_KATCPCallback);
 //end
 
     register_katcp(m_pKATCPDispatch,
@@ -848,6 +848,8 @@ int32_t cKATCPServer::getRoachGatewareList_KATCPCallback(struct katcp_dispatch *
     //Get all python files in the Launcher directory
     vector<string> vstrFilenames;
     vector<string> vstrValidFilenames;
+    char p_chrTemp[500];
+
     try
     {
         cDirectoryContents oFiles(m_strRoachGatewareDirectory, string(".py"), true);
@@ -889,13 +891,21 @@ int32_t cKATCPServer::getRoachGatewareList_KATCPCallback(struct katcp_dispatch *
 
     if(vstrValidFilenames.size())
     {
+        for(int32_t i = 0; i < (int32_t)vstrValidFilenames.size(); i++)
+        {
+            //For some reason without going through this for loop, something funny slips into the list. Worth investigating.
+            cout << "cKATCPServer::getRoachGatewareList_KATCPCallback(): Found Gateware [" << vstrValidFilenames[i].c_str() << "]" << endl;
+        }
+
         send_katcp( pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_STRING, "#getRoachGatewareList");
+
         for(int32_t i = 0; i < (int32_t)vstrValidFilenames.size() - 1; i++)
         {
             append_args_katcp(pKATCPDispatch, KATCP_FLAG_STRING, const_cast<char*>("%s"), vstrValidFilenames[i].c_str());
         }
         append_args_katcp(pKATCPDispatch, KATCP_FLAG_LAST | KATCP_FLAG_STRING, const_cast<char*>("%s"), vstrValidFilenames[vstrValidFilenames.size() - 1].c_str());
     }
+
     else
     {
         send_katcp( pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_LAST | KATCP_FLAG_STRING, "#roachGatewareList");
