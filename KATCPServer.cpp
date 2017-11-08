@@ -848,7 +848,6 @@ int32_t cKATCPServer::getRoachGatewareList_KATCPCallback(struct katcp_dispatch *
     //Get all python files in the Launcher directory
     vector<string> vstrFilenames;
     vector<string> vstrValidFilenames;
-    char p_chrTemp[500];
 
     try
     {
