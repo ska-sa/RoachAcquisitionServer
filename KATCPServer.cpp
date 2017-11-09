@@ -39,6 +39,22 @@ std::string                                         cKATCPServer::m_strListenInt
 uint16_t                                            cKATCPServer::m_u16Port;
 uint32_t                                            cKATCPServer::m_u32MaxClients;
 std::string                                         cKATCPServer::m_strRoachGatewareDirectory;
+struct katcp_acquire                                *cKATCPServer::m_pKAStationControllerConnected;
+struct katcp_acquire                                *cKATCPServer::m_pKARoachConnected;
+struct katcp_acquire                                *cKATCPServer::m_pKANoiseDiodeEnabled;
+struct katcp_acquire                                *cKATCPServer::m_pKANoiseDiodeDutyCycleEnabled;
+struct katcp_acquire                                *cKATCPServer::m_pKA10GbEUP;
+
+//Extract function for boolean sensors which don't care whether or not they're true or false.
+//Courtesy Marc Welz
+int extract_dontcare_boolean_katcp(struct katcp_dispatch *d, struct katcp_sensor *sn)
+{
+  set_status_sensor_katcp(sn, KATCP_STATUS_NOMINAL);
+  return 0;
+}
+
+
+
 
 cKATCPServer::cKATCPServer(const string &strInterface, uint16_t u16Port, uint32_t u32MaxClients, const string &strRoachGatewareDirectory)
 {
@@ -77,33 +93,34 @@ void cKATCPServer::serverThreadFunction()
     //Declare sensors
     //Station controller
 
-    register_boolean_sensor_katcp(m_pKATCPDispatch, 0,
+    m_pKAStationControllerConnected = setup_boolean_acquire_katcp(m_pKATCPDispatch, &getIsStationControllerKATCPConnected, NULL, NULL);
+    register_direct_multi_boolean_sensor_katcp(m_pKATCPDispatch, 0,
                                   const_cast<char*>("stationControllerConnected"),
                                   const_cast<char*>("Is the RoachAcquisitionServer connected to the StationController's KATCP server"),
                                   const_cast<char*>("none"),
-                                  &getIsStationControllerKATCPConnected, NULL, NULL);
+                                  m_pKAStationControllerConnected);
 
     //Recording info.
     // TODO: figure out sensible min and max values for these.
-    register_double_sensor_katcp(m_pKATCPDispatch, 0,
+    register_integer_sensor_katcp(m_pKATCPDispatch, 0,
                                   const_cast<char*>("recordingStartTime"),
                                   const_cast<char*>("Unix time at which the current recording started."),
                                   const_cast<char*>("seconds"),
                                   &getRecordingStartTime_KATCPCallback, NULL, NULL, 0, INT_MAX, NULL);
 
-    register_double_sensor_katcp(m_pKATCPDispatch, 0,
+    register_integer_sensor_katcp(m_pKATCPDispatch, 0,
                                   const_cast<char*>("recordingElapsedTime"),
                                   const_cast<char*>("Duration of current recording."),
                                   const_cast<char*>("seconds"),
                                   &getRecordingElapsedTime_KATCPCallback, NULL, NULL, 0, INT_MAX, NULL);
 
-    register_double_sensor_katcp(m_pKATCPDispatch, 0,
+    register_integer_sensor_katcp(m_pKATCPDispatch, 0,
                                   const_cast<char*>("recordingStopTime"),
                                   const_cast<char*>("Unix time at which the current recording is scheduled to stop."),
                                   const_cast<char*>("seconds"),
                                   &getRecordingStopTime_KATCPCallback, NULL, NULL, 0, INT_MAX, NULL);
 
-    register_double_sensor_katcp(m_pKATCPDispatch, 0,
+    register_integer_sensor_katcp(m_pKATCPDispatch, 0,
                                   const_cast<char*>("recordingRemainingTime"),
                                   const_cast<char*>("Time until the current recording is scheduled to stop."),
                                   const_cast<char*>("seconds"),
@@ -113,13 +130,13 @@ void cKATCPServer::serverThreadFunction()
                                   const_cast<char*>("recordingFileSize"),
                                   const_cast<char*>("Current size of file being recorded."),
                                   const_cast<char*>("bytes"),
-                                  &getRecordingFileSize_KATCPCallback, NULL, NULL, 0, INT_MAX, NULL);
+                                  &getRecordingFileSize_KATCPCallback, NULL, NULL, 0, 10e9, NULL);
 
     register_double_sensor_katcp(m_pKATCPDispatch, 0,
                                   const_cast<char*>("recordingDiskSpace"),
                                   const_cast<char*>("Amount of disk space still available on SDB."),
                                   const_cast<char*>("bytes"),
-                                  &getDiskSpace_KATCPCallback, NULL, NULL, 0, INT_MAX, NULL);
+                                  &getDiskSpace_KATCPCallback, NULL, NULL, 100e9, 20e12, NULL);
 
     /*
     register_double_sensor_katcp(m_pKATCPDispatch, 0,
@@ -251,17 +268,21 @@ void cKATCPServer::serverThreadFunction()
     */
 
     //ROACH
-    register_boolean_sensor_katcp(m_pKATCPDispatch, 0,
+
+    m_pKARoachConnected = setup_boolean_acquire_katcp(m_pKATCPDispatch, &getIsRoachKATCPConnected, NULL, NULL);
+    register_direct_multi_boolean_sensor_katcp(m_pKATCPDispatch, 0,
                                   const_cast<char*>("roachConnected"),
                                   const_cast<char*>("Is the RoachAcquisitionServer connected to the ROACH's KATCP server"),
                                   const_cast<char*>("none"),
-                                  &getIsRoachKATCPConnected, NULL, NULL);
+                                  m_pKARoachConnected);
 
+    /*
     register_boolean_sensor_katcp(m_pKATCPDispatch, 0,
                                   const_cast<char*>("roachStokesEnabled"),
                                   const_cast<char*>("Is the ROACH spitting out LRQU data. (Otherwise LRPP)"),
                                   const_cast<char*>("none"),
                                   &getStokesEnabled, NULL, NULL);
+    */
 
     register_integer_sensor_katcp(m_pKATCPDispatch, 0,
                                   const_cast<char*>("roachAccumulationLength"),
@@ -278,7 +299,7 @@ void cKATCPServer::serverThreadFunction()
     register_double_sensor_katcp(m_pKATCPDispatch, 0, const_cast<char*>("roachFrequencyFs"),
                                  const_cast<char*>("ADC sample rate"),
                                  const_cast<char*>("Hz"),
-                                 &getFrequencyFs_KATCPCallback, NULL, NULL, 0.0, 1e9, NULL);
+                                 &getFrequencyFs_KATCPCallback, NULL, NULL, 799999999, 800000001, NULL);
 
     register_integer_sensor_katcp(m_pKATCPDispatch, 0,
                                   const_cast<char*>("roachSizeOfCoarseFFT"),
@@ -310,16 +331,18 @@ void cKATCPServer::serverThreadFunction()
                                  const_cast<char*>("dB"),
                                  &getADCAttenuationChan1_KATCPCallback, NULL, NULL, 0, 31.5, NULL); //Assume KATADC
 
-    register_boolean_sensor_katcp(m_pKATCPDispatch, 0,
+    m_pKANoiseDiodeEnabled = setup_boolean_acquire_katcp(m_pKATCPDispatch, &getNoiseDiodeEnabled_KATCPCallback, NULL, NULL);
+    register_multi_boolean_sensor_katcp(m_pKATCPDispatch, 0,
                                   const_cast<char*>("roachNoiseDiodeEnabled"),
                                   const_cast<char*>("Is the Roach's noise diode control enabled"),
                                   const_cast<char*>("none"),
-                                  &getNoiseDiodeEnabled_KATCPCallback, NULL, NULL);
+                                  m_pKANoiseDiodeEnabled, &extract_dontcare_boolean_katcp);
 
-    register_boolean_sensor_katcp(m_pKATCPDispatch, 0, const_cast<char*>("roachNoiseDiodeDutyCycleEnabled"),
+    m_pKANoiseDiodeDutyCycleEnabled = setup_boolean_acquire_katcp(m_pKATCPDispatch, &getNoiseDiodeDutyCycleEnabled_KATCPCallback, NULL, NULL);
+    register_multi_boolean_sensor_katcp(m_pKATCPDispatch, 0, const_cast<char*>("roachNoiseDiodeDutyCycleEnabled"),
                                   const_cast<char*>("Is the Roach generating a sample-clock synchronous duty cycle for the noise diode"),
                                   const_cast<char*>("none"),
-                                  &getNoiseDiodeDutyCycleEnabled_KATCPCallback, NULL, NULL);
+                                  m_pKANoiseDiodeDutyCycleEnabled, &extract_dontcare_boolean_katcp);
 
     register_integer_sensor_katcp(m_pKATCPDispatch, 0,
                                   const_cast<char*>("roachNoiseDiodeDutyCycleOnDuration"),
@@ -339,11 +362,12 @@ void cKATCPServer::serverThreadFunction()
                                   const_cast<char*>("none"),
                                   &getOverflowsRegs_KATCPCallback, NULL, NULL, 0, INT_MAX, NULL);
 
-    register_boolean_sensor_katcp(m_pKATCPDispatch, 0,
+    m_pKA10GbEUP = setup_boolean_acquire_katcp(m_pKATCPDispatch, &getEth10GbEUp_KATCPCallback, NULL, NULL);
+    register_direct_multi_boolean_sensor_katcp(m_pKATCPDispatch, 0,
                                   const_cast<char*>("roachEth10GbEUp"),
                                   const_cast<char*>("Is the relevant Roach 10GbE port for the current gateware link up"),
                                   const_cast<char*>("none"),
-                                  &getEth10GbEUp_KATCPCallback, NULL, NULL);
+                                  m_pKA10GbEUP);
 
     register_integer_sensor_katcp(m_pKATCPDispatch, 0,
                                   const_cast<char*>("roachPPSCount"),
@@ -355,7 +379,7 @@ void cKATCPServer::serverThreadFunction()
                                   const_cast<char*>("roachClockFrequency"),
                                   const_cast<char*>("The clock frequency of the FPGA"),
                                   const_cast<char*>("Hz"),
-                                  &getClockFrequency_KATCPCallback, NULL, NULL, 0, 250000000, NULL);
+                                  &getClockFrequency_KATCPCallback, NULL, NULL, 199999999, 200000001, NULL);
 
     register_katcp(m_pKATCPDispatch,
                    const_cast<char*>("?startRecording"),
@@ -393,12 +417,12 @@ void cKATCPServer::serverThreadFunction()
                    const_cast<char*>("?programRoach"),
                    const_cast<char*>("Program the Roach by specifying a launch script"),
                    &cKATCPServer::roachProgram_KATCPCallback);
-
+/*
     register_katcp(m_pKATCPDispatch,
                    const_cast<char*>("?setRoachStokesEnabled"),
                    const_cast<char*>("Enable stokes calculation to output LRQU (otherwise LRPP)"),
                    &cKATCPServer::roachSetStokesEnabled_KATCPCallback);
-
+*/
     register_katcp(m_pKATCPDispatch,
                    const_cast<char*>("?setRoachAccumulationLength"),
                    const_cast<char*>("number of accumulations after final FFT stage"),
@@ -626,6 +650,9 @@ void cKATCPServer::setStationControllerKATCPClient(boost::shared_ptr<cStationCon
 }
 
 int32_t cKATCPServer::startRecording_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC)
+/*
+ * TODO: Need to make this command more clear.
+ */
 {
     cout << "cKATCPServer::startRecording_KATCPCallback()" << endl;
 
@@ -748,54 +775,54 @@ int32_t cKATCPServer::getCurrentFilename_KATCPCallback(struct katcp_dispatch *pK
 }
 
 
-double cKATCPServer::getRecordingStartTime_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+int32_t cKATCPServer::getRecordingStartTime_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
 {
     if(m_pFileWriter->isRecordingEnabled())
     {
-        return (m_pFileWriter->getRecordingStartTime_us())/1e6;
+        return int(m_pFileWriter->getRecordingStartTime_us()/1e6);
     }
     else
     {
-        return 0.0;
+        return 0;
     }
 }
 
 
-double cKATCPServer::getRecordingElapsedTime_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+int32_t cKATCPServer::getRecordingElapsedTime_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
 {
     if(m_pFileWriter->isRecordingEnabled())
     {
-        return (m_pFileWriter->getRecordedDuration_us())/1e6;
+        return int(m_pFileWriter->getRecordedDuration_us()/1e6);
     }
     else
     {
-        return 0.0;
+        return 0;
     }
 }
 
 
-double cKATCPServer::getRecordingStopTime_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+int32_t cKATCPServer::getRecordingStopTime_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
 {
     if(m_pFileWriter->isRecordingEnabled())
     {
-        return (m_pFileWriter->getRecordingStopTime_us())/1e6;
+        return int(m_pFileWriter->getRecordingStopTime_us()/1e6);
     }
     else
     {
-        return 0.0;
+        return 0;
     }
 }
 
 
-double cKATCPServer::getRecordingRemainingTime_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+int32_t cKATCPServer::getRecordingRemainingTime_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
 {
     if(m_pFileWriter->isRecordingEnabled())
     {
-        return (m_pFileWriter->getRecordingTimeLeft_us())/1e6;
+        return int(m_pFileWriter->getRecordingTimeLeft_us()/1e6);
     }
     else
     {
-        return 0.0;
+        return 0;
     }
 }
 
@@ -937,6 +964,7 @@ int32_t cKATCPServer::roachProgram_KATCPCallback(struct katcp_dispatch *pKATCPDi
     return KATCP_RESULT_OK;
 }
 
+/*
 int32_t cKATCPServer::roachSetStokesEnabled_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC)
 {
     if(!m_pRoachKATCPClient.get())
@@ -955,6 +983,7 @@ int32_t cKATCPServer::roachSetStokesEnabled_KATCPCallback(struct katcp_dispatch 
         return KATCP_RESULT_FAIL;
     }
 }
+*/
 
 int32_t cKATCPServer::roachSetAccumulationLength_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC)
 {
@@ -975,6 +1004,7 @@ int32_t cKATCPServer::roachSetAccumulationLength_KATCPCallback(struct katcp_disp
     }
 }
 
+
 int32_t cKATCPServer::roachSetCoarseChannelSelect_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC)
 {
     if(!m_pRoachKATCPClient.get())
@@ -994,6 +1024,7 @@ int32_t cKATCPServer::roachSetCoarseChannelSelect_KATCPCallback(struct katcp_dis
     }
 }
 
+
 int32_t cKATCPServer::roachSetCoarseFFTShiftMask_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC)
 {
     if(!m_pRoachKATCPClient.get())
@@ -1012,6 +1043,7 @@ int32_t cKATCPServer::roachSetCoarseFFTShiftMask_KATCPCallback(struct katcp_disp
         return KATCP_RESULT_FAIL;
     }
 }
+
 
 int32_t cKATCPServer::roachSetADC0Attenuation_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC)
 {
@@ -1500,6 +1532,7 @@ int32_t cKATCPServer::getIsRoachKATCPConnected(struct katcp_dispatch *pD, katcp_
         return 0;
 }
 
+/*
 int32_t cKATCPServer::getStokesEnabled(struct katcp_dispatch *pD, katcp_acquire *pA)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oRoachMutex);
@@ -1509,6 +1542,7 @@ int32_t cKATCPServer::getStokesEnabled(struct katcp_dispatch *pD, katcp_acquire 
     else
         return 0;
 }
+*/
 
 int32_t cKATCPServer::getAccumulationLength_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
 {

@@ -231,14 +231,15 @@ protected:
     //Sensor get functions (Use by KATCP to read sensor values. Requires thread safe access where necessary)
     //Station controller values:
     static int                                              getIsStationControllerKATCPConnected(struct katcp_dispatch *pD, katcp_acquire *pA);
+    static struct katcp_acquire                             *m_pKAStationControllerConnected;
 
     //File recording status values:
-    static double                                          getRecordingStartTime_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
-    static double                                          getRecordingElapsedTime_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
-    static double                                          getRecordingStopTime_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
-    static double                                          getRecordingRemainingTime_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
-    static double                                          getRecordingFileSize_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
-    static double                                          getDiskSpace_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+    static int32_t                                          getRecordingStartTime_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+    static int32_t                                          getRecordingElapsedTime_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+    static int32_t                                          getRecordingStopTime_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+    static int32_t                                          getRecordingRemainingTime_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+    static double                                           getRecordingFileSize_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+    static double                                           getDiskSpace_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
 
     //Antenna
     static double                                           getRequestedAntennaAz(struct katcp_dispatch *pD, katcp_acquire *pA);
@@ -276,7 +277,8 @@ protected:
 
     //Roach values:
     static int32_t                                          getIsRoachKATCPConnected(struct katcp_dispatch *pD, katcp_acquire *pA);
-    static int32_t                                          getStokesEnabled(struct katcp_dispatch *pD, katcp_acquire *pA);
+    static struct katcp_acquire*                            m_pKARoachConnected;
+    //static int32_t                                          getStokesEnabled(struct katcp_dispatch *pD, katcp_acquire *pA);
     static int32_t                                          getAccumulationLength_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
     static int32_t                                          getCoarseChannelSelect_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
     static double                                           getFrequencyFs_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
@@ -286,11 +288,14 @@ protected:
     static double                                           getADCAttenuationChan0_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
     static double                                           getADCAttenuationChan1_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
     static int32_t                                          getNoiseDiodeEnabled_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+    static struct katcp_acquire*                            m_pKANoiseDiodeEnabled;
     static int32_t                                          getNoiseDiodeDutyCycleEnabled_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+    static struct katcp_acquire*                            m_pKANoiseDiodeDutyCycleEnabled;
     static int32_t                                          getNoiseDiodeDutyCycleOnDuration_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
     static int32_t                                          getNoiseDiodeDutyCycleOffDuration_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
     static int32_t                                          getOverflowsRegs_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
     static int32_t                                          getEth10GbEUp_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+    static struct katcp_acquire*                            m_pKA10GbEUP;
     static int32_t                                          getPPSCount_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
     static int32_t                                          getClockFrequency_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
 
