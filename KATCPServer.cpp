@@ -562,20 +562,20 @@ void cKATCPServer::initialSensorDataThreadFunction()
 
     if (m_oKATCPClientCallbackHandler.m_dFrequencyLO0Chan0_Hz != 0.0)
     {
-        m_pFileWriter->recordFrequencyLO0Chan0((time(0) - 10)*1e6, m_oKATCPClientCallbackHandler.m_dFrequencyLO0Chan0_Hz, "nominal");
+        m_pFileWriter->frequencyLO0Chan0_callback((time(0) - 10)*1e6, m_oKATCPClientCallbackHandler.m_dFrequencyLO0Chan0_Hz, "nominal");
     }
     if (m_oKATCPClientCallbackHandler.m_dFrequencyLO0Chan1_Hz != 0.0)
     {
-        m_pFileWriter->recordFrequencyLO0Chan1((time(0) - 10)*1e6, m_oKATCPClientCallbackHandler.m_dFrequencyLO0Chan1_Hz, "nominal");
+        m_pFileWriter->frequencyLO0Chan1_callback((time(0) - 10)*1e6, m_oKATCPClientCallbackHandler.m_dFrequencyLO0Chan1_Hz, "nominal");
     }
     if (m_oKATCPClientCallbackHandler.m_dFrequencyLO1_Hz != 0.0)
     {
-        m_pFileWriter->recordFrequencyLO1((time(0) - 10)*1e6, m_oKATCPClientCallbackHandler.m_dFrequencyLO1_Hz, "nominal");
+        m_pFileWriter->frequencyLO1_callback((time(0) - 10)*1e6, m_oKATCPClientCallbackHandler.m_dFrequencyLO1_Hz, "nominal");
     }
 
     //Won't check for defaults here, because this should be zero as a default anyway.
-    m_pFileWriter->recordFrequencySelectLCP((time(0) - 10)*1e6, m_oKATCPClientCallbackHandler.m_bBandSelectedLCP, "nominal");
-    m_pFileWriter->recordFrequencySelectRCP((time(0) - 10)*1e6, m_oKATCPClientCallbackHandler.m_bBandSelectedRCP, "nominal");
+    m_pFileWriter->frequencySelectChan0_callback((time(0) - 10)*1e6, m_oKATCPClientCallbackHandler.m_bBandSelectedLCP, "nominal");
+    m_pFileWriter->frequencySelectChan1_callback((time(0) - 10)*1e6, m_oKATCPClientCallbackHandler.m_bBandSelectedRCP, "nominal");
 }
 
 void cKATCPServer::startServer(const string &strInterface, uint16_t u16Port, uint32_t u32MaxClients)
@@ -1207,12 +1207,12 @@ int32_t cKATCPServer::RFGUIReceiveValonFrequency_KATCPCallback(struct katcp_disp
                     case 'a': // 5.0 GHz's oscillator
                         cout << "a: " << dSynthFrequency_Hz / 1e6 << " MHz";
                         m_oKATCPClientCallbackHandler.frequencyLO0Chan0_callback(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal"); // Let's give this a try.
-                        m_pFileWriter->recordFrequencyLO0Chan0(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal"); // hardcoded to nominal for the time being.
+                        m_pFileWriter->frequencyLO0Chan0_callback(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal"); // hardcoded to nominal for the time being.
                         break;
                     case 'b': // 6.7 GHz's oscillator
                         cout << "b: " << dSynthFrequency_Hz / 1e6 << " MHz";
                         m_oKATCPClientCallbackHandler.frequencyLO0Chan1_callback(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal"); // Let's give this a try.
-                        m_pFileWriter->recordFrequencyLO0Chan1(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal"); // hardcoded to nominal for the time being.
+                        m_pFileWriter->frequencyLO0Chan1_callback(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal"); // hardcoded to nominal for the time being.
                         break;
                     default: // This is if a problem has been encountered.
                         cout << "UNKNOWN!";
@@ -1229,7 +1229,7 @@ int32_t cKATCPServer::RFGUIReceiveValonFrequency_KATCPCallback(struct katcp_disp
                     case 'a': // Final stage oscillator
                         cout << "a: " << dSynthFrequency_Hz / 1e6 << " MHz";
                         m_oKATCPClientCallbackHandler.frequencyLO1_callback(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal");
-                        m_pFileWriter->recordFrequencyLO1(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal");
+                        m_pFileWriter->frequencyLO1_callback(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal");
                         break;
                     case 'b':
                         cout << "b, but this is unused. ";
@@ -1267,15 +1267,15 @@ int32_t cKATCPServer::RFGUIReceiveSensorOutput_KATCPCallback(struct katcp_dispat
     {
         string strBand = (strSensorValue == "ON")?"6.7":"5.0";
         cout << "LCP band selection. Now using " << strBand << " GHz." << endl;
-        m_oKATCPClientCallbackHandler.bandSelectLCP_callback(dTimestamp_s*1e6, (strSensorValue == "ON")?true:false, "nominal");
-        m_pFileWriter->recordFrequencySelectLCP(dTimestamp_s * 1e6, (strSensorValue == "ON")?true:false, "nominal");
+        m_oKATCPClientCallbackHandler.frequencySelectChan0_callback(dTimestamp_s*1e6, (strSensorValue == "ON")?true:false, "nominal");
+        m_pFileWriter->frequencySelectChan0_callback(dTimestamp_s * 1e6, (strSensorValue == "ON")?true:false, "nominal");
     }
     else if (strSensorName == "RFC.RcpFreqSel")
     {
         string strBand = (strSensorValue == "ON")?"6.7":"5.0";
         cout << "RCP band selection. Now using " << strBand << " GHz." << endl;
-        m_oKATCPClientCallbackHandler.bandSelectRCP_callback(dTimestamp_s*1e6, (strSensorValue == "ON")?true:false, "nominal");
-        m_pFileWriter->recordFrequencySelectRCP(dTimestamp_s * 1e6, (strSensorValue == "ON")?true:false, "nominal");
+        m_oKATCPClientCallbackHandler.frequencySelectChan1_callback(dTimestamp_s*1e6, (strSensorValue == "ON")?true:false, "nominal");
+        m_pFileWriter->frequencySelectChan1_callback(dTimestamp_s * 1e6, (strSensorValue == "ON")?true:false, "nominal");
     }
     else if (strSensorName == "RFC.LcpAttenuation_0")
     {
@@ -1889,14 +1889,14 @@ void cKATCPServer::cKATCPClientCallbackHandler::sourceSelection_callback(int64_t
     //Todo
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::bandSelectLCP_callback(int64_t i64Timestamp_us, bool bBandSelected, const string &strStatus)
+void cKATCPServer::cKATCPClientCallbackHandler::frequencySelectChan0_callback(int64_t i64Timestamp_us, bool bBandSelected, const string &strStatus)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oSensorDataMutex);
 
     m_bBandSelectedLCP = bBandSelected;
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::bandSelectRCP_callback(int64_t i64Timestamp_us, bool bBandSelected, const string &strStatus)
+void cKATCPServer::cKATCPClientCallbackHandler::frequencySelectChan1_callback(int64_t i64Timestamp_us, bool bBandSelected, const string &strStatus)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oSensorDataMutex);
 

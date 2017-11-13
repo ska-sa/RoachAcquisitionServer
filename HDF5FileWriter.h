@@ -34,7 +34,7 @@ typedef unsigned __int64 uint64_t;
 
 class cHDF5FileWriter : public cSpectrometerDataStreamInterpreter::cCallbackInterface,
         public cUDPReceiver::cDataCallbackInterface,
-        //public cStationControllerKATCPClient::cCallbackInterface,
+        public cStationControllerKATCPClient::cCallbackInterface,
         public cRoachKATCPClient::cCallbackInterface
 {
     //cSpectrometerDataStreamInterpreter actually implements cUDPReceiver::cCallbackInterface as well and could therefore be connected directly to the UDPReceiver to get
@@ -88,7 +88,7 @@ public:
     void                                                startRecording_callback(const std::string &strFilePrefix, int64_t i64StartTime_us, int64_t i64Duration_us);
     void                                                stopRecording_callback();
 
-    /*
+
     //Antenna values
     void                                                requestedAntennaAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus);
     void                                                requestedAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus);
@@ -119,16 +119,16 @@ public:
 
     //Global experiment values
     void                                                sourceSelection_callback(int64_t i64Timestamp_us, const std::string &strSourceName, double dRighAscension_deg, double dDeclination_deg);
-    */
+
 
     //RF values
-    void                                                recordFrequencySelectLCP(int64_t i64Timestamp_us, bool bFrequencySelectLCP, const std::string &strStatus);
-    void                                                recordFrequencySelectRCP(int64_t i64Timestamp_us, bool bFrequencySelectRCP, const std::string &strStatus);
-    void                                                recordFrequencyLO0Chan0(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_Hz, const std::string &strStatus);
-    void                                                recordFrequencyLO0Chan1(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_Hz, const std::string &strStatus);
-    void                                                recordFrequencyLO1(int64_t i64Timestamp_us, double dFrequencyLO1_Hz, const std::string &strStatus);
-    void                                                recordReceiverBandwidthChan0(int64_t i64Timestamp_us, double dReceiverBandwidthChan0_Hz, const std::string &strStatus);
-    void                                                recordReceiverBandwidthChan1(int64_t i64Timestamp_us, double dReceiverBandwidthChan1_Hz, const std::string &strStatus);
+    void                                                frequencySelectChan0_callback(int64_t i64Timestamp_us, bool bFrequencySelectChan0, const std::string &strStatus);
+    void                                                frequencySelectChan1_callback(int64_t i64Timestamp_us, bool bFrequencySelectChan1, const std::string &strStatus);
+    void                                                frequencyLO0Chan0_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_Hz, const std::string &strStatus);
+    void                                                frequencyLO0Chan1_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_Hz, const std::string &strStatus);
+    void                                                frequencyLO1_callback(int64_t i64Timestamp_us, double dFrequencyLO1_Hz, const std::string &strStatus);
+    void                                                receiverBandwidthChan0_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan0_Hz, const std::string &strStatus);
+    void                                                receiverBandwidthChan1_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan1_Hz, const std::string &strStatus);
 
     //Roach register values
     //The data mode is spliced into the Roach 10 GbE data stream and interpreted from there so it is not necessary to implement these functions:

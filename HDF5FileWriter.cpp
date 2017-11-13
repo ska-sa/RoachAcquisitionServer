@@ -522,7 +522,7 @@ void cHDF5FileWriter::stopRecording_callback()
     stopRecording();
 }
 
-/*
+
 void cHDF5FileWriter::requestedAntennaAz_callback(int64_t i64Timestamp_us,double dAzimuth_deg, const string &strStatus)
 {
     if(getState() != RECORDING) //Don't log if we are not recording
@@ -706,26 +706,24 @@ void cHDF5FileWriter::sourceSelection_callback(int64_t i64Timestamp_us, const st
 
     m_pHDF5File->addSourceSelection(i64Timestamp_us, strSourceName, dRighAscension_deg, dDeclination_deg);
 }
-*/
 
-
-void cHDF5FileWriter::recordFrequencySelectLCP(int64_t i64Timestamp_us, bool bFrequencySelectLCP, const string &strStatus)
+void cHDF5FileWriter::frequencySelectChan0_callback(int64_t i64Timestamp_us, bool bFrequencySelectChan0, const string &strStatus)
 {
     if(getState() != RECORDING) //Don't log if we are not recording
         return;
 
-    m_pHDF5File->addFrequencySelectLCP(i64Timestamp_us, bFrequencySelectLCP, strStatus);
+    m_pHDF5File->addFrequencySelectLCP(i64Timestamp_us, bFrequencySelectChan0, strStatus);
 }
 
-void cHDF5FileWriter::recordFrequencySelectRCP(int64_t i64Timestamp_us, bool bFrequencySelectLCP, const string &strStatus)
+void cHDF5FileWriter::frequencySelectChan1_callback(int64_t i64Timestamp_us, bool bFrequencySelectChan1, const string &strStatus)
 {
     if(getState() != RECORDING) //Don't log if we are not recording
         return;
 
-    m_pHDF5File->addFrequencySelectRCP(i64Timestamp_us, bFrequencySelectLCP, strStatus);
+    m_pHDF5File->addFrequencySelectRCP(i64Timestamp_us, bFrequencySelectChan1, strStatus);
 }
 
-void cHDF5FileWriter::recordFrequencyLO0Chan0(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_Hz, const string &strStatus)
+void cHDF5FileWriter::frequencyLO0Chan0_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_Hz, const string &strStatus)
 {
     if(getState() != RECORDING) //Don't log if we are not recording
         return;
@@ -733,7 +731,7 @@ void cHDF5FileWriter::recordFrequencyLO0Chan0(int64_t i64Timestamp_us, double dF
     m_pHDF5File->addFrequencyLO0Chan0(i64Timestamp_us, dFrequencyLO0Chan0_Hz, strStatus);
 }
 
-void cHDF5FileWriter::recordFrequencyLO0Chan1(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_Hz, const string &strStatus)
+void cHDF5FileWriter::frequencyLO0Chan1_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_Hz, const string &strStatus)
 {
     if(getState() != RECORDING) //Don't log if we are not recording
         return;
@@ -741,7 +739,7 @@ void cHDF5FileWriter::recordFrequencyLO0Chan1(int64_t i64Timestamp_us, double dF
     m_pHDF5File->addFrequencyLO0Chan1(i64Timestamp_us, dFrequencyLO0Chan1_Hz, strStatus);
 }
 
-void cHDF5FileWriter::recordFrequencyLO1(int64_t i64Timestamp_us, double dFrequencyLO1_Hz, const string &strStatus)
+void cHDF5FileWriter::frequencyLO1_callback(int64_t i64Timestamp_us, double dFrequencyLO1_Hz, const string &strStatus)
 {
     if(getState() != RECORDING) //Don't log if we are not recording
         return;
@@ -749,7 +747,7 @@ void cHDF5FileWriter::recordFrequencyLO1(int64_t i64Timestamp_us, double dFreque
     m_pHDF5File->addFrequencyLO1(i64Timestamp_us, dFrequencyLO1_Hz, strStatus);
 }
 
-void cHDF5FileWriter::recordReceiverBandwidthChan0(int64_t i64Timestamp_us, double dReceiverBandwidthChan0_Hz, const string &strStatus)
+void cHDF5FileWriter::receiverBandwidthChan0_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan0_Hz, const string &strStatus)
 {
     if(getState() != RECORDING) //Don't log if we are not recording
         return;
@@ -757,7 +755,7 @@ void cHDF5FileWriter::recordReceiverBandwidthChan0(int64_t i64Timestamp_us, doub
     m_pHDF5File->addReceiverBandwidthChan0(i64Timestamp_us, dReceiverBandwidthChan0_Hz, strStatus);
 }
 
-void cHDF5FileWriter::recordReceiverBandwidthChan1(int64_t i64Timestamp_us, double dReceiverBandwidthChan1_Hz, const string &strStatus)
+void cHDF5FileWriter::receiverBandwidthChan1_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan1_Hz, const string &strStatus)
 {
     if(getState() != RECORDING) //Don't log if we are not recording
         return;
