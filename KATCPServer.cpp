@@ -41,8 +41,6 @@ uint32_t                                            cKATCPServer::m_u32MaxClient
 std::string                                         cKATCPServer::m_strRoachGatewareDirectory;
 struct katcp_acquire                                *cKATCPServer::m_pKAStationControllerConnected;
 struct katcp_acquire                                *cKATCPServer::m_pKARoachConnected;
-struct katcp_acquire                                *cKATCPServer::m_pKANoiseDiodeEnabled;
-struct katcp_acquire                                *cKATCPServer::m_pKANoiseDiodeDutyCycleEnabled;
 struct katcp_acquire                                *cKATCPServer::m_pKA10GbEUP;
 
 //Extract function for boolean sensors which don't care whether or not they're true or false.
@@ -331,18 +329,17 @@ void cKATCPServer::serverThreadFunction()
                                  const_cast<char*>("dB"),
                                  &getADCAttenuationChan1_KATCPCallback, NULL, NULL, 0, 31.5, NULL); //Assume KATADC
 
-    m_pKANoiseDiodeEnabled = setup_boolean_acquire_katcp(m_pKATCPDispatch, &getNoiseDiodeEnabled_KATCPCallback, NULL, NULL);
-    register_multi_boolean_sensor_katcp(m_pKATCPDispatch, 0,
+    register_integer_sensor_katcp(m_pKATCPDispatch, 0,
                                   const_cast<char*>("roachNoiseDiodeEnabled"),
                                   const_cast<char*>("Is the Roach's noise diode control enabled"),
                                   const_cast<char*>("none"),
-                                  m_pKANoiseDiodeEnabled, &extract_dontcare_boolean_katcp);
+                                  &getNoiseDiodeEnabled_KATCPCallback, NULL, NULL, 0, 1, NULL);
 
-    m_pKANoiseDiodeDutyCycleEnabled = setup_boolean_acquire_katcp(m_pKATCPDispatch, &getNoiseDiodeDutyCycleEnabled_KATCPCallback, NULL, NULL);
-    register_multi_boolean_sensor_katcp(m_pKATCPDispatch, 0, const_cast<char*>("roachNoiseDiodeDutyCycleEnabled"),
-                                  const_cast<char*>("Is the Roach generating a sample-clock synchronous duty cycle for the noise diode"),
+    register_integer_sensor_katcp(m_pKATCPDispatch, 0,
+                                  const_cast<char*>("roachNoiseDiodeDutyCycleEnabled"),
+                                  const_cast<char*>("Is the Roach's noise diode duty cycle mode enabled"),
                                   const_cast<char*>("none"),
-                                  m_pKANoiseDiodeDutyCycleEnabled, &extract_dontcare_boolean_katcp);
+                                  &getNoiseDiodeDutyCycleEnabled_KATCPCallback, NULL, NULL, 0, 1, NULL);
 
     register_integer_sensor_katcp(m_pKATCPDispatch, 0,
                                   const_cast<char*>("roachNoiseDiodeDutyCycleOnDuration"),
