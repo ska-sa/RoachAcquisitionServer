@@ -242,39 +242,8 @@ protected:
     static double                                           getRecordingFileSize_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
     static double                                           getDiskSpace_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
 
-    //Antenna
-    static double                                           getRequestedAntennaAz(struct katcp_dispatch *pD, katcp_acquire *pA);
-    static double                                           getRequestedAntennaEl(struct katcp_dispatch *pD, katcp_acquire *pA);
-    static double                                           getActualAntennaAz(struct katcp_dispatch *pD, katcp_acquire *pA);
-    static double                                           getActualAntennaEl(struct katcp_dispatch *pD, katcp_acquire *pA);
-    static double                                           getActualSourceOffsetAz(struct katcp_dispatch *pD, katcp_acquire *pA);
-    static double                                           getActualSourceOffsetEl(struct katcp_dispatch *pD, katcp_acquire *pA);
-    static double                                           getActualAntennaRA(struct katcp_dispatch *pD, katcp_acquire *pA);
-    static double                                           getActualAntennaDec(struct katcp_dispatch *pD, katcp_acquire *pA);
-
-    //static char*                                            getAntennaStatus(struct katcp_dispatch *pD, katcp_acquire *pA);
-    static double                                           getMotorTorqueAzMaster(struct katcp_dispatch *pD, katcp_acquire *pA);
-    static double                                           getMotorTorqueAzSlave(struct katcp_dispatch *pD, katcp_acquire *pA);
-    static double                                           getMotorTorqueElMaster(struct katcp_dispatch *pD, struct katcp_acquire *pA);
-    static double                                           getMotorTorqueElSlave(struct katcp_dispatch *pD, katcp_acquire *pA);
-    //void                                                  getAppliedPointingModel(const std::string &strModelName, const std::vector<double> &vdPointingModelParams);
-
     //Noise diode
-    static int32_t                                          getNoiseDiodeSoftwareState(struct katcp_dispatch *pD, struct katcp_acquire *pA);
     //static char*                                            getNoiseDiodeSource(struct katcp_dispatch *pD, struct katcp_acquire *pA);
-    static double                                           getNoiseDiodeCurrent(struct katcp_dispatch *pD, katcp_acquire *pA);
-
-    //Global experiment
-    void                                                    getSourceSelection(int64_t i64Timestamp_us, const std::string &strSourceName, double dRighAscension_deg, double dDeclination_deg);
-
-    //RFE
-    static double                                           getFBandSelectedLCP(struct katcp_dispatch *pD, struct katcp_acquire *pA);
-    static double                                           getBandSelectedRCP(katcp_dispatch *pD, katcp_acquire *pA);
-    static double                                           getFrequencyLO0Chan0(struct katcp_dispatch *pD, struct katcp_acquire *pA);
-    static double                                           getFrequencyLO0Chan1(katcp_dispatch *pD, katcp_acquire *pA);
-    static double                                           getFrequencyLO1(struct katcp_dispatch *pD, struct katcp_acquire *pA);
-    static double                                           getReceiverBandwidthChan0(katcp_dispatch *pD, katcp_acquire *pA);
-    static double                                           getReceiverBandwidthChan1(struct katcp_dispatch *pD, struct katcp_acquire *pA);
 
     //Roach values:
     static int32_t                                          getIsRoachKATCPConnected(struct katcp_dispatch *pD, katcp_acquire *pA);
