@@ -763,6 +763,22 @@ void cHDF5FileWriter::receiverBandwidthChan1_callback(int64_t i64Timestamp_us, d
     m_pHDF5File->addReceiverBandwidthChan1(i64Timestamp_us, dReceiverBandwidthChan1_Hz, strStatus);
 }
 
+void cHDF5FileWriter::receiverLcpAttenuation_callback(int64_t i64Timestamp_us, double dReceiverLcpAttenuation_dB, const string &strStatus)
+{
+    if(getState() != RECORDING) //Don't log if we are not recording
+        return;
+
+    m_pHDF5File->addReceiverLcpAttenuation(i64Timestamp_us, dReceiverLcpAttenuation_dB, strStatus);
+}
+
+void cHDF5FileWriter::receiverRcpAttenuation_callback(int64_t i64Timestamp_us, double dReceiverRcpAttenuation_dB, const string &strStatus)
+{
+    if(getState() != RECORDING) //Don't log if we are not recording
+        return;
+
+    m_pHDF5File->addReceiverRcpAttenuation(i64Timestamp_us, dReceiverRcpAttenuation_dB, strStatus);
+}
+
 void cHDF5FileWriter::accumulationLength_callback(int64_t i64Timestamp_us, uint32_t u32NSamples)
 {
     if(getState() != RECORDING) //Don't log if we are not recording

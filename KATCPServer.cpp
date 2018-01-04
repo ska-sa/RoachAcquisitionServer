@@ -1938,6 +1938,17 @@ void cKATCPServer::cKATCPClientCallbackHandler::receiverBandwidthChan1_callback(
     m_dReceiverBandwidthChan1_Hz = dReceiverBandwidthChan1_Hz;
 }
 
+void cKATCPServer::cKATCPClientCallbackHandler::receiverLcpAttenuation_callback(int64_t i64Timestamp_us, double dReceiverLcpAttenuation_dB, const string &strStatus)
+{
+    // Do nothing.
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::receiverRcpAttenuation_callback(int64_t i64Timestamp_us, double dReceiverLcpAttenuation_dB, const string &strStatus)
+{
+    // Do nothing.
+}
+
+
 /*
 void cKATCPServer::cKATCPClientCallbackHandler::stokesEnabled_callback(int64_t i64Timestamp_us, bool bEnabled)
 {
