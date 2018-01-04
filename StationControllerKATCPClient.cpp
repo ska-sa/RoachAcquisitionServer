@@ -13,10 +13,16 @@ using namespace std;
 cStationControllerKATCPClient::cStationControllerKATCPClient() :
     cKATCPClientBase()
 {
-    m_vstrSensorNames.push_back("requestedAntennaAz");
+/*// Updated sensor names.
+    m_vstrSensorNames.push_back("acs.actual-azim");
+    m_vstrSensorNames.push_back("acs.actual-elev");
+*/
+
+    m_vstrSensorNames.push_back("SCM.LcpAttenuation");
+    m_vstrSensorNames.push_back("SCM.RcpAttenuation");
+    
+/*    m_vstrSensorNames.push_back("requestedAntennaAz");
     m_vstrSensorNames.push_back("requestedAntennaEl");
-    m_vstrSensorNames.push_back("actualAntennaAz");
-    m_vstrSensorNames.push_back("actualAntennaEl");
     m_vstrSensorNames.push_back("actualSourceOffsetAz");
     m_vstrSensorNames.push_back("actualSourceOffsetEl");
     m_vstrSensorNames.push_back("actualAntennaRA");
@@ -31,8 +37,8 @@ cStationControllerKATCPClient::cStationControllerKATCPClient() :
     m_vstrSensorNames.push_back("noiseDiodeSource");
     m_vstrSensorNames.push_back("noideDiodeCurrent");
     m_vstrSensorNames.push_back("sourceSelection");
-    m_vstrSensorNames.push_back("frequencyRFChan0");
-    m_vstrSensorNames.push_back("frequencyRFChan1");
+
+
     m_vstrSensorNames.push_back("frequencyLO0RFChan0");
     m_vstrSensorNames.push_back("frequencyLO0RFChan1");
     m_vstrSensorNames.push_back("frequencyLO1");
@@ -86,7 +92,8 @@ void cStationControllerKATCPClient::unsubscribeSensorData()
 
 void cStationControllerKATCPClient::onConnected()
 {
-    return; // Don't have anything to do here right at this moment.
+    subscribeSensorData();
+    return;
 }
 
 void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vstrTokens)
@@ -128,20 +135,14 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
         return;
     }
 
-    if( !vstrTokens[0].compare("#startRecording") )
+
+
+    if( !vstrTokens[3].compare("SCM.LcpAttenuation") )
     {
-        // I'm commenting this out for now, so that NQ and I can determine whether this is in u-seconds or not. - JNS
-        //sendStartRecording(vstrTokens[1], strtoll(vstrTokens[2].c_str(), NULL, 10)*1e3 , strtoll(vstrTokens[3].c_str(), NULL, 10)*1e3 ); // *1e3 to convert from ms to us.
-        subscribeSensorData();
+        sendRequestedAntennaAz( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
         return;
     }
 
-    if( !vstrTokens[0].compare("#stopRecording") )
-    {
-        sendStopRecording();
-        unsubscribeSensorData();
-        return;
-    }
 
     /* TODO: Antenna config information marked for removal. The Status one I'm still not sure what to do about though.
     if( !vstrTokens[0].compare("#antennaStatus") )
@@ -205,14 +206,14 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
     }
 
 
-    if(!vstrTokens[3].compare("actualAntennaAz"))
+    if(!vstrTokens[3].compare("acs.actual-azim"))
     {
         sendActualAntennaAz( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
         return;
     }
 
 
-    if(!vstrTokens[3].compare("actualAntennaEl"))
+    if(!vstrTokens[3].compare("acs.actual-elev"))
     {
         sendActualAntennaEl( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
         return;
@@ -255,6 +256,8 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
     }
     */
 
+    /* Don't think the motor torques really need to be included...
+
     if(!vstrTokens[3].compare("motorTorqueAzMaster"))
     {
         sendMotorTorqueAzMaster( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
@@ -281,6 +284,8 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
         sendMotorTorqueElSlave( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
         return;
     }
+
+    End motor torques */
 
 /* TODO: Antenna configuration info marked for removal from KATCP stuff.
     if(!vstrTokens[3].compare("appliedPointingModel"))
