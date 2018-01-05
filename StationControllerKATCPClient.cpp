@@ -18,8 +18,8 @@ cStationControllerKATCPClient::cStationControllerKATCPClient() :
     m_vstrSensorNames.push_back("acs.actual-elev");
 */
 
-    m_vstrSensorNames.push_back("SCM.LcpAttenuation");
-    m_vstrSensorNames.push_back("SCM.RcpAttenuation");
+    m_vstrSensorNames.push_back("SCM.LcpAttenuation event");
+    m_vstrSensorNames.push_back("SCM.RcpAttenuation event");
     
 /*    m_vstrSensorNames.push_back("requestedAntennaAz");
     m_vstrSensorNames.push_back("requestedAntennaEl");
@@ -62,13 +62,13 @@ void cStationControllerKATCPClient::subscribeSensorData()
 {
     cout << "cStationControllerKATCPClient::subscribeSensorData(): subscribing to sensor data." << endl;
 
-
     for (uint32_t ui = 0; ui < m_vstrSensorNames.size(); ui++)
     {
         stringstream oSS;
         oSS << "?sensor-sampling ";
         oSS << m_vstrSensorNames[ui];
-        oSS << " auto\n";
+        oSS << "\n";
+        //oSS << " auto\n";
 
         sendKATCPMessage(oSS.str());
     }
@@ -82,7 +82,7 @@ void cStationControllerKATCPClient::unsubscribeSensorData()
     {
         stringstream oSS;
         oSS << "?sensor-sampling ";
-        oSS << m_vstrSensorNames[ui];
+        oSS << m_vstrSensorNames[ui].substr(0,m_vstrSensorNames[ui].rfind(" "));
         oSS << " none\n";
 
         sendKATCPMessage(oSS.str());
@@ -98,7 +98,6 @@ void cStationControllerKATCPClient::onConnected()
 
 void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vstrTokens)
 {
-
     //Debug
     /*cout << "cStationControllerKATCPClient::processKATCPMessage(): KATCP message received: " << endl;
     for (uint32_t ui = 0; ui < vstrTokens.size(); ui++)
@@ -135,11 +134,22 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
         return;
     }
 
+    if (!vstrTokens[0].compare("#client-connected"))
+    {
+        // Do nothing.
+        return;
+    }
 
 
     if( !vstrTokens[3].compare("SCM.LcpAttenuation") )
     {
-        sendRequestedAntennaAz( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+        sendReceiverLcpAttenuation( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+        return;
+    }
+
+    if( !vstrTokens[3].compare("SCM.RcpAttenuation") )
+    {
+        sendReceiverLcpAttenuation( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
         return;
     }
 
@@ -962,7 +972,7 @@ void cStationControllerKATCPClient::sendReceiverBandwidthChan1(int64_t i64Timest
 }
 
 
-void cStationControllerKATCPClient::sendLcpAttenuation(int64_t i64Timestamp_us, double dLcpAttenuation_dB, const string &strStatus)
+void cStationControllerKATCPClient::sendReceiverLcpAttenuation(int64_t i64Timestamp_us, double dLcpAttenuation_dB, const string &strStatus)
 {
     boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
 
@@ -982,7 +992,7 @@ void cStationControllerKATCPClient::sendLcpAttenuation(int64_t i64Timestamp_us, 
     }
 }
 
-void cStationControllerKATCPClient::sendRcpAttenuation(int64_t i64Timestamp_us, double dRcpAttenuation_dB, const string &strStatus)
+void cStationControllerKATCPClient::sendReceiverRcpAttenuation(int64_t i64Timestamp_us, double dRcpAttenuation_dB, const string &strStatus)
 {
     boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
 

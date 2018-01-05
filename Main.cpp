@@ -142,6 +142,7 @@ int main(int iArgC, char *pchaArgV[])
         if(oVariableMap.count("station-controller-address"))
         {
             oServer.startStationControllerKATCPClient(strStationControllerAddress, u16StationControllerPort);
+            //TODO: Figure out how to make these things reconnect if disconnected.
         }
 
         if(oVariableMap.count("roach-ppc-address"))

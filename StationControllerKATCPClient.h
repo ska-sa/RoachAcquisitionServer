@@ -120,8 +120,8 @@ private:
     void                                                sendFrequencyLO1(int64_t i64Timestamp_us, double dFrequencyLO1_MHz, const std::string &strStatus);
     void                                                sendReceiverBandwidthChan0(int64_t i64Timestamp_us, double dReceiverBandwidthChan0_MHz, const std::string &strStatus);
     void                                                sendReceiverBandwidthChan1(int64_t i64Timestamp_us, double dReceiverBandwidthChan1_MHz, const std::string &strStatus);
-    void                                                sendLcpAttenuation(int64_t i64Timestamp_us, double dLcpAttenuation_dB, const std::string &strStatus);
-    void                                                sendRcpAttenuation(int64_t i64Timestamp_us, double dRcpAttenuation_dB, const std::string &strStatus);
+    void                                                sendReceiverLcpAttenuation(int64_t i64Timestamp_us, double dLcpAttenuation_dB, const std::string &strStatus);
+    void                                                sendReceiverRcpAttenuation(int64_t i64Timestamp_us, double dRcpAttenuation_dB, const std::string &strStatus);
 
     /* TODO: Antenna configuration info marked for removal.
     //Antenna info values
