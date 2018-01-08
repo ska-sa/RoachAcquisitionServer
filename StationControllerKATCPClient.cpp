@@ -20,7 +20,9 @@ cStationControllerKATCPClient::cStationControllerKATCPClient() :
 
     m_vstrSensorNames.push_back("SCM.LcpAttenuation event");
     m_vstrSensorNames.push_back("SCM.RcpAttenuation event");
-    
+    m_vstrSensorNames.push_back("RFC.LcpFreqSel event");
+    m_vstrSensorNames.push_back("RFC.RcpFreqSel event");
+
 /*    m_vstrSensorNames.push_back("requestedAntennaAz");
     m_vstrSensorNames.push_back("requestedAntennaEl");
     m_vstrSensorNames.push_back("actualSourceOffsetAz");
@@ -37,20 +39,11 @@ cStationControllerKATCPClient::cStationControllerKATCPClient() :
     m_vstrSensorNames.push_back("noiseDiodeSource");
     m_vstrSensorNames.push_back("noideDiodeCurrent");
     m_vstrSensorNames.push_back("sourceSelection");
-
-
     m_vstrSensorNames.push_back("frequencyLO0RFChan0");
     m_vstrSensorNames.push_back("frequencyLO0RFChan1");
     m_vstrSensorNames.push_back("frequencyLO1");
     m_vstrSensorNames.push_back("receiverBandwidthChan0");
     m_vstrSensorNames.push_back("receiverBandwidthChan1");
-/*
-    m_vstrSensorNames.push_back("antennaName");
-    m_vstrSensorNames.push_back("antennaBeamwidth");
-    m_vstrSensorNames.push_back("antennaDelayModel");
-    m_vstrSensorNames.push_back("antennaDiameter");
-    m_vstrSensorNames.push_back("antennaLongitude");
-    m_vstrSensorNames.push_back("antennaLatitude");
 */
 }
 
@@ -139,20 +132,6 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
         // Do nothing.
         return;
     }
-
-
-    if( !vstrTokens[3].compare("SCM.LcpAttenuation") )
-    {
-        sendReceiverLcpAttenuation( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
-        return;
-    }
-
-    if( !vstrTokens[3].compare("SCM.RcpAttenuation") )
-    {
-        sendReceiverLcpAttenuation( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
-        return;
-    }
-
 
     /* TODO: Antenna config information marked for removal. The Status one I'm still not sure what to do about though.
     if( !vstrTokens[0].compare("#antennaStatus") )
@@ -349,7 +328,7 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
         return;
     }
 
-    if(!vstrTokens[3].compare("frequencySelectChan0"))
+    if(!vstrTokens[3].compare("RFC.LcpFreqSel"))
     {
         sendFrequencySelectChan0( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
         return;
@@ -357,7 +336,7 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
 
 
 
-    if(!vstrTokens[3].compare("frequencySelectChan1"))
+    if(!vstrTokens[3].compare("RFC.RcpFreqSel"))
     {
         sendFrequencySelectChan1( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
         return;
@@ -400,39 +379,15 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
         return;
     }
 
-    if (!vstrTokens[3].compare("antennaName"))
+    if( !vstrTokens[3].compare("SCM.LcpAttenuation") )
     {
-        //TODO: This is a big one. Find all the callbacks needed.
+        sendReceiverLcpAttenuation( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
         return;
     }
 
-    if (!vstrTokens[3].compare("antennaBeamwidth"))
+    if( !vstrTokens[3].compare("SCM.RcpAttenuation") )
     {
-        //TODO: This is a big one. Find all the callbacks needed.
-        return;
-    }
-
-    if (!vstrTokens[3].compare("antennaDelayModel"))
-    {
-        //TODO: This is a big one. Find all the callbacks needed.
-        return;
-    }
-
-    if (!vstrTokens[3].compare("antennaDiameter"))
-    {
-        //TODO: This is a big one. Find all the callbacks needed.
-        return;
-    }
-
-    if (!vstrTokens[3].compare("antennaLongitude"))
-    {
-        //TODO: This is a big one. Find all the callbacks needed.
-        return;
-    }
-
-    if (!vstrTokens[3].compare("antennaLatitude"))
-    {
-        //TODO: This is a big one. Find all the callbacks needed.
+        sendReceiverLcpAttenuation( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
         return;
     }
 }

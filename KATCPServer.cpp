@@ -734,7 +734,8 @@ int32_t cKATCPServer::stopRecording_KATCPCallback(struct katcp_dispatch *pKATCPD
     m_pFileWriter->stopRecording();
     if (m_pStationControllerKATCPClient) //i.e. if the thing has actually been connected. Otherwise it segfaults.
     {
-        m_pStationControllerKATCPClient->unsubscribeSensorData();
+        // I don't actually think that this should be here.
+        //m_pStationControllerKATCPClient->unsubscribeSensorData();
     }
 
     return KATCP_RESULT_OK;
