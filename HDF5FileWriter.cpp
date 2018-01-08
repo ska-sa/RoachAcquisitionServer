@@ -779,6 +779,46 @@ void cHDF5FileWriter::receiverRcpAttenuation_callback(int64_t i64Timestamp_us, d
     m_pHDF5File->addReceiverRcpAttenuation(i64Timestamp_us, dReceiverRcpAttenuation_dB, strStatus);
 }
 
+void cHDF5FileWriter::envWindSpeed_callback(int64_t i64Timestamp_us, double dWindSpeed_mps, const string &strStatus)
+{
+    if(getState() != RECORDING) //Don't log if we are not recording
+        return;
+
+    m_pHDF5File->addWindSpeed(i64Timestamp_us, dWindSpeed_mps, strStatus);
+}
+
+void cHDF5FileWriter::envWindDirection_callback(int64_t i64Timestamp_us, double dWindDirection_degrees, const string &strStatus)
+{
+    if(getState() != RECORDING) //Don't log if we are not recording
+        return;
+
+    m_pHDF5File->addWindDirection(i64Timestamp_us, dWindDirection_degrees, strStatus);
+}
+
+void cHDF5FileWriter::envTemperature_callback(int64_t i64Timestamp_us, double dTemperature_degreesC, const string &strStatus)
+{
+    if(getState() != RECORDING) //Don't log if we are not recording
+        return;
+
+    m_pHDF5File->addTemperature(i64Timestamp_us, dTemperature_degreesC, strStatus);
+}
+
+void cHDF5FileWriter::envAbsolutePressure_callback(int64_t i64Timestamp_us, double dPressure_mbar, const string &strStatus)
+{
+    if(getState() != RECORDING) //Don't log if we are not recording
+        return;
+
+    m_pHDF5File->addAbsolutePressure(i64Timestamp_us, dPressure_mbar, strStatus);
+}
+
+void cHDF5FileWriter::envRelativeHumidity_callback(int64_t i64Timestamp_us, double dHumidity_percent, const string &strStatus)
+{
+    if(getState() != RECORDING) //Don't log if we are not recording
+        return;
+
+    m_pHDF5File->addRelativeHumidity(i64Timestamp_us, dHumidity_percent, strStatus);
+}
+
 void cHDF5FileWriter::accumulationLength_callback(int64_t i64Timestamp_us, uint32_t u32NSamples)
 {
     if(getState() != RECORDING) //Don't log if we are not recording

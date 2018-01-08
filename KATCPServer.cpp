@@ -1795,6 +1795,30 @@ void cKATCPServer::cKATCPClientCallbackHandler::receiverRcpAttenuation_callback(
     // Do nothing.
 }
 
+void cKATCPServer::cKATCPClientCallbackHandler::envWindSpeed_callback(int64_t i64Timestamp_us, double dWindSpeed_mps, const string &strStatus)
+{
+    // Do nothing.
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::envWindDirection_callback(int64_t i64Timestamp_us, double dWindDirection_degrees, const string &strStatus)
+{
+    // Do nothing.
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::envTemperature_callback(int64_t i64Timestamp_us, double dTemperature_degreesC, const string &strStatus)
+{
+    // Do nothing.
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::envAbsolutePressure_callback(int64_t i64Timestamp_us, double dPressure_mbar, const string &strStatus)
+{
+    // Do nothing.
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::envRelativeHumidity_callback(int64_t i64Timestamp_us, double dHumidity_percent, const string &strStatus)
+{
+    // Do nothing.
+}
 
 /*
 void cKATCPServer::cKATCPClientCallbackHandler::stokesEnabled_callback(int64_t i64Timestamp_us, bool bEnabled)

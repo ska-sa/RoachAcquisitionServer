@@ -56,6 +56,13 @@ public:
         virtual void                                    receiverLcpAttenuation_callback(int64_t i64Timestamp_us, double dLCPAttenuation_dB, const std::string &strStatus) = 0;
         virtual void                                    receiverRcpAttenuation_callback(int64_t i64Timestamp_us, double dRCPAttenuation_dB, const std::string &strStatus) = 0;
 
+        //Env values
+        virtual void                                    envWindSpeed_callback(int64_t i64Timestamp_us, double dWindSpeed_mps, const std::string &strStatus) = 0;
+        virtual void                                    envWindDirection_callback(int64_t i64Timestamp_us, double dWindDirection_degrees, const std::string &strStatus) = 0;
+        virtual void                                    envTemperature_callback(int64_t i64Timestamp_us, double dTemperature_degreesC, const std::string &strStatus) = 0;
+        virtual void                                    envAbsolutePressure_callback(int64_t i64Timestamp_us, double dPressure_mbar, const std::string &strStatus) = 0;
+        virtual void                                    envRelativeHumidity_callback(int64_t i64Timestamp_us, double dHumidity_percent, const std::string &strStatus) = 0;
+
         /* TODO: remove antenna configuration functions.
         virtual void                                    antennaName_callback(const std::string &strAntennaName) = 0;
         virtual void                                    antennaDiameter_callback(const std::string &strAntennaDiameter) = 0;
@@ -122,6 +129,13 @@ private:
     void                                                sendReceiverBandwidthChan1(int64_t i64Timestamp_us, double dReceiverBandwidthChan1_MHz, const std::string &strStatus);
     void                                                sendReceiverLcpAttenuation(int64_t i64Timestamp_us, double dLcpAttenuation_dB, const std::string &strStatus);
     void                                                sendReceiverRcpAttenuation(int64_t i64Timestamp_us, double dRcpAttenuation_dB, const std::string &strStatus);
+
+    // Environment values
+    void                                                sendWindSpeed(int64_t i64Timestamp_us, double dWindSpeed_mps, const std::string &strStatus);
+    void                                                sendWindDirection(int64_t i64Timestamp_us, double dWindDirection_degrees, const std::string &strStatus);
+    void                                                sendTemperature(int64_t i64Timestamp_us, double dTemperature_degreesC, const std::string &strStatus);
+    void                                                sendAbsolutePressure(int64_t i64Timestamp_us, double dPressure_mbar, const std::string &strStatus);
+    void                                                sendRelativeHumidity(int64_t i64Timestamp_us, double dHumidity_percent, const std::string &strStatus);
 
     /* TODO: Antenna configuration info marked for removal.
     //Antenna info values

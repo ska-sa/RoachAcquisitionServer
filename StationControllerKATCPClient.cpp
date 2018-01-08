@@ -13,27 +13,28 @@ using namespace std;
 cStationControllerKATCPClient::cStationControllerKATCPClient() :
     cKATCPClientBase()
 {
-/*// Updated sensor names.
-    m_vstrSensorNames.push_back("acs.actual-azim");
-    m_vstrSensorNames.push_back("acs.actual-elev");
-*/
 
+    // Signal-chain values.
     m_vstrSensorNames.push_back("SCM.LcpAttenuation event");
     m_vstrSensorNames.push_back("SCM.RcpAttenuation event");
     m_vstrSensorNames.push_back("RFC.LcpFreqSel event");
     m_vstrSensorNames.push_back("RFC.RcpFreqSel event");
 
-/*    m_vstrSensorNames.push_back("requestedAntennaAz");
+    // Environment values.
+    m_vstrSensorNames.push_back("EMS.WindSpeed period 10000");
+    m_vstrSensorNames.push_back("EMS.WindDirection period 10000");
+    m_vstrSensorNames.push_back("EMS.Temperature period 10000");
+    m_vstrSensorNames.push_back("EMS.AbsolutePressure period 10000");
+    m_vstrSensorNames.push_back("EMS.RelativeHumidity period 10000");
+
+/*  need actual az and el here as well somewhere.
+ *  m_vstrSensorNames.push_back("requestedAntennaAz");
     m_vstrSensorNames.push_back("requestedAntennaEl");
     m_vstrSensorNames.push_back("actualSourceOffsetAz");
     m_vstrSensorNames.push_back("actualSourceOffsetEl");
     m_vstrSensorNames.push_back("actualAntennaRA");
     m_vstrSensorNames.push_back("actualAntennaDec");
     m_vstrSensorNames.push_back("antennaStatus");
-    m_vstrSensorNames.push_back("motorTorqueAzMaster");
-    m_vstrSensorNames.push_back("motorTorqueAzSlave");
-    m_vstrSensorNames.push_back("motorTorqueElMaster");
-    m_vstrSensorNames.push_back("motorTorqueElSlave");
     m_vstrSensorNames.push_back("appliedPointingModel");
     m_vstrSensorNames.push_back("noiseDiodeSoftwareState");
     m_vstrSensorNames.push_back("noiseDiodeSource");
@@ -245,37 +246,6 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
     }
     */
 
-    /* Don't think the motor torques really need to be included...
-
-    if(!vstrTokens[3].compare("motorTorqueAzMaster"))
-    {
-        sendMotorTorqueAzMaster( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
-        return;
-    }
-
-
-
-    if(!vstrTokens[3].compare("motorTorqueAzSlave"))
-    {
-        sendMotorTorqueAzSlave( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
-        return;
-    }
-
-
-    if(!vstrTokens[3].compare("motorTorqueElMaster"))
-    {
-        sendMotorTorqueElMaster( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
-        return;
-    }
-
-    if(!vstrTokens[3].compare("motorTorqueElSlave"))
-    {
-        sendMotorTorqueElSlave( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
-        return;
-    }
-
-    End motor torques */
-
 /* TODO: Antenna configuration info marked for removal from KATCP stuff.
     if(!vstrTokens[3].compare("appliedPointingModel"))
     {
@@ -388,6 +358,36 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
     if( !vstrTokens[3].compare("SCM.RcpAttenuation") )
     {
         sendReceiverLcpAttenuation( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+        return;
+    }
+
+    if( !vstrTokens[3].compare("EMS.WindSpeed") )
+    {
+        sendWindSpeed( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+        return;
+    }
+
+    if( !vstrTokens[3].compare("EMS.WindDirection") )
+    {
+        sendWindDirection( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+        return;
+    }
+
+    if( !vstrTokens[3].compare("EMS.Temperature") )
+    {
+        sendTemperature( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+        return;
+    }
+
+    if( !vstrTokens[3].compare("EMS.AbsolutePressure") )
+    {
+        sendAbsolutePressure( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+        return;
+    }
+
+    if( !vstrTokens[3].compare("EMS.RelativeHumidity") )
+    {
+        sendRelativeHumidity( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
         return;
     }
 }
@@ -966,6 +966,107 @@ void cStationControllerKATCPClient::sendReceiverRcpAttenuation(int64_t i64Timest
         pHandler->receiverRcpAttenuation_callback(i64Timestamp_us, dRcpAttenuation_dB, strStatus);
     }
 }
+
+void cStationControllerKATCPClient::sendWindSpeed(int64_t i64Timestamp_us, double dWindSpeed_mps, const string &strStatus)
+{
+    boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
+
+    //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
+    //to call function added in the derived version of the callback handler interface class
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
+    {
+        cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
+        pHandler->envWindSpeed_callback(i64Timestamp_us, dWindSpeed_mps, strStatus);
+    }
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
+    {
+        boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
+        pHandler->envWindSpeed_callback(i64Timestamp_us, dWindSpeed_mps, strStatus);
+    }
+}
+
+void cStationControllerKATCPClient::sendWindDirection(int64_t i64Timestamp_us, double dWindDirection_degrees, const string &strStatus)
+{
+    boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
+
+    //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
+    //to call function added in the derived version of the callback handler interface class
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
+    {
+        cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
+        pHandler->envWindDirection_callback(i64Timestamp_us, dWindDirection_degrees, strStatus);
+    }
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
+    {
+        boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
+        pHandler->envWindDirection_callback(i64Timestamp_us, dWindDirection_degrees, strStatus);
+    }
+}
+
+void cStationControllerKATCPClient::sendTemperature(int64_t i64Timestamp_us, double dTemperature_degreesC, const string &strStatus)
+{
+    boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
+
+    //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
+    //to call function added in the derived version of the callback handler interface class
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
+    {
+        cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
+        pHandler->envTemperature_callback(i64Timestamp_us, dTemperature_degreesC, strStatus);
+    }
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
+    {
+        boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
+        pHandler->envTemperature_callback(i64Timestamp_us, dTemperature_degreesC, strStatus);
+    }
+}
+
+void cStationControllerKATCPClient::sendAbsolutePressure(int64_t i64Timestamp_us, double dPressure_mbar, const string &strStatus)
+{
+    boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
+
+    //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
+    //to call function added in the derived version of the callback handler interface class
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
+    {
+        cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
+        pHandler->envAbsolutePressure_callback(i64Timestamp_us, dPressure_mbar, strStatus);
+    }
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
+    {
+        boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
+        pHandler->envAbsolutePressure_callback(i64Timestamp_us, dPressure_mbar, strStatus);
+    }
+}
+
+void cStationControllerKATCPClient::sendRelativeHumidity(int64_t i64Timestamp_us, double dHumidity_percent, const string &strStatus)
+{
+    boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
+
+    //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
+    //to call function added in the derived version of the callback handler interface class
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
+    {
+        cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
+        pHandler->envRelativeHumidity_callback(i64Timestamp_us, dHumidity_percent, strStatus);
+    }
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
+    {
+        boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
+        pHandler->envRelativeHumidity_callback(i64Timestamp_us, dHumidity_percent, strStatus);
+    }
+}
+
 
 
 /*
