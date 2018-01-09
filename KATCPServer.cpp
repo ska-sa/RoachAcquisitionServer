@@ -574,8 +574,8 @@ void cKATCPServer::initialSensorDataThreadFunction()
     }
 
     //Won't check for defaults here, because this should be zero as a default anyway.
-    m_pFileWriter->frequencySelectChan0_callback((time(0) - 10)*1e6, m_oKATCPClientCallbackHandler.m_bBandSelectedLCP, "nominal");
-    m_pFileWriter->frequencySelectChan1_callback((time(0) - 10)*1e6, m_oKATCPClientCallbackHandler.m_bBandSelectedRCP, "nominal");
+    m_pFileWriter->frequencySelectLcp_callback((time(0) - 10)*1e6, m_oKATCPClientCallbackHandler.m_bBandSelectedLCP, "nominal");
+    m_pFileWriter->frequencySelectRcp_callback((time(0) - 10)*1e6, m_oKATCPClientCallbackHandler.m_bBandSelectedRCP, "nominal");
 }
 
 void cKATCPServer::startServer(const string &strInterface, uint16_t u16Port, uint32_t u32MaxClients)
@@ -1268,15 +1268,15 @@ int32_t cKATCPServer::RFGUIReceiveSensorOutput_KATCPCallback(struct katcp_dispat
     {
         string strBand = (strSensorValue == "ON")?"6.7":"5.0";
         cout << "LCP band selection. Now using " << strBand << " GHz." << endl;
-        m_oKATCPClientCallbackHandler.frequencySelectChan0_callback(dTimestamp_s*1e6, (strSensorValue == "ON")?true:false, "nominal");
-        m_pFileWriter->frequencySelectChan0_callback(dTimestamp_s * 1e6, (strSensorValue == "ON")?true:false, "nominal");
+        m_oKATCPClientCallbackHandler.frequencySelectLcp_callback(dTimestamp_s*1e6, (strSensorValue == "ON")?true:false, "nominal");
+        m_pFileWriter->frequencySelectLcp_callback(dTimestamp_s * 1e6, (strSensorValue == "ON")?true:false, "nominal");
     }
     else if (strSensorName == "RFC.RcpFreqSel")
     {
         string strBand = (strSensorValue == "ON")?"6.7":"5.0";
         cout << "RCP band selection. Now using " << strBand << " GHz." << endl;
-        m_oKATCPClientCallbackHandler.frequencySelectChan1_callback(dTimestamp_s*1e6, (strSensorValue == "ON")?true:false, "nominal");
-        m_pFileWriter->frequencySelectChan1_callback(dTimestamp_s * 1e6, (strSensorValue == "ON")?true:false, "nominal");
+        m_oKATCPClientCallbackHandler.frequencySelectRcp_callback(dTimestamp_s*1e6, (strSensorValue == "ON")?true:false, "nominal");
+        m_pFileWriter->frequencySelectRcp_callback(dTimestamp_s * 1e6, (strSensorValue == "ON")?true:false, "nominal");
     }
     else if (strSensorName == "RFC.LcpAttenuation_0")
     {
@@ -1736,14 +1736,14 @@ void cKATCPServer::cKATCPClientCallbackHandler::sourceSelection_callback(int64_t
     //Todo
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::frequencySelectChan0_callback(int64_t i64Timestamp_us, bool bBandSelected, const string &strStatus)
+void cKATCPServer::cKATCPClientCallbackHandler::frequencySelectLcp_callback(int64_t i64Timestamp_us, bool bBandSelected, const string &strStatus)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oSensorDataMutex);
 
     m_bBandSelectedLCP = bBandSelected;
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::frequencySelectChan1_callback(int64_t i64Timestamp_us, bool bBandSelected, const string &strStatus)
+void cKATCPServer::cKATCPClientCallbackHandler::frequencySelectRcp_callback(int64_t i64Timestamp_us, bool bBandSelected, const string &strStatus)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oSensorDataMutex);
 

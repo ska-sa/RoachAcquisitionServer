@@ -132,8 +132,8 @@ public:
 
 
         //RF values
-        void                                                frequencySelectChan0_callback(int64_t i64Timestamp_us, bool bBandSelected, const std::string &strStatus);
-        void                                                frequencySelectChan1_callback(int64_t i64Timestamp_us, bool bBandSelected, const std::string &strStatus);
+        void                                                frequencySelectLcp_callback(int64_t i64Timestamp_us, bool bBandSelected, const std::string &strStatus);
+        void                                                frequencySelectRcp_callback(int64_t i64Timestamp_us, bool bBandSelected, const std::string &strStatus);
         void                                                frequencyLO0Chan0_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_Hz, const std::string &strStatus);
         void                                                frequencyLO0Chan1_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_Hz, const std::string &strStatus);
         void                                                frequencyLO1_callback(int64_t i64Timestamp_us, double dFrequencyLO1_Hz, const std::string &strStatus);

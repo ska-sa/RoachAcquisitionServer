@@ -17,8 +17,8 @@ cStationControllerKATCPClient::cStationControllerKATCPClient() :
     // Signal-chain values.
     m_vstrSensorNames.push_back("SCM.LcpAttenuation event");
     m_vstrSensorNames.push_back("SCM.RcpAttenuation event");
-    //m_vstrSensorNames.push_back("RFC.LcpFreqSel event");
-    //m_vstrSensorNames.push_back("RFC.RcpFreqSel event");
+    m_vstrSensorNames.push_back("RFC.LcpFreqSel event");
+    m_vstrSensorNames.push_back("RFC.RcpFreqSel event");
 
     // Environment values.
     m_vstrSensorNames.push_back("EMS.WindSpeed period 10000");
@@ -300,7 +300,7 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
 
     if(!vstrTokens[3].compare("RFC.LcpFreqSel"))
     {
-        sendFrequencySelectChan0( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+        sendFrequencySelectLcp( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
         return;
     }
 
@@ -308,7 +308,7 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
 
     if(!vstrTokens[3].compare("RFC.RcpFreqSel"))
     {
-        sendFrequencySelectChan1( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+        sendFrequencySelectRcp( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
         return;
     }
 
@@ -702,7 +702,6 @@ void cStationControllerKATCPClient::sendMotorTorqueElSlave(int64_t i64Timestamp_
     }
 }
 
-
 void cStationControllerKATCPClient::sendNoiseDiodeSoftwareState(int64_t i64Timestamp_us, int32_t i32NoiseDiodeState, const string &strStatus)
 {
     boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
@@ -783,9 +782,7 @@ void cStationControllerKATCPClient::sendSourceSelection(int64_t i64Timestamp_us,
     }
 }
 
-
-
-void cStationControllerKATCPClient::sendFrequencySelectChan0(int64_t i64Timestamp_us, double dFreqencyRFChan0_MHz, const string &strStatus)
+void cStationControllerKATCPClient::sendFrequencySelectLcp(int64_t i64Timestamp_us, double dFreqencyRFChan0_MHz, const string &strStatus)
 {
     boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
 
@@ -795,17 +792,17 @@ void cStationControllerKATCPClient::sendFrequencySelectChan0(int64_t i64Timestam
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
     {
         cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
-        pHandler->frequencySelectChan0_callback(i64Timestamp_us, dFreqencyRFChan0_MHz, strStatus);
+        pHandler->frequencySelectLcp_callback(i64Timestamp_us, dFreqencyRFChan0_MHz, strStatus);
     }
 
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
     {
         boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
-        pHandler->frequencySelectChan0_callback(i64Timestamp_us, dFreqencyRFChan0_MHz, strStatus);
+        pHandler->frequencySelectLcp_callback(i64Timestamp_us, dFreqencyRFChan0_MHz, strStatus);
     }
 }
 
-void cStationControllerKATCPClient::sendFrequencySelectChan1(int64_t i64Timestamp_us, double dFreqencyRFChan1_MHz, const string &strStatus)
+void cStationControllerKATCPClient::sendFrequencySelectRcp(int64_t i64Timestamp_us, double dFreqencyRFChan1_MHz, const string &strStatus)
 {
     boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
 
@@ -815,16 +812,16 @@ void cStationControllerKATCPClient::sendFrequencySelectChan1(int64_t i64Timestam
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
     {
         cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
-        pHandler->frequencySelectChan1_callback(i64Timestamp_us, dFreqencyRFChan1_MHz, strStatus);
+        pHandler->frequencySelectRcp_callback
+                (i64Timestamp_us, dFreqencyRFChan1_MHz, strStatus);
     }
 
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
     {
         boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
-        pHandler->frequencySelectChan1_callback(i64Timestamp_us, dFreqencyRFChan1_MHz, strStatus);
+        pHandler->frequencySelectRcp_callback(i64Timestamp_us, dFreqencyRFChan1_MHz, strStatus);
     }
 }
-
 
 void cStationControllerKATCPClient::sendFrequencyLO0Chan0(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_Hz, const string &strStatus)
 {

@@ -57,27 +57,37 @@ class cHDF5FileWriter : public cSpectrometerDataStreamInterpreter::cCallbackInte
         double m_dVReceiverRcpAtten_dB;
         char   m_chaReceiverRcpAttenStatus[7];
 
-        // Wind speed
+        // Receiver chain LCP Frequency Select - cTimestampedChar
+        double m_dTSFrequencySelectLcp_us;
+        char   m_chVFrequencySelectLcp;
+        char   m_chaFrequencySelectLcpStatus[7];
+
+        // Receiver chain RCP Frequency Select - cTimestampedChar
+        double m_dTSFrequencySelectRcp_us;
+        char   m_chVFrequencySelectRcp;
+        char   m_chaFrequencySelectRcpStatus[7];
+
+        // Wind speed - cTimestampedDouble
         double m_dTSWindSpeed_us;
         double m_dVWindSpeed_mps;
         char   m_chaWindSpeedStatus[7];
 
-        // Wind direction
+        // Wind direction - cTimestampedDouble
         double m_dTSWindDirection_us;
         double m_dVWindDirection_deg;
         char   m_chaWindDirectionStatus[7];
 
-        // Air temperature
+        // Air temperature - cTimestampedDouble
         double m_dTSTemperature_us;
         double m_dVTemperature_degC;
         char   m_chaTemperatureStatus[7];
 
-        // Absolute pressure
+        // Absolute pressure - cTimestampedDouble
         double m_dTSAbsolutePressure_us;
         double m_dVAbsolutePressure_mbar;
         char   m_chaAbsolutePressureStatus[7];
 
-        // Relative humidity
+        // Relative humidity - cTimestampedDouble
         double m_dTSRelativeHumidity_us;
         double m_dVRelativeHumidity_percent;
         char   m_chaRelativeHumidityStatus[7];
@@ -161,8 +171,8 @@ public:
 
 
     //RF values
-    void                                                frequencySelectChan0_callback(int64_t i64Timestamp_us, bool bFrequencySelectChan0, const std::string &strStatus);
-    void                                                frequencySelectChan1_callback(int64_t i64Timestamp_us, bool bFrequencySelectChan1, const std::string &strStatus);
+    void                                                frequencySelectLcp_callback(int64_t i64Timestamp_us, bool bFrequencySelectLcp, const std::string &strStatus);
+    void                                                frequencySelectRcp_callback(int64_t i64Timestamp_us, bool bFrequencySelectRcp, const std::string &strStatus);
     void                                                frequencyLO0Chan0_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_Hz, const std::string &strStatus);
     void                                                frequencyLO0Chan1_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_Hz, const std::string &strStatus);
     void                                                frequencyLO1_callback(int64_t i64Timestamp_us, double dFrequencyLO1_Hz, const std::string &strStatus);

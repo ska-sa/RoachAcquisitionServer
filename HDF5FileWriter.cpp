@@ -36,6 +36,14 @@ cHDF5FileWriter::cHDF5FileWriter(const string &strRecordingDirectory, uint32_t u
         m_oInitialValueSet.m_dVReceiverRcpAtten_dB = 0;
         sprintf(m_oInitialValueSet.m_chaReceiverRcpAttenStatus, "0");
 
+        m_oInitialValueSet.m_dTSFrequencySelectLcp_us = 0;
+        m_oInitialValueSet.m_chVFrequencySelectLcp = 0;
+        sprintf(m_oInitialValueSet.m_chVFrequencySelectLcp, "0");
+
+        m_oInitialValueSet.m_dTSFrequencySelectRcp_us = 0;
+        m_oInitialValueSet.m_chVFrequencySelectRcp = 0;
+        sprintf(m_oInitialValueSet.m_chVFrequencySelectRcp, "0");
+
         m_oInitialValueSet.m_dTSWindSpeed_us = 0;
         m_oInitialValueSet.m_dVWindSpeed_mps = 0;
         sprintf(m_oInitialValueSet.m_chaWindSpeedStatus, "0");
@@ -220,6 +228,14 @@ void cHDF5FileWriter::getNextFrame_callback(const std::vector<int> &vi32Chan0, c
             m_pHDF5File->addReceiverRcpAttenuation(m_oInitialValueSet.m_dTSReceiverRcpAtten_us,
                                                    m_oInitialValueSet.m_dVReceiverRcpAtten_dB,
                                                    m_oInitialValueSet.m_chaReceiverRcpAttenStatus);
+        if (m_oInitialValueSet.m_dTSFrequencySelectLcp_us)
+            m_pHDF5File->addFrequencySelectLCP(m_oInitialValueSet.m_dTSFrequencySelectLcp_us,
+                                               m_oInitialValueSet.m_chVFrequencySelectLcp,
+                                               m_oInitialValueSet.m_chaFrequencySelectLcpStatus);
+        if (m_oInitialValueSet.m_dTSFrequencySelectRcp_us)
+            m_pHDF5File->addFrequencySelectLCP(m_oInitialValueSet.m_dTSFrequencySelectRcp_us,
+                                               m_oInitialValueSet.m_chVFrequencySelectRcp,
+                                               m_oInitialValueSet.m_chaFrequencySelectRcpStatus);
         if (m_oInitialValueSet.m_dTSWindSpeed_us)
             m_pHDF5File->addWindSpeed(m_oInitialValueSet.m_dTSWindSpeed_us,
                                       m_oInitialValueSet.m_dVWindSpeed_mps,
@@ -587,7 +603,7 @@ void cHDF5FileWriter::stopRecording_callback()
 
 void cHDF5FileWriter::requestedAntennaAz_callback(int64_t i64Timestamp_us,double dAzimuth_deg, const string &strStatus)
 {
-    if(getState() != RECORDING) //Don't log if we are not recording
+    if(getState() != RECORDING)
         return;
 
     m_pHDF5File->addRequestedAntennaAz(i64Timestamp_us, dAzimuth_deg, strStatus);
@@ -595,7 +611,7 @@ void cHDF5FileWriter::requestedAntennaAz_callback(int64_t i64Timestamp_us,double
 
 void cHDF5FileWriter::requestedAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const string &strStatus)
 {
-    if(getState() != RECORDING) //Don't log if we are not recording
+    if(getState() != RECORDING)
         return;
 
     m_pHDF5File->addRequestedAntennaEl(i64Timestamp_us, dElevation_deg, strStatus);
@@ -603,7 +619,7 @@ void cHDF5FileWriter::requestedAntennaEl_callback(int64_t i64Timestamp_us, doubl
 
 void cHDF5FileWriter::actualAntennaAz_callback(int64_t i64Timestamp_us,double dAzimuth_deg, const string &strStatus)
 {
-    if(getState() != RECORDING) //Don't log if we are not recording
+    if(getState() != RECORDING)
         return;
 
     m_pHDF5File->addActualAntennaAz(i64Timestamp_us, dAzimuth_deg, strStatus);
@@ -611,7 +627,7 @@ void cHDF5FileWriter::actualAntennaAz_callback(int64_t i64Timestamp_us,double dA
 
 void cHDF5FileWriter::actualAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const string &strStatus)
 {
-    if(getState() != RECORDING) //Don't log if we are not recording
+    if(getState() != RECORDING)
         return;
 
     m_pHDF5File->addActualAntennaEl(i64Timestamp_us, dElevation_deg, strStatus);
@@ -619,7 +635,7 @@ void cHDF5FileWriter::actualAntennaEl_callback(int64_t i64Timestamp_us, double d
 
 void cHDF5FileWriter::actualSourceOffsetAz_callback(int64_t i64Timestamp_us,double dAzimuthOffset_deg, const string &strStatus)
 {
-    if(getState() != RECORDING) //Don't log if we are not recording
+    if(getState() != RECORDING)
         return;
 
     m_pHDF5File->addActualSourceOffsetAz(i64Timestamp_us, dAzimuthOffset_deg, strStatus);
@@ -627,7 +643,7 @@ void cHDF5FileWriter::actualSourceOffsetAz_callback(int64_t i64Timestamp_us,doub
 
 void cHDF5FileWriter::actualSourceOffsetEl_callback(int64_t i64Timestamp_us, double dElevationOffset_deg, const string &strStatus)
 {
-    if(getState() != RECORDING) //Don't log if we are not recording
+    if(getState() != RECORDING)
         return;
 
     m_pHDF5File->addActualSourceOffsetEl(i64Timestamp_us, dElevationOffset_deg, strStatus);
@@ -635,7 +651,7 @@ void cHDF5FileWriter::actualSourceOffsetEl_callback(int64_t i64Timestamp_us, dou
 
 void cHDF5FileWriter::actualAntennaRA_callback(int64_t i64Timestamp_us,double dRighAscension_deg, const string &strStatus)
 {
-    if(getState() != RECORDING) //Don't log if we are not recording
+    if(getState() != RECORDING)
         return;
 
     m_pHDF5File->addActualAntennaRA(i64Timestamp_us, dRighAscension_deg, strStatus);
@@ -643,7 +659,7 @@ void cHDF5FileWriter::actualAntennaRA_callback(int64_t i64Timestamp_us,double dR
 
 void cHDF5FileWriter::actualAntennaDec_callback(int64_t i64Timestamp_us, double dDeclination_deg, const string &strStatus)
 {
-    if(getState() != RECORDING) //Don't log if we are not recording
+    if(getState() != RECORDING)
         return;
 
     m_pHDF5File->addActualAntennaDec(i64Timestamp_us, dDeclination_deg, strStatus);
@@ -651,7 +667,7 @@ void cHDF5FileWriter::actualAntennaDec_callback(int64_t i64Timestamp_us, double 
 
 void cHDF5FileWriter::antennaStatus_callback(int64_t i64Timestamp_us, const string &strAntennaStatus, const string &strStatus)
 {
-    if(getState() != RECORDING) //Don't log if we are not recording
+    if(getState() != RECORDING)
         return;
 
     m_pHDF5File->addAntennaStatus(i64Timestamp_us, strAntennaStatus, strStatus);
@@ -659,7 +675,7 @@ void cHDF5FileWriter::antennaStatus_callback(int64_t i64Timestamp_us, const stri
 
 void cHDF5FileWriter::motorTorqueAzMaster_callback(int64_t i64Timestamp_us, double dAzMaster_mNm, const string &strStatus)
 {
-    if(getState() != RECORDING) //Don't log if we are not recording
+    if(getState() != RECORDING)
         return;
 
     m_pHDF5File->motorTorqueAzMaster(i64Timestamp_us, dAzMaster_mNm, strStatus);
@@ -667,7 +683,7 @@ void cHDF5FileWriter::motorTorqueAzMaster_callback(int64_t i64Timestamp_us, doub
 
 void cHDF5FileWriter::motorTorqueAzSlave_callback(int64_t i64Timestamp_us, double dAzSlave_mNm, const string &strStatus)
 {
-    if(getState() != RECORDING) //Don't log if we are not recording
+    if(getState() != RECORDING)
         return;
 
     m_pHDF5File->motorTorqueAzSlave(i64Timestamp_us, dAzSlave_mNm, strStatus);
@@ -675,7 +691,7 @@ void cHDF5FileWriter::motorTorqueAzSlave_callback(int64_t i64Timestamp_us, doubl
 
 void cHDF5FileWriter::motorTorqueElMaster_callback(int64_t i64Timestamp_us, double dElMaster_mNm, const string &strStatus)
 {
-    if(getState() != RECORDING) //Don't log if we are not recording
+    if(getState() != RECORDING)
         return;
 
     m_pHDF5File->motorTorqueElMaster(i64Timestamp_us, dElMaster_mNm, strStatus);
@@ -683,7 +699,7 @@ void cHDF5FileWriter::motorTorqueElMaster_callback(int64_t i64Timestamp_us, doub
 
 void cHDF5FileWriter::motorTorqueElSlave_callback(int64_t i64Timestamp_us, double dElSlave_mNm, const string &strStatus)
 {
-    if(getState() != RECORDING) //Don't log if we are not recording
+    if(getState() != RECORDING)
         return;
 
     m_pHDF5File->motorTorqueElSlave(i64Timestamp_us, dElSlave_mNm, strStatus);
@@ -691,7 +707,7 @@ void cHDF5FileWriter::motorTorqueElSlave_callback(int64_t i64Timestamp_us, doubl
 
 void cHDF5FileWriter::appliedPointingModel_callback(const string &strModelName, const vector<double> &vdPointingModelParams)
 {
-    if(getState() != RECORDING) //Don't log if we are not recording
+    if(getState() != RECORDING)
         return;
 
     m_pHDF5File->setAppliedPointingModel(strModelName, vdPointingModelParams);
@@ -699,7 +715,7 @@ void cHDF5FileWriter::appliedPointingModel_callback(const string &strModelName, 
 
 void cHDF5FileWriter::antennaName_callback(const string &strAntennaName)
 {
-    if(getState() != RECORDING) //Don't log if we are not recording
+    if(getState() != RECORDING)
         return;
 
     m_pHDF5File->setAntennaName(strAntennaName);
@@ -707,7 +723,7 @@ void cHDF5FileWriter::antennaName_callback(const string &strAntennaName)
 
 void cHDF5FileWriter::antennaDiameter_callback(const string &strAntennaDiameter)
 {
-    if(getState() != RECORDING) //Don't log if we are not recording
+    if(getState() != RECORDING)
         return;
 
     m_pHDF5File->setAntennaBeamwidth(strAntennaDiameter);
@@ -715,7 +731,7 @@ void cHDF5FileWriter::antennaDiameter_callback(const string &strAntennaDiameter)
 
 void cHDF5FileWriter::antennaBeamwidth_callback(const string &strAntennaBeamwidth)
 {
-    if(getState() != RECORDING) //Don't log if we are not recording
+    if(getState() != RECORDING)
         return;
 
     m_pHDF5File->setAntennaBeamwidth(strAntennaBeamwidth);
@@ -723,7 +739,7 @@ void cHDF5FileWriter::antennaBeamwidth_callback(const string &strAntennaBeamwidt
 
 void cHDF5FileWriter::antennaLongitude_callback(const string &strAntennaLongitude)
 {
-    if(getState() != RECORDING) //Don't log if we are not recording
+    if(getState() != RECORDING)
         return;
 
     m_pHDF5File->setAntennaLongitude(strAntennaLongitude);
@@ -731,7 +747,7 @@ void cHDF5FileWriter::antennaLongitude_callback(const string &strAntennaLongitud
 
 void cHDF5FileWriter::antennaLatitude_callback(const string &strAntennaLatitude)
 {
-    if(getState() != RECORDING) //Don't log if we are not recording
+    if(getState() != RECORDING)
         return;
 
     m_pHDF5File->setAntennaLatitude(strAntennaLatitude);
@@ -739,7 +755,7 @@ void cHDF5FileWriter::antennaLatitude_callback(const string &strAntennaLatitude)
 
 void cHDF5FileWriter::noiseDiodeSoftwareState_callback(int64_t i64Timestamp_us, int32_t i32NoiseDiodeState, const string &strStatus)
 {
-    if(getState() != RECORDING) //Don't log if we are not recording
+    if(getState() != RECORDING)
         return;
 
     m_pHDF5File->addNoiseDiodeSoftwareState(i64Timestamp_us, i32NoiseDiodeState, strStatus);
@@ -747,7 +763,7 @@ void cHDF5FileWriter::noiseDiodeSoftwareState_callback(int64_t i64Timestamp_us, 
 
 void cHDF5FileWriter::noiseDiodeSource_callback(int64_t i64Timestamp_us, const string &strNoiseSource, const string &strStatus)
 {
-    if(getState() != RECORDING) //Don't log if we are not recording
+    if(getState() != RECORDING)
         return;
 
     m_pHDF5File->addNoiseDiodeSource(i64Timestamp_us, strNoiseSource, strStatus);
@@ -755,7 +771,7 @@ void cHDF5FileWriter::noiseDiodeSource_callback(int64_t i64Timestamp_us, const s
 
 void cHDF5FileWriter::noiseDiodeCurrent_callback(int64_t i64Timestamp_us, double dNoiseDiodeCurrent_A, const string &strStatus)
 {
-    if(getState() != RECORDING) //Don't log if we are not recording
+    if(getState() != RECORDING)
         return;
 
     m_pHDF5File->addNoiseDiodeCurrent(i64Timestamp_us, dNoiseDiodeCurrent_A, strStatus);
@@ -763,31 +779,47 @@ void cHDF5FileWriter::noiseDiodeCurrent_callback(int64_t i64Timestamp_us, double
 
 void cHDF5FileWriter::sourceSelection_callback(int64_t i64Timestamp_us, const string &strSourceName, double dRighAscension_deg, double dDeclination_deg)
 {
-    if(getState() != RECORDING) //Don't log if we are not recording
+    if(getState() != RECORDING)
         return;
 
     m_pHDF5File->addSourceSelection(i64Timestamp_us, strSourceName, dRighAscension_deg, dDeclination_deg);
 }
 
-void cHDF5FileWriter::frequencySelectChan0_callback(int64_t i64Timestamp_us, bool bFrequencySelectChan0, const string &strStatus)
+void cHDF5FileWriter::frequencySelectLcp_callback(int64_t i64Timestamp_us, bool bFrequencySelectLcp, const string &strStatus)
 {
-    if(getState() != RECORDING) //Don't log if we are not recording
-        return;
-
-    m_pHDF5File->addFrequencySelectLCP(i64Timestamp_us, bFrequencySelectChan0, strStatus);
+    if(getState() != RECORDING)
+    {
+        if (i64Timestamp_us > m_oInitialValueSet.m_dTSFrequencySelectLcp_us)
+        {
+            boost::unique_lock<boost::shared_mutex>  oLock(m_oMutex);
+            m_oInitialValueSet.m_dTSFrequencySelectLcp_us = i64Timestamp_us;
+            m_oInitialValueSet.m_chVFrequencySelectLcp = bFrequencySelectLcp;
+            sprintf(m_oInitialValueSet.m_chaFrequencySelectLcpStatus, "%s", strStatus.c_str());
+        }
+    }
+    else
+        m_pHDF5File->addFrequencySelectLCP(i64Timestamp_us, bFrequencySelectLcp, strStatus);
 }
 
-void cHDF5FileWriter::frequencySelectChan1_callback(int64_t i64Timestamp_us, bool bFrequencySelectChan1, const string &strStatus)
+void cHDF5FileWriter::frequencySelectRcp_callback(int64_t i64Timestamp_us, bool bFrequencySelectRcp, const string &strStatus)
 {
-    if(getState() != RECORDING) //Don't log if we are not recording
-        return;
-
-    m_pHDF5File->addFrequencySelectRCP(i64Timestamp_us, bFrequencySelectChan1, strStatus);
+    if(getState() != RECORDING)
+    {
+        if (i64Timestamp_us > m_oInitialValueSet.m_dTSFrequencySelectRcp_us)
+        {
+            boost::unique_lock<boost::shared_mutex>  oLock(m_oMutex);
+            m_oInitialValueSet.m_dTSFrequencySelectRcp_us = i64Timestamp_us;
+            m_oInitialValueSet.m_chVFrequencySelectRcp = bFrequencySelectRcp;
+            sprintf(m_oInitialValueSet.m_chaFrequencySelectRcpStatus, "%s", strStatus.c_str());
+        }
+    }
+    else
+        m_pHDF5File->addFrequencySelectRCP(i64Timestamp_us, bFrequencySelectRcp, strStatus);
 }
 
 void cHDF5FileWriter::frequencyLO0Chan0_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_Hz, const string &strStatus)
 {
-    if(getState() != RECORDING) //Don't log if we are not recording
+    if(getState() != RECORDING)
         return;
 
     m_pHDF5File->addFrequencyLO0Chan0(i64Timestamp_us, dFrequencyLO0Chan0_Hz, strStatus);
@@ -795,7 +827,7 @@ void cHDF5FileWriter::frequencyLO0Chan0_callback(int64_t i64Timestamp_us, double
 
 void cHDF5FileWriter::frequencyLO0Chan1_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_Hz, const string &strStatus)
 {
-    if(getState() != RECORDING) //Don't log if we are not recording
+    if(getState() != RECORDING)
         return;
 
     m_pHDF5File->addFrequencyLO0Chan1(i64Timestamp_us, dFrequencyLO0Chan1_Hz, strStatus);
@@ -803,7 +835,7 @@ void cHDF5FileWriter::frequencyLO0Chan1_callback(int64_t i64Timestamp_us, double
 
 void cHDF5FileWriter::frequencyLO1_callback(int64_t i64Timestamp_us, double dFrequencyLO1_Hz, const string &strStatus)
 {
-    if(getState() != RECORDING) //Don't log if we are not recording
+    if(getState() != RECORDING)
         return;
 
     m_pHDF5File->addFrequencyLO1(i64Timestamp_us, dFrequencyLO1_Hz, strStatus);
@@ -811,7 +843,7 @@ void cHDF5FileWriter::frequencyLO1_callback(int64_t i64Timestamp_us, double dFre
 
 void cHDF5FileWriter::receiverBandwidthChan0_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan0_Hz, const string &strStatus)
 {
-    if(getState() != RECORDING) //Don't log if we are not recording
+    if(getState() != RECORDING)
         return;
 
     m_pHDF5File->addReceiverBandwidthChan0(i64Timestamp_us, dReceiverBandwidthChan0_Hz, strStatus);
@@ -819,7 +851,7 @@ void cHDF5FileWriter::receiverBandwidthChan0_callback(int64_t i64Timestamp_us, d
 
 void cHDF5FileWriter::receiverBandwidthChan1_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan1_Hz, const string &strStatus)
 {
-    if(getState() != RECORDING) //Don't log if we are not recording
+    if(getState() != RECORDING)
         return;
 
     m_pHDF5File->addReceiverBandwidthChan1(i64Timestamp_us, dReceiverBandwidthChan1_Hz, strStatus);
@@ -827,7 +859,7 @@ void cHDF5FileWriter::receiverBandwidthChan1_callback(int64_t i64Timestamp_us, d
 
 void cHDF5FileWriter::receiverLcpAttenuation_callback(int64_t i64Timestamp_us, double dReceiverLcpAttenuation_dB, const string &strStatus)
 {
-    if(getState() != RECORDING) // Update initial values if the stored ones are older than the new ones.
+    if(getState() != RECORDING)
     {
         if (i64Timestamp_us > m_oInitialValueSet.m_dTSReceiverLcpAtten_us)
         {
@@ -843,7 +875,7 @@ void cHDF5FileWriter::receiverLcpAttenuation_callback(int64_t i64Timestamp_us, d
 
 void cHDF5FileWriter::receiverRcpAttenuation_callback(int64_t i64Timestamp_us, double dReceiverRcpAttenuation_dB, const string &strStatus)
 {
-    if(getState() != RECORDING) // Update initial values if the stored ones are older than the new ones.
+    if(getState() != RECORDING)
     {
         if (i64Timestamp_us > m_oInitialValueSet.m_dTSReceiverRcpAtten_us)
         {
@@ -939,7 +971,7 @@ void cHDF5FileWriter::envRelativeHumidity_callback(int64_t i64Timestamp_us, doub
 
 void cHDF5FileWriter::accumulationLength_callback(int64_t i64Timestamp_us, uint32_t u32NSamples)
 {
-    if(getState() != RECORDING) //Don't log if we are not recording
+    if(getState() != RECORDING)
         return;
 
     m_pHDF5File->addAccumulationLength(i64Timestamp_us, u32NSamples);
@@ -947,7 +979,7 @@ void cHDF5FileWriter::accumulationLength_callback(int64_t i64Timestamp_us, uint3
 
 void cHDF5FileWriter::coarseChannelSelect_callback(int64_t i64Timestamp_us, uint32_t u32ChannelNo)
 {
-    if(getState() != RECORDING) //Don't log if we are not recording
+    if(getState() != RECORDING)
         return;
 
     m_pHDF5File->addCoarseChannelSelect(i64Timestamp_us, u32ChannelNo);
@@ -955,7 +987,7 @@ void cHDF5FileWriter::coarseChannelSelect_callback(int64_t i64Timestamp_us, uint
 
 void cHDF5FileWriter::frequencyFs_callback(double dFrequencyFs_Hz)
 {
-    if(getState() != RECORDING) //Don't log if we are not recording
+    if(getState() != RECORDING)
         return;
 
     m_pHDF5File->setFrequencyFs(dFrequencyFs_Hz);
@@ -963,7 +995,7 @@ void cHDF5FileWriter::frequencyFs_callback(double dFrequencyFs_Hz)
 
 void cHDF5FileWriter::sizeOfCoarseFFT_callback(uint32_t u32SizeOfCoarseFFT_nSamp)
 {
-    if(getState() != RECORDING) //Don't log if we are not recording
+    if(getState() != RECORDING)
         return;
 
     m_pHDF5File->setSizeOfCoarseFFT(u32SizeOfCoarseFFT_nSamp);
@@ -971,7 +1003,7 @@ void cHDF5FileWriter::sizeOfCoarseFFT_callback(uint32_t u32SizeOfCoarseFFT_nSamp
 
 void cHDF5FileWriter::sizeOfFineFFT_callback(uint32_t u32SizeOfFineFFT_nSamp)
 {
-    if(getState() != RECORDING) //Don't log if we are not recording
+    if(getState() != RECORDING)
         return;
 
     m_pHDF5File->setSizeOfFineFFT(u32SizeOfFineFFT_nSamp);
@@ -979,7 +1011,7 @@ void cHDF5FileWriter::sizeOfFineFFT_callback(uint32_t u32SizeOfFineFFT_nSamp)
 
 void cHDF5FileWriter::coarseFFTShiftMask_callback(int64_t i64Timestamp_us, uint32_t u32ShiftMask)
 {
-    if(getState() != RECORDING) //Don't log if we are not recording
+    if(getState() != RECORDING)
         return;
 
     m_pHDF5File->addCoarseFFTShiftMask(i64Timestamp_us, u32ShiftMask);
@@ -987,7 +1019,7 @@ void cHDF5FileWriter::coarseFFTShiftMask_callback(int64_t i64Timestamp_us, uint3
 
 void cHDF5FileWriter::attenuationADCChan0_callback(int64_t i64Timestamp_us, double dADCAttenuationChan0_dB)
 {
-    if(getState() != RECORDING) //Don't log if we are not recording
+    if(getState() != RECORDING)
         return;
 
     m_pHDF5File->addAttenuationADCChan0(i64Timestamp_us, dADCAttenuationChan0_dB);
@@ -995,7 +1027,7 @@ void cHDF5FileWriter::attenuationADCChan0_callback(int64_t i64Timestamp_us, doub
 
 void cHDF5FileWriter::attenuationADCChan1_callback(int64_t i64Timestamp_us, double dADCAttenuationChan1_dB)
 {
-    if(getState() != RECORDING) //Don't log if we are not recording
+    if(getState() != RECORDING)
         return;
 
     m_pHDF5File->addAttenuationADCChan1(i64Timestamp_us, dADCAttenuationChan1_dB);

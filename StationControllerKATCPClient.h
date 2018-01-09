@@ -46,8 +46,8 @@ public:
 
 
         //RF values
-        virtual void                                    frequencySelectChan0_callback(int64_t i64Timestamp_us, bool bFrequencySelectChan0, const std::string &strStatus) = 0;
-        virtual void                                    frequencySelectChan1_callback(int64_t i64Timestamp_us, bool bFrequencySelectChan1, const std::string &strStatus) = 0;
+        virtual void                                    frequencySelectLcp_callback(int64_t i64Timestamp_us, bool bFrequencySelectChan0, const std::string &strStatus) = 0;
+        virtual void                                    frequencySelectRcp_callback(int64_t i64Timestamp_us, bool bFrequencySelectChan1, const std::string &strStatus) = 0;
         virtual void                                    frequencyLO0Chan0_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_Hz, const std::string &strStatus) = 0;
         virtual void                                    frequencyLO0Chan1_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_Hz, const std::string &strStatus) = 0;
         virtual void                                    frequencyLO1_callback(int64_t i64Timestamp_us, double dFrequencyLO1_Hz, const std::string &strStatus) = 0;
@@ -120,8 +120,8 @@ private:
     void                                                sendSourceSelection(int64_t i64Timestamp_us, const std::string &strSourceName, double dRighAscension_deg, double dDeclination_deg);
 
     //RFE values
-    void                                                sendFrequencySelectChan0(int64_t i64Timestamp_us, double dFreqencyRF_MHz, const std::string &strStatus);
-    void                                                sendFrequencySelectChan1(int64_t i64Timestamp_us, double dFreqencyRF_MHz, const std::string &strStatus);
+    void                                                sendFrequencySelectLcp(int64_t i64Timestamp_us, double dFreqencyRF_MHz, const std::string &strStatus);
+    void                                                sendFrequencySelectRcp(int64_t i64Timestamp_us, double dFreqencyRF_MHz, const std::string &strStatus);
     void                                                sendFrequencyLO0Chan0(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_MHz, const std::string &strStatus);
     void                                                sendFrequencyLO0Chan1(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_MHz, const std::string &strStatus);
     void                                                sendFrequencyLO1(int64_t i64Timestamp_us, double dFrequencyLO1_MHz, const std::string &strStatus);
