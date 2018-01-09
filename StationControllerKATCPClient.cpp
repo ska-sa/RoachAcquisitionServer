@@ -13,6 +13,12 @@ using namespace std;
 cStationControllerKATCPClient::cStationControllerKATCPClient() :
     cKATCPClientBase()
 {
+    m_vstrSensorNames.push_back("acs.actual-azim period 1000");
+    m_vstrSensorNames.push_back("acs.actual-elev period 1000");
+    m_vstrSensorNames.push_back("acs.desired-azim period 1000");
+    m_vstrSensorNames.push_back("acs.desired-elev period 1000");
+    m_vstrSensorNames.push_back("acs.request-azim period 1000");
+    m_vstrSensorNames.push_back("acs.request-elev period 1000");
 
     // Signal-chain values.
     m_vstrSensorNames.push_back("SCM.LcpAttenuation event");
