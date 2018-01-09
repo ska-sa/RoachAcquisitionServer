@@ -17,8 +17,8 @@ cStationControllerKATCPClient::cStationControllerKATCPClient() :
     // Signal-chain values.
     m_vstrSensorNames.push_back("SCM.LcpAttenuation event");
     m_vstrSensorNames.push_back("SCM.RcpAttenuation event");
-    m_vstrSensorNames.push_back("RFC.LcpFreqSel event");
-    m_vstrSensorNames.push_back("RFC.RcpFreqSel event");
+    //m_vstrSensorNames.push_back("RFC.LcpFreqSel event");
+    //m_vstrSensorNames.push_back("RFC.RcpFreqSel event");
 
     // Environment values.
     m_vstrSensorNames.push_back("EMS.WindSpeed period 10000");

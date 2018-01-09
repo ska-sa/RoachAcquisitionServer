@@ -24,6 +24,38 @@ cHDF5FileWriter::cHDF5FileWriter(const string &strRecordingDirectory, uint32_t u
     m_eState(IDLE)
 {
     m_oDataStreamInterpreter.registerCallbackHandler(this); //Have data stream handler push interpreted packet data back to this class.
+
+    {
+        boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+
+        m_oInitialValueSet.m_dTSReceiverLcpAtten_us = 0;
+        m_oInitialValueSet.m_dVReceiverLcpAtten_dB = 0;
+        sprintf(m_oInitialValueSet.m_chaReceiverLcpAttenStatus, "0");
+
+        m_oInitialValueSet.m_dTSReceiverRcpAtten_us = 0;
+        m_oInitialValueSet.m_dVReceiverRcpAtten_dB = 0;
+        sprintf(m_oInitialValueSet.m_chaReceiverRcpAttenStatus, "0");
+
+        m_oInitialValueSet.m_dTSWindSpeed_us = 0;
+        m_oInitialValueSet.m_dVWindSpeed_mps = 0;
+        sprintf(m_oInitialValueSet.m_chaWindSpeedStatus, "0");
+
+        m_oInitialValueSet.m_dTSWindDirection_us = 0;
+        m_oInitialValueSet.m_dVWindDirection_deg = 0;
+        sprintf(m_oInitialValueSet.m_chaWindDirectionStatus, "0");
+
+        m_oInitialValueSet.m_dTSTemperature_us = 0;
+        m_oInitialValueSet.m_dVTemperature_degC = 0;
+        sprintf(m_oInitialValueSet.m_chaTemperatureStatus, "0");
+
+        m_oInitialValueSet.m_dTSAbsolutePressure_us = 0;
+        m_oInitialValueSet.m_dVAbsolutePressure_mbar = 0;
+        sprintf(m_oInitialValueSet.m_chaAbsolutePressureStatus, "0");
+
+        m_oInitialValueSet.m_dTSRelativeHumidity_us = 0;
+        m_oInitialValueSet.m_dVRelativeHumidity_percent = 0;
+        sprintf(m_oInitialValueSet.m_chaRelativeHumidityStatus, "0");
+    }
 }
 
 cHDF5FileWriter::~cHDF5FileWriter()
@@ -178,6 +210,36 @@ void cHDF5FileWriter::getNextFrame_callback(const std::vector<int> &vi32Chan0, c
         {
             m_i64StopTime_us = LLONG_MAX; //0 duration implies record indefinitely.
         }
+
+        // Add any values stored.
+        if (m_oInitialValueSet.m_dTSReceiverLcpAtten_us)
+            m_pHDF5File->addReceiverLcpAttenuation(m_oInitialValueSet.m_dTSReceiverLcpAtten_us,
+                                                   m_oInitialValueSet.m_dVReceiverLcpAtten_dB,
+                                                   m_oInitialValueSet.m_chaReceiverLcpAttenStatus);
+        if (m_oInitialValueSet.m_dTSReceiverRcpAtten_us)
+            m_pHDF5File->addReceiverRcpAttenuation(m_oInitialValueSet.m_dTSReceiverRcpAtten_us,
+                                                   m_oInitialValueSet.m_dVReceiverRcpAtten_dB,
+                                                   m_oInitialValueSet.m_chaReceiverRcpAttenStatus);
+        if (m_oInitialValueSet.m_dTSWindSpeed_us)
+            m_pHDF5File->addWindSpeed(m_oInitialValueSet.m_dTSWindSpeed_us,
+                                      m_oInitialValueSet.m_dVWindSpeed_mps,
+                                      m_oInitialValueSet.m_chaWindSpeedStatus);
+        if (m_oInitialValueSet.m_dTSWindDirection_us)
+            m_pHDF5File->addWindDirection(m_oInitialValueSet.m_dTSWindDirection_us,
+                                          m_oInitialValueSet.m_dVWindDirection_deg,
+                                          m_oInitialValueSet.m_chaWindDirectionStatus);
+        if (m_oInitialValueSet.m_dTSTemperature_us)
+            m_pHDF5File->addTemperature(m_oInitialValueSet.m_dTSTemperature_us,
+                                        m_oInitialValueSet.m_dVTemperature_degC,
+                                        m_oInitialValueSet.m_chaTemperatureStatus);
+        if (m_oInitialValueSet.m_dTSAbsolutePressure_us)
+            m_pHDF5File->addAbsolutePressure(m_oInitialValueSet.m_dTSAbsolutePressure_us,
+                                             m_oInitialValueSet.m_dVAbsolutePressure_mbar,
+                                             m_oInitialValueSet.m_chaAbsolutePressureStatus);
+        if (m_oInitialValueSet.m_dTSRelativeHumidity_us)
+            m_pHDF5File->addRelativeHumidity(m_oInitialValueSet.m_dTSRelativeHumidity_us,
+                                             m_oInitialValueSet.m_dVRelativeHumidity_percent,
+                                             m_oInitialValueSet.m_chaRelativeHumidityStatus);
 
         setState(RECORDING);
 
@@ -765,58 +827,114 @@ void cHDF5FileWriter::receiverBandwidthChan1_callback(int64_t i64Timestamp_us, d
 
 void cHDF5FileWriter::receiverLcpAttenuation_callback(int64_t i64Timestamp_us, double dReceiverLcpAttenuation_dB, const string &strStatus)
 {
-    if(getState() != RECORDING) //Don't log if we are not recording
-        return;
-
-    m_pHDF5File->addReceiverLcpAttenuation(i64Timestamp_us, dReceiverLcpAttenuation_dB, strStatus);
+    if(getState() != RECORDING) // Update initial values if the stored ones are older than the new ones.
+    {
+        if (i64Timestamp_us > m_oInitialValueSet.m_dTSReceiverLcpAtten_us)
+        {
+            boost::unique_lock<boost::shared_mutex>  oLock(m_oMutex);
+            m_oInitialValueSet.m_dTSReceiverLcpAtten_us = i64Timestamp_us;
+            m_oInitialValueSet.m_dVReceiverLcpAtten_dB = dReceiverLcpAttenuation_dB;
+            sprintf(m_oInitialValueSet.m_chaReceiverLcpAttenStatus, "%s", strStatus.c_str());
+        }
+    }
+    else
+        m_pHDF5File->addReceiverLcpAttenuation(i64Timestamp_us, dReceiverLcpAttenuation_dB, strStatus);
 }
 
 void cHDF5FileWriter::receiverRcpAttenuation_callback(int64_t i64Timestamp_us, double dReceiverRcpAttenuation_dB, const string &strStatus)
 {
-    if(getState() != RECORDING) //Don't log if we are not recording
-        return;
-
-    m_pHDF5File->addReceiverRcpAttenuation(i64Timestamp_us, dReceiverRcpAttenuation_dB, strStatus);
+    if(getState() != RECORDING) // Update initial values if the stored ones are older than the new ones.
+    {
+        if (i64Timestamp_us > m_oInitialValueSet.m_dTSReceiverRcpAtten_us)
+        {
+            boost::unique_lock<boost::shared_mutex>  oLock(m_oMutex);
+            m_oInitialValueSet.m_dTSReceiverRcpAtten_us = i64Timestamp_us;
+            m_oInitialValueSet.m_dVReceiverRcpAtten_dB = dReceiverRcpAttenuation_dB;
+            sprintf(m_oInitialValueSet.m_chaReceiverRcpAttenStatus, "%s", strStatus.c_str());
+        }
+    }
+    else
+        m_pHDF5File->addReceiverRcpAttenuation(i64Timestamp_us, dReceiverRcpAttenuation_dB, strStatus);
 }
 
 void cHDF5FileWriter::envWindSpeed_callback(int64_t i64Timestamp_us, double dWindSpeed_mps, const string &strStatus)
 {
-    if(getState() != RECORDING) //Don't log if we are not recording
-        return;
-
-    m_pHDF5File->addWindSpeed(i64Timestamp_us, dWindSpeed_mps, strStatus);
+    if(getState() != RECORDING) // Update initial values if the stored ones are older than the received ones.
+    {
+        if (i64Timestamp_us > m_oInitialValueSet.m_dTSWindSpeed_us)
+        {
+            boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+            m_oInitialValueSet.m_dTSWindSpeed_us = i64Timestamp_us;
+            m_oInitialValueSet.m_dVWindSpeed_mps = dWindSpeed_mps;
+            sprintf(m_oInitialValueSet.m_chaWindSpeedStatus, "%s", strStatus.c_str());
+        }
+    }
+    else
+        m_pHDF5File->addWindSpeed(i64Timestamp_us, dWindSpeed_mps, strStatus);
 }
 
 void cHDF5FileWriter::envWindDirection_callback(int64_t i64Timestamp_us, double dWindDirection_degrees, const string &strStatus)
 {
-    if(getState() != RECORDING) //Don't log if we are not recording
-        return;
-
-    m_pHDF5File->addWindDirection(i64Timestamp_us, dWindDirection_degrees, strStatus);
+    if(getState() != RECORDING) // Update initial values if the stored ones are older than the received ones.
+    {
+        if (i64Timestamp_us > m_oInitialValueSet.m_dTSWindDirection_us)
+        {
+            boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+            m_oInitialValueSet.m_dTSWindDirection_us = i64Timestamp_us;
+            m_oInitialValueSet.m_dVWindDirection_deg = dWindDirection_degrees;
+            sprintf(m_oInitialValueSet.m_chaWindDirectionStatus, "%s", strStatus.c_str());
+        }
+    }
+    else
+        m_pHDF5File->addWindDirection(i64Timestamp_us, dWindDirection_degrees, strStatus);
 }
 
 void cHDF5FileWriter::envTemperature_callback(int64_t i64Timestamp_us, double dTemperature_degreesC, const string &strStatus)
 {
-    if(getState() != RECORDING) //Don't log if we are not recording
-        return;
-
-    m_pHDF5File->addTemperature(i64Timestamp_us, dTemperature_degreesC, strStatus);
+    if(getState() != RECORDING) // Update initial values if the stored ones are older than the received ones.
+    {
+        if (i64Timestamp_us > m_oInitialValueSet.m_dTSTemperature_us)
+        {
+            boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+            m_oInitialValueSet.m_dTSTemperature_us = i64Timestamp_us;
+            m_oInitialValueSet.m_dVTemperature_degC = dTemperature_degreesC;
+            sprintf(m_oInitialValueSet.m_chaTemperatureStatus, "%s", strStatus.c_str());
+        }
+    }
+    else
+        m_pHDF5File->addTemperature(i64Timestamp_us, dTemperature_degreesC, strStatus);
 }
 
 void cHDF5FileWriter::envAbsolutePressure_callback(int64_t i64Timestamp_us, double dPressure_mbar, const string &strStatus)
 {
-    if(getState() != RECORDING) //Don't log if we are not recording
-        return;
-
-    m_pHDF5File->addAbsolutePressure(i64Timestamp_us, dPressure_mbar, strStatus);
+    if(getState() != RECORDING) // Update initial values if the stored ones are older than the received ones.
+    {
+        if (i64Timestamp_us > m_oInitialValueSet.m_dTSAbsolutePressure_us)
+        {
+            boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+            m_oInitialValueSet.m_dTSAbsolutePressure_us = i64Timestamp_us;
+            m_oInitialValueSet.m_dVAbsolutePressure_mbar = dPressure_mbar;
+            sprintf(m_oInitialValueSet.m_chaAbsolutePressureStatus, "%s", strStatus.c_str());
+        }
+    }
+    else
+        m_pHDF5File->addAbsolutePressure(i64Timestamp_us, dPressure_mbar, strStatus);
 }
 
 void cHDF5FileWriter::envRelativeHumidity_callback(int64_t i64Timestamp_us, double dHumidity_percent, const string &strStatus)
 {
-    if(getState() != RECORDING) //Don't log if we are not recording
-        return;
-
-    m_pHDF5File->addRelativeHumidity(i64Timestamp_us, dHumidity_percent, strStatus);
+    if(getState() != RECORDING) // Update initial values if the stored ones are older than the received ones.
+    {
+        if (i64Timestamp_us > m_oInitialValueSet.m_dTSRelativeHumidity_us)
+        {
+            boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+            m_oInitialValueSet.m_dTSRelativeHumidity_us = i64Timestamp_us;
+            m_oInitialValueSet.m_dVRelativeHumidity_percent = dHumidity_percent;
+            sprintf(m_oInitialValueSet.m_chaRelativeHumidityStatus, "%s", strStatus.c_str());
+        }
+    }
+    else
+        m_pHDF5File->addRelativeHumidity(i64Timestamp_us, dHumidity_percent, strStatus);
 }
 
 void cHDF5FileWriter::accumulationLength_callback(int64_t i64Timestamp_us, uint32_t u32NSamples)

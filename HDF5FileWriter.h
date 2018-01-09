@@ -45,6 +45,45 @@ class cHDF5FileWriter : public cSpectrometerDataStreamInterpreter::cCallbackInte
 
     //The entire class hierachy will probably need to be reconsidered in time.
 
+    typedef struct cInitialValueSet
+    {
+        // Receiver chain LCP attenuation - cTimestampedDouble
+        double m_dTSReceiverLcpAtten_us;
+        double m_dVReceiverLcpAtten_dB;
+        char   m_chaReceiverLcpAttenStatus[7];
+
+        // Receiver chain RCP attenuation - cTimestampedDouble
+        double m_dTSReceiverRcpAtten_us;
+        double m_dVReceiverRcpAtten_dB;
+        char   m_chaReceiverRcpAttenStatus[7];
+
+        // Wind speed
+        double m_dTSWindSpeed_us;
+        double m_dVWindSpeed_mps;
+        char   m_chaWindSpeedStatus[7];
+
+        // Wind direction
+        double m_dTSWindDirection_us;
+        double m_dVWindDirection_deg;
+        char   m_chaWindDirectionStatus[7];
+
+        // Air temperature
+        double m_dTSTemperature_us;
+        double m_dVTemperature_degC;
+        char   m_chaTemperatureStatus[7];
+
+        // Absolute pressure
+        double m_dTSAbsolutePressure_us;
+        double m_dVAbsolutePressure_mbar;
+        char   m_chaAbsolutePressureStatus[7];
+
+        // Relative humidity
+        double m_dTSRelativeHumidity_us;
+        double m_dVRelativeHumidity_percent;
+        char   m_chaRelativeHumidityStatus[7];
+
+    } cInitialValueSet;
+
 public:
     class cCallbackInterface
     {
@@ -207,6 +246,9 @@ private:
     int64_t                                             m_i64RecordedDuration_us;
 
     int64_t                                             m_i64LastPrintTime_us;
+
+    // Initial value struct
+    cInitialValueSet                                    m_oInitialValueSet;
 
     //State machine
     void                                                setState(state eState);
