@@ -25,6 +25,12 @@ public:
         virtual void                                    acsRequestedAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus) = 0;
         virtual void                                    acsActualAntennaAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus) = 0;
         virtual void                                    acsActualAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus) = 0;
+
+        virtual void                                    skyRequestedAntennaAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus) = 0;
+        virtual void                                    skyRequestedAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus) = 0;
+        virtual void                                    skyActualAntennaAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus) = 0;
+        virtual void                                    skyActualAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus) = 0;
+
         /* Marked for removal.
         virtual void                                    actualSourceOffsetAz_callback(int64_t i64Timestamp_us, double dAzimuthOffset_deg, const std::string &strStatus) = 0;
         virtual void                                    actualSourceOffsetEl_callback(int64_t i64Timestamp_us, double dElevationOffset_deg, const std::string &strStatus) = 0;
@@ -104,6 +110,12 @@ private:
     void                                                sendAcsRequestedAntennaEl(int64_t i64Timestamp_us,double dElevation_deg, const std::string &strStatus);
     void                                                sendAcsActualAntennaAz(int64_t i64Timestamp_us,double dAzimuth_deg, const std::string &strStatus);
     void                                                sendAcsActualAntennaEl(int64_t i64Timestamp_us,double dElevation_deg, const std::string &strStatus);
+
+    void                                                sendSkyRequestedAntennaAz(int64_t i64Timestamp_us,double dAzimuth_deg, const std::string &strStatus);
+    void                                                sendSkyRequestedAntennaEl(int64_t i64Timestamp_us,double dElevation_deg, const std::string &strStatus);
+    void                                                sendSkyActualAntennaAz(int64_t i64Timestamp_us,double dAzimuth_deg, const std::string &strStatus);
+    void                                                sendSkyActualAntennaEl(int64_t i64Timestamp_us,double dElevation_deg, const std::string &strStatus);
+
     /* Marked for removal.
     void                                                sendActualSourceOffsetAz(int64_t i64Timestamp_us, double dAzimuthOffset_deg, const std::string &strStatus);
     void                                                sendActualSourceOffsetEl(int64_t i64Timestamp_us, double dElevationOffset_deg, const std::string &strStatus);

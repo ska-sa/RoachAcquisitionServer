@@ -104,16 +104,26 @@ public:
         void                                                acsRequestedAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus);
         void                                                acsActualAntennaAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus);
         void                                                acsActualAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus);
+
+        void                                                skyRequestedAntennaAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus);
+        void                                                skyRequestedAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus);
+        void                                                skyActualAntennaAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus);
+        void                                                skyActualAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus);
+
+        /* Marked for removal.
         void                                                actualSourceOffsetAz_callback(int64_t i64Timestamp_us, double dAzimuthOffset_deg, const std::string &strStatus);
         void                                                actualSourceOffsetEl_callback(int64_t i64Timestamp_us, double dElevationOffset_deg, const std::string &strStatus);
         void                                                actualAntennaRA_callback(int64_t i64Timestamp_us, double dRighAscension_deg, const std::string &strStatus);
         void                                                actualAntennaDec_callback(int64_t i64Timestamp_us, double dDeclination_deg, const std::string &strStatus);
+        */
 
         void                                                antennaStatus_callback(int64_t i64Timestamp_us, const std::string &strAntennaStatus, const std::string &strStatus);
+        /* Marked for removal.
         void                                                motorTorqueAzMaster_callback(int64_t i64Timestamp_us, double dAzMaster_mNm, const std::string &strStatus);
         void                                                motorTorqueAzSlave_callback(int64_t i64Timestamp_us, double dAzSlave_mNm, const std::string &strStatus);
         void                                                motorTorqueElMaster_callback(int64_t i64Timestamp_us, double dElMaster_mNm, const std::string &strStatus);
         void                                                motorTorqueElSlave_callback(int64_t i64Timestamp_us, double dElSlave_mNm, const std::string &strStatus);
+        */
 /* TODO: Antenna config info marked for removal.
         void                                                appliedPointingModel_callback(const std::string &strModelName, const std::vector<double> &vdPointingModelParams);
         void                                                antennaName_callback(const std::string &strAntennaName);

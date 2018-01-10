@@ -1586,34 +1586,39 @@ void cKATCPServer::cKATCPClientCallbackHandler::stopRecording_callback()
     //Not used. Note, the HDF5FileWriter class is also a callback handler for KATCPClient so it get this callback to too and reacts to it there.
 }
 
-void  cKATCPServer::cKATCPClientCallbackHandler::acsRequestedAntennaAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const string &strStatus)
+void cKATCPServer::cKATCPClientCallbackHandler::acsRequestedAntennaAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const string &strStatus)
 {
-    boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oSensorDataMutex);
-
-    m_dRequestedAntennaAz_deg = dAzimuth_deg;
 }
 
-void  cKATCPServer::cKATCPClientCallbackHandler::acsRequestedAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const string &strStatusf)
+void cKATCPServer::cKATCPClientCallbackHandler::acsRequestedAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const string &strStatusf)
 {
-    boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oSensorDataMutex);
-
-    m_dRequestedAntennaEl_deg = dElevation_deg;
 }
 
 void cKATCPServer::cKATCPClientCallbackHandler::acsActualAntennaAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const string &strStatus)
 {
-    boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oSensorDataMutex);
-
-    m_dActualAntennaAz_deg = dAzimuth_deg;
 }
 
 void cKATCPServer::cKATCPClientCallbackHandler::acsActualAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const string &strStatus)
 {
-    boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oSensorDataMutex);
-
-    m_dActualAntennaEl_deg = dElevation_deg;
 }
 
+void cKATCPServer::cKATCPClientCallbackHandler::skyRequestedAntennaAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const string &strStatus)
+{
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::skyRequestedAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const string &strStatusf)
+{
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::skyActualAntennaAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const string &strStatus)
+{
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::skyActualAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const string &strStatus)
+{
+}
+
+/* Marked for removal.
 void cKATCPServer::cKATCPClientCallbackHandler::actualSourceOffsetAz_callback(int64_t i64Timestamp_us, double dAzimuthOffset_deg, const string &strStatus)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oSensorDataMutex);
@@ -1641,6 +1646,7 @@ void cKATCPServer::cKATCPClientCallbackHandler::actualAntennaDec_callback(int64_
 
     m_dActualAntennaDec_deg = dDeclination_deg;
 }
+*/
 
 void cKATCPServer::cKATCPClientCallbackHandler::antennaStatus_callback(int64_t i64Timestamp_us, const string &strAntennaStatus, const string &strStatus)
 {
@@ -1649,6 +1655,7 @@ void cKATCPServer::cKATCPClientCallbackHandler::antennaStatus_callback(int64_t i
     m_strAntennaStatus = strStatus;
 }
 
+/* Marked for removal.
 void cKATCPServer::cKATCPClientCallbackHandler::motorTorqueAzMaster_callback(int64_t i64Timestamp_us, double dAzMaster_mNm, const string &strStatus)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oSensorDataMutex);
@@ -1676,6 +1683,7 @@ void cKATCPServer::cKATCPClientCallbackHandler::motorTorqueElSlave_callback(int6
 
     m_dMotorTorqueAzSlave_mNm = dElSlave_mNm;
 }
+*/
 
 /* TODO: This marked for removal.
 void cKATCPServer::cKATCPClientCallbackHandler::appliedPointingModel_callback(const string &strModelName, const vector<double> &vdPointingModelParams)

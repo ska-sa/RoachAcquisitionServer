@@ -633,6 +633,38 @@ void cHDF5FileWriter::acsActualAntennaEl_callback(int64_t i64Timestamp_us, doubl
     m_pHDF5File->addAcsActualAntennaEl(i64Timestamp_us, dElevation_deg, strStatus);
 }
 
+void cHDF5FileWriter::skyRequestedAntennaAz_callback(int64_t i64Timestamp_us,double dAzimuth_deg, const string &strStatus)
+{
+    if(getState() != RECORDING)
+        return;
+
+    m_pHDF5File->addSkyRequestedAntennaAz(i64Timestamp_us, dAzimuth_deg, strStatus);
+}
+
+void cHDF5FileWriter::skyRequestedAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const string &strStatus)
+{
+    if(getState() != RECORDING)
+        return;
+
+    m_pHDF5File->addSkyRequestedAntennaEl(i64Timestamp_us, dElevation_deg, strStatus);
+}
+
+void cHDF5FileWriter::skyActualAntennaAz_callback(int64_t i64Timestamp_us,double dAzimuth_deg, const string &strStatus)
+{
+    if(getState() != RECORDING)
+        return;
+
+    m_pHDF5File->addSkyActualAntennaAz(i64Timestamp_us, dAzimuth_deg, strStatus);
+}
+
+void cHDF5FileWriter::skyActualAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const string &strStatus)
+{
+    if(getState() != RECORDING)
+        return;
+
+    m_pHDF5File->addSkyActualAntennaEl(i64Timestamp_us, dElevation_deg, strStatus);
+}
+
 /* Marked for removal.
 void cHDF5FileWriter::actualSourceOffsetAz_callback(int64_t i64Timestamp_us,double dAzimuthOffset_deg, const string &strStatus)
 {

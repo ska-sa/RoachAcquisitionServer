@@ -47,6 +47,46 @@ class cHDF5FileWriter : public cSpectrometerDataStreamInterpreter::cCallbackInte
 
     typedef struct cInitialValueSet
     {
+        // Antenna-space requested azim - cTimestampedDouble
+        double m_dTSAcsRequestedAzim_s;
+        double m_dVAcsRequestedAzim_deg;
+        char   m_chaAcsRequestedAzim[7];
+
+        // Antenna-space requested elev - cTimestampedDouble
+        double m_dTSAcsRequestedElev_s;
+        double m_dVAcsRequestedElev_deg;
+        char   m_chaAcsRequestedElev[7];
+
+        // Antenna-space actual azim - cTimestampedDouble
+        double m_dTSAcsActualAzim_s;
+        double m_dVAcsActualAzim_deg;
+        char   m_chaAcsActualAzim[7];
+
+        // Antenna-space actual elev - cTimestampedDouble
+        double m_dTSAcsActualElev_s;
+        double m_dVAcsActualElev_deg;
+        char   m_chaAcsActualElev[7];
+
+        // Sky-space requested azim - cTimestampedDouble
+        double m_dTSSkyRequestedAzim_s;
+        double m_dVSkyRequestedAzim_deg;
+        char   m_chaSkyRequestedAzim[7];
+
+        // Sky-space requested elev - cTimestampedDouble
+        double m_dTSSkyRequestedElev_s;
+        double m_dVSkyRequestedElev_deg;
+        char   m_chaSkyRequestedElev[7];
+
+        // Sky-space actual azim - cTimestampedDouble
+        double m_dTSSkyActualAzim_s;
+        double m_dVSkyActualAzim_deg;
+        char   m_chaSkyActualAzim[7];
+
+        // Sky-space actual elev - cTimestampedDouble
+        double m_dTSSkyActualElev_s;
+        double m_dVSkyActualElev_deg;
+        char   m_chaSkyActualElev[7];
+
         // Receiver chain LCP attenuation - cTimestampedDouble
         double m_dTSReceiverLcpAtten_us;
         double m_dVReceiverLcpAtten_dB;
@@ -143,18 +183,25 @@ public:
     void                                                acsRequestedAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus);
     void                                                acsActualAntennaAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus);
     void                                                acsActualAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus);
+
+    void                                                skyRequestedAntennaAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus);
+    void                                                skyRequestedAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus);
+    void                                                skyActualAntennaAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus);
+    void                                                skyActualAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus);
+    /* Marked for removal.
     void                                                actualSourceOffsetAz_callback(int64_t i64Timestamp_us, double dAzimuthOffset_deg, const std::string &strStatus);
     void                                                actualSourceOffsetEl_callback(int64_t i64Timestamp_us, double dElevationOffset_deg, const std::string &strStatus);
     void                                                actualAntennaRA_callback(int64_t i64Timestamp_us, double dRighAscension_deg, const std::string &strStatus);
     void                                                actualAntennaDec_callback(int64_t i64Timestamp_us, double dDeclination_deg, const std::string &strStatus);
-
+    */
     void                                                antennaStatus_callback(int64_t i64Timestamp_us, const std::string &strAntennaStatus, const std::string &strStatus);
+    /* Marked for removal.
     void                                                motorTorqueAzMaster_callback(int64_t i64Timestamp_us, double dAzMaster_mNm, const std::string &strStatus);
     void                                                motorTorqueAzSlave_callback(int64_t i64Timestamp_us, double dAzSlave_mNm, const std::string &strStatus);
     void                                                motorTorqueElMaster_callback(int64_t i64Timestamp_us, double dElMaster_mNm, const std::string &strStatus);
     void                                                motorTorqueElSlave_callback(int64_t i64Timestamp_us, double dElSlave_mNm, const std::string &strStatus);
+    */
     void                                                appliedPointingModel_callback(const std::string &strModelName, const std::vector<double> &vdPointingModelParams);
-
     void                                                antennaName_callback(const std::string &strAntennaName);
     void                                                antennaDiameter_callback(const std::string &strAntennaDiameter);
     void                                                antennaBeamwidth_callback(const std::string &strAntennaBeamwidth);
