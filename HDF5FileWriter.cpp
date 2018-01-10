@@ -38,11 +38,11 @@ cHDF5FileWriter::cHDF5FileWriter(const string &strRecordingDirectory, uint32_t u
 
         m_oInitialValueSet.m_dTSFrequencySelectLcp_us = 0;
         m_oInitialValueSet.m_chVFrequencySelectLcp = 0;
-        sprintf(m_oInitialValueSet.m_chVFrequencySelectLcp, "0");
+        sprintf(m_oInitialValueSet.m_chaFrequencySelectLcpStatus, "0");
 
         m_oInitialValueSet.m_dTSFrequencySelectRcp_us = 0;
         m_oInitialValueSet.m_chVFrequencySelectRcp = 0;
-        sprintf(m_oInitialValueSet.m_chVFrequencySelectRcp, "0");
+        sprintf(m_oInitialValueSet.m_chaFrequencySelectRcpStatus, "0");
 
         m_oInitialValueSet.m_dTSWindSpeed_us = 0;
         m_oInitialValueSet.m_dVWindSpeed_mps = 0;
@@ -601,7 +601,7 @@ void cHDF5FileWriter::stopRecording_callback()
 }
 
 
-void cHDF5FileWriter::requestedAntennaAz_callback(int64_t i64Timestamp_us,double dAzimuth_deg, const string &strStatus)
+void cHDF5FileWriter::acsRequestedAntennaAz_callback(int64_t i64Timestamp_us,double dAzimuth_deg, const string &strStatus)
 {
     if(getState() != RECORDING)
         return;
@@ -609,7 +609,7 @@ void cHDF5FileWriter::requestedAntennaAz_callback(int64_t i64Timestamp_us,double
     m_pHDF5File->addRequestedAntennaAz(i64Timestamp_us, dAzimuth_deg, strStatus);
 }
 
-void cHDF5FileWriter::requestedAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const string &strStatus)
+void cHDF5FileWriter::acsRequestedAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const string &strStatus)
 {
     if(getState() != RECORDING)
         return;
@@ -617,7 +617,7 @@ void cHDF5FileWriter::requestedAntennaEl_callback(int64_t i64Timestamp_us, doubl
     m_pHDF5File->addRequestedAntennaEl(i64Timestamp_us, dElevation_deg, strStatus);
 }
 
-void cHDF5FileWriter::actualAntennaAz_callback(int64_t i64Timestamp_us,double dAzimuth_deg, const string &strStatus)
+void cHDF5FileWriter::acsActualAntennaAz_callback(int64_t i64Timestamp_us,double dAzimuth_deg, const string &strStatus)
 {
     if(getState() != RECORDING)
         return;
@@ -625,7 +625,7 @@ void cHDF5FileWriter::actualAntennaAz_callback(int64_t i64Timestamp_us,double dA
     m_pHDF5File->addActualAntennaAz(i64Timestamp_us, dAzimuth_deg, strStatus);
 }
 
-void cHDF5FileWriter::actualAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const string &strStatus)
+void cHDF5FileWriter::acsActualAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const string &strStatus)
 {
     if(getState() != RECORDING)
         return;
@@ -817,7 +817,7 @@ void cHDF5FileWriter::frequencySelectRcp_callback(int64_t i64Timestamp_us, bool 
         m_pHDF5File->addFrequencySelectRCP(i64Timestamp_us, bFrequencySelectRcp, strStatus);
 }
 
-void cHDF5FileWriter::frequencyLO0Chan0_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_Hz, const string &strStatus)
+void cHDF5FileWriter::frequencyLO0Lcp_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_Hz, const string &strStatus)
 {
     if(getState() != RECORDING)
         return;
@@ -825,7 +825,7 @@ void cHDF5FileWriter::frequencyLO0Chan0_callback(int64_t i64Timestamp_us, double
     m_pHDF5File->addFrequencyLO0Chan0(i64Timestamp_us, dFrequencyLO0Chan0_Hz, strStatus);
 }
 
-void cHDF5FileWriter::frequencyLO0Chan1_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_Hz, const string &strStatus)
+void cHDF5FileWriter::frequencyLO0Rcp_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_Hz, const string &strStatus)
 {
     if(getState() != RECORDING)
         return;
@@ -841,7 +841,7 @@ void cHDF5FileWriter::frequencyLO1_callback(int64_t i64Timestamp_us, double dFre
     m_pHDF5File->addFrequencyLO1(i64Timestamp_us, dFrequencyLO1_Hz, strStatus);
 }
 
-void cHDF5FileWriter::receiverBandwidthChan0_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan0_Hz, const string &strStatus)
+void cHDF5FileWriter::receiverBandwidthLcp_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan0_Hz, const string &strStatus)
 {
     if(getState() != RECORDING)
         return;
@@ -849,7 +849,7 @@ void cHDF5FileWriter::receiverBandwidthChan0_callback(int64_t i64Timestamp_us, d
     m_pHDF5File->addReceiverBandwidthChan0(i64Timestamp_us, dReceiverBandwidthChan0_Hz, strStatus);
 }
 
-void cHDF5FileWriter::receiverBandwidthChan1_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan1_Hz, const string &strStatus)
+void cHDF5FileWriter::receiverBandwidthRcp_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan1_Hz, const string &strStatus)
 {
     if(getState() != RECORDING)
         return;

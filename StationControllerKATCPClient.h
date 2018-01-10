@@ -21,20 +21,24 @@ public:
         virtual void                                    stopRecording_callback() = 0;
 
         //Antenna values
-        virtual void                                    requestedAntennaAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus) = 0;
-        virtual void                                    requestedAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus) = 0;
-        virtual void                                    actualAntennaAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus) = 0;
-        virtual void                                    actualAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus) = 0;
+        virtual void                                    acsRequestedAntennaAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus) = 0;
+        virtual void                                    acsRequestedAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus) = 0;
+        virtual void                                    acsActualAntennaAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus) = 0;
+        virtual void                                    acsActualAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus) = 0;
+        /* Marked for removal.
         virtual void                                    actualSourceOffsetAz_callback(int64_t i64Timestamp_us, double dAzimuthOffset_deg, const std::string &strStatus) = 0;
         virtual void                                    actualSourceOffsetEl_callback(int64_t i64Timestamp_us, double dElevationOffset_deg, const std::string &strStatus) = 0;
         virtual void                                    actualAntennaRA_callback(int64_t i64Timestamp_us, double dRighAscension_deg, const std::string &strStatus) = 0;
         virtual void                                    actualAntennaDec_callback(int64_t i64Timestamp_us, double dDeclination_deg, const std::string &strStatus) = 0;
+        */
 
         virtual void                                    antennaStatus_callback(int64_t i64Timestamp_us, const std::string &strAntennaStatus, const std::string &strStatus) = 0;
+        /* Marked for removal.
         virtual void                                    motorTorqueAzMaster_callback(int64_t i64Timestamp_us, double dAzMaster_mNm, const std::string &strStatus) = 0;
         virtual void                                    motorTorqueAzSlave_callback(int64_t i64Timestamp_us, double dAzSlave_mNm, const std::string &strStatus) = 0;
         virtual void                                    motorTorqueElMaster_callback(int64_t i64Timestamp_us, double dElMaster_mNm, const std::string &strStatus) = 0;
         virtual void                                    motorTorqueElSlave_callback(int64_t i64Timestamp_us, double dElSlave_mNm, const std::string &strStatus) = 0;
+        */
 
         //Noise diode values
         virtual void                                    noiseDiodeSoftwareState_callback(int64_t i64Timestamp_us, int32_t i32NoiseDiodeState, const std::string &strStatus) = 0;
@@ -48,11 +52,11 @@ public:
         //RF values
         virtual void                                    frequencySelectLcp_callback(int64_t i64Timestamp_us, bool bFrequencySelectChan0, const std::string &strStatus) = 0;
         virtual void                                    frequencySelectRcp_callback(int64_t i64Timestamp_us, bool bFrequencySelectChan1, const std::string &strStatus) = 0;
-        virtual void                                    frequencyLO0Chan0_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_Hz, const std::string &strStatus) = 0;
-        virtual void                                    frequencyLO0Chan1_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_Hz, const std::string &strStatus) = 0;
+        virtual void                                    frequencyLO0Lcp_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_Hz, const std::string &strStatus) = 0;
+        virtual void                                    frequencyLO0Rcp_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_Hz, const std::string &strStatus) = 0;
         virtual void                                    frequencyLO1_callback(int64_t i64Timestamp_us, double dFrequencyLO1_Hz, const std::string &strStatus) = 0;
-        virtual void                                    receiverBandwidthChan0_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan0_Hz, const std::string &strStatus) = 0;
-        virtual void                                    receiverBandwidthChan1_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan1_Hz, const std::string &strStatus) = 0;
+        virtual void                                    receiverBandwidthLcp_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan0_Hz, const std::string &strStatus) = 0;
+        virtual void                                    receiverBandwidthRcp_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan1_Hz, const std::string &strStatus) = 0;
         virtual void                                    receiverLcpAttenuation_callback(int64_t i64Timestamp_us, double dLCPAttenuation_dB, const std::string &strStatus) = 0;
         virtual void                                    receiverRcpAttenuation_callback(int64_t i64Timestamp_us, double dRCPAttenuation_dB, const std::string &strStatus) = 0;
 
@@ -100,16 +104,20 @@ private:
     void                                                sendRequestedAntennaEl(int64_t i64Timestamp_us,double dElevation_deg, const std::string &strStatus);
     void                                                sendActualAntennaAz(int64_t i64Timestamp_us,double dAzimuth_deg, const std::string &strStatus);
     void                                                sendActualAntennaEl(int64_t i64Timestamp_us,double dElevation_deg, const std::string &strStatus);
+    /* Marked for removal.
     void                                                sendActualSourceOffsetAz(int64_t i64Timestamp_us, double dAzimuthOffset_deg, const std::string &strStatus);
     void                                                sendActualSourceOffsetEl(int64_t i64Timestamp_us, double dElevationOffset_deg, const std::string &strStatus);
     void                                                sendActualAntennaRA(int64_t i64Timestamp_us, double dRighAscension_deg, const std::string &strStatus);
     void                                                sendActualAntennaDec(int64_t i64Timestamp_us, double dDeclination_deg, const std::string &strStatus);
+    */
 
     void                                                sendAntennaStatus(int64_t i64Timestamp_us, std::string strAntennaStatus, const std::string &strStatus);
+    /* Marked for removal.
     void                                                sendMotorTorqueAzMaster(int64_t i64Timestamp_us, double dAzMaster_nNm, const std::string &strStatus);
     void                                                sendMotorTorqueAzSlave(int64_t i64Timestamp_us, double dAzSlave_nNm, const std::string &strStatus);
     void                                                sendMotorTorqueElMaster(int64_t i64Timestamp_us, double dElMaster_nNm, const std::string &strStatus);
     void                                                sendMotorTorqueElSlave(int64_t i64Timestamp_us, double dElSlave_nNm, const std::string &strStatus);
+    */
 
     //Noise diode values
     void                                                sendNoiseDiodeSoftwareState(int64_t i64Timestamp_us, int32_t i32NoiseDiodeState, const std::string &strStatus);
@@ -122,11 +130,11 @@ private:
     //RFE values
     void                                                sendFrequencySelectLcp(int64_t i64Timestamp_us, double dFreqencyRF_MHz, const std::string &strStatus);
     void                                                sendFrequencySelectRcp(int64_t i64Timestamp_us, double dFreqencyRF_MHz, const std::string &strStatus);
-    void                                                sendFrequencyLO0Chan0(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_MHz, const std::string &strStatus);
-    void                                                sendFrequencyLO0Chan1(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_MHz, const std::string &strStatus);
+    void                                                sendFrequencyLO0Lcp(int64_t i64Timestamp_us, double dFrequencyLO0Lcp_MHz, const std::string &strStatus);
+    void                                                sendFrequencyLO0Rcp(int64_t i64Timestamp_us, double dFrequencyLO0Rcp_MHz, const std::string &strStatus);
     void                                                sendFrequencyLO1(int64_t i64Timestamp_us, double dFrequencyLO1_MHz, const std::string &strStatus);
-    void                                                sendReceiverBandwidthChan0(int64_t i64Timestamp_us, double dReceiverBandwidthChan0_MHz, const std::string &strStatus);
-    void                                                sendReceiverBandwidthChan1(int64_t i64Timestamp_us, double dReceiverBandwidthChan1_MHz, const std::string &strStatus);
+    void                                                sendReceiverBandwidthLcp(int64_t i64Timestamp_us, double dReceiverBandwidthLcp_MHz, const std::string &strStatus);
+    void                                                sendReceiverBandwidthRcp(int64_t i64Timestamp_us, double dReceiverBandwidthRcp_MHz, const std::string &strStatus);
     void                                                sendReceiverLcpAttenuation(int64_t i64Timestamp_us, double dLcpAttenuation_dB, const std::string &strStatus);
     void                                                sendReceiverRcpAttenuation(int64_t i64Timestamp_us, double dRcpAttenuation_dB, const std::string &strStatus);
 

@@ -562,11 +562,11 @@ void cKATCPServer::initialSensorDataThreadFunction()
 
     if (m_oKATCPClientCallbackHandler.m_dFrequencyLO0Chan0_Hz != 0.0)
     {
-        m_pFileWriter->frequencyLO0Chan0_callback((time(0) - 10)*1e6, m_oKATCPClientCallbackHandler.m_dFrequencyLO0Chan0_Hz, "nominal");
+        m_pFileWriter->frequencyLO0Lcp_callback((time(0) - 10)*1e6, m_oKATCPClientCallbackHandler.m_dFrequencyLO0Chan0_Hz, "nominal");
     }
     if (m_oKATCPClientCallbackHandler.m_dFrequencyLO0Chan1_Hz != 0.0)
     {
-        m_pFileWriter->frequencyLO0Chan1_callback((time(0) - 10)*1e6, m_oKATCPClientCallbackHandler.m_dFrequencyLO0Chan1_Hz, "nominal");
+        m_pFileWriter->frequencyLO0Rcp_callback((time(0) - 10)*1e6, m_oKATCPClientCallbackHandler.m_dFrequencyLO0Chan1_Hz, "nominal");
     }
     if (m_oKATCPClientCallbackHandler.m_dFrequencyLO1_Hz != 0.0)
     {
@@ -1207,13 +1207,13 @@ int32_t cKATCPServer::RFGUIReceiveValonFrequency_KATCPCallback(struct katcp_disp
                 {
                     case 'a': // 5.0 GHz's oscillator
                         cout << "a: " << dSynthFrequency_Hz / 1e6 << " MHz";
-                        m_oKATCPClientCallbackHandler.frequencyLO0Chan0_callback(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal"); // Let's give this a try.
-                        m_pFileWriter->frequencyLO0Chan0_callback(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal"); // hardcoded to nominal for the time being.
+                        m_oKATCPClientCallbackHandler.frequencyLO0Lcp_callback(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal"); // Let's give this a try.
+                        m_pFileWriter->frequencyLO0Lcp_callback(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal"); // hardcoded to nominal for the time being.
                         break;
                     case 'b': // 6.7 GHz's oscillator
                         cout << "b: " << dSynthFrequency_Hz / 1e6 << " MHz";
-                        m_oKATCPClientCallbackHandler.frequencyLO0Chan1_callback(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal"); // Let's give this a try.
-                        m_pFileWriter->frequencyLO0Chan1_callback(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal"); // hardcoded to nominal for the time being.
+                        m_oKATCPClientCallbackHandler.frequencyLO0Rcp_callback(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal"); // Let's give this a try.
+                        m_pFileWriter->frequencyLO0Rcp_callback(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal"); // hardcoded to nominal for the time being.
                         break;
                     default: // This is if a problem has been encountered.
                         cout << "UNKNOWN!";
@@ -1586,28 +1586,28 @@ void cKATCPServer::cKATCPClientCallbackHandler::stopRecording_callback()
     //Not used. Note, the HDF5FileWriter class is also a callback handler for KATCPClient so it get this callback to too and reacts to it there.
 }
 
-void  cKATCPServer::cKATCPClientCallbackHandler::requestedAntennaAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const string &strStatus)
+void  cKATCPServer::cKATCPClientCallbackHandler::acsRequestedAntennaAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const string &strStatus)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oSensorDataMutex);
 
     m_dRequestedAntennaAz_deg = dAzimuth_deg;
 }
 
-void  cKATCPServer::cKATCPClientCallbackHandler::requestedAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const string &strStatusf)
+void  cKATCPServer::cKATCPClientCallbackHandler::acsRequestedAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const string &strStatusf)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oSensorDataMutex);
 
     m_dRequestedAntennaEl_deg = dElevation_deg;
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::actualAntennaAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const string &strStatus)
+void cKATCPServer::cKATCPClientCallbackHandler::acsActualAntennaAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const string &strStatus)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oSensorDataMutex);
 
     m_dActualAntennaAz_deg = dAzimuth_deg;
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::actualAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const string &strStatus)
+void cKATCPServer::cKATCPClientCallbackHandler::acsActualAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const string &strStatus)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oSensorDataMutex);
 
@@ -1750,14 +1750,14 @@ void cKATCPServer::cKATCPClientCallbackHandler::frequencySelectRcp_callback(int6
     m_bBandSelectedRCP = bBandSelected;
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::frequencyLO0Chan0_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_Hz, const string &strStatus)
+void cKATCPServer::cKATCPClientCallbackHandler::frequencyLO0Lcp_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_Hz, const string &strStatus)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oSensorDataMutex);
 
     m_dFrequencyLO0Chan0_Hz = dFrequencyLO0Chan0_Hz;
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::frequencyLO0Chan1_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_Hz, const string &strStatus)
+void cKATCPServer::cKATCPClientCallbackHandler::frequencyLO0Rcp_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_Hz, const string &strStatus)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oSensorDataMutex);
 
@@ -1771,14 +1771,14 @@ void cKATCPServer::cKATCPClientCallbackHandler::frequencyLO1_callback(int64_t i6
     m_dFrequencyLO1_Hz = dFrequencyLO1_Hz;
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::receiverBandwidthChan0_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan0_Hz, const string &strStatus)
+void cKATCPServer::cKATCPClientCallbackHandler::receiverBandwidthLcp_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan0_Hz, const string &strStatus)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oSensorDataMutex);
 
     m_dReceiverBandwidthChan0_Hz = dReceiverBandwidthChan0_Hz;
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::receiverBandwidthChan1_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan1_Hz, const string &strStatus)
+void cKATCPServer::cKATCPClientCallbackHandler::receiverBandwidthRcp_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan1_Hz, const string &strStatus)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oSensorDataMutex);
 
