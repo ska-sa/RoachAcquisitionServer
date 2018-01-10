@@ -13,10 +13,19 @@ using namespace std;
 cStationControllerKATCPClient::cStationControllerKATCPClient() :
     cKATCPClientBase()
 {
+    //Sky space.
+    m_vstrSensorNames.push_back("SCM.actual-azim period 1000");
+    m_vstrSensorNames.push_back("SCM.actual-elev period 1000");
+    //m_vstrSensorNames.push_back("SCM.desired-azim period 1000");
+    //m_vstrSensorNames.push_back("SCM.desired-elev period 1000");
+    m_vstrSensorNames.push_back("SCM.request-azim period 1000");
+    m_vstrSensorNames.push_back("SCM.request-elev period 1000");
+
+    // Antenna space.
     m_vstrSensorNames.push_back("acs.actual-azim period 1000");
     m_vstrSensorNames.push_back("acs.actual-elev period 1000");
-    m_vstrSensorNames.push_back("acs.desired-azim period 1000");
-    m_vstrSensorNames.push_back("acs.desired-elev period 1000");
+    //m_vstrSensorNames.push_back("acs.desired-azim period 1000");
+    //m_vstrSensorNames.push_back("acs.desired-elev period 1000");
     m_vstrSensorNames.push_back("acs.request-azim period 1000");
     m_vstrSensorNames.push_back("acs.request-elev period 1000");
 
@@ -188,30 +197,31 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
         return;
     }
 
-    if( !vstrTokens[3].compare("requestedAntennaAz") )
+    if( !vstrTokens[3].compare("acs.request-azim") )
     {
-        sendRequestedAntennaAz( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+        sendAcsRequestedAntennaAz( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
         return;
     }
 
 
-    if( !vstrTokens[3].compare("requestedAntennaEl") )
+    if( !vstrTokens[3].compare("acs.request-elev") )
     {
-        sendRequestedAntennaEl( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+        sendAcsRequestedAntennaEl( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
         return;
     }
 
+    // TODO: Think about adding "desired" functions.
 
     if(!vstrTokens[3].compare("acs.actual-azim"))
     {
-        sendActualAntennaAz( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+        sendAcsActualAntennaAz( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
         return;
     }
 
 
     if(!vstrTokens[3].compare("acs.actual-elev"))
     {
-        sendActualAntennaEl( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+        sendAcsActualAntennaEl( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
         return;
     }
 
@@ -449,7 +459,7 @@ void  cStationControllerKATCPClient::sendStopRecording()
     }
 }
 
-void cStationControllerKATCPClient::sendRequestedAntennaAz(int64_t i64Timestamp_us,double dAzimuth_deg, const string &strStatus)
+void cStationControllerKATCPClient::sendAcsRequestedAntennaAz(int64_t i64Timestamp_us,double dAzimuth_deg, const string &strStatus)
 {
     boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
 
@@ -469,7 +479,7 @@ void cStationControllerKATCPClient::sendRequestedAntennaAz(int64_t i64Timestamp_
     }
 }
 
-void cStationControllerKATCPClient::sendRequestedAntennaEl(int64_t i64Timestamp_us,double dElevation_deg, const string &strStatus)
+void cStationControllerKATCPClient::sendAcsRequestedAntennaEl(int64_t i64Timestamp_us,double dElevation_deg, const string &strStatus)
 {
     boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
 
@@ -489,7 +499,7 @@ void cStationControllerKATCPClient::sendRequestedAntennaEl(int64_t i64Timestamp_
     }
 }
 
-void cStationControllerKATCPClient::sendActualAntennaAz(int64_t i64Timestamp_us,double dAzimuth_deg, const string &strStatus)
+void cStationControllerKATCPClient::sendAcsActualAntennaAz(int64_t i64Timestamp_us,double dAzimuth_deg, const string &strStatus)
 {
     boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
 
@@ -509,7 +519,7 @@ void cStationControllerKATCPClient::sendActualAntennaAz(int64_t i64Timestamp_us,
     }
 }
 
-void cStationControllerKATCPClient::sendActualAntennaEl(int64_t i64Timestamp_us,double dElevation_deg, const string &strStatus)
+void cStationControllerKATCPClient::sendAcsActualAntennaEl(int64_t i64Timestamp_us,double dElevation_deg, const string &strStatus)
 {
     boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
 
