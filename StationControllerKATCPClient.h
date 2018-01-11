@@ -21,15 +21,15 @@ public:
         virtual void                                    stopRecording_callback() = 0;
 
         //Antenna values
-        virtual void                                    acsRequestedAntennaAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus) = 0;
-        virtual void                                    acsRequestedAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus) = 0;
-        virtual void                                    acsActualAntennaAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus) = 0;
-        virtual void                                    acsActualAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus) = 0;
+        virtual void                                    acsRequestedAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus) = 0;
+        virtual void                                    acsRequestedEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus) = 0;
+        virtual void                                    acsActualAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus) = 0;
+        virtual void                                    acsActualEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus) = 0;
 
-        virtual void                                    skyRequestedAntennaAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus) = 0;
-        virtual void                                    skyRequestedAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus) = 0;
-        virtual void                                    skyActualAntennaAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus) = 0;
-        virtual void                                    skyActualAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus) = 0;
+        virtual void                                    skyRequestedAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus) = 0;
+        virtual void                                    skyRequestedEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus) = 0;
+        virtual void                                    skyActualAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus) = 0;
+        virtual void                                    skyActualEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus) = 0;
 
         /* Marked for removal.
         virtual void                                    actualSourceOffsetAz_callback(int64_t i64Timestamp_us, double dAzimuthOffset_deg, const std::string &strStatus) = 0;
@@ -58,9 +58,9 @@ public:
         //RF values
         virtual void                                    frequencySelectLcp_callback(int64_t i64Timestamp_us, bool bFrequencySelectChan0, const std::string &strStatus) = 0;
         virtual void                                    frequencySelectRcp_callback(int64_t i64Timestamp_us, bool bFrequencySelectChan1, const std::string &strStatus) = 0;
-        virtual void                                    frequencyLO0Lcp_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_Hz, const std::string &strStatus) = 0;
-        virtual void                                    frequencyLO0Rcp_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_Hz, const std::string &strStatus) = 0;
-        virtual void                                    frequencyLO1_callback(int64_t i64Timestamp_us, double dFrequencyLO1_Hz, const std::string &strStatus) = 0;
+        virtual void                                    frequencyLOIntermediate5GHz_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_Hz, const std::string &strStatus) = 0;
+        virtual void                                    frequencyLOIntermediate6_7GHz_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_Hz, const std::string &strStatus) = 0;
+        virtual void                                    frequencyLOFinal_callback(int64_t i64Timestamp_us, double dFrequencyLO1_Hz, const std::string &strStatus) = 0;
         virtual void                                    receiverBandwidthLcp_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan0_Hz, const std::string &strStatus) = 0;
         virtual void                                    receiverBandwidthRcp_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan1_Hz, const std::string &strStatus) = 0;
         virtual void                                    receiverLcpAttenuation_callback(int64_t i64Timestamp_us, double dLCPAttenuation_dB, const std::string &strStatus) = 0;
@@ -72,15 +72,6 @@ public:
         virtual void                                    envTemperature_callback(int64_t i64Timestamp_us, double dTemperature_degreesC, const std::string &strStatus) = 0;
         virtual void                                    envAbsolutePressure_callback(int64_t i64Timestamp_us, double dPressure_mbar, const std::string &strStatus) = 0;
         virtual void                                    envRelativeHumidity_callback(int64_t i64Timestamp_us, double dHumidity_percent, const std::string &strStatus) = 0;
-
-        /* TODO: remove antenna configuration functions.
-        virtual void                                    antennaName_callback(const std::string &strAntennaName) = 0;
-        virtual void                                    antennaDiameter_callback(const std::string &strAntennaDiameter) = 0;
-        virtual void                                    antennaBeamwidth_callback(const std::string &strAntennaBeamwidth) = 0;
-        virtual void                                    antennaLongitude_callback(const std::string &strAntennaLongitude) = 0;
-        virtual void                                    antennaLatitude_callback(const std::string &strAntennaLatitude) = 0;
-        virtual void                                    appliedPointingModel_callback(const std::string &strModelName, const std::vector<double> &vdPointingModelParams) = 0;
-        */
     };
 
     cStationControllerKATCPClient(const std::string &strServerAddress, uint16_t u16Port = 7147);
@@ -99,7 +90,7 @@ private:
     void                                                printVersion(const std::string &strVersion);
     void                                                printBuildState(const std::string &strBuilState);
 
-    //Notifications sent to all callback handlers:
+  //Notifications sent to all callback handlers:
 
     //Recording control:
     void                                                sendStartRecording(const std::string &strFilePrefix, int64_t i64StartTime_us, int64_t i64Duration_us);
@@ -116,20 +107,8 @@ private:
     void                                                sendSkyActualAntennaAz(int64_t i64Timestamp_us,double dAzimuth_deg, const std::string &strStatus);
     void                                                sendSkyActualAntennaEl(int64_t i64Timestamp_us,double dElevation_deg, const std::string &strStatus);
 
-    /* Marked for removal.
-    void                                                sendActualSourceOffsetAz(int64_t i64Timestamp_us, double dAzimuthOffset_deg, const std::string &strStatus);
-    void                                                sendActualSourceOffsetEl(int64_t i64Timestamp_us, double dElevationOffset_deg, const std::string &strStatus);
-    void                                                sendActualAntennaRA(int64_t i64Timestamp_us, double dRighAscension_deg, const std::string &strStatus);
-    void                                                sendActualAntennaDec(int64_t i64Timestamp_us, double dDeclination_deg, const std::string &strStatus);
-    */
 
     void                                                sendAntennaStatus(int64_t i64Timestamp_us, std::string strAntennaStatus, const std::string &strStatus);
-    /* Marked for removal.
-    void                                                sendMotorTorqueAzMaster(int64_t i64Timestamp_us, double dAzMaster_nNm, const std::string &strStatus);
-    void                                                sendMotorTorqueAzSlave(int64_t i64Timestamp_us, double dAzSlave_nNm, const std::string &strStatus);
-    void                                                sendMotorTorqueElMaster(int64_t i64Timestamp_us, double dElMaster_nNm, const std::string &strStatus);
-    void                                                sendMotorTorqueElSlave(int64_t i64Timestamp_us, double dElSlave_nNm, const std::string &strStatus);
-    */
 
     //Noise diode values
     void                                                sendNoiseDiodeSoftwareState(int64_t i64Timestamp_us, int32_t i32NoiseDiodeState, const std::string &strStatus);
@@ -142,9 +121,9 @@ private:
     //RFE values
     void                                                sendFrequencySelectLcp(int64_t i64Timestamp_us, double dFreqencyRF_MHz, const std::string &strStatus);
     void                                                sendFrequencySelectRcp(int64_t i64Timestamp_us, double dFreqencyRF_MHz, const std::string &strStatus);
-    void                                                sendFrequencyLO0Lcp(int64_t i64Timestamp_us, double dFrequencyLO0Lcp_MHz, const std::string &strStatus);
-    void                                                sendFrequencyLO0Rcp(int64_t i64Timestamp_us, double dFrequencyLO0Rcp_MHz, const std::string &strStatus);
-    void                                                sendFrequencyLO1(int64_t i64Timestamp_us, double dFrequencyLO1_MHz, const std::string &strStatus);
+    void                                                sendFrequencyLOIntermediate5GHz(int64_t i64Timestamp_us, double dFrequencyIntermediate5GHz_MHz, const std::string &strStatus);
+    void                                                sendFrequencyLOIntermediate6_7GHz(int64_t i64Timestamp_us, double dFrequencyLOIntermediate6_7GHz_MHz, const std::string &strStatus);
+    void                                                sendFrequencyLOFinal(int64_t i64Timestamp_us, double dFrequencyLOFinal_MHz, const std::string &strStatus);
     void                                                sendReceiverBandwidthLcp(int64_t i64Timestamp_us, double dReceiverBandwidthLcp_MHz, const std::string &strStatus);
     void                                                sendReceiverBandwidthRcp(int64_t i64Timestamp_us, double dReceiverBandwidthRcp_MHz, const std::string &strStatus);
     void                                                sendReceiverLcpAttenuation(int64_t i64Timestamp_us, double dLcpAttenuation_dB, const std::string &strStatus);
@@ -157,26 +136,8 @@ private:
     void                                                sendAbsolutePressure(int64_t i64Timestamp_us, double dPressure_mbar, const std::string &strStatus);
     void                                                sendRelativeHumidity(int64_t i64Timestamp_us, double dHumidity_percent, const std::string &strStatus);
 
-    /* TODO: Antenna configuration info marked for removal.
-    //Antenna info values
-    void                                                sendAntennaName(const std::string &strAntennaName);
-    void                                                sendAntennaBeamwidth(const std::string &strAntennaBeamwidth);
-    void                                                sendAntennaDelayModel(const std::string &strAntennaDelayModel);
-    void                                                sendAntennaDiameter(const std::string &strAntennaDiameter);
-    void                                                sendAntennaLatitude(const std::string &strAntennaLatitude);
-    void                                                sendAntennaLongitude(const std::string &strAntennaLongitude);
-    void                                                sendAppliedPointingModel(const std::string &strModelName, const std::vector<double> &vdPointingModelParams);
-
-
-    //Member storage vars:
-    std::string                                         m_strAntennaStatus;
-    std::string                                         m_strAppliedPointingModel;
-    std::string                                         m_strPointingModelName;
-    std::string                                         m_strSourceSelection;
-    std::string                                         m_strAntennaDelayModel;
-    std::string                                         m_strAntennaName;
-    */
-    std::vector<std::string>                            m_vstrSensorNames;
+    // Sensor-sampling commands on subscribing.
+    std::vector<std::string>                            m_vstrSensorSampling;
 };
 
 #endif // STATION_CONTROLLER_KATCP_CLIENT_H

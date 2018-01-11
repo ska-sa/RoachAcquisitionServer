@@ -27,6 +27,49 @@ cHDF5FileWriter::cHDF5FileWriter(const string &strRecordingDirectory, uint32_t u
 
     {
         boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+        m_oInitialValueSet.m_dTSAcsRequestedAzim_us = 0;
+        m_oInitialValueSet.m_dVAcsRequestedAzim_deg = 0;
+        sprintf(m_oInitialValueSet.m_chaAcsRequestedAzimStatus, "0");
+
+        m_oInitialValueSet.m_dTSAcsRequestedElev_us = 0;
+        m_oInitialValueSet.m_dVAcsRequestedElev_deg = 0;
+        sprintf(m_oInitialValueSet.m_chaAcsRequestedElevStatus, "0");
+
+        m_oInitialValueSet.m_dTSAcsActualAzim_us = 0;
+        m_oInitialValueSet.m_dVAcsActualAzim_deg = 0;
+        sprintf(m_oInitialValueSet.m_chaAcsActualAzimStatus, "0");
+
+        m_oInitialValueSet.m_dTSAcsActualElev_us = 0;
+        m_oInitialValueSet.m_dVAcsActualElev_deg = 0;
+       sprintf( m_oInitialValueSet.m_chaAcsActualElevStatus, "0");
+
+        m_oInitialValueSet.m_dTSSkyRequestedAzim_us = 0;
+        m_oInitialValueSet.m_dVSkyRequestedAzim_deg = 0;
+        sprintf(m_oInitialValueSet.m_chaSkyRequestedAzimStatus, "0");
+
+        m_oInitialValueSet.m_dTSSkyRequestedElev_us = 0;
+        m_oInitialValueSet.m_dVSkyRequestedElev_deg = 0;
+        sprintf(m_oInitialValueSet.m_chaSkyRequestedElevStatus, "0");
+
+        m_oInitialValueSet.m_dTSSkyActualAzim_us = 0;
+        m_oInitialValueSet.m_dVSkyActualAzim_deg = 0;
+        sprintf(m_oInitialValueSet.m_chaSkyActualAzimStatus, "0");
+
+        m_oInitialValueSet.m_dTSSkyActualElev_us = 0;
+        m_oInitialValueSet.m_dVSkyActualElev_deg = 0;
+        sprintf(m_oInitialValueSet.m_chaSkyActualElevStatus, "0");
+
+        m_oInitialValueSet.m_dTSReceiverLOFreqIntermediate5GHz_us = 0;
+        m_oInitialValueSet.m_dVReceiverLOFreqIntermediate5GHz_Hz = 0;
+        sprintf(m_oInitialValueSet.m_chaReceiverLOFreqIntermediate5GHzStatus, "0");
+
+        m_oInitialValueSet.m_dTSReceiverLOFreqIntermediate6_7GHz_us = 0;
+        m_oInitialValueSet.m_dVReceiverLOFreqIntermediate6_7GHz_Hz = 0;
+        sprintf(m_oInitialValueSet.m_chaReceiverLOFreqIntermediate6_7GHzStatus, "0");
+
+        m_oInitialValueSet.m_dTSReceiverLOFreqFinal_us = 0;
+        m_oInitialValueSet.m_dVReceiverLOFreqFinal_Hz = 0;
+        sprintf(m_oInitialValueSet.m_chaReceiverLOFreqFinalStatus, "0");
 
         m_oInitialValueSet.m_dTSReceiverLcpAtten_us = 0;
         m_oInitialValueSet.m_dVReceiverLcpAtten_dB = 0;
@@ -219,7 +262,51 @@ void cHDF5FileWriter::getNextFrame_callback(const std::vector<int> &vi32Chan0, c
             m_i64StopTime_us = LLONG_MAX; //0 duration implies record indefinitely.
         }
 
-        // Add any values stored.
+        // Add any initial values stored.
+        if (m_oInitialValueSet.m_dTSAcsRequestedAzim_us)
+            m_pHDF5File->addAcsRequestedAz(m_oInitialValueSet.m_dTSAcsRequestedAzim_us,
+                                                  m_oInitialValueSet.m_dVAcsRequestedAzim_deg,
+                                                  m_oInitialValueSet.m_chaAcsRequestedAzimStatus);
+        if (m_oInitialValueSet.m_dTSAcsRequestedElev_us)
+            m_pHDF5File->addAcsRequestedEl(m_oInitialValueSet.m_dTSAcsRequestedElev_us,
+                                           m_oInitialValueSet.m_dVAcsRequestedElev_deg,
+                                           m_oInitialValueSet.m_chaAcsRequestedElevStatus);
+        if (m_oInitialValueSet.m_dTSAcsActualAzim_us)
+            m_pHDF5File->addAcsActualAz(m_oInitialValueSet.m_dTSAcsActualAzim_us,
+                                        m_oInitialValueSet.m_dVAcsActualAzim_deg,
+                                        m_oInitialValueSet.m_chaAcsActualAzimStatus);
+        if ( m_oInitialValueSet.m_dTSAcsActualElev_us)
+            m_pHDF5File->addAcsActualEl(m_oInitialValueSet.m_dTSAcsActualElev_us,
+                                        m_oInitialValueSet.m_dVAcsActualElev_deg,
+                                        m_oInitialValueSet.m_chaAcsActualElevStatus);
+        if (m_oInitialValueSet.m_dTSSkyRequestedAzim_us)
+            m_pHDF5File->addSkyRequestedAz(m_oInitialValueSet.m_dTSSkyRequestedAzim_us,
+                                           m_oInitialValueSet.m_dVSkyRequestedAzim_deg,
+                                           m_oInitialValueSet.m_chaSkyRequestedAzimStatus);
+        if (m_oInitialValueSet.m_dTSSkyRequestedElev_us)
+            m_pHDF5File->addSkyRequestedEl(m_oInitialValueSet.m_dTSSkyRequestedElev_us,
+                                           m_oInitialValueSet.m_dVSkyRequestedElev_deg,
+                                           m_oInitialValueSet.m_chaSkyRequestedElevStatus);
+        if (m_oInitialValueSet.m_dTSSkyActualAzim_us)
+            m_pHDF5File->addSkyActualAz(m_oInitialValueSet.m_dTSSkyActualAzim_us,
+                                        m_oInitialValueSet.m_dVSkyActualAzim_deg,
+                                        m_oInitialValueSet.m_chaSkyActualAzimStatus);
+        if (m_oInitialValueSet.m_dTSSkyActualElev_us)
+            m_pHDF5File->addSkyActualEl(m_oInitialValueSet.m_dTSSkyActualElev_us,
+                                        m_oInitialValueSet.m_dVSkyActualElev_deg,
+                                        m_oInitialValueSet.m_chaSkyActualElevStatus);
+        if (m_oInitialValueSet.m_dTSReceiverLOFreqIntermediate5GHz_us)
+            m_pHDF5File->addFrequencyLOIntermed5GHz(m_oInitialValueSet.m_dTSReceiverLOFreqIntermediate5GHz_us,
+                                                        m_oInitialValueSet.m_dVReceiverLOFreqIntermediate5GHz_Hz,
+                                                        m_oInitialValueSet.m_chaReceiverLOFreqIntermediate5GHzStatus);
+        if (m_oInitialValueSet.m_dTSReceiverLOFreqIntermediate6_7GHz_us)
+            m_pHDF5File->addFrequencyLOIntermed6_7GHz(m_oInitialValueSet.m_dTSReceiverLOFreqIntermediate6_7GHz_us,
+                                                          m_oInitialValueSet.m_dVReceiverLOFreqIntermediate6_7GHz_Hz,
+                                                          m_oInitialValueSet.m_chaReceiverLOFreqIntermediate6_7GHzStatus);
+        if (m_oInitialValueSet.m_dTSReceiverLOFreqFinal_us)
+            m_pHDF5File->addFrequencyLOFinal(m_oInitialValueSet.m_dTSReceiverLOFreqFinal_us,
+                                             m_oInitialValueSet.m_dVReceiverLOFreqFinal_Hz,
+                                             m_oInitialValueSet.m_chaReceiverLOFreqFinalStatus);
         if (m_oInitialValueSet.m_dTSReceiverLcpAtten_us)
             m_pHDF5File->addReceiverLcpAttenuation(m_oInitialValueSet.m_dTSReceiverLcpAtten_us,
                                                    m_oInitialValueSet.m_dVReceiverLcpAtten_dB,
@@ -601,103 +688,133 @@ void cHDF5FileWriter::stopRecording_callback()
 }
 
 
-void cHDF5FileWriter::acsRequestedAntennaAz_callback(int64_t i64Timestamp_us,double dAzimuth_deg, const string &strStatus)
+void cHDF5FileWriter::acsRequestedAz_callback(int64_t i64Timestamp_us,double dAzimuth_deg, const string &strStatus)
 {
     if(getState() != RECORDING)
-        return;
-
-    m_pHDF5File->addAcsRequestedAntennaAz(i64Timestamp_us, dAzimuth_deg, strStatus);
+    {
+        if (i64Timestamp_us > m_oInitialValueSet.m_dTSAcsRequestedAzim_us)
+        {
+            boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+            m_oInitialValueSet.m_dTSAcsRequestedAzim_us = i64Timestamp_us;
+            m_oInitialValueSet.m_dVAcsRequestedAzim_deg = dAzimuth_deg;
+            sprintf(m_oInitialValueSet.m_chaAcsRequestedAzimStatus, "%s", strStatus.c_str());
+        }
+    }
+    else
+        m_pHDF5File->addAcsRequestedAz(i64Timestamp_us, dAzimuth_deg, strStatus);
 }
 
-void cHDF5FileWriter::acsRequestedAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const string &strStatus)
+void cHDF5FileWriter::acsRequestedEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const string &strStatus)
 {
     if(getState() != RECORDING)
-        return;
-
-    m_pHDF5File->addAcsRequestedAntennaEl(i64Timestamp_us, dElevation_deg, strStatus);
+    {
+        if (i64Timestamp_us > m_oInitialValueSet.m_dTSAcsRequestedElev_us)
+        {
+            boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+            m_oInitialValueSet.m_dTSAcsRequestedElev_us = i64Timestamp_us;
+            m_oInitialValueSet.m_dVAcsRequestedElev_deg = dElevation_deg;
+            sprintf(m_oInitialValueSet.m_chaAcsRequestedElevStatus, "%s", strStatus.c_str());
+        }
+    }
+    else
+        m_pHDF5File->addAcsRequestedEl(i64Timestamp_us, dElevation_deg, strStatus);
 }
 
-void cHDF5FileWriter::acsActualAntennaAz_callback(int64_t i64Timestamp_us,double dAzimuth_deg, const string &strStatus)
+void cHDF5FileWriter::acsActualAz_callback(int64_t i64Timestamp_us,double dAzimuth_deg, const string &strStatus)
 {
     if(getState() != RECORDING)
-        return;
-
-    m_pHDF5File->addAcsActualAntennaAz(i64Timestamp_us, dAzimuth_deg, strStatus);
+    {
+        if (i64Timestamp_us > m_oInitialValueSet.m_dTSAcsActualAzim_us)
+        {
+            boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+            m_oInitialValueSet.m_dTSAcsActualAzim_us = i64Timestamp_us;
+            m_oInitialValueSet.m_dVAcsActualAzim_deg = dAzimuth_deg;
+            sprintf(m_oInitialValueSet.m_chaAcsActualAzimStatus, "%s", strStatus.c_str());
+        }
+    }
+    else
+        m_pHDF5File->addAcsActualAz(i64Timestamp_us, dAzimuth_deg, strStatus);
 }
 
-void cHDF5FileWriter::acsActualAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const string &strStatus)
+void cHDF5FileWriter::acsActualEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const string &strStatus)
 {
     if(getState() != RECORDING)
-        return;
-
-    m_pHDF5File->addAcsActualAntennaEl(i64Timestamp_us, dElevation_deg, strStatus);
+    {
+        if (i64Timestamp_us > m_oInitialValueSet.m_dTSAcsActualElev_us)
+        {
+            boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+            m_oInitialValueSet.m_dTSAcsActualElev_us = i64Timestamp_us;
+            m_oInitialValueSet.m_dVAcsActualElev_deg = dElevation_deg;
+            sprintf(m_oInitialValueSet.m_chaAcsActualElevStatus, "%s", strStatus.c_str());
+        }
+    }
+    else
+        m_pHDF5File->addAcsActualEl(i64Timestamp_us, dElevation_deg, strStatus);
 }
 
-void cHDF5FileWriter::skyRequestedAntennaAz_callback(int64_t i64Timestamp_us,double dAzimuth_deg, const string &strStatus)
+void cHDF5FileWriter::skyRequestedAz_callback(int64_t i64Timestamp_us,double dAzimuth_deg, const string &strStatus)
 {
     if(getState() != RECORDING)
-        return;
-
-    m_pHDF5File->addSkyRequestedAntennaAz(i64Timestamp_us, dAzimuth_deg, strStatus);
+    {
+        if (i64Timestamp_us > m_oInitialValueSet.m_dTSSkyRequestedAzim_us)
+        {
+            boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+            m_oInitialValueSet.m_dTSSkyRequestedAzim_us = i64Timestamp_us;
+            m_oInitialValueSet.m_dVSkyRequestedAzim_deg = dAzimuth_deg;
+            sprintf(m_oInitialValueSet.m_chaSkyRequestedAzimStatus, "%s", strStatus.c_str());
+        }
+    }
+    else
+        m_pHDF5File->addSkyRequestedAz(i64Timestamp_us, dAzimuth_deg, strStatus);
 }
 
-void cHDF5FileWriter::skyRequestedAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const string &strStatus)
+void cHDF5FileWriter::skyRequestedEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const string &strStatus)
 {
     if(getState() != RECORDING)
-        return;
-
-    m_pHDF5File->addSkyRequestedAntennaEl(i64Timestamp_us, dElevation_deg, strStatus);
+    {
+        if (i64Timestamp_us > m_oInitialValueSet.m_dTSSkyRequestedElev_us)
+        {
+            boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+            m_oInitialValueSet.m_dTSSkyRequestedElev_us = i64Timestamp_us;
+            m_oInitialValueSet.m_dVSkyRequestedElev_deg = dElevation_deg;
+            sprintf(m_oInitialValueSet.m_chaSkyRequestedElevStatus, "%s", strStatus.c_str());
+        }
+    }
+    else
+        m_pHDF5File->addSkyRequestedEl(i64Timestamp_us, dElevation_deg, strStatus);
 }
 
-void cHDF5FileWriter::skyActualAntennaAz_callback(int64_t i64Timestamp_us,double dAzimuth_deg, const string &strStatus)
+void cHDF5FileWriter::skyActualAz_callback(int64_t i64Timestamp_us,double dAzimuth_deg, const string &strStatus)
 {
     if(getState() != RECORDING)
-        return;
-
-    m_pHDF5File->addSkyActualAntennaAz(i64Timestamp_us, dAzimuth_deg, strStatus);
+    {
+        if (i64Timestamp_us > m_oInitialValueSet.m_dTSSkyActualAzim_us)
+        {
+            boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+            m_oInitialValueSet.m_dTSSkyActualAzim_us = i64Timestamp_us;
+            m_oInitialValueSet.m_dVSkyActualAzim_deg = dAzimuth_deg;
+            sprintf(m_oInitialValueSet.m_chaSkyActualAzimStatus, "%s", strStatus.c_str());
+        }
+    }
+    else
+        m_pHDF5File->addSkyActualAz(i64Timestamp_us, dAzimuth_deg, strStatus);
 }
 
-void cHDF5FileWriter::skyActualAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const string &strStatus)
+void cHDF5FileWriter::skyActualEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const string &strStatus)
 {
     if(getState() != RECORDING)
-        return;
-
-    m_pHDF5File->addSkyActualAntennaEl(i64Timestamp_us, dElevation_deg, strStatus);
+    {
+        if (i64Timestamp_us > m_oInitialValueSet.m_dTSSkyActualElev_us)
+        {
+            boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+            m_oInitialValueSet.m_dTSSkyActualElev_us = i64Timestamp_us;
+            m_oInitialValueSet.m_dVSkyActualElev_deg = dElevation_deg;
+            sprintf(m_oInitialValueSet.m_chaSkyActualElevStatus, "%s", strStatus.c_str());
+        }
+    }
+    else
+        m_pHDF5File->addSkyActualEl(i64Timestamp_us, dElevation_deg, strStatus);
 }
-
-/* Marked for removal.
-void cHDF5FileWriter::actualSourceOffsetAz_callback(int64_t i64Timestamp_us,double dAzimuthOffset_deg, const string &strStatus)
-{
-    if(getState() != RECORDING)
-        return;
-
-    m_pHDF5File->addActualSourceOffsetAz(i64Timestamp_us, dAzimuthOffset_deg, strStatus);
-}
-
-void cHDF5FileWriter::actualSourceOffsetEl_callback(int64_t i64Timestamp_us, double dElevationOffset_deg, const string &strStatus)
-{
-    if(getState() != RECORDING)
-        return;
-
-    m_pHDF5File->addActualSourceOffsetEl(i64Timestamp_us, dElevationOffset_deg, strStatus);
-}
-
-void cHDF5FileWriter::actualAntennaRA_callback(int64_t i64Timestamp_us,double dRighAscension_deg, const string &strStatus)
-{
-    if(getState() != RECORDING)
-        return;
-
-    m_pHDF5File->addActualAntennaRA(i64Timestamp_us, dRighAscension_deg, strStatus);
-}
-
-void cHDF5FileWriter::actualAntennaDec_callback(int64_t i64Timestamp_us, double dDeclination_deg, const string &strStatus)
-{
-    if(getState() != RECORDING)
-        return;
-
-    m_pHDF5File->addActualAntennaDec(i64Timestamp_us, dDeclination_deg, strStatus);
-}
-*/
 
 void cHDF5FileWriter::antennaStatus_callback(int64_t i64Timestamp_us, const string &strAntennaStatus, const string &strStatus)
 {
@@ -706,40 +823,6 @@ void cHDF5FileWriter::antennaStatus_callback(int64_t i64Timestamp_us, const stri
 
     m_pHDF5File->addAntennaStatus(i64Timestamp_us, strAntennaStatus, strStatus);
 }
-
-/* Marked for removal.
-void cHDF5FileWriter::motorTorqueAzMaster_callback(int64_t i64Timestamp_us, double dAzMaster_mNm, const string &strStatus)
-{
-    if(getState() != RECORDING)
-        return;
-
-    m_pHDF5File->motorTorqueAzMaster(i64Timestamp_us, dAzMaster_mNm, strStatus);
-}
-
-void cHDF5FileWriter::motorTorqueAzSlave_callback(int64_t i64Timestamp_us, double dAzSlave_mNm, const string &strStatus)
-{
-    if(getState() != RECORDING)
-        return;
-
-    m_pHDF5File->motorTorqueAzSlave(i64Timestamp_us, dAzSlave_mNm, strStatus);
-}
-
-void cHDF5FileWriter::motorTorqueElMaster_callback(int64_t i64Timestamp_us, double dElMaster_mNm, const string &strStatus)
-{
-    if(getState() != RECORDING)
-        return;
-
-    m_pHDF5File->motorTorqueElMaster(i64Timestamp_us, dElMaster_mNm, strStatus);
-}
-
-void cHDF5FileWriter::motorTorqueElSlave_callback(int64_t i64Timestamp_us, double dElSlave_mNm, const string &strStatus)
-{
-    if(getState() != RECORDING)
-        return;
-
-    m_pHDF5File->motorTorqueElSlave(i64Timestamp_us, dElSlave_mNm, strStatus);
-}
-*/
 
 void cHDF5FileWriter::appliedPointingModel_callback(const string &strModelName, const vector<double> &vdPointingModelParams)
 {
@@ -853,28 +936,28 @@ void cHDF5FileWriter::frequencySelectRcp_callback(int64_t i64Timestamp_us, bool 
         m_pHDF5File->addFrequencySelectRcp(i64Timestamp_us, bFrequencySelectRcp, strStatus);
 }
 
-void cHDF5FileWriter::frequencyLO0Lcp_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_Hz, const string &strStatus)
+void cHDF5FileWriter::frequencyLOIntermediate5GHz_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_Hz, const string &strStatus)
 {
     if(getState() != RECORDING)
         return;
 
-    m_pHDF5File->addFrequencyLO0Lcp(i64Timestamp_us, dFrequencyLO0Chan0_Hz, strStatus);
+    m_pHDF5File->addFrequencyLOIntermed5GHz(i64Timestamp_us, dFrequencyLO0Chan0_Hz, strStatus);
 }
 
-void cHDF5FileWriter::frequencyLO0Rcp_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_Hz, const string &strStatus)
+void cHDF5FileWriter::frequencyLOIntermediate6_7GHz_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_Hz, const string &strStatus)
 {
     if(getState() != RECORDING)
         return;
 
-    m_pHDF5File->addFrequencyLO0Rcp(i64Timestamp_us, dFrequencyLO0Chan1_Hz, strStatus);
+    m_pHDF5File->addFrequencyLOIntermed6_7GHz(i64Timestamp_us, dFrequencyLO0Chan1_Hz, strStatus);
 }
 
-void cHDF5FileWriter::frequencyLO1_callback(int64_t i64Timestamp_us, double dFrequencyLO1_Hz, const string &strStatus)
+void cHDF5FileWriter::frequencyLOFinal_callback(int64_t i64Timestamp_us, double dFrequencyLO1_Hz, const string &strStatus)
 {
     if(getState() != RECORDING)
         return;
 
-    m_pHDF5File->addFrequencyLO1(i64Timestamp_us, dFrequencyLO1_Hz, strStatus);
+    m_pHDF5File->addFrequencyLOFinal(i64Timestamp_us, dFrequencyLO1_Hz, strStatus);
 }
 
 void cHDF5FileWriter::receiverBandwidthLcp_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan0_Hz, const string &strStatus)

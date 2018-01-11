@@ -136,135 +136,6 @@ void cKATCPServer::serverThreadFunction()
                                   const_cast<char*>("bytes"),
                                   &getDiskSpace_KATCPCallback, NULL, NULL, 100e9, 20e12, NULL);
 
-    /*
-    register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                 const_cast<char*>("requestedAntennaAz"),
-                                 const_cast<char*>("requested antenna azimuth after the pointing model"),
-                                 const_cast<char*>("degrees"),
-                                 &getRequestedAntennaAz, NULL, NULL, 0.0, 360.0, NULL);
-
-    register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                 const_cast<char*>("requestedAntennaEl"),
-                                 const_cast<char*>("requested antenna elevation after the pointing model"),
-                                 const_cast<char*>("degrees"),
-                                 &getRequestedAntennaEl, NULL, NULL, 0.0, 90.0, NULL);
-
-    register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                 const_cast<char*>("actualAntennaAz"),
-                                 const_cast<char*>("actual antenna azimuth after the pointing model"),
-                                 const_cast<char*>("degrees"),
-                                 &getActualAntennaAz, NULL, NULL, 0.0, 360.0, NULL);
-
-    register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                 const_cast<char*>("actualAntennaEl"),
-                                 const_cast<char*>("actual antenna elevation after the pointing model"),
-                                 const_cast<char*>("degrees"),
-                                 &getActualAntennaEl, NULL, NULL, 0.0, 90.0, NULL);
-
-    register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                 const_cast<char*>("actualSourceOffsetAz"),
-                                 const_cast<char*>("actual azimuth offset from the source"),
-                                 const_cast<char*>("degrees"),
-                                 &getActualSourceOffsetAz, NULL, NULL, -90.0, 90.0, NULL);
-
-    register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                 const_cast<char*>("actualSourceOffsetEl"),
-                                 const_cast<char*>("actual elevation offset from the source"),
-                                 const_cast<char*>("degrees"),
-                                 &getActualSourceOffsetEl, NULL, NULL, -90.0, 90.0, NULL);
-
-    register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                 const_cast<char*>("actualAntennaRA"),
-                                 const_cast<char*>("actual antenna right ascension"),
-                                 const_cast<char*>("degrees"),
-                                 &getActualAntennaRA, NULL, NULL, -90.0, 90.0, NULL);
-
-    register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                 const_cast<char*>("actualAntennaDec"),
-                                 const_cast<char*>("actual antenna declination"),
-                                 const_cast<char*>("degrees"),
-                                 &getActualAntennaDec, NULL, NULL, 0.0, 360.0, NULL);
-
-    register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                 const_cast<char*>("motorTorqueAzMaster"),
-                                 const_cast<char*>("torque of master azimuth motor"),
-                                 const_cast<char*>("mNm"),
-                                 &getMotorTorqueAzMaster, NULL, NULL, -3600.0, 3600.0, NULL);
-
-    register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                 const_cast<char*>("motorTorqueAzSlave"),
-                                 const_cast<char*>("torque of slave azimuth motor"),
-                                 const_cast<char*>("mNm"),
-                                 &getMotorTorqueAzSlave, NULL, NULL, -3600.0, 3600.0, NULL);
-
-    register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                 const_cast<char*>("motorTorqueElMaster"),
-                                 const_cast<char*>("torque of master elevation motor"),
-                                 const_cast<char*>("mNm"),
-                                 &getMotorTorqueElMaster, NULL, NULL, -3600.0, 3600.0, NULL);
-
-    register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                 const_cast<char*>("motorTorqueElSlave"),
-                                 const_cast<char*>("torque of slave elevation motor"),
-                                 const_cast<char*>("mNm"),
-                                 &getMotorTorqueElSlave, NULL, NULL, -3600.0, 3600.0, NULL);
-
-    register_integer_sensor_katcp(m_pKATCPDispatch, 0,
-                                  const_cast<char*>("noiseDiodeSoftwareState"),
-                                  const_cast<char*>("the state of the noise diode (on/off) when under FieldSystem control"),
-                                  const_cast<char*>("none"),
-                                  &getNoiseDiodeSoftwareState, NULL, NULL, -1, 1, NULL);
-
-    register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                 const_cast<char*>("noiseDiodeCurrent"),
-                                 const_cast<char*>("the current draw through the noise diode(s)"),
-                                 const_cast<char*>("A"),
-                                 &getMotorTorqueElSlave, NULL, NULL, 0.0, 5.0, NULL);
-
-    //TODO: Acceptable range values for the sensors before "warn" is shown. Very wide defaults right now.
-    register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                 const_cast<char*>("bandSelectedLCP"),
-                                 const_cast<char*>("the centre frequency of RF mapped to final IF output channel 0"),
-                                 const_cast<char*>("Hz"),
-                                 &getFBandSelectedLCP, NULL, NULL, 0, 1, NULL);
-
-    register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                 const_cast<char*>("bandSelectedRCP"),
-                                 const_cast<char*>("the centre frequency of RF mapped to final IF output channel 1"),
-                                 const_cast<char*>("Hz"),
-                                 &getBandSelectedRCP, NULL, NULL, 0, 1, NULL);
-
-    register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                 const_cast<char*>("frequencyLO0Chan0"),
-                                 const_cast<char*>("the frequency for the first LO in RF input channel 0"),
-                                 const_cast<char*>("Hz"),
-                                 &getFrequencyLO0Chan0, NULL, NULL, 0, 7e9, NULL);
-
-    register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                 const_cast<char*>("frequencyLO0Chan1"),
-                                 const_cast<char*>("the frequency for the first LO in RF input channel 1"),
-                                 const_cast<char*>("Hz"),
-                                 &getFrequencyLO0Chan1, NULL, NULL, 0, 7e9, NULL);
-
-    register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                 const_cast<char*>("frequencyLO1"),
-                                 const_cast<char*>("the frequency for the final (IF) LO"),
-                                 const_cast<char*>("Hz"),
-                                 &getFrequencyLO1, NULL, NULL, 0, 7e9, NULL);
-
-    register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                 const_cast<char*>("receiverBandwidthChan0"),
-                                 const_cast<char*>("the bandwidth available to the final IF output channel 0"),
-                                 const_cast<char*>("Hz"),
-                                 &getReceiverBandwidthChan0, NULL, NULL, 0, 7e9, NULL);
-
-    register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                 const_cast<char*>("receiverBandwidthChan1"),
-                                 const_cast<char*>("the bandwidth available to the final IF output channel 1"),
-                                 const_cast<char*>("Hz"),
-                                 &getReceiverBandwidthChan1, NULL, NULL, 0, 7e9, NULL);
-    */
-
     //ROACH
 
     m_pKARoachConnected = setup_boolean_acquire_katcp(m_pKATCPDispatch, &getIsRoachKATCPConnected, NULL, NULL);
@@ -273,14 +144,6 @@ void cKATCPServer::serverThreadFunction()
                                   const_cast<char*>("Is the RoachAcquisitionServer connected to the ROACH's KATCP server"),
                                   const_cast<char*>("none"),
                                   m_pKARoachConnected);
-
-    /*
-    register_boolean_sensor_katcp(m_pKATCPDispatch, 0,
-                                  const_cast<char*>("roachStokesEnabled"),
-                                  const_cast<char*>("Is the ROACH spitting out LRQU data. (Otherwise LRPP)"),
-                                  const_cast<char*>("none"),
-                                  &getStokesEnabled, NULL, NULL);
-    */
 
     register_integer_sensor_katcp(m_pKATCPDispatch, 0,
                                   const_cast<char*>("roachAccumulationLength"),
@@ -562,15 +425,15 @@ void cKATCPServer::initialSensorDataThreadFunction()
 
     if (m_oKATCPClientCallbackHandler.m_dFrequencyLO0Chan0_Hz != 0.0)
     {
-        m_pFileWriter->frequencyLO0Lcp_callback((time(0) - 10)*1e6, m_oKATCPClientCallbackHandler.m_dFrequencyLO0Chan0_Hz, "nominal");
+        m_pFileWriter->frequencyLOIntermediate5GHz_callback((time(0) - 10)*1e6, m_oKATCPClientCallbackHandler.m_dFrequencyLO0Chan0_Hz, "nominal");
     }
     if (m_oKATCPClientCallbackHandler.m_dFrequencyLO0Chan1_Hz != 0.0)
     {
-        m_pFileWriter->frequencyLO0Rcp_callback((time(0) - 10)*1e6, m_oKATCPClientCallbackHandler.m_dFrequencyLO0Chan1_Hz, "nominal");
+        m_pFileWriter->frequencyLOIntermediate6_7GHz_callback((time(0) - 10)*1e6, m_oKATCPClientCallbackHandler.m_dFrequencyLO0Chan1_Hz, "nominal");
     }
     if (m_oKATCPClientCallbackHandler.m_dFrequencyLO1_Hz != 0.0)
     {
-        m_pFileWriter->frequencyLO1_callback((time(0) - 10)*1e6, m_oKATCPClientCallbackHandler.m_dFrequencyLO1_Hz, "nominal");
+        m_pFileWriter->frequencyLOFinal_callback((time(0) - 10)*1e6, m_oKATCPClientCallbackHandler.m_dFrequencyLO1_Hz, "nominal");
     }
 
     //Won't check for defaults here, because this should be zero as a default anyway.
@@ -1207,13 +1070,13 @@ int32_t cKATCPServer::RFGUIReceiveValonFrequency_KATCPCallback(struct katcp_disp
                 {
                     case 'a': // 5.0 GHz's oscillator
                         cout << "a: " << dSynthFrequency_Hz / 1e6 << " MHz";
-                        m_oKATCPClientCallbackHandler.frequencyLO0Lcp_callback(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal"); // Let's give this a try.
-                        m_pFileWriter->frequencyLO0Lcp_callback(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal"); // hardcoded to nominal for the time being.
+                        m_oKATCPClientCallbackHandler.frequencyLOIntermediate5GHz_callback(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal"); // Let's give this a try.
+                        m_pFileWriter->frequencyLOIntermediate5GHz_callback(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal"); // hardcoded to nominal for the time being.
                         break;
                     case 'b': // 6.7 GHz's oscillator
                         cout << "b: " << dSynthFrequency_Hz / 1e6 << " MHz";
-                        m_oKATCPClientCallbackHandler.frequencyLO0Rcp_callback(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal"); // Let's give this a try.
-                        m_pFileWriter->frequencyLO0Rcp_callback(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal"); // hardcoded to nominal for the time being.
+                        m_oKATCPClientCallbackHandler.frequencyLOIntermediate6_7GHz_callback(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal"); // Let's give this a try.
+                        m_pFileWriter->frequencyLOIntermediate6_7GHz_callback(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal"); // hardcoded to nominal for the time being.
                         break;
                     default: // This is if a problem has been encountered.
                         cout << "UNKNOWN!";
@@ -1229,8 +1092,8 @@ int32_t cKATCPServer::RFGUIReceiveValonFrequency_KATCPCallback(struct katcp_disp
                 {
                     case 'a': // Final stage oscillator
                         cout << "a: " << dSynthFrequency_Hz / 1e6 << " MHz";
-                        m_oKATCPClientCallbackHandler.frequencyLO1_callback(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal");
-                        m_pFileWriter->frequencyLO1_callback(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal");
+                        m_oKATCPClientCallbackHandler.frequencyLOFinal_callback(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal");
+                        m_pFileWriter->frequencyLOFinal_callback(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal");
                         break;
                     case 'b':
                         cout << "b, but this is unused. ";
@@ -1586,35 +1449,35 @@ void cKATCPServer::cKATCPClientCallbackHandler::stopRecording_callback()
     //Not used. Note, the HDF5FileWriter class is also a callback handler for KATCPClient so it get this callback to too and reacts to it there.
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::acsRequestedAntennaAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const string &strStatus)
+void cKATCPServer::cKATCPClientCallbackHandler::acsRequestedAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const string &strStatus)
 {
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::acsRequestedAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const string &strStatusf)
+void cKATCPServer::cKATCPClientCallbackHandler::acsRequestedEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const string &strStatusf)
 {
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::acsActualAntennaAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const string &strStatus)
+void cKATCPServer::cKATCPClientCallbackHandler::acsActualAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const string &strStatus)
 {
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::acsActualAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const string &strStatus)
+void cKATCPServer::cKATCPClientCallbackHandler::acsActualEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const string &strStatus)
 {
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::skyRequestedAntennaAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const string &strStatus)
+void cKATCPServer::cKATCPClientCallbackHandler::skyRequestedAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const string &strStatus)
 {
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::skyRequestedAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const string &strStatusf)
+void cKATCPServer::cKATCPClientCallbackHandler::skyRequestedEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const string &strStatusf)
 {
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::skyActualAntennaAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const string &strStatus)
+void cKATCPServer::cKATCPClientCallbackHandler::skyActualAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const string &strStatus)
 {
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::skyActualAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const string &strStatus)
+void cKATCPServer::cKATCPClientCallbackHandler::skyActualEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const string &strStatus)
 {
 }
 
@@ -1654,69 +1517,6 @@ void cKATCPServer::cKATCPClientCallbackHandler::antennaStatus_callback(int64_t i
 
     m_strAntennaStatus = strStatus;
 }
-
-/* Marked for removal.
-void cKATCPServer::cKATCPClientCallbackHandler::motorTorqueAzMaster_callback(int64_t i64Timestamp_us, double dAzMaster_mNm, const string &strStatus)
-{
-    boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oSensorDataMutex);
-
-    m_dMotorTorqueAzMaster_mNm = dAzMaster_mNm;
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::motorTorqueAzSlave_callback(int64_t i64Timestamp_us, double dAzSlave_mNm, const string &strStatus)
-{
-    boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oSensorDataMutex);
-
-    m_dMotorTorqueAzSlave_mNm = dAzSlave_mNm;
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::motorTorqueElMaster_callback(int64_t i64Timestamp_us, double dElMaster_mNm, const string &strStatus)
-{
-    boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oSensorDataMutex);
-
-    m_dMotorTorqueElMaster_mNm = dElMaster_mNm;
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::motorTorqueElSlave_callback(int64_t i64Timestamp_us, double dElSlave_mNm, const string &strStatus)
-{
-    boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oSensorDataMutex);
-
-    m_dMotorTorqueAzSlave_mNm = dElSlave_mNm;
-}
-*/
-
-/* TODO: This marked for removal.
-void cKATCPServer::cKATCPClientCallbackHandler::appliedPointingModel_callback(const string &strModelName, const vector<double> &vdPointingModelParams)
-{
-    //Todo
-    //JNS: Is there anything TODO here?
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::antennaName_callback(const string &strAntennaName)
-{
-    //TODO
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::antennaDiameter_callback(const std::string &strAntennaDiameter)
-{
-    //TODO
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::antennaBeamwidth_callback(const std::string &strAntennaBeamwidth)
-{
-    //TODO
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::antennaLongitude_callback(const std::string &strAntennaLongitude)
-{
-    //TODO
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::antennaLatitude_callback(const std::string &strAntennaLatitude)
-{
-    //TODO
-}
-*/
 
 void cKATCPServer::cKATCPClientCallbackHandler::noiseDiodeSoftwareState_callback(int64_t i64Timestamp_us, int32_t i32NoiseDiodeState, const string &strStatus)
 {
@@ -1758,21 +1558,21 @@ void cKATCPServer::cKATCPClientCallbackHandler::frequencySelectRcp_callback(int6
     m_bBandSelectedRCP = bBandSelected;
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::frequencyLO0Lcp_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_Hz, const string &strStatus)
+void cKATCPServer::cKATCPClientCallbackHandler::frequencyLOIntermediate5GHz_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_Hz, const string &strStatus)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oSensorDataMutex);
 
     m_dFrequencyLO0Chan0_Hz = dFrequencyLO0Chan0_Hz;
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::frequencyLO0Rcp_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_Hz, const string &strStatus)
+void cKATCPServer::cKATCPClientCallbackHandler::frequencyLOIntermediate6_7GHz_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_Hz, const string &strStatus)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oSensorDataMutex);
 
     m_dFrequencyLO0Chan1_Hz = dFrequencyLO0Chan1_Hz;
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::frequencyLO1_callback(int64_t i64Timestamp_us, double dFrequencyLO1_Hz, const string &strStatus)
+void cKATCPServer::cKATCPClientCallbackHandler::frequencyLOFinal_callback(int64_t i64Timestamp_us, double dFrequencyLO1_Hz, const string &strStatus)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oSensorDataMutex);
 

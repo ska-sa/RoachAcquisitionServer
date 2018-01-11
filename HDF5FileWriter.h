@@ -48,44 +48,59 @@ class cHDF5FileWriter : public cSpectrometerDataStreamInterpreter::cCallbackInte
     typedef struct cInitialValueSet
     {
         // Antenna-space requested azim - cTimestampedDouble
-        double m_dTSAcsRequestedAzim_s;
+        double m_dTSAcsRequestedAzim_us;
         double m_dVAcsRequestedAzim_deg;
-        char   m_chaAcsRequestedAzim[7];
+        char   m_chaAcsRequestedAzimStatus[7];
 
         // Antenna-space requested elev - cTimestampedDouble
-        double m_dTSAcsRequestedElev_s;
+        double m_dTSAcsRequestedElev_us;
         double m_dVAcsRequestedElev_deg;
-        char   m_chaAcsRequestedElev[7];
+        char   m_chaAcsRequestedElevStatus[7];
 
         // Antenna-space actual azim - cTimestampedDouble
-        double m_dTSAcsActualAzim_s;
+        double m_dTSAcsActualAzim_us;
         double m_dVAcsActualAzim_deg;
-        char   m_chaAcsActualAzim[7];
+        char   m_chaAcsActualAzimStatus[7];
 
         // Antenna-space actual elev - cTimestampedDouble
-        double m_dTSAcsActualElev_s;
+        double m_dTSAcsActualElev_us;
         double m_dVAcsActualElev_deg;
-        char   m_chaAcsActualElev[7];
+        char   m_chaAcsActualElevStatus[7];
 
         // Sky-space requested azim - cTimestampedDouble
-        double m_dTSSkyRequestedAzim_s;
+        double m_dTSSkyRequestedAzim_us;
         double m_dVSkyRequestedAzim_deg;
-        char   m_chaSkyRequestedAzim[7];
+        char   m_chaSkyRequestedAzimStatus[7];
 
         // Sky-space requested elev - cTimestampedDouble
-        double m_dTSSkyRequestedElev_s;
+        double m_dTSSkyRequestedElev_us;
         double m_dVSkyRequestedElev_deg;
-        char   m_chaSkyRequestedElev[7];
+        char   m_chaSkyRequestedElevStatus[7];
 
         // Sky-space actual azim - cTimestampedDouble
-        double m_dTSSkyActualAzim_s;
+        double m_dTSSkyActualAzim_us;
         double m_dVSkyActualAzim_deg;
-        char   m_chaSkyActualAzim[7];
+        char   m_chaSkyActualAzimStatus[7];
 
         // Sky-space actual elev - cTimestampedDouble
-        double m_dTSSkyActualElev_s;
+        double m_dTSSkyActualElev_us;
         double m_dVSkyActualElev_deg;
-        char   m_chaSkyActualElev[7];
+        char   m_chaSkyActualElevStatus[7];
+
+        // Receiver chain intermediate LO frequency - 5GHz LO - cTimestampedDouble
+        double m_dTSReceiverLOFreqIntermediate5GHz_us;
+        double m_dVReceiverLOFreqIntermediate5GHz_Hz;
+        char   m_chaReceiverLOFreqIntermediate5GHzStatus[7];
+
+        // Receiver chain intermediate LO frequency - 6_7GHz LO - cTimestampedDouble
+        double m_dTSReceiverLOFreqIntermediate6_7GHz_us;
+        double m_dVReceiverLOFreqIntermediate6_7GHz_Hz;
+        char   m_chaReceiverLOFreqIntermediate6_7GHzStatus[7];
+
+        // Receiver chain final LO frequency - cTimestampedDouble
+        double m_dTSReceiverLOFreqFinal_us;
+        double m_dVReceiverLOFreqFinal_Hz;
+        char   m_chaReceiverLOFreqFinalStatus[7];
 
         // Receiver chain LCP attenuation - cTimestampedDouble
         double m_dTSReceiverLcpAtten_us;
@@ -179,15 +194,15 @@ public:
 
 
     //Antenna values
-    void                                                acsRequestedAntennaAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus);
-    void                                                acsRequestedAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus);
-    void                                                acsActualAntennaAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus);
-    void                                                acsActualAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus);
+    void                                                acsRequestedAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus);
+    void                                                acsRequestedEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus);
+    void                                                acsActualAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus);
+    void                                                acsActualEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus);
 
-    void                                                skyRequestedAntennaAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus);
-    void                                                skyRequestedAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus);
-    void                                                skyActualAntennaAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus);
-    void                                                skyActualAntennaEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus);
+    void                                                skyRequestedAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus);
+    void                                                skyRequestedEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus);
+    void                                                skyActualAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus);
+    void                                                skyActualEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus);
     /* Marked for removal.
     void                                                actualSourceOffsetAz_callback(int64_t i64Timestamp_us, double dAzimuthOffset_deg, const std::string &strStatus);
     void                                                actualSourceOffsetEl_callback(int64_t i64Timestamp_us, double dElevationOffset_deg, const std::string &strStatus);
@@ -220,9 +235,9 @@ public:
     //RF values
     void                                                frequencySelectLcp_callback(int64_t i64Timestamp_us, bool bFrequencySelectLcp, const std::string &strStatus);
     void                                                frequencySelectRcp_callback(int64_t i64Timestamp_us, bool bFrequencySelectRcp, const std::string &strStatus);
-    void                                                frequencyLO0Lcp_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_Hz, const std::string &strStatus);
-    void                                                frequencyLO0Rcp_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_Hz, const std::string &strStatus);
-    void                                                frequencyLO1_callback(int64_t i64Timestamp_us, double dFrequencyLO1_Hz, const std::string &strStatus);
+    void                                                frequencyLOIntermediate5GHz_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_Hz, const std::string &strStatus);
+    void                                                frequencyLOIntermediate6_7GHz_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_Hz, const std::string &strStatus);
+    void                                                frequencyLOFinal_callback(int64_t i64Timestamp_us, double dFrequencyLO1_Hz, const std::string &strStatus);
     void                                                receiverBandwidthLcp_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan0_Hz, const std::string &strStatus);
     void                                                receiverBandwidthRcp_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan1_Hz, const std::string &strStatus);
     void                                                receiverLcpAttenuation_callback(int64_t i64Timestamp_us, double dReceiverLcpAttenuation_dB, const std::string &strStatus);
