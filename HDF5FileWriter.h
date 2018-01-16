@@ -48,104 +48,129 @@ class cHDF5FileWriter : public cSpectrometerDataStreamInterpreter::cCallbackInte
     typedef struct cInitialValueSet
     {
         // Antenna-space requested azim - cTimestampedDouble
-        double m_dTSAcsRequestedAzim_us;
-        double m_dVAcsRequestedAzim_deg;
-        char   m_chaAcsRequestedAzimStatus[7];
+        int64_t m_i64TSAcsRequestedAzim_us;
+        double  m_dVAcsRequestedAzim_deg;
+        char    m_chaAcsRequestedAzimStatus[7];
 
         // Antenna-space requested elev - cTimestampedDouble
-        double m_dTSAcsRequestedElev_us;
-        double m_dVAcsRequestedElev_deg;
-        char   m_chaAcsRequestedElevStatus[7];
+        int64_t m_i64TSAcsRequestedElev_us;
+        double  m_dVAcsRequestedElev_deg;
+        char    m_chaAcsRequestedElevStatus[7];
 
         // Antenna-space actual azim - cTimestampedDouble
-        double m_dTSAcsActualAzim_us;
-        double m_dVAcsActualAzim_deg;
-        char   m_chaAcsActualAzimStatus[7];
+        int64_t m_i64TSAcsActualAzim_us;
+        double  m_dVAcsActualAzim_deg;
+        char    m_chaAcsActualAzimStatus[7];
 
         // Antenna-space actual elev - cTimestampedDouble
-        double m_dTSAcsActualElev_us;
-        double m_dVAcsActualElev_deg;
-        char   m_chaAcsActualElevStatus[7];
+        int64_t m_i64TSAcsActualElev_us;
+        double  m_dVAcsActualElev_deg;
+        char    m_chaAcsActualElevStatus[7];
 
         // Sky-space requested azim - cTimestampedDouble
-        double m_dTSSkyRequestedAzim_us;
-        double m_dVSkyRequestedAzim_deg;
-        char   m_chaSkyRequestedAzimStatus[7];
+        int64_t m_i64TSSkyRequestedAzim_us;
+        double  m_dVSkyRequestedAzim_deg;
+        char    m_chaSkyRequestedAzimStatus[7];
 
         // Sky-space requested elev - cTimestampedDouble
-        double m_dTSSkyRequestedElev_us;
-        double m_dVSkyRequestedElev_deg;
-        char   m_chaSkyRequestedElevStatus[7];
+        int64_t m_i64TSSkyRequestedElev_us;
+        double  m_dVSkyRequestedElev_deg;
+        char    m_chaSkyRequestedElevStatus[7];
 
         // Sky-space actual azim - cTimestampedDouble
-        double m_dTSSkyActualAzim_us;
-        double m_dVSkyActualAzim_deg;
-        char   m_chaSkyActualAzimStatus[7];
+        int64_t m_i64TSSkyActualAzim_us;
+        double  m_dVSkyActualAzim_deg;
+        char    m_chaSkyActualAzimStatus[7];
 
         // Sky-space actual elev - cTimestampedDouble
-        double m_dTSSkyActualElev_us;
-        double m_dVSkyActualElev_deg;
-        char   m_chaSkyActualElevStatus[7];
+        int64_t m_i64TSSkyActualElev_us;
+        double  m_dVSkyActualElev_deg;
+        char    m_chaSkyActualElevStatus[7];
 
         // Receiver chain intermediate LO frequency - 5GHz LO - cTimestampedDouble
-        double m_dTSReceiverLOFreqIntermediate5GHz_us;
-        double m_dVReceiverLOFreqIntermediate5GHz_Hz;
-        char   m_chaReceiverLOFreqIntermediate5GHzStatus[7];
+        int64_t m_i64TSReceiverLOFreqIntermediate5GHz_us;
+        double  m_dVReceiverLOFreqIntermediate5GHz_Hz;
+        char    m_chaReceiverLOFreqIntermediate5GHzStatus[7];
 
         // Receiver chain intermediate LO frequency - 6_7GHz LO - cTimestampedDouble
-        double m_dTSReceiverLOFreqIntermediate6_7GHz_us;
-        double m_dVReceiverLOFreqIntermediate6_7GHz_Hz;
-        char   m_chaReceiverLOFreqIntermediate6_7GHzStatus[7];
+        int64_t m_i64TSReceiverLOFreqIntermediate6_7GHz_us;
+        double  m_dVReceiverLOFreqIntermediate6_7GHz_Hz;
+        char    m_chaReceiverLOFreqIntermediate6_7GHzStatus[7];
 
         // Receiver chain final LO frequency - cTimestampedDouble
-        double m_dTSReceiverLOFreqFinal_us;
-        double m_dVReceiverLOFreqFinal_Hz;
-        char   m_chaReceiverLOFreqFinalStatus[7];
+        int64_t m_i64TSReceiverLOFreqFinal_us;
+        double  m_dVReceiverLOFreqFinal_Hz;
+        char    m_chaReceiverLOFreqFinalStatus[7];
 
         // Receiver chain LCP attenuation - cTimestampedDouble
-        double m_dTSReceiverLcpAtten_us;
-        double m_dVReceiverLcpAtten_dB;
-        char   m_chaReceiverLcpAttenStatus[7];
+        int64_t m_i64TSReceiverLcpAtten_us;
+        double  m_dVReceiverLcpAtten_dB;
+        char    m_chaReceiverLcpAttenStatus[7];
 
         // Receiver chain RCP attenuation - cTimestampedDouble
-        double m_dTSReceiverRcpAtten_us;
-        double m_dVReceiverRcpAtten_dB;
-        char   m_chaReceiverRcpAttenStatus[7];
+        int64_t m_i64TSReceiverRcpAtten_us;
+        double  m_dVReceiverRcpAtten_dB;
+        char    m_chaReceiverRcpAttenStatus[7];
 
         // Receiver chain LCP Frequency Select - cTimestampedChar
-        double m_dTSFrequencySelectLcp_us;
-        char   m_chVFrequencySelectLcp;
-        char   m_chaFrequencySelectLcpStatus[7];
+        int64_t m_i64TSFrequencySelectLcp_us;
+        char    m_chVFrequencySelectLcp;
+        char    m_chaFrequencySelectLcpStatus[7];
 
         // Receiver chain RCP Frequency Select - cTimestampedChar
-        double m_dTSFrequencySelectRcp_us;
-        char   m_chVFrequencySelectRcp;
-        char   m_chaFrequencySelectRcpStatus[7];
+        int64_t m_i64TSFrequencySelectRcp_us;
+        char    m_chVFrequencySelectRcp;
+        char    m_chaFrequencySelectRcpStatus[7];
+
+        // Noise diode input source - cNoiseDiodeSource
+        int64_t m_i64TSNoiseDiodeInputSource_us;
+        char    m_chaVNoiseDiodeInputSource[8];
+        char    m_chaNoiseDiodeInputSourceStatus[7];
+
+        // Noise diode enabled - cTimestampedBool
+        int64_t m_i64TSNoiseDiodeEnabled_us;
+        bool    m_bVNoiseDiodeEnabled;
+        char    m_chaNoiseDiodeEnabledStatus[7];
+
+        // Noise diode select - cTimestampedInt
+        int64_t  m_i64TSNoiseDiodeSelect_us;
+        int32_t  m_i32VNoiseDiodeSelect;
+        char     m_chaNoiseDiodeSelectStatus[7];
+
+        // Noise diode pwm mark - cTimestampedInt
+        int64_t  m_i64TSNoiseDiodePWMMark_us;
+        int32_t  m_i32VNoiseDiodePWMMark;
+        char     m_chaNoiseDiodePWMMarkStatuus[7];
+
+        // Noise diode pwm frequency - cTimestampedDouble
+        int64_t  m_i64TSNoiseDiodePWMFrequency_us;
+        double   m_dVNoiseDiodePWMFrequency_Hz;
+        char     m_chaNoiseDiodeWPMFrequencyStatus[7];
 
         // Wind speed - cTimestampedDouble
-        double m_dTSWindSpeed_us;
-        double m_dVWindSpeed_mps;
-        char   m_chaWindSpeedStatus[7];
+        int64_t m_i64TSWindSpeed_us;
+        double  m_dVWindSpeed_mps;
+        char    m_chaWindSpeedStatus[7];
 
         // Wind direction - cTimestampedDouble
-        double m_dTSWindDirection_us;
-        double m_dVWindDirection_deg;
-        char   m_chaWindDirectionStatus[7];
+        int64_t m_i64TSWindDirection_us;
+        double  m_dVWindDirection_deg;
+        char    m_chaWindDirectionStatus[7];
 
         // Air temperature - cTimestampedDouble
-        double m_dTSTemperature_us;
-        double m_dVTemperature_degC;
-        char   m_chaTemperatureStatus[7];
+        int64_t m_i64TSTemperature_us;
+        double  m_dVTemperature_degC;
+        char    m_chaTemperatureStatus[7];
 
         // Absolute pressure - cTimestampedDouble
-        double m_dTSAbsolutePressure_us;
-        double m_dVAbsolutePressure_mbar;
-        char   m_chaAbsolutePressureStatus[7];
+        int64_t m_i64TSAbsolutePressure_us;
+        double  m_dVAbsolutePressure_mbar;
+        char    m_chaAbsolutePressureStatus[7];
 
         // Relative humidity - cTimestampedDouble
-        double m_dTSRelativeHumidity_us;
-        double m_dVRelativeHumidity_percent;
-        char   m_chaRelativeHumidityStatus[7];
+        int64_t m_i64TSRelativeHumidity_us;
+        double  m_dVRelativeHumidity_percent;
+        char    m_chaRelativeHumidityStatus[7];
 
     } cInitialValueSet;
 
@@ -224,9 +249,12 @@ public:
     void                                                antennaLatitude_callback(const std::string &strAntennaLatitude);
 
     //Noise diode values
-    void                                                noiseDiodeSoftwareState_callback(int64_t i64Timestamp_us, int32_t i32NoiseDiodeState, const std::string &strStatus);
-    void                                                noiseDiodeSource_callback(int64_t i64Timestamp_us, const std::string &strNoiseSource, const std::string &strStatus);
-    void                                                noiseDiodeCurrent_callback(int64_t i64Timestamp_us, double dNoiseDiodeCurrent_A, const std::string &strStatus);
+    void                                                rNoiseDiodeInputSource_callback(int64_t i64Timestamp_us, const std::string &strInputSource, const std::string &strStatus);
+    void                                                rNoiseDiodeEnabled_callback(int64_t i64Timestamp_us, bool bNoiseDiodeEnabled, const std::string &strStatus);
+    void                                                rNoiseDiodeSelect_callback(int64_t i64Timestamp_us, int32_t i32NoiseDiodeSelect, const std::string &strStatus);
+    void                                                rNoiseDiodePWMMark_callback(int64_t i64Timestamp_us, int32_t i32NoiseDiodePWMMark, const std::string &strStatus);
+    void                                                rNoiseDiodePWMFrequency_callback(int64_t i64Timestamp_us, double dNoiseDiodePWMFrequency, const std::string &strStatus);
+
 
     //Global experiment values
     void                                                sourceSelection_callback(int64_t i64Timestamp_us, const std::string &strSourceName, double dRighAscension_deg, double dDeclination_deg);

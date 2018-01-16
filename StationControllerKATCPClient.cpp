@@ -30,6 +30,7 @@ cStationControllerKATCPClient::cStationControllerKATCPClient() :
     m_vstrSensorSampling.push_back("acs.request-elev period 1000");
 
     // Signal-chain values.
+    m_vstrSensorSampling.push_back("RFC.NoiseDiode_1 event");
     m_vstrSensorSampling.push_back("RFC.IntermediateStage_5GHz event");
     m_vstrSensorSampling.push_back("RFC.IntermediateStage_6_7GHz event");
     m_vstrSensorSampling.push_back("RFC.FinalStage event");
@@ -235,24 +236,9 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
     }
     */
 
-    if(!vstrTokens[3].compare("noiseDiodeSoftwareState"))
+    if(!vstrTokens[3].compare("RFC.NoiseDiode_1"))
     {
-        sendNoiseDiodeSoftwareState( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtol(vstrTokens[5].c_str(), NULL, 10), vstrTokens[4].c_str() );
-        return;
-    }
-
-
-    if(!vstrTokens[3].compare("noiseDiodeSource"))
-    {
-        //TODO: This should probably be looked at. Is it supposed to be an int value being recorded?"
-        sendNoiseDiodeSource( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, vstrTokens[5], vstrTokens[4].c_str() );
-        return;
-    }
-
-
-    if(!vstrTokens[3].compare("noideDiodeCurrent"))
-    {
-        sendNoiseDiodeCurrent( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+        sendNoiseDiodeState( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtol(vstrTokens[5].c_str(), NULL, 10), vstrTokens[4].c_str() );
         return;
     }
 
@@ -753,8 +739,64 @@ void cStationControllerKATCPClient::sendMotorTorqueElSlave(int64_t i64Timestamp_
 }
 */
 
-void cStationControllerKATCPClient::sendNoiseDiodeSoftwareState(int64_t i64Timestamp_us, int32_t i32NoiseDiodeState, const string &strStatus)
+void cStationControllerKATCPClient::sendNoiseDiodeState(int64_t i64Timestamp_us, int32_t i32NoiseDiodeState, const string &strStatus)
 {
+    /* NoiseDiodeState is a bitfield which needs to be unpacked.
+     *  Bit       Description
+     *  0 – 1     Input Source Select:
+     *            00 – None
+     *            01 – Roach
+     *            10 – DBBC
+     *            11 – PC
+     *  2         N/A
+     *  3         Enable
+     *  4 – 7     Noise Diode Select:
+     *            0001 – ND1
+     *            0010 – ND2
+     *            0100 – ND3
+     *            1000 – ND4
+     *  8 – 13    PWM Mark (0 – 63)
+     *  14 – 15   Freq Select:
+     *            00 – 0.5Hz
+     *            01 – 1Hz
+     *            10 – 10Hz
+     *            11 – 200Hz
+     */
+
+    // For security. This should be only a 16-bit value.
+    string strSource;
+    switch (i32NoiseDiodeState & 0b00000000000000000000000000000011)
+    {
+        case 0: strSource = "None";
+                break;
+        case 1: strSource = "ROACH";
+                break;
+        case 2: strSource = "DBBC";
+                break;
+        case 3: strSource = "PC";
+                break;
+        default: strSource = "UNKNOWN";
+                break;
+    }
+
+    bool bNoiseDiodeEnabled            = i32NoiseDiodeState & 0b00000000000000000000000000001000 >> 3;
+    uint32_t i32NoiseDiodeSelect       = i32NoiseDiodeState & 0b00000000000000000000000011110000 >> 4;
+    uint32_t i32NoiseDiodePWMMark      = i32NoiseDiodeState & 0b00000000000000000011111100000000 >> 8;
+    double dNoiseDiodePWMFrequency;
+    switch (i32NoiseDiodeState & 0b00000000000000001100000000000000 >> 14)
+    {
+    case 0: dNoiseDiodePWMFrequency = 0.5;
+            break;
+    case 1: dNoiseDiodePWMFrequency = 1.0;
+            break;
+    case 2: dNoiseDiodePWMFrequency = 10.0;
+            break;
+    case 3: dNoiseDiodePWMFrequency = 200.0;
+            break;
+    default: dNoiseDiodePWMFrequency = -1;
+            break;
+    }
+
     boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
 
     //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
@@ -763,53 +805,21 @@ void cStationControllerKATCPClient::sendNoiseDiodeSoftwareState(int64_t i64Times
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
     {
         cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
-        pHandler->noiseDiodeSoftwareState_callback(i64Timestamp_us, i32NoiseDiodeState, strStatus);
+        pHandler->rNoiseDiodeInputSource_callback(i64Timestamp_us, strSource, strStatus);
+        pHandler->rNoiseDiodeEnabled_callback(i64Timestamp_us, bNoiseDiodeEnabled, strStatus);
+        pHandler->rNoiseDiodeSelect_callback(i64Timestamp_us, i32NoiseDiodeSelect, strStatus);
+        pHandler->rNoiseDiodePWMMark_callback(i64Timestamp_us, i32NoiseDiodePWMMark, strStatus);
+        pHandler->rNoiseDiodePWMFrequency_callback(i64Timestamp_us, dNoiseDiodePWMFrequency, strStatus);
     }
 
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
     {
         boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
-        pHandler->noiseDiodeSoftwareState_callback(i64Timestamp_us, i32NoiseDiodeState, strStatus);
-    }
-}
-
-void cStationControllerKATCPClient::sendNoiseDiodeSource(int64_t i64Timestamp_us, const string &strNoiseSource, const string &strStatus)
-{
-    boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
-
-    //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
-    //to call function added in the derived version of the callback handler interface class
-
-    for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
-    {
-        cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
-        pHandler->noiseDiodeSource_callback(i64Timestamp_us, strNoiseSource, strStatus);
-    }
-
-    for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
-    {
-        boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
-        pHandler->noiseDiodeSource_callback(i64Timestamp_us, strNoiseSource, strStatus);
-    }
-}
-
-void cStationControllerKATCPClient::sendNoiseDiodeCurrent(int64_t i64Timestamp_us, double dNoiseDiodeCurrent_A, const string &strStatus)
-{
-    boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
-
-    //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
-    //to call function added in the derived version of the callback handler interface class
-
-    for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
-    {
-        cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
-        pHandler->noiseDiodeCurrent_callback(i64Timestamp_us, dNoiseDiodeCurrent_A, strStatus);
-    }
-
-    for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
-    {
-        boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
-        pHandler->noiseDiodeCurrent_callback(i64Timestamp_us, dNoiseDiodeCurrent_A, strStatus);
+        pHandler->rNoiseDiodeInputSource_callback(i64Timestamp_us, strSource, strStatus);
+        pHandler->rNoiseDiodeEnabled_callback(i64Timestamp_us, bNoiseDiodeEnabled, strStatus);
+        pHandler->rNoiseDiodeSelect_callback(i64Timestamp_us, i32NoiseDiodeSelect, strStatus);
+        pHandler->rNoiseDiodePWMMark_callback(i64Timestamp_us, i32NoiseDiodePWMMark, strStatus);
+        pHandler->rNoiseDiodePWMFrequency_callback(i64Timestamp_us, dNoiseDiodePWMFrequency, strStatus);
     }
 }
 

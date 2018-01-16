@@ -27,83 +27,103 @@ cHDF5FileWriter::cHDF5FileWriter(const string &strRecordingDirectory, uint32_t u
 
     {
         boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
-        m_oInitialValueSet.m_dTSAcsRequestedAzim_us = 0;
+        m_oInitialValueSet.m_i64TSAcsRequestedAzim_us = 0;
         m_oInitialValueSet.m_dVAcsRequestedAzim_deg = 0;
         sprintf(m_oInitialValueSet.m_chaAcsRequestedAzimStatus, "0");
 
-        m_oInitialValueSet.m_dTSAcsRequestedElev_us = 0;
+        m_oInitialValueSet.m_i64TSAcsRequestedElev_us = 0;
         m_oInitialValueSet.m_dVAcsRequestedElev_deg = 0;
         sprintf(m_oInitialValueSet.m_chaAcsRequestedElevStatus, "0");
 
-        m_oInitialValueSet.m_dTSAcsActualAzim_us = 0;
+        m_oInitialValueSet.m_i64TSAcsActualAzim_us = 0;
         m_oInitialValueSet.m_dVAcsActualAzim_deg = 0;
         sprintf(m_oInitialValueSet.m_chaAcsActualAzimStatus, "0");
 
-        m_oInitialValueSet.m_dTSAcsActualElev_us = 0;
+        m_oInitialValueSet.m_i64TSAcsActualElev_us = 0;
         m_oInitialValueSet.m_dVAcsActualElev_deg = 0;
-       sprintf( m_oInitialValueSet.m_chaAcsActualElevStatus, "0");
+        sprintf( m_oInitialValueSet.m_chaAcsActualElevStatus, "0");
 
-        m_oInitialValueSet.m_dTSSkyRequestedAzim_us = 0;
+        m_oInitialValueSet.m_i64TSSkyRequestedAzim_us = 0;
         m_oInitialValueSet.m_dVSkyRequestedAzim_deg = 0;
         sprintf(m_oInitialValueSet.m_chaSkyRequestedAzimStatus, "0");
 
-        m_oInitialValueSet.m_dTSSkyRequestedElev_us = 0;
+        m_oInitialValueSet.m_i64TSSkyRequestedElev_us = 0;
         m_oInitialValueSet.m_dVSkyRequestedElev_deg = 0;
         sprintf(m_oInitialValueSet.m_chaSkyRequestedElevStatus, "0");
 
-        m_oInitialValueSet.m_dTSSkyActualAzim_us = 0;
+        m_oInitialValueSet.m_i64TSSkyActualAzim_us = 0;
         m_oInitialValueSet.m_dVSkyActualAzim_deg = 0;
         sprintf(m_oInitialValueSet.m_chaSkyActualAzimStatus, "0");
 
-        m_oInitialValueSet.m_dTSSkyActualElev_us = 0;
+        m_oInitialValueSet.m_i64TSSkyActualElev_us = 0;
         m_oInitialValueSet.m_dVSkyActualElev_deg = 0;
         sprintf(m_oInitialValueSet.m_chaSkyActualElevStatus, "0");
 
-        m_oInitialValueSet.m_dTSReceiverLOFreqIntermediate5GHz_us = 0;
+        m_oInitialValueSet.m_i64TSReceiverLOFreqIntermediate5GHz_us = 0;
         m_oInitialValueSet.m_dVReceiverLOFreqIntermediate5GHz_Hz = 0;
         sprintf(m_oInitialValueSet.m_chaReceiverLOFreqIntermediate5GHzStatus, "0");
 
-        m_oInitialValueSet.m_dTSReceiverLOFreqIntermediate6_7GHz_us = 0;
+        m_oInitialValueSet.m_i64TSReceiverLOFreqIntermediate6_7GHz_us = 0;
         m_oInitialValueSet.m_dVReceiverLOFreqIntermediate6_7GHz_Hz = 0;
         sprintf(m_oInitialValueSet.m_chaReceiverLOFreqIntermediate6_7GHzStatus, "0");
 
-        m_oInitialValueSet.m_dTSReceiverLOFreqFinal_us = 0;
+        m_oInitialValueSet.m_i64TSReceiverLOFreqFinal_us = 0;
         m_oInitialValueSet.m_dVReceiverLOFreqFinal_Hz = 0;
         sprintf(m_oInitialValueSet.m_chaReceiverLOFreqFinalStatus, "0");
 
-        m_oInitialValueSet.m_dTSReceiverLcpAtten_us = 0;
+        m_oInitialValueSet.m_i64TSReceiverLcpAtten_us = 0;
         m_oInitialValueSet.m_dVReceiverLcpAtten_dB = 0;
         sprintf(m_oInitialValueSet.m_chaReceiverLcpAttenStatus, "0");
 
-        m_oInitialValueSet.m_dTSReceiverRcpAtten_us = 0;
+        m_oInitialValueSet.m_i64TSReceiverRcpAtten_us = 0;
         m_oInitialValueSet.m_dVReceiverRcpAtten_dB = 0;
         sprintf(m_oInitialValueSet.m_chaReceiverRcpAttenStatus, "0");
 
-        m_oInitialValueSet.m_dTSFrequencySelectLcp_us = 0;
+        m_oInitialValueSet.m_i64TSFrequencySelectLcp_us = 0;
         m_oInitialValueSet.m_chVFrequencySelectLcp = 0;
         sprintf(m_oInitialValueSet.m_chaFrequencySelectLcpStatus, "0");
 
-        m_oInitialValueSet.m_dTSFrequencySelectRcp_us = 0;
+        m_oInitialValueSet.m_i64TSFrequencySelectRcp_us = 0;
         m_oInitialValueSet.m_chVFrequencySelectRcp = 0;
         sprintf(m_oInitialValueSet.m_chaFrequencySelectRcpStatus, "0");
 
-        m_oInitialValueSet.m_dTSWindSpeed_us = 0;
+        m_oInitialValueSet.m_i64TSNoiseDiodeInputSource_us = 0;
+        sprintf(m_oInitialValueSet.m_chaVNoiseDiodeInputSource, "0");
+        sprintf(m_oInitialValueSet.m_chaNoiseDiodeInputSourceStatus, "0");
+
+        m_oInitialValueSet.m_i64TSNoiseDiodeEnabled_us = 0;
+        m_oInitialValueSet.m_bVNoiseDiodeEnabled = 0;
+        sprintf(m_oInitialValueSet.m_chaNoiseDiodeEnabledStatus, "0");
+
+        m_oInitialValueSet.m_i64TSNoiseDiodeSelect_us = 0;
+        m_oInitialValueSet.m_i32VNoiseDiodeSelect = 0;
+        sprintf(m_oInitialValueSet.m_chaNoiseDiodeSelectStatus, "0");
+
+        m_oInitialValueSet.m_i64TSNoiseDiodePWMMark_us = 0;
+        m_oInitialValueSet.m_i32VNoiseDiodePWMMark = 0;
+        sprintf(m_oInitialValueSet.m_chaNoiseDiodePWMMarkStatus, "0");
+
+        m_oInitialValueSet.m_i64TSNoiseDiodePWMFrequency_us = 0;
+        m_oInitialValueSet.m_dVNoiseDiodePWMFrequency_Hz = 0;
+        sprintf(m_oInitialValueSet.m_chaNoiseDiodePWMFrequencyStatus, "0");
+
+        m_oInitialValueSet.m_i64TSWindSpeed_us = 0;
         m_oInitialValueSet.m_dVWindSpeed_mps = 0;
         sprintf(m_oInitialValueSet.m_chaWindSpeedStatus, "0");
 
-        m_oInitialValueSet.m_dTSWindDirection_us = 0;
+        m_oInitialValueSet.m_i64TSWindDirection_us = 0;
         m_oInitialValueSet.m_dVWindDirection_deg = 0;
         sprintf(m_oInitialValueSet.m_chaWindDirectionStatus, "0");
 
-        m_oInitialValueSet.m_dTSTemperature_us = 0;
+        m_oInitialValueSet.m_i64TSTemperature_us = 0;
         m_oInitialValueSet.m_dVTemperature_degC = 0;
         sprintf(m_oInitialValueSet.m_chaTemperatureStatus, "0");
 
-        m_oInitialValueSet.m_dTSAbsolutePressure_us = 0;
+        m_oInitialValueSet.m_i64TSAbsolutePressure_us = 0;
         m_oInitialValueSet.m_dVAbsolutePressure_mbar = 0;
         sprintf(m_oInitialValueSet.m_chaAbsolutePressureStatus, "0");
 
-        m_oInitialValueSet.m_dTSRelativeHumidity_us = 0;
+        m_oInitialValueSet.m_i64TSRelativeHumidity_us = 0;
         m_oInitialValueSet.m_dVRelativeHumidity_percent = 0;
         sprintf(m_oInitialValueSet.m_chaRelativeHumidityStatus, "0");
     }
@@ -263,84 +283,104 @@ void cHDF5FileWriter::getNextFrame_callback(const std::vector<int> &vi32Chan0, c
         }
 
         // Add any initial values stored.
-        if (m_oInitialValueSet.m_dTSAcsRequestedAzim_us)
-            m_pHDF5File->addAcsRequestedAz(m_oInitialValueSet.m_dTSAcsRequestedAzim_us,
+        if (m_oInitialValueSet.m_i64TSAcsRequestedAzim_us)
+            m_pHDF5File->addAcsRequestedAz(m_oInitialValueSet.m_i64TSAcsRequestedAzim_us,
                                                   m_oInitialValueSet.m_dVAcsRequestedAzim_deg,
                                                   m_oInitialValueSet.m_chaAcsRequestedAzimStatus);
-        if (m_oInitialValueSet.m_dTSAcsRequestedElev_us)
-            m_pHDF5File->addAcsRequestedEl(m_oInitialValueSet.m_dTSAcsRequestedElev_us,
+        if (m_oInitialValueSet.m_i64TSAcsRequestedElev_us)
+            m_pHDF5File->addAcsRequestedEl(m_oInitialValueSet.m_i64TSAcsRequestedElev_us,
                                            m_oInitialValueSet.m_dVAcsRequestedElev_deg,
                                            m_oInitialValueSet.m_chaAcsRequestedElevStatus);
-        if (m_oInitialValueSet.m_dTSAcsActualAzim_us)
-            m_pHDF5File->addAcsActualAz(m_oInitialValueSet.m_dTSAcsActualAzim_us,
+        if (m_oInitialValueSet.m_i64TSAcsActualAzim_us)
+            m_pHDF5File->addAcsActualAz(m_oInitialValueSet.m_i64TSAcsActualAzim_us,
                                         m_oInitialValueSet.m_dVAcsActualAzim_deg,
                                         m_oInitialValueSet.m_chaAcsActualAzimStatus);
-        if ( m_oInitialValueSet.m_dTSAcsActualElev_us)
-            m_pHDF5File->addAcsActualEl(m_oInitialValueSet.m_dTSAcsActualElev_us,
+        if ( m_oInitialValueSet.m_i64TSAcsActualElev_us)
+            m_pHDF5File->addAcsActualEl(m_oInitialValueSet.m_i64TSAcsActualElev_us,
                                         m_oInitialValueSet.m_dVAcsActualElev_deg,
                                         m_oInitialValueSet.m_chaAcsActualElevStatus);
-        if (m_oInitialValueSet.m_dTSSkyRequestedAzim_us)
-            m_pHDF5File->addSkyRequestedAz(m_oInitialValueSet.m_dTSSkyRequestedAzim_us,
+        if (m_oInitialValueSet.m_i64TSSkyRequestedAzim_us)
+            m_pHDF5File->addSkyRequestedAz(m_oInitialValueSet.m_i64TSSkyRequestedAzim_us,
                                            m_oInitialValueSet.m_dVSkyRequestedAzim_deg,
                                            m_oInitialValueSet.m_chaSkyRequestedAzimStatus);
-        if (m_oInitialValueSet.m_dTSSkyRequestedElev_us)
-            m_pHDF5File->addSkyRequestedEl(m_oInitialValueSet.m_dTSSkyRequestedElev_us,
+        if (m_oInitialValueSet.m_i64TSSkyRequestedElev_us)
+            m_pHDF5File->addSkyRequestedEl(m_oInitialValueSet.m_i64TSSkyRequestedElev_us,
                                            m_oInitialValueSet.m_dVSkyRequestedElev_deg,
                                            m_oInitialValueSet.m_chaSkyRequestedElevStatus);
-        if (m_oInitialValueSet.m_dTSSkyActualAzim_us)
-            m_pHDF5File->addSkyActualAz(m_oInitialValueSet.m_dTSSkyActualAzim_us,
+        if (m_oInitialValueSet.m_i64TSSkyActualAzim_us)
+            m_pHDF5File->addSkyActualAz(m_oInitialValueSet.m_i64TSSkyActualAzim_us,
                                         m_oInitialValueSet.m_dVSkyActualAzim_deg,
                                         m_oInitialValueSet.m_chaSkyActualAzimStatus);
-        if (m_oInitialValueSet.m_dTSSkyActualElev_us)
-            m_pHDF5File->addSkyActualEl(m_oInitialValueSet.m_dTSSkyActualElev_us,
+        if (m_oInitialValueSet.m_i64TSSkyActualElev_us)
+            m_pHDF5File->addSkyActualEl(m_oInitialValueSet.m_i64TSSkyActualElev_us,
                                         m_oInitialValueSet.m_dVSkyActualElev_deg,
                                         m_oInitialValueSet.m_chaSkyActualElevStatus);
-        if (m_oInitialValueSet.m_dTSReceiverLOFreqIntermediate5GHz_us)
-            m_pHDF5File->addFrequencyLOIntermed5GHz(m_oInitialValueSet.m_dTSReceiverLOFreqIntermediate5GHz_us,
+        if (m_oInitialValueSet.m_i64TSReceiverLOFreqIntermediate5GHz_us)
+            m_pHDF5File->addFrequencyLOIntermed5GHz(m_oInitialValueSet.m_i64TSReceiverLOFreqIntermediate5GHz_us,
                                                         m_oInitialValueSet.m_dVReceiverLOFreqIntermediate5GHz_Hz,
                                                         m_oInitialValueSet.m_chaReceiverLOFreqIntermediate5GHzStatus);
-        if (m_oInitialValueSet.m_dTSReceiverLOFreqIntermediate6_7GHz_us)
-            m_pHDF5File->addFrequencyLOIntermed6_7GHz(m_oInitialValueSet.m_dTSReceiverLOFreqIntermediate6_7GHz_us,
+        if (m_oInitialValueSet.m_i64TSReceiverLOFreqIntermediate6_7GHz_us)
+            m_pHDF5File->addFrequencyLOIntermed6_7GHz(m_oInitialValueSet.m_i64TSReceiverLOFreqIntermediate6_7GHz_us,
                                                           m_oInitialValueSet.m_dVReceiverLOFreqIntermediate6_7GHz_Hz,
                                                           m_oInitialValueSet.m_chaReceiverLOFreqIntermediate6_7GHzStatus);
-        if (m_oInitialValueSet.m_dTSReceiverLOFreqFinal_us)
-            m_pHDF5File->addFrequencyLOFinal(m_oInitialValueSet.m_dTSReceiverLOFreqFinal_us,
+        if (m_oInitialValueSet.m_i64TSReceiverLOFreqFinal_us)
+            m_pHDF5File->addFrequencyLOFinal(m_oInitialValueSet.m_i64TSReceiverLOFreqFinal_us,
                                              m_oInitialValueSet.m_dVReceiverLOFreqFinal_Hz,
                                              m_oInitialValueSet.m_chaReceiverLOFreqFinalStatus);
-        if (m_oInitialValueSet.m_dTSReceiverLcpAtten_us)
-            m_pHDF5File->addReceiverLcpAttenuation(m_oInitialValueSet.m_dTSReceiverLcpAtten_us,
+        if (m_oInitialValueSet.m_i64TSReceiverLcpAtten_us)
+            m_pHDF5File->addReceiverLcpAttenuation(m_oInitialValueSet.m_i64TSReceiverLcpAtten_us,
                                                    m_oInitialValueSet.m_dVReceiverLcpAtten_dB,
                                                    m_oInitialValueSet.m_chaReceiverLcpAttenStatus);
-        if (m_oInitialValueSet.m_dTSReceiverRcpAtten_us)
-            m_pHDF5File->addReceiverRcpAttenuation(m_oInitialValueSet.m_dTSReceiverRcpAtten_us,
+        if (m_oInitialValueSet.m_i64TSReceiverRcpAtten_us)
+            m_pHDF5File->addReceiverRcpAttenuation(m_oInitialValueSet.m_i64TSReceiverRcpAtten_us,
                                                    m_oInitialValueSet.m_dVReceiverRcpAtten_dB,
                                                    m_oInitialValueSet.m_chaReceiverRcpAttenStatus);
-        if (m_oInitialValueSet.m_dTSFrequencySelectLcp_us)
-            m_pHDF5File->addFrequencySelectLcp(m_oInitialValueSet.m_dTSFrequencySelectLcp_us,
+        if (m_oInitialValueSet.m_i64TSFrequencySelectLcp_us)
+            m_pHDF5File->addFrequencySelectLcp(m_oInitialValueSet.m_i64TSFrequencySelectLcp_us,
                                                m_oInitialValueSet.m_chVFrequencySelectLcp,
                                                m_oInitialValueSet.m_chaFrequencySelectLcpStatus);
-        if (m_oInitialValueSet.m_dTSFrequencySelectRcp_us)
-            m_pHDF5File->addFrequencySelectLcp(m_oInitialValueSet.m_dTSFrequencySelectRcp_us,
+        if (m_oInitialValueSet.m_i64TSFrequencySelectRcp_us)
+            m_pHDF5File->addFrequencySelectLcp(m_oInitialValueSet.m_i64TSFrequencySelectRcp_us,
                                                m_oInitialValueSet.m_chVFrequencySelectRcp,
                                                m_oInitialValueSet.m_chaFrequencySelectRcpStatus);
-        if (m_oInitialValueSet.m_dTSWindSpeed_us)
-            m_pHDF5File->addWindSpeed(m_oInitialValueSet.m_dTSWindSpeed_us,
+        if (m_oInitialValueSet.m_i64TSNoiseDiodeInputSource_us)
+            m_pHDF5File->addNoiseDiodeInputSource(m_oInitialValueSet.m_i64TSNoiseDiodeInputSource_us,
+                                                  m_oInitialValueSet.m_chaVNoiseDiodeInputSource,
+                                                  m_oInitialValueSet.m_chaNoiseDiodeInputSourceStatus);
+        if (m_oInitialValueSet.m_i64TSNoiseDiodeEnabled_us)
+            m_pHDF5File->addNoiseDiodeEnable(m_oInitialValueSet.m_i64TSNoiseDiodeEnabled_us,
+                                             m_oInitialValueSet.m_bVNoiseDiodeEnabled,
+                                             m_oInitialValueSet.m_chaNoiseDiodeEnabledStatus);
+        if (m_oInitialValueSet.m_i64TSNoiseDiodeSelect_us)
+            m_pHDF5File->addNoiseDiodeSelect(m_oInitialValueSet.m_i64TSNoiseDiodeSelect_us,
+                                             m_oInitialValueSet.m_i32VNoiseDiodeSelect,
+                                             m_oInitialValueSet.m_chaNoiseDiodeSelectStatus);
+        if (m_oInitialValueSet.m_i64TSNoiseDiodePWMMark_us)
+            m_pHDF5File->addNoiseDiodePWMMark(m_oInitialValueSet.m_i64TSNoiseDiodePWMMark_us,
+                                              m_oInitialValueSet.m_i32VNoiseDiodePWMMark,
+                                              m_oInitialValueSet.m_chaNoiseDiodePWMMarkStatus);
+        if (m_oInitialValueSet.m_i64TSNoiseDiodePWMFrequency_us)
+            m_pHDF5File->addNoiseDiodePWMFrequency(m_oInitialValueSet.m_i64TSNoiseDiodePWMFrequency_us,
+                                                   m_oInitialValueSet.m_dVNoiseDiodePWMFrequency_Hz,
+                                                   m_oInitialValueSet.m_chaNoiseDiodePWMFrequencyStatus);
+        if (m_oInitialValueSet.m_i64TSWindSpeed_us)
+            m_pHDF5File->addWindSpeed(m_oInitialValueSet.m_i64TSWindSpeed_us,
                                       m_oInitialValueSet.m_dVWindSpeed_mps,
                                       m_oInitialValueSet.m_chaWindSpeedStatus);
-        if (m_oInitialValueSet.m_dTSWindDirection_us)
-            m_pHDF5File->addWindDirection(m_oInitialValueSet.m_dTSWindDirection_us,
+        if (m_oInitialValueSet.m_i64TSWindDirection_us)
+            m_pHDF5File->addWindDirection(m_oInitialValueSet.m_i64TSWindDirection_us,
                                           m_oInitialValueSet.m_dVWindDirection_deg,
                                           m_oInitialValueSet.m_chaWindDirectionStatus);
-        if (m_oInitialValueSet.m_dTSTemperature_us)
-            m_pHDF5File->addTemperature(m_oInitialValueSet.m_dTSTemperature_us,
+        if (m_oInitialValueSet.m_i64TSTemperature_us)
+            m_pHDF5File->addTemperature(m_oInitialValueSet.m_i64TSTemperature_us,
                                         m_oInitialValueSet.m_dVTemperature_degC,
                                         m_oInitialValueSet.m_chaTemperatureStatus);
-        if (m_oInitialValueSet.m_dTSAbsolutePressure_us)
-            m_pHDF5File->addAbsolutePressure(m_oInitialValueSet.m_dTSAbsolutePressure_us,
+        if (m_oInitialValueSet.m_i64TSAbsolutePressure_us)
+            m_pHDF5File->addAbsolutePressure(m_oInitialValueSet.m_i64TSAbsolutePressure_us,
                                              m_oInitialValueSet.m_dVAbsolutePressure_mbar,
                                              m_oInitialValueSet.m_chaAbsolutePressureStatus);
-        if (m_oInitialValueSet.m_dTSRelativeHumidity_us)
-            m_pHDF5File->addRelativeHumidity(m_oInitialValueSet.m_dTSRelativeHumidity_us,
+        if (m_oInitialValueSet.m_i64TSRelativeHumidity_us)
+            m_pHDF5File->addRelativeHumidity(m_oInitialValueSet.m_i64TSRelativeHumidity_us,
                                              m_oInitialValueSet.m_dVRelativeHumidity_percent,
                                              m_oInitialValueSet.m_chaRelativeHumidityStatus);
 
@@ -692,10 +732,10 @@ void cHDF5FileWriter::acsRequestedAz_callback(int64_t i64Timestamp_us,double dAz
 {
     if(getState() != RECORDING)
     {
-        if (i64Timestamp_us > m_oInitialValueSet.m_dTSAcsRequestedAzim_us)
+        if (i64Timestamp_us > m_oInitialValueSet.m_i64TSAcsRequestedAzim_us)
         {
             boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
-            m_oInitialValueSet.m_dTSAcsRequestedAzim_us = i64Timestamp_us;
+            m_oInitialValueSet.m_i64TSAcsRequestedAzim_us = i64Timestamp_us;
             m_oInitialValueSet.m_dVAcsRequestedAzim_deg = dAzimuth_deg;
             sprintf(m_oInitialValueSet.m_chaAcsRequestedAzimStatus, "%s", strStatus.c_str());
         }
@@ -708,10 +748,10 @@ void cHDF5FileWriter::acsRequestedEl_callback(int64_t i64Timestamp_us, double dE
 {
     if(getState() != RECORDING)
     {
-        if (i64Timestamp_us > m_oInitialValueSet.m_dTSAcsRequestedElev_us)
+        if (i64Timestamp_us > m_oInitialValueSet.m_i64TSAcsRequestedElev_us)
         {
             boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
-            m_oInitialValueSet.m_dTSAcsRequestedElev_us = i64Timestamp_us;
+            m_oInitialValueSet.m_i64TSAcsRequestedElev_us = i64Timestamp_us;
             m_oInitialValueSet.m_dVAcsRequestedElev_deg = dElevation_deg;
             sprintf(m_oInitialValueSet.m_chaAcsRequestedElevStatus, "%s", strStatus.c_str());
         }
@@ -724,10 +764,10 @@ void cHDF5FileWriter::acsActualAz_callback(int64_t i64Timestamp_us,double dAzimu
 {
     if(getState() != RECORDING)
     {
-        if (i64Timestamp_us > m_oInitialValueSet.m_dTSAcsActualAzim_us)
+        if (i64Timestamp_us > m_oInitialValueSet.m_i64TSAcsActualAzim_us)
         {
             boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
-            m_oInitialValueSet.m_dTSAcsActualAzim_us = i64Timestamp_us;
+            m_oInitialValueSet.m_i64TSAcsActualAzim_us = i64Timestamp_us;
             m_oInitialValueSet.m_dVAcsActualAzim_deg = dAzimuth_deg;
             sprintf(m_oInitialValueSet.m_chaAcsActualAzimStatus, "%s", strStatus.c_str());
         }
@@ -740,10 +780,10 @@ void cHDF5FileWriter::acsActualEl_callback(int64_t i64Timestamp_us, double dElev
 {
     if(getState() != RECORDING)
     {
-        if (i64Timestamp_us > m_oInitialValueSet.m_dTSAcsActualElev_us)
+        if (i64Timestamp_us > m_oInitialValueSet.m_i64TSAcsActualElev_us)
         {
             boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
-            m_oInitialValueSet.m_dTSAcsActualElev_us = i64Timestamp_us;
+            m_oInitialValueSet.m_i64TSAcsActualElev_us = i64Timestamp_us;
             m_oInitialValueSet.m_dVAcsActualElev_deg = dElevation_deg;
             sprintf(m_oInitialValueSet.m_chaAcsActualElevStatus, "%s", strStatus.c_str());
         }
@@ -756,10 +796,10 @@ void cHDF5FileWriter::skyRequestedAz_callback(int64_t i64Timestamp_us,double dAz
 {
     if(getState() != RECORDING)
     {
-        if (i64Timestamp_us > m_oInitialValueSet.m_dTSSkyRequestedAzim_us)
+        if (i64Timestamp_us > m_oInitialValueSet.m_i64TSSkyRequestedAzim_us)
         {
             boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
-            m_oInitialValueSet.m_dTSSkyRequestedAzim_us = i64Timestamp_us;
+            m_oInitialValueSet.m_i64TSSkyRequestedAzim_us = i64Timestamp_us;
             m_oInitialValueSet.m_dVSkyRequestedAzim_deg = dAzimuth_deg;
             sprintf(m_oInitialValueSet.m_chaSkyRequestedAzimStatus, "%s", strStatus.c_str());
         }
@@ -772,10 +812,10 @@ void cHDF5FileWriter::skyRequestedEl_callback(int64_t i64Timestamp_us, double dE
 {
     if(getState() != RECORDING)
     {
-        if (i64Timestamp_us > m_oInitialValueSet.m_dTSSkyRequestedElev_us)
+        if (i64Timestamp_us > m_oInitialValueSet.m_i64TSSkyRequestedElev_us)
         {
             boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
-            m_oInitialValueSet.m_dTSSkyRequestedElev_us = i64Timestamp_us;
+            m_oInitialValueSet.m_i64TSSkyRequestedElev_us = i64Timestamp_us;
             m_oInitialValueSet.m_dVSkyRequestedElev_deg = dElevation_deg;
             sprintf(m_oInitialValueSet.m_chaSkyRequestedElevStatus, "%s", strStatus.c_str());
         }
@@ -788,10 +828,10 @@ void cHDF5FileWriter::skyActualAz_callback(int64_t i64Timestamp_us,double dAzimu
 {
     if(getState() != RECORDING)
     {
-        if (i64Timestamp_us > m_oInitialValueSet.m_dTSSkyActualAzim_us)
+        if (i64Timestamp_us > m_oInitialValueSet.m_i64TSSkyActualAzim_us)
         {
             boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
-            m_oInitialValueSet.m_dTSSkyActualAzim_us = i64Timestamp_us;
+            m_oInitialValueSet.m_i64TSSkyActualAzim_us = i64Timestamp_us;
             m_oInitialValueSet.m_dVSkyActualAzim_deg = dAzimuth_deg;
             sprintf(m_oInitialValueSet.m_chaSkyActualAzimStatus, "%s", strStatus.c_str());
         }
@@ -804,10 +844,10 @@ void cHDF5FileWriter::skyActualEl_callback(int64_t i64Timestamp_us, double dElev
 {
     if(getState() != RECORDING)
     {
-        if (i64Timestamp_us > m_oInitialValueSet.m_dTSSkyActualElev_us)
+        if (i64Timestamp_us > m_oInitialValueSet.m_i64TSSkyActualElev_us)
         {
             boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
-            m_oInitialValueSet.m_dTSSkyActualElev_us = i64Timestamp_us;
+            m_oInitialValueSet.m_i64TSSkyActualElev_us = i64Timestamp_us;
             m_oInitialValueSet.m_dVSkyActualElev_deg = dElevation_deg;
             sprintf(m_oInitialValueSet.m_chaSkyActualElevStatus, "%s", strStatus.c_str());
         }
@@ -872,28 +912,78 @@ void cHDF5FileWriter::antennaLatitude_callback(const string &strAntennaLatitude)
     m_pHDF5File->setAntennaLatitude(strAntennaLatitude);
 }
 
-void cHDF5FileWriter::noiseDiodeSoftwareState_callback(int64_t i64Timestamp_us, int32_t i32NoiseDiodeState, const string &strStatus)
+void cHDF5FileWriter::rNoiseDiodeInputSource_callback(int64_t i64Timestamp_us, const string &strInputSource, const string &strStatus)
 {
     if(getState() != RECORDING)
-        return;
-
-    m_pHDF5File->addNoiseDiodeSoftwareState(i64Timestamp_us, i32NoiseDiodeState, strStatus);
+    {
+        if (i64Timestamp_us > m_oInitialValueSet.m_i64TSNoiseDiodeInputSource_us)
+        {
+            boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+            m_oInitialValueSet.m_i64TSNoiseDiodeInputSource_us = i64Timestamp_us;
+            sprintf(m_oInitialValueSet.m_chaVNoiseDiodeInputSource, "%s", strInputSource.c_str());
+            sprintf(m_oInitialValueSet.m_chaNoiseDiodeInputSourceStatus, "%s", strStatus.c_str());
+        }
+    }
+    else
+        m_pHDF5File->addNoiseDiodeInputSource(i64Timestamp_us, strInputSource, strStatus);
 }
 
-void cHDF5FileWriter::noiseDiodeSource_callback(int64_t i64Timestamp_us, const string &strNoiseSource, const string &strStatus)
+void cHDF5FileWriter::rNoiseDiodeEnabled_callback(int64_t i64Timestamp_us, bool bNoiseDiodeEnabled, const string &strStatus)
 {
-    if(getState() != RECORDING)
-        return;
-
-    m_pHDF5File->addNoiseDiodeSource(i64Timestamp_us, strNoiseSource, strStatus);
+    if (getState() != RECORDING)
+    {
+        if (i64Timestamp_us > m_oInitialValueSet.m_i64TSNoiseDiodeEnabled_us)
+        {
+            boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+            m_oInitialValueSet.m_i64TSNoiseDiodeEnabled_us = i64Timestamp_us;
+            m_oInitialValueSet.m_bVNoiseDiodeEnabled = bNoiseDiodeEnabled;
+            sprintf(m_oInitialValueSet.m_chaNoiseDiodeEnabledStatus, "%s", strStatus.c_str());
+        }
+    }
+    else
+        m_pHDF5File->addNoiseDiodeEnable(i64Timestamp_us, bNoiseDiodeEnabled, strStatus);
 }
 
-void cHDF5FileWriter::noiseDiodeCurrent_callback(int64_t i64Timestamp_us, double dNoiseDiodeCurrent_A, const string &strStatus)
+void cHDF5FileWriter::rNoiseDiodeSelect_callback(int64_t i64Timestamp_us, int32_t i32NoiseDiodeSelect, const string &strStatus)
 {
-    if(getState() != RECORDING)
-        return;
+    if (getState() != RECORDING)
+    {
+        if (i64Timestamp_us > m_oInitialValueSet.m_i64TSNoiseDiodeSelect_us)
+        {
+            boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+            m_oInitialValueSet.m_i64TSNoiseDiodeSelect_us = i64Timestamp_us;
+            m_oInitialValueSet.m_i32VNoiseDiodeSelect = i32NoiseDiodeSelect;
+            sprintf(m_oInitialValueSet.m_chaNoiseDiodeSelectStatus, "%s", strStatus.c_str());
+        }
+    }
+    else
+        m_pHDF5File->addNoiseDiodeSelect(i64Timestamp_us, i32NoiseDiodeSelect, strStatus);
+}
 
-    m_pHDF5File->addNoiseDiodeCurrent(i64Timestamp_us, dNoiseDiodeCurrent_A, strStatus);
+void cHDF5FileWriter::rNoiseDiodePWMMark_callback(int64_t i64Timestamp_us, int32_t i32NoiseDiodePWMMark, const string &strStatus)
+{
+    if (getState() != RECORDING)
+    {
+        boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+        m_oInitialValueSet.m_i64TSNoiseDiodePWMMark_us = i64Timestamp_us;
+        m_oInitialValueSet.m_i32VNoiseDiodePWMMark = i32NoiseDiodePWMMark;
+        sprintf(m_oInitialValueSet.m_chaNoiseDiodePWMMarkStatus, "%s", strStatus.c_str());
+    }
+    else
+        m_pHDF5File->addNoiseDiodePWMMark(i64Timestamp_us, i32NoiseDiodePWMMark, strStatus);
+}
+
+void cHDF5FileWriter::rNoiseDiodePWMFrequency_callback(int64_t i64Timestamp_us, double dNoiseDiodePWMFrequency, const string &strStatus)
+{
+    if (getState() != RECORDING)
+    {
+        boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+        m_oInitialValueSet.m_i64TSNoiseDiodePWMFrequency_us = i64Timestamp_us;
+        m_oInitialValueSet.m_dVNoiseDiodePWMFrequency_Hz = dNoiseDiodePWMFrequency;
+        sprintf(m_oInitialValueSet.m_chaNoiseDiodePWMFrequencyStatus, "%s", strStatus.c_str());
+    }
+    else
+        m_pHDF5File->addNoiseDiodePWMFrequency(i64Timestamp_us, dNoiseDiodePWMFrequency, strStatus);
 }
 
 void cHDF5FileWriter::sourceSelection_callback(int64_t i64Timestamp_us, const string &strSourceName, double dRighAscension_deg, double dDeclination_deg)
@@ -908,10 +998,10 @@ void cHDF5FileWriter::frequencySelectLcp_callback(int64_t i64Timestamp_us, bool 
 {
     if(getState() != RECORDING)
     {
-        if (i64Timestamp_us > m_oInitialValueSet.m_dTSFrequencySelectLcp_us)
+        if (i64Timestamp_us > m_oInitialValueSet.m_i64TSFrequencySelectLcp_us)
         {
             boost::unique_lock<boost::shared_mutex>  oLock(m_oMutex);
-            m_oInitialValueSet.m_dTSFrequencySelectLcp_us = i64Timestamp_us;
+            m_oInitialValueSet.m_i64TSFrequencySelectLcp_us = i64Timestamp_us;
             m_oInitialValueSet.m_chVFrequencySelectLcp = bFrequencySelectLcp;
             sprintf(m_oInitialValueSet.m_chaFrequencySelectLcpStatus, "%s", strStatus.c_str());
         }
@@ -924,10 +1014,10 @@ void cHDF5FileWriter::frequencySelectRcp_callback(int64_t i64Timestamp_us, bool 
 {
     if(getState() != RECORDING)
     {
-        if (i64Timestamp_us > m_oInitialValueSet.m_dTSFrequencySelectRcp_us)
+        if (i64Timestamp_us > m_oInitialValueSet.m_i64TSFrequencySelectRcp_us)
         {
             boost::unique_lock<boost::shared_mutex>  oLock(m_oMutex);
-            m_oInitialValueSet.m_dTSFrequencySelectRcp_us = i64Timestamp_us;
+            m_oInitialValueSet.m_i64TSFrequencySelectRcp_us = i64Timestamp_us;
             m_oInitialValueSet.m_chVFrequencySelectRcp = bFrequencySelectRcp;
             sprintf(m_oInitialValueSet.m_chaFrequencySelectRcpStatus, "%s", strStatus.c_str());
         }
@@ -980,10 +1070,10 @@ void cHDF5FileWriter::receiverLcpAttenuation_callback(int64_t i64Timestamp_us, d
 {
     if(getState() != RECORDING)
     {
-        if (i64Timestamp_us > m_oInitialValueSet.m_dTSReceiverLcpAtten_us)
+        if (i64Timestamp_us > m_oInitialValueSet.m_i64TSReceiverLcpAtten_us)
         {
             boost::unique_lock<boost::shared_mutex>  oLock(m_oMutex);
-            m_oInitialValueSet.m_dTSReceiverLcpAtten_us = i64Timestamp_us;
+            m_oInitialValueSet.m_i64TSReceiverLcpAtten_us = i64Timestamp_us;
             m_oInitialValueSet.m_dVReceiverLcpAtten_dB = dReceiverLcpAttenuation_dB;
             sprintf(m_oInitialValueSet.m_chaReceiverLcpAttenStatus, "%s", strStatus.c_str());
         }
@@ -996,10 +1086,10 @@ void cHDF5FileWriter::receiverRcpAttenuation_callback(int64_t i64Timestamp_us, d
 {
     if(getState() != RECORDING)
     {
-        if (i64Timestamp_us > m_oInitialValueSet.m_dTSReceiverRcpAtten_us)
+        if (i64Timestamp_us > m_oInitialValueSet.m_i64TSReceiverRcpAtten_us)
         {
             boost::unique_lock<boost::shared_mutex>  oLock(m_oMutex);
-            m_oInitialValueSet.m_dTSReceiverRcpAtten_us = i64Timestamp_us;
+            m_oInitialValueSet.m_i64TSReceiverRcpAtten_us = i64Timestamp_us;
             m_oInitialValueSet.m_dVReceiverRcpAtten_dB = dReceiverRcpAttenuation_dB;
             sprintf(m_oInitialValueSet.m_chaReceiverRcpAttenStatus, "%s", strStatus.c_str());
         }
@@ -1012,10 +1102,10 @@ void cHDF5FileWriter::envWindSpeed_callback(int64_t i64Timestamp_us, double dWin
 {
     if(getState() != RECORDING) // Update initial values if the stored ones are older than the received ones.
     {
-        if (i64Timestamp_us > m_oInitialValueSet.m_dTSWindSpeed_us)
+        if (i64Timestamp_us > m_oInitialValueSet.m_i64TSWindSpeed_us)
         {
             boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
-            m_oInitialValueSet.m_dTSWindSpeed_us = i64Timestamp_us;
+            m_oInitialValueSet.m_i64TSWindSpeed_us = i64Timestamp_us;
             m_oInitialValueSet.m_dVWindSpeed_mps = dWindSpeed_mps;
             sprintf(m_oInitialValueSet.m_chaWindSpeedStatus, "%s", strStatus.c_str());
         }
@@ -1028,10 +1118,10 @@ void cHDF5FileWriter::envWindDirection_callback(int64_t i64Timestamp_us, double 
 {
     if(getState() != RECORDING) // Update initial values if the stored ones are older than the received ones.
     {
-        if (i64Timestamp_us > m_oInitialValueSet.m_dTSWindDirection_us)
+        if (i64Timestamp_us > m_oInitialValueSet.m_i64TSWindDirection_us)
         {
             boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
-            m_oInitialValueSet.m_dTSWindDirection_us = i64Timestamp_us;
+            m_oInitialValueSet.m_i64TSWindDirection_us = i64Timestamp_us;
             m_oInitialValueSet.m_dVWindDirection_deg = dWindDirection_degrees;
             sprintf(m_oInitialValueSet.m_chaWindDirectionStatus, "%s", strStatus.c_str());
         }
@@ -1044,10 +1134,10 @@ void cHDF5FileWriter::envTemperature_callback(int64_t i64Timestamp_us, double dT
 {
     if(getState() != RECORDING) // Update initial values if the stored ones are older than the received ones.
     {
-        if (i64Timestamp_us > m_oInitialValueSet.m_dTSTemperature_us)
+        if (i64Timestamp_us > m_oInitialValueSet.m_i64TSTemperature_us)
         {
             boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
-            m_oInitialValueSet.m_dTSTemperature_us = i64Timestamp_us;
+            m_oInitialValueSet.m_i64TSTemperature_us = i64Timestamp_us;
             m_oInitialValueSet.m_dVTemperature_degC = dTemperature_degreesC;
             sprintf(m_oInitialValueSet.m_chaTemperatureStatus, "%s", strStatus.c_str());
         }
@@ -1060,10 +1150,10 @@ void cHDF5FileWriter::envAbsolutePressure_callback(int64_t i64Timestamp_us, doub
 {
     if(getState() != RECORDING) // Update initial values if the stored ones are older than the received ones.
     {
-        if (i64Timestamp_us > m_oInitialValueSet.m_dTSAbsolutePressure_us)
+        if (i64Timestamp_us > m_oInitialValueSet.m_i64TSAbsolutePressure_us)
         {
             boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
-            m_oInitialValueSet.m_dTSAbsolutePressure_us = i64Timestamp_us;
+            m_oInitialValueSet.m_i64TSAbsolutePressure_us = i64Timestamp_us;
             m_oInitialValueSet.m_dVAbsolutePressure_mbar = dPressure_mbar;
             sprintf(m_oInitialValueSet.m_chaAbsolutePressureStatus, "%s", strStatus.c_str());
         }
@@ -1076,10 +1166,10 @@ void cHDF5FileWriter::envRelativeHumidity_callback(int64_t i64Timestamp_us, doub
 {
     if(getState() != RECORDING) // Update initial values if the stored ones are older than the received ones.
     {
-        if (i64Timestamp_us > m_oInitialValueSet.m_dTSRelativeHumidity_us)
+        if (i64Timestamp_us > m_oInitialValueSet.m_i64TSRelativeHumidity_us)
         {
             boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
-            m_oInitialValueSet.m_dTSRelativeHumidity_us = i64Timestamp_us;
+            m_oInitialValueSet.m_i64TSRelativeHumidity_us = i64Timestamp_us;
             m_oInitialValueSet.m_dVRelativeHumidity_percent = dHumidity_percent;
             sprintf(m_oInitialValueSet.m_chaRelativeHumidityStatus, "%s", strStatus.c_str());
         }
