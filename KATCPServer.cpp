@@ -411,6 +411,8 @@ void cKATCPServer::serverThreadFunction()
 
 void cKATCPServer::initialSensorDataThreadFunction()
 {
+    //TODO: Mark for removal. This functionality has been handled in the HDF5 file writer class.
+    /*
     //Record data which was stored before the file started recording (i.e. most recent sensor data).
     //General idea: If it's non-zero, we have received a value before the recording started.
     //Add a timestamp ten seconds ago (to ensure that it starts a bit before the file starts) and push to the file writer.
@@ -439,6 +441,7 @@ void cKATCPServer::initialSensorDataThreadFunction()
     //Won't check for defaults here, because this should be zero as a default anyway.
     m_pFileWriter->frequencySelectLcp_callback((time(0) - 10)*1e6, m_oKATCPClientCallbackHandler.m_bBandSelectedLCP, "nominal");
     m_pFileWriter->frequencySelectRcp_callback((time(0) - 10)*1e6, m_oKATCPClientCallbackHandler.m_bBandSelectedRCP, "nominal");
+    */
 }
 
 void cKATCPServer::startServer(const string &strInterface, uint16_t u16Port, uint32_t u32MaxClients)
@@ -1020,6 +1023,7 @@ int32_t cKATCPServer::roachSetNoiseDiodeDutyCycleOffDuration_KATCPCallback(struc
     }
 }
 
+/*
 //RF GUI information
 int32_t cKATCPServer::RFGUIIgnore_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC)
 {
@@ -1200,7 +1204,7 @@ int32_t cKATCPServer::RFGUIReceiveSensorOutput_KATCPCallback(struct katcp_dispat
     /*for (int32_t i = 0; i < i32ArgC; i++)
     {
         cout << "cKATCPServer::RFGUIReceiveSensorOutput_KATCPCallback(): Received katcp message: " << string(arg_string_katcp(pKATCPDispatch, i)) << endl;
-    }*/
+    }* /
     return KATCP_RESULT_OK;
 
     //RFC.LcpFreqSel
@@ -1208,7 +1212,7 @@ int32_t cKATCPServer::RFGUIReceiveSensorOutput_KATCPCallback(struct katcp_dispat
     //off is 5GHz
     //on is 6.7 GHz
 }
-
+*/
 
 //Get functions for KATCP sensors Station Controller values
 int cKATCPServer::getIsStationControllerKATCPConnected(struct katcp_dispatch *pD, katcp_acquire *pA)
@@ -1379,7 +1383,7 @@ void cKATCPServer::cHDF5FileWriterCallbackHandler::recordingStarted_callback()
     }
 
     cout << "cKATCPServer::cHDF5FileWriterNotifier::recordingStarted() Got notification, sent KATCP notification message to all clients." << endl;
-    m_pInitialSensorDataThread.reset(new boost::thread(&cKATCPServer::initialSensorDataThreadFunction));
+    //m_pInitialSensorDataThread.reset(new boost::thread(&cKATCPServer::initialSensorDataThreadFunction));
 }
 
 void cKATCPServer::cHDF5FileWriterCallbackHandler::recordingStopped_callback()
@@ -1449,6 +1453,7 @@ void cKATCPServer::cKATCPClientCallbackHandler::stopRecording_callback()
     //Not used. Note, the HDF5FileWriter class is also a callback handler for KATCPClient so it get this callback to too and reacts to it there.
 }
 
+/*
 void cKATCPServer::cKATCPClientCallbackHandler::acsRequestedAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const string &strStatus)
 {
 }
@@ -1480,6 +1485,7 @@ void cKATCPServer::cKATCPClientCallbackHandler::skyActualAz_callback(int64_t i64
 void cKATCPServer::cKATCPClientCallbackHandler::skyActualEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const string &strStatus)
 {
 }
+*/
 
 /* Marked for removal.
 void cKATCPServer::cKATCPClientCallbackHandler::actualSourceOffsetAz_callback(int64_t i64Timestamp_us, double dAzimuthOffset_deg, const string &strStatus)
@@ -1510,7 +1516,7 @@ void cKATCPServer::cKATCPClientCallbackHandler::actualAntennaDec_callback(int64_
     m_dActualAntennaDec_deg = dDeclination_deg;
 }
 */
-
+/*
 void cKATCPServer::cKATCPClientCallbackHandler::antennaStatus_callback(int64_t i64Timestamp_us, const string &strAntennaStatus, const string &strStatus)
 {
 
@@ -1615,7 +1621,7 @@ void cKATCPServer::cKATCPClientCallbackHandler::envRelativeHumidity_callback(int
 {
     // Do nothing.
 }
-
+*/
 /*
 void cKATCPServer::cKATCPClientCallbackHandler::stokesEnabled_callback(int64_t i64Timestamp_us, bool bEnabled)
 {

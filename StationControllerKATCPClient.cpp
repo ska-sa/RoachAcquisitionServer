@@ -30,7 +30,6 @@ cStationControllerKATCPClient::cStationControllerKATCPClient() :
     m_vstrSensorSampling.push_back("acs.request-elev period 1000");
 
     // Signal-chain values.
-    m_vstrSensorSampling.push_back("RFC.NoiseDiode_1 event");
     m_vstrSensorSampling.push_back("RFC.IntermediateStage_5GHz event");
     m_vstrSensorSampling.push_back("RFC.IntermediateStage_6_7GHz event");
     m_vstrSensorSampling.push_back("RFC.FinalStage event");
@@ -39,6 +38,9 @@ cStationControllerKATCPClient::cStationControllerKATCPClient() :
     m_vstrSensorSampling.push_back("RFC.LcpFreqSel event");
     m_vstrSensorSampling.push_back("RFC.RcpFreqSel event");
 
+    // Noise diode bit-field
+    m_vstrSensorSampling.push_back("RFC.NoiseDiode_1 event");
+
     // Environment values.
     m_vstrSensorSampling.push_back("EMS.WindSpeed period 10000");
     m_vstrSensorSampling.push_back("EMS.WindDirection period 10000");
@@ -46,18 +48,7 @@ cStationControllerKATCPClient::cStationControllerKATCPClient() :
     m_vstrSensorSampling.push_back("EMS.AbsolutePressure period 10000");
     m_vstrSensorSampling.push_back("EMS.RelativeHumidity period 10000");
 
-/*  TODO: Figure out what else needs to be on the list.
-    m_vstrSensorNames.push_back("antennaStatus");
-    m_vstrSensorNames.push_back("noiseDiodeSoftwareState");
-    m_vstrSensorNames.push_back("noiseDiodeSource");
-    m_vstrSensorNames.push_back("noideDiodeCurrent");
-    m_vstrSensorNames.push_back("sourceSelection");
-    m_vstrSensorNames.push_back("frequencyLO0RFChan0");
-    m_vstrSensorNames.push_back("frequencyLO0RFChan1");
-    m_vstrSensorNames.push_back("frequencyLO1");
-    m_vstrSensorNames.push_back("receiverBandwidthChan0");
-    m_vstrSensorNames.push_back("receiverBandwidthChan1");
-*/
+    //TODO: Pointing model, observation metadata such as targets, etc.
 }
 
 cStationControllerKATCPClient::~cStationControllerKATCPClient()
@@ -88,7 +79,7 @@ void cStationControllerKATCPClient::unsubscribeSensorData()
     {
         stringstream oSS;
         oSS << "?sensor-sampling ";
-        oSS << m_vstrSensorSampling[ui].substr(0,m_vstrSensorSampling[ui].rfind(" "));
+        oSS << m_vstrSensorSampling[ui].substr(0,m_vstrSensorSampling[ui].find(" "));
         oSS << " none\n";
 
         sendKATCPMessage(oSS.str());

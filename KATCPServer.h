@@ -59,12 +59,13 @@ public:
         void                                                recordingStopped_callback();
     };
 
-    struct cKATCPClientCallbackHandler : public cRoachKATCPClient::cCallbackInterface, public cStationControllerKATCPClient::cCallbackInterface
+    struct cKATCPClientCallbackHandler : public cRoachKATCPClient::cCallbackInterface
     {
         //Locals for metadata sensor values
         bool                                                m_bStationControllerKATCPConnected;
         boost::mutex                                        m_oStationControllerMutex;
         std::string                                         m_strStationControllerAddress;
+        /*
         double                                              m_dRequestedAntennaAz_deg;
         double                                              m_dRequestedAntennaEl_deg;
         double                                              m_dActualAntennaAz_deg;
@@ -88,17 +89,20 @@ public:
         double                                              m_dFrequencyLO1_Hz;
         double                                              m_dReceiverBandwidthChan0_Hz;
         double                                              m_dReceiverBandwidthChan1_Hz;
+        */
         boost::mutex                                        m_oSensorDataMutex;
+
         //Given that there is only 1 read and 1 write thread a single mutex for all variables should suffice.
 
         //Callback functions called from the Station controller KATCPClient
 
         void                                                connected_callback(bool bConnected, const std::string &strHostAddress, uint16_t u16Port, const std::string &strDescription);
 
+
         //File recording control
         void                                                startRecording_callback(const std::string &strFilePrefix, int64_t i64StartTime_us, int64_t i64Duration_us);
         void                                                stopRecording_callback();
-
+        /*
         //Antenna values
         void                                                acsRequestedAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus);
         void                                                acsRequestedEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus);
@@ -140,11 +144,12 @@ public:
         void                                                envTemperature_callback(int64_t i64Timestamp_us, double dTemperature_degreesC, const std::string &strStatus);
         void                                                envAbsolutePressure_callback(int64_t i64Timestamp_us, double dPressure_mbar, const std::string &strStatus);
         void                                                envRelativeHumidity_callback(int64_t i64Timestamp_us, double dHumidity_percent, const std::string &strStatus);
+        */
 
         //Locals for ROACH values
         bool                                                m_bRoachKATCPConnected;
         std::string                                         m_strRoachAddress;
-        bool                                                m_bStokesEnabled;
+        //bool                                                m_bStokesEnabled;
         int32_t                                             m_i32AccumulationLength_nFrames;
         int32_t                                             m_i32CoarseChannelSelection;
         double                                              m_dFrequencyFs_Hz;
@@ -222,10 +227,12 @@ protected:
     static int32_t                                          roachSetNoiseDiodeDutyCycleEnabled_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
     static int32_t                                          roachSetNoiseDiodeDutyCycleOnDuration_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
     static int32_t                                          roachSetNoiseDiodeDutyCycleOffDuration_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
-    //RF GUI information (These should be a temporary solution)
+
+    /*//RF GUI information (These should be a temporary solution)
     static int32_t                                          RFGUIIgnore_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
     static int32_t                                          RFGUIReceiveValonFrequency_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
     static int32_t                                          RFGUIReceiveSensorOutput_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
+    */
 
     //Sensor get functions (Use by KATCP to read sensor values. Requires thread safe access where necessary)
     //Station controller values:
