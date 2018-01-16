@@ -140,12 +140,12 @@ class cHDF5FileWriter : public cSpectrometerDataStreamInterpreter::cCallbackInte
         // Noise diode pwm mark - cTimestampedInt
         int64_t  m_i64TSNoiseDiodePWMMark_us;
         int32_t  m_i32VNoiseDiodePWMMark;
-        char     m_chaNoiseDiodePWMMarkStatuus[7];
+        char     m_chaNoiseDiodePWMMarkStatus[7];
 
         // Noise diode pwm frequency - cTimestampedDouble
         int64_t  m_i64TSNoiseDiodePWMFrequency_us;
         double   m_dVNoiseDiodePWMFrequency_Hz;
-        char     m_chaNoiseDiodeWPMFrequencyStatus[7];
+        char     m_chaNoiseDiodePWMFrequencyStatus[7];
 
         // Wind speed - cTimestampedDouble
         int64_t m_i64TSWindSpeed_us;
