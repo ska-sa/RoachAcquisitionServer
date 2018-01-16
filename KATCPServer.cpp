@@ -328,73 +328,6 @@ void cKATCPServer::serverThreadFunction()
                    const_cast<char*>("number of accumulations that noise diode is off in duty cycle mode"),
                    &cKATCPServer::roachSetNoiseDiodeDutyCycleOffDuration_KATCPCallback);
 
-    // Data from RF controller GUI.
-    /*
-    register_katcp(m_pKATCPDispatch,
-                   const_cast<char*>("#set-valon-freq"), // This is the response from the infrastructure controller to the GUI with timestamp
-                   const_cast<char*>("Push valon frequency to datafile (sent by RF control GUI)"),
-                   &cKATCPServer::RFGUIReceiveValonFrequency_KATCPCallback);
-    register_katcp(m_pKATCPDispatch,
-                   const_cast<char*>("#set-valon-freq:_FAILED"), // An error happened for some reason, need to log this.
-                   const_cast<char*>("Push valon frequency to datafile (sent by RF control GUI)"),
-                   &cKATCPServer::RFGUIReceiveValonFrequency_KATCPCallback);
-
-    register_katcp(m_pKATCPDispatch,
-                   const_cast<char*>("#set-output"),
-                   const_cast<char*>("Process attenuation and band selection (sent by RF control GUI)"),
-                   &cKATCPServer::RFGUIReceiveSensorOutput_KATCPCallback);
-
-    // Ignore most of the katcp messages coming from the RF control GUI.
-    register_katcp(m_pKATCPDispatch,
-                   const_cast<char*>("#version"),
-                   const_cast<char*>("Ignored."),
-                   &cKATCPServer::RFGUIIgnore_KATCPCallback);
-    register_katcp(m_pKATCPDispatch,
-                   const_cast<char*>("#build-state"),
-                   const_cast<char*>("Ignored."),
-                   &cKATCPServer::RFGUIIgnore_KATCPCallback);
-    register_katcp(m_pKATCPDispatch,
-                   const_cast<char*>("#log"),
-                   const_cast<char*>("Ignored."),
-                   &cKATCPServer::RFGUIIgnore_KATCPCallback);
-    register_katcp(m_pKATCPDispatch,
-                   const_cast<char*>("?set-output"),
-                   const_cast<char*>("Ignored."),
-                   &cKATCPServer::RFGUIIgnore_KATCPCallback);
-    register_katcp(m_pKATCPDispatch,
-                   const_cast<char*>("!set-output"),
-                   const_cast<char*>("Ignored."),
-                   &cKATCPServer::RFGUIIgnore_KATCPCallback);
-    register_katcp(m_pKATCPDispatch,
-                   const_cast<char*>("?set-valon-freq"),
-                   const_cast<char*>("Ignored."),
-                   &cKATCPServer::RFGUIIgnore_KATCPCallback);
-    register_katcp(m_pKATCPDispatch,
-                   const_cast<char*>("!set-valon-freq"),
-                   const_cast<char*>("Ignored."),
-                   &cKATCPServer::RFGUIIgnore_KATCPCallback);
-    register_katcp(m_pKATCPDispatch,
-                   const_cast<char*>("#get-valon-freq"),
-                   const_cast<char*>("Ignored."),
-                   &cKATCPServer::RFGUIIgnore_KATCPCallback);
-    register_katcp(m_pKATCPDispatch,
-                   const_cast<char*>("?get-valon-freq"),
-                   const_cast<char*>("Ignored."),
-                   &cKATCPServer::RFGUIIgnore_KATCPCallback);
-    register_katcp(m_pKATCPDispatch,
-                   const_cast<char*>("!get-valon-freq"),
-                   const_cast<char*>("Ignored."),
-                   &cKATCPServer::RFGUIIgnore_KATCPCallback);
-    register_katcp(m_pKATCPDispatch,
-                   const_cast<char*>("?set-valon-options"),
-                   const_cast<char*>("Ignored."),
-                   &cKATCPServer::RFGUIIgnore_KATCPCallback);
-    register_katcp(m_pKATCPDispatch,
-                   const_cast<char*>("!set-valon-options"),
-                   const_cast<char*>("Ignored."),
-                   &cKATCPServer::RFGUIIgnore_KATCPCallback);
-    */
-
     //Make a server listening interface from hostname and port string
     stringstream oSSServer;
     oSSServer << m_strListenInterface;
@@ -409,10 +342,11 @@ void cKATCPServer::serverThreadFunction()
     cout << "cKATCPServer::serverThreadFunction(): Exiting thread function." << endl;
 }
 
+/*
 void cKATCPServer::initialSensorDataThreadFunction()
 {
     //TODO: Mark for removal. This functionality has been handled in the HDF5 file writer class.
-    /*
+
     //Record data which was stored before the file started recording (i.e. most recent sensor data).
     //General idea: If it's non-zero, we have received a value before the recording started.
     //Add a timestamp ten seconds ago (to ensure that it starts a bit before the file starts) and push to the file writer.
@@ -441,8 +375,9 @@ void cKATCPServer::initialSensorDataThreadFunction()
     //Won't check for defaults here, because this should be zero as a default anyway.
     m_pFileWriter->frequencySelectLcp_callback((time(0) - 10)*1e6, m_oKATCPClientCallbackHandler.m_bBandSelectedLCP, "nominal");
     m_pFileWriter->frequencySelectRcp_callback((time(0) - 10)*1e6, m_oKATCPClientCallbackHandler.m_bBandSelectedRCP, "nominal");
-    */
+
 }
+*/
 
 void cKATCPServer::startServer(const string &strInterface, uint16_t u16Port, uint32_t u32MaxClients)
 {
@@ -1023,197 +958,6 @@ int32_t cKATCPServer::roachSetNoiseDiodeDutyCycleOffDuration_KATCPCallback(struc
     }
 }
 
-/*
-//RF GUI information
-int32_t cKATCPServer::RFGUIIgnore_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC)
-{
-    //Most of the stuff that the RF GUI sends just needs to be ignored.
-    return KATCP_RESULT_OK;
-}
-
-int32_t cKATCPServer::RFGUIReceiveValonFrequency_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC)
-{
-    //Sometimes this fails.
-    if (string(arg_string_katcp(pKATCPDispatch, 0)) == "#set-valon-freq:_FAILED")
-    {
-        cout << "cKATCPServer::RFGUIReceiveValonFrequency_KATCPCallback(): Valon programming failed. Info to follow." << endl;
-        for (int32_t i = 1; i < i32ArgC; i++)
-        {
-            cout << "cKATCPServer::RFGUIReceiveValonFrequency_KATCPCallback(): Received katcp message: " << string(arg_string_katcp(pKATCPDispatch, i)) << endl;
-        }
-    }
-    else
-    {
-        double dTimestamp_s = strtod(arg_string_katcp(pKATCPDispatch, 1), NULL) / 1e3; // Timestamp is in milliseconds.
-        vector<string> v_strValonInfo = tokeniseString(string(arg_string_katcp(pKATCPDispatch, i32ArgC - 1)), string(" "));
-        // I read somewhere that boost's lexical_cast is slow.
-        // But it's easy and it's in a separate thread from the critical stuff,
-        // plus this will only happen on changes of frequency so I figure it's okay.
-        uint32_t u32ValonNumber = boost::lexical_cast<int>(v_strValonInfo[0]);
-        char chSynthLetter = boost::lexical_cast<char>(v_strValonInfo[1]);
-        double dSynthFrequency_Hz = boost::lexical_cast<double>(v_strValonInfo[2]);
-        string strUnit = v_strValonInfo[3];
-
-        //This shouldn't be an issue, but just in case.
-        if (strUnit == "Hz")
-            ;
-        else if (strUnit == "kHz")
-            dSynthFrequency_Hz *= 1e3;
-        else if (strUnit == "GHz")
-            dSynthFrequency_Hz *= 1e9;
-        else
-            dSynthFrequency_Hz *= 1e6; // If it's something else, just assume that it's MHz. That seems to be the standard.
-
-        cout << "cKATCPServer::RFGUIReceiveValonFrequency_KATCPCallback(): Received change in frequency: Valon ";
-        switch (u32ValonNumber)
-        {
-            case 0: // Front-most valon.
-            {
-                cout << "0 synth ";
-                switch (chSynthLetter)
-                {
-                    case 'a': // 5.0 GHz's oscillator
-                        cout << "a: " << dSynthFrequency_Hz / 1e6 << " MHz";
-                        m_oKATCPClientCallbackHandler.frequencyLOIntermediate5GHz_callback(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal"); // Let's give this a try.
-                        m_pFileWriter->frequencyLOIntermediate5GHz_callback(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal"); // hardcoded to nominal for the time being.
-                        break;
-                    case 'b': // 6.7 GHz's oscillator
-                        cout << "b: " << dSynthFrequency_Hz / 1e6 << " MHz";
-                        m_oKATCPClientCallbackHandler.frequencyLOIntermediate6_7GHz_callback(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal"); // Let's give this a try.
-                        m_pFileWriter->frequencyLOIntermediate6_7GHz_callback(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal"); // hardcoded to nominal for the time being.
-                        break;
-                    default: // This is if a problem has been encountered.
-                        cout << "UNKNOWN!";
-                        return KATCP_RESULT_INVALID;
-                        break;
-                }
-            } break;
-
-            case 1:
-            {
-                cout << "1 with synth ";
-                switch (chSynthLetter)
-                {
-                    case 'a': // Final stage oscillator
-                        cout << "a: " << dSynthFrequency_Hz / 1e6 << " MHz";
-                        m_oKATCPClientCallbackHandler.frequencyLOFinal_callback(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal");
-                        m_pFileWriter->frequencyLOFinal_callback(dTimestamp_s * 1e6, dSynthFrequency_Hz, "nominal");
-                        break;
-                    case 'b':
-                        cout << "b, but this is unused. ";
-                    default:
-                        cout << "UNKNOWN!";
-                        return KATCP_RESULT_INVALID;
-                        break;
-                }
-            } break;
-
-            default:
-            {
-                cout << "Error! Unknown valon number.";
-                return KATCP_RESULT_INVALID;
-            } break;
-
-        }
-        cout << "." << endl;
-    }
-
-    return KATCP_RESULT_OK;
-}
-
-int32_t cKATCPServer::RFGUIReceiveSensorOutput_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC)
-{
-    double dTimestamp_s = strtod(arg_string_katcp(pKATCPDispatch, 1), NULL) / 1e3; // Timestamp is in milliseconds.
-    string strSensorName = arg_string_katcp(pKATCPDispatch, 3);
-    string strSensorValue = arg_string_katcp(pKATCPDispatch, 4);
-
-    //cout << "cKATCPServer::RFGUIReceiveSensorOutput_KATCPCallback(): Sensor name: " << arg_string_katcp(pKATCPDispatch, 3);
-    //cout << " and value " <<  arg_string_katcp(pKATCPDispatch, 4) << endl;
-    cout << "cKATCPServer::RFGUIReceiveSensorOutput_KATCPCallback(): Received " << strSensorValue << " change in ";
-
-    if (strSensorName == "RFC.LcpFreqSel")
-    {
-        string strBand = (strSensorValue == "ON")?"6.7":"5.0";
-        cout << "LCP band selection. Now using " << strBand << " GHz." << endl;
-        m_oKATCPClientCallbackHandler.frequencySelectLcp_callback(dTimestamp_s*1e6, (strSensorValue == "ON")?true:false, "nominal");
-        m_pFileWriter->frequencySelectLcp_callback(dTimestamp_s * 1e6, (strSensorValue == "ON")?true:false, "nominal");
-    }
-    else if (strSensorName == "RFC.RcpFreqSel")
-    {
-        string strBand = (strSensorValue == "ON")?"6.7":"5.0";
-        cout << "RCP band selection. Now using " << strBand << " GHz." << endl;
-        m_oKATCPClientCallbackHandler.frequencySelectRcp_callback(dTimestamp_s*1e6, (strSensorValue == "ON")?true:false, "nominal");
-        m_pFileWriter->frequencySelectRcp_callback(dTimestamp_s * 1e6, (strSensorValue == "ON")?true:false, "nominal");
-    }
-    else if (strSensorName == "RFC.LcpAttenuation_0")
-    {
-
-    }
-    else if (strSensorName == "RFC.LcpAttenuation_1")
-    {
-
-    }
-    else if (strSensorName == "RFC.LcpAttenuation_2")
-    {
-
-    }
-    else if (strSensorName == "RFC.LcpAttenuation_3")
-    {
-
-    }
-    else if (strSensorName == "RFC.LcpAttenuation_4")
-    {
-
-    }
-    else if (strSensorName == "RFC.LcpAttenuation_5")
-    {
-
-    }
-    else if (strSensorName == "RFC.RcpAttenuation_0")
-    {
-
-    }
-    else if (strSensorName == "RFC.RcpAttenuation_1")
-    {
-
-    }
-    else if (strSensorName == "RFC.RcpAttenuation_2")
-    {
-
-    }
-    else if (strSensorName == "RFC.RcpAttenuation_3")
-    {
-
-    }
-    else if (strSensorName == "RFC.RcpAttenuation_4")
-    {
-
-    }
-    else if (strSensorName == "RFC.RcpAttenuation_5")
-    {
-
-    }
-    else
-    {
-        //ignore.
-    }
-
-
-
-    // Included here in case I decide I need them again:
-    /*for (int32_t i = 0; i < i32ArgC; i++)
-    {
-        cout << "cKATCPServer::RFGUIReceiveSensorOutput_KATCPCallback(): Received katcp message: " << string(arg_string_katcp(pKATCPDispatch, i)) << endl;
-    }* /
-    return KATCP_RESULT_OK;
-
-    //RFC.LcpFreqSel
-    //RFC.RcpFreqSel
-    //off is 5GHz
-    //on is 6.7 GHz
-}
-*/
-
 //Get functions for KATCP sensors Station Controller values
 int cKATCPServer::getIsStationControllerKATCPConnected(struct katcp_dispatch *pD, katcp_acquire *pA)
 {
@@ -1224,13 +968,6 @@ int cKATCPServer::getIsStationControllerKATCPConnected(struct katcp_dispatch *pD
     else
         return 0;
 }
-
-//char* cKATCPServer::getNoiseDiodeSource(struct katcp_dispatch *pD, struct katcp_acquire *pA)
-//{
-//    boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oStationControllerMutex);
-
-//    return m_oKATCPClientCallbackHandler.m_strNoiseDiodeSource.c_str();
-//}
 
 //Get functions for KATCP sensors ROACH values
 int32_t cKATCPServer::getIsRoachKATCPConnected(struct katcp_dispatch *pD, katcp_acquire *pA)
@@ -1452,183 +1189,6 @@ void cKATCPServer::cKATCPClientCallbackHandler::stopRecording_callback()
 {
     //Not used. Note, the HDF5FileWriter class is also a callback handler for KATCPClient so it get this callback to too and reacts to it there.
 }
-
-/*
-void cKATCPServer::cKATCPClientCallbackHandler::acsRequestedAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const string &strStatus)
-{
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::acsRequestedEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const string &strStatusf)
-{
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::acsActualAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const string &strStatus)
-{
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::acsActualEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const string &strStatus)
-{
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::skyRequestedAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const string &strStatus)
-{
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::skyRequestedEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const string &strStatusf)
-{
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::skyActualAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const string &strStatus)
-{
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::skyActualEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const string &strStatus)
-{
-}
-*/
-
-/* Marked for removal.
-void cKATCPServer::cKATCPClientCallbackHandler::actualSourceOffsetAz_callback(int64_t i64Timestamp_us, double dAzimuthOffset_deg, const string &strStatus)
-{
-    boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oSensorDataMutex);
-
-    m_dActualSourceOffsetAz_deg = dAzimuthOffset_deg;
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::actualSourceOffsetEl_callback(int64_t i64Timestamp_us, double dElevationOffset_deg, const string &strStatus)
-{
-    boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oSensorDataMutex);
-
-    m_dActualSourceOffsetEl_deg = dElevationOffset_deg;
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::actualAntennaRA_callback(int64_t i64Timestamp_us, double dRighAscension_deg, const string &strStatus)
-{
-    boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oSensorDataMutex);
-
-    m_dActualAntennaRA_deg = dRighAscension_deg;
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::actualAntennaDec_callback(int64_t i64Timestamp_us, double dDeclination_deg, const string &strStatus)
-{
-    boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oSensorDataMutex);
-
-    m_dActualAntennaDec_deg = dDeclination_deg;
-}
-*/
-/*
-void cKATCPServer::cKATCPClientCallbackHandler::antennaStatus_callback(int64_t i64Timestamp_us, const string &strAntennaStatus, const string &strStatus)
-{
-
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::rNoiseDiodeInputSource_callback(int64_t i64Timestamp_us, const string &strNoiseDiodeState, const string &strStatus)
-{
-
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::rNoiseDiodeEnabled_callback(int64_t i64Timestamp_us, bool bNoiseDiodeEnabled, const string &strStatus)
-{
-
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::rNoiseDiodeSelect_callback(int64_t i64Timestamp_us, int32_t i32NoiseDiodeSelect, const string &strStatus)
-{
-
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::rNoiseDiodePWMMark_callback(int64_t i64Timestamp_us, int32_t i32NoiseDiodePWMMark, const string &strStatus)
-{
-
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::rNoiseDiodePWMFrequency_callback(int64_t i64Timestamp_us, double dNoiseDiodePWMFrequency, const string &strStatus)
-{
-
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::sourceSelection_callback(int64_t i64Timestamp_us, const std::string &strSourceName, double dRighAscension_deg, double dDeclination_deg)
-{
-    //Todo
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::frequencySelectLcp_callback(int64_t i64Timestamp_us, bool bBandSelected, const string &strStatus)
-{
-
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::frequencySelectRcp_callback(int64_t i64Timestamp_us, bool bBandSelected, const string &strStatus)
-{
-
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::frequencyLOIntermediate5GHz_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_Hz, const string &strStatus)
-{
-
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::frequencyLOIntermediate6_7GHz_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_Hz, const string &strStatus)
-{
-
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::frequencyLOFinal_callback(int64_t i64Timestamp_us, double dFrequencyLO1_Hz, const string &strStatus)
-{
-
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::receiverBandwidthLcp_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan0_Hz, const string &strStatus)
-{
-
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::receiverBandwidthRcp_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan1_Hz, const string &strStatus)
-{
-
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::receiverLcpAttenuation_callback(int64_t i64Timestamp_us, double dReceiverLcpAttenuation_dB, const string &strStatus)
-{
-    // Do nothing.
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::receiverRcpAttenuation_callback(int64_t i64Timestamp_us, double dReceiverLcpAttenuation_dB, const string &strStatus)
-{
-    // Do nothing.
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::envWindSpeed_callback(int64_t i64Timestamp_us, double dWindSpeed_mps, const string &strStatus)
-{
-    // Do nothing.
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::envWindDirection_callback(int64_t i64Timestamp_us, double dWindDirection_degrees, const string &strStatus)
-{
-    // Do nothing.
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::envTemperature_callback(int64_t i64Timestamp_us, double dTemperature_degreesC, const string &strStatus)
-{
-    // Do nothing.
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::envAbsolutePressure_callback(int64_t i64Timestamp_us, double dPressure_mbar, const string &strStatus)
-{
-    // Do nothing.
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::envRelativeHumidity_callback(int64_t i64Timestamp_us, double dHumidity_percent, const string &strStatus)
-{
-    // Do nothing.
-}
-*/
-/*
-void cKATCPServer::cKATCPClientCallbackHandler::stokesEnabled_callback(int64_t i64Timestamp_us, bool bEnabled)
-{
-    boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oRoachMutex);
-
-    m_bStokesEnabled = bEnabled;
-}*/
 
 void cKATCPServer::cKATCPClientCallbackHandler::accumulationLength_callback(int64_t i64Timestamp_us, uint32_t u32NFrames)
 {

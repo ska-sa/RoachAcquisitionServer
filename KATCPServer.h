@@ -203,7 +203,7 @@ protected:
     static cKATCPClientCallbackHandler                      m_oKATCPClientCallbackHandler;
 
     static void                                             serverThreadFunction();
-    static void                                             initialSensorDataThreadFunction();
+    //static void                                             initialSensorDataThreadFunction();
 
     static struct katcp_dispatch                            *m_pKATCPDispatch;
 
