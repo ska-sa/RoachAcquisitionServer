@@ -344,7 +344,7 @@ void cStationControllerKATCPClient::printBuildState(const std::string &strBuildS
     cout << "cStationControllerKATCPClient::processKATCPMessage(): Station Controller build state: " << strBuildState << endl;
 }
 
-void  cStationControllerKATCPClient::sendStartRecording(const std::string &strFilePrefix, int64_t i64StartTime_us, int64_t i64Duration_us)
+void  cStationControllerKATCPClient::sendStartRecording(const std::string &strFileSuffix, int64_t i64StartTime_us, int64_t i64Duration_us)
 {
     boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
 
@@ -354,13 +354,13 @@ void  cStationControllerKATCPClient::sendStartRecording(const std::string &strFi
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
     {
         cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
-        pHandler->startRecording_callback(strFilePrefix, i64StartTime_us, i64Duration_us);
+        pHandler->startRecording_callback(strFileSuffix, i64StartTime_us, i64Duration_us);
     }
 
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
     {
         boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
-        pHandler->startRecording_callback(strFilePrefix, i64StartTime_us, i64Duration_us);
+        pHandler->startRecording_callback(strFileSuffix, i64StartTime_us, i64Duration_us);
     }
 }
 

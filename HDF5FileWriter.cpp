@@ -138,7 +138,7 @@ cHDF5FileWriter::~cHDF5FileWriter()
     cout << "cHDF5FileWriter::~cHDF5FileWriter() exiting." << endl;
 }
 
-void cHDF5FileWriter::startRecording(const string &strFilenamePrefix, int64_t i64StartTime_us, int64_t i64Duration_us)
+void cHDF5FileWriter::startRecording(const string &strFilenameSuffix, int64_t i64StartTime_us, int64_t i64Duration_us)
 {
     if(getState() != IDLE)
     {
@@ -148,7 +148,7 @@ void cHDF5FileWriter::startRecording(const string &strFilenamePrefix, int64_t i6
 
     cout << "cHDF5FileWriter::startRecording(): Got request to start file recording at " << AVN::stringFromTimestamp_full(i64StartTime_us) << endl;
 
-    m_strFilenamePrefix = strFilenamePrefix;
+    m_strFilenameSuffix = strFilenameSuffix;
     m_i64RequestedStartTime_us = i64StartTime_us;
     m_i64Duration_us = i64Duration_us;
 
@@ -265,7 +265,7 @@ void cHDF5FileWriter::getNextFrame_callback(const std::vector<int> &vi32Chan0, c
 
         //Otherwise make a new HDF5 file
         m_i64ActualStartTime_us = m_i64LastTimestamp_us;
-        m_strFilename = makeFilename(m_strRecordingDirectory, m_strFilenamePrefix, m_i64ActualStartTime_us);
+        m_strFilename = makeFilename(m_strRecordingDirectory, m_strFilenameSuffix, m_i64ActualStartTime_us);
 
         m_pHDF5File = boost::make_shared<cSpectrometerHDF5OutputFile>(m_strFilename, m_eLastDigitiserType, m_u32FrameSize_nVal);
 
@@ -491,7 +491,7 @@ void cHDF5FileWriter::getNextFrame_callback(const std::vector<int> &vi32Chan0, c
     }
 }
 
-std::string cHDF5FileWriter::makeFilename(const std::string &strDirectory, const std::string &strPrefix, int64_t i64Timestamp_us)
+std::string cHDF5FileWriter::makeFilename(const std::string &strDirectory, const std::string &strSuffix, int64_t i64Timestamp_us)
 {
     boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
 
@@ -504,8 +504,10 @@ std::string cHDF5FileWriter::makeFilename(const std::string &strDirectory, const
     if(strDirectory[strDirectory.length() - 1] != '/')
         oSS << "/";
 #endif
-    oSS << m_strFilenamePrefix;
+
     oSS << AVN::stringFromTimestamp_full(m_i64LastTimestamp_us); //Note we use the actual packet timestamp and not the user requested start time.
+    oSS << string("_");
+    oSS << m_strFilenameSuffix;
     oSS << string(".h5");
 
     return oSS.str();
@@ -710,16 +712,16 @@ void cHDF5FileWriter::connected_callback(bool bConnected, const std::string &str
     //Not used
 }
 
-void cHDF5FileWriter::startRecording_callback(const std::string &strFilePrefix, int64_t i64StartTime_us, int64_t i64Duration_us)
+void cHDF5FileWriter::startRecording_callback(const std::string &strFileSuffix, int64_t i64StartTime_us, int64_t i64Duration_us)
 {
     cout << "--------------------------------------------------------------" << endl;
     cout << "cHDF5FileWriter::startRecording_callback Got request to record via KATCPClient callback:" << endl;
-    cout << "File prefix = " << strFilePrefix << endl;
+    cout << "File suffix = " << strFileSuffix << endl;
     cout << "Start time  = " << i64StartTime_us << " (" << AVN::stringFromTimestamp_full(i64StartTime_us) << ")" << endl;
     cout << "Duration    = " << i64Duration_us << " (" << AVN::stringFromTimeDuration(i64Duration_us) << ")" << endl;
     cout << "--------------------------------------------------------------" << endl;
 
-    startRecording(strFilePrefix, i64StartTime_us, i64Duration_us);
+    startRecording(strFileSuffix, i64StartTime_us, i64Duration_us);
 }
 
 void cHDF5FileWriter::stopRecording_callback()

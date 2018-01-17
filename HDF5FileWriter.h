@@ -185,7 +185,7 @@ public:
     cHDF5FileWriter(const std::string &strRecordingDirectory, uint32_t u32FileSizeLimit_MB);
     ~cHDF5FileWriter();
 
-    void                                                startRecording(const std::string &strFilenamePrefix, int64_t i64StartTime_us, int64_t i64Duration_us);
+    void                                                startRecording(const std::string &strFilenameSuffix, int64_t i64StartTime_us, int64_t i64Duration_us);
     void                                                stopRecording();
     void                                                setRecordingDirectory(const std::string &strRecordingDirectory);
 
@@ -214,7 +214,7 @@ public:
     void                                                connected_callback(bool bConnected, const std::string &strHostAddress, uint16_t u16Port, const std::string &strDescription);
 
     //File recording control
-    void                                                startRecording_callback(const std::string &strFilePrefix, int64_t i64StartTime_us, int64_t i64Duration_us);
+    void                                                startRecording_callback(const std::string &strFileSuffix, int64_t i64StartTime_us, int64_t i64Duration_us);
     void                                                stopRecording_callback();
 
 
@@ -302,7 +302,7 @@ public:
     void                                                clockFrequency_callback(int64_t i64Timestamp_us, uint32_t u32ClockFrequency_Hz);
 
     //Other public functions
-    std::string                                         makeFilename(const std::string &strDirectory, const std::string &strPrefix, int64_t i64Timestamp_us);
+    std::string                                         makeFilename(const std::string &strDirectory, const std::string &strSuffix, int64_t i64Timestamp_us);
 
     void                                                waitForFileClosed();
 
@@ -335,7 +335,7 @@ private:
     //Recording parameters
     std::string                                         m_strRecordingDirectory;
     uint32_t                                            m_u32FileSizeLimit_MB;
-    std::string                                         m_strFilenamePrefix;
+    std::string                                         m_strFilenameSuffix;
     std::string                                         m_strFilename;
 
     int64_t                                             m_i64RequestedStartTime_us;

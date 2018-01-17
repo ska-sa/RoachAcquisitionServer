@@ -17,7 +17,7 @@ public:
     {
     public:
         //File recording control
-        virtual void                                    startRecording_callback(const std::string &strFilePrefix, int64_t i64StartTime_us, int64_t i64Duration_us) = 0;
+        virtual void                                    startRecording_callback(const std::string &strFileSuffix, int64_t i64StartTime_us, int64_t i64Duration_us) = 0;
         virtual void                                    stopRecording_callback() = 0;
 
         //Antenna values
@@ -81,7 +81,7 @@ private:
   //Notifications sent to all callback handlers:
 
     //Recording control:
-    void                                                sendStartRecording(const std::string &strFilePrefix, int64_t i64StartTime_us, int64_t i64Duration_us);
+    void                                                sendStartRecording(const std::string &strFileSuffix, int64_t i64StartTime_us, int64_t i64Duration_us);
     void                                                sendStopRecording();
 
     //Antenna values

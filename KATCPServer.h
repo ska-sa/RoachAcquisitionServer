@@ -65,31 +65,6 @@ public:
         bool                                                m_bStationControllerKATCPConnected;
         boost::mutex                                        m_oStationControllerMutex;
         std::string                                         m_strStationControllerAddress;
-        /*
-        double                                              m_dRequestedAntennaAz_deg;
-        double                                              m_dRequestedAntennaEl_deg;
-        double                                              m_dActualAntennaAz_deg;
-        double                                              m_dActualAntennaEl_deg;
-        double                                              m_dActualSourceOffsetAz_deg;
-        double                                              m_dActualSourceOffsetEl_deg;
-        double                                              m_dActualAntennaRA_deg;
-        double                                              m_dActualAntennaDec_deg;
-        std::string                                         m_strAntennaStatus;
-        double                                              m_dMotorTorqueAzMaster_mNm;
-        double                                              m_dMotorTorqueAzSlave_mNm;
-        double                                              m_dMotorTorqueElMaster_mNm;
-        double                                              m_dMotorTorqueElSlave_mNm;
-        int32_t                                             m_i32NoiseDiodeSoftwareState;
-        std::string                                         m_strNoiseDiodeSource;
-        double                                              m_dNoiseDiodeCurrent_A;
-        bool                                                m_bBandSelectedLCP;
-        bool                                                m_bBandSelectedRCP;
-        double                                              m_dFrequencyLO0Chan0_Hz;
-        double                                              m_dFrequencyLO0Chan1_Hz;
-        double                                              m_dFrequencyLO1_Hz;
-        double                                              m_dReceiverBandwidthChan0_Hz;
-        double                                              m_dReceiverBandwidthChan1_Hz;
-        */
         boost::mutex                                        m_oSensorDataMutex;
 
         //Given that there is only 1 read and 1 write thread a single mutex for all variables should suffice.
@@ -100,51 +75,8 @@ public:
 
 
         //File recording control
-        void                                                startRecording_callback(const std::string &strFilePrefix, int64_t i64StartTime_us, int64_t i64Duration_us);
+        void                                                startRecording_callback(const std::string &strFileSuffix, int64_t i64StartTime_us, int64_t i64Duration_us);
         void                                                stopRecording_callback();
-        /*
-        //Antenna values
-        void                                                acsRequestedAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus);
-        void                                                acsRequestedEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus);
-        void                                                acsActualAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus);
-        void                                                acsActualEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus);
-
-        void                                                skyRequestedAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus);
-        void                                                skyRequestedEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus);
-        void                                                skyActualAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus);
-        void                                                skyActualEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus);
-
-        void                                                antennaStatus_callback(int64_t i64Timestamp_us, const std::string &strAntennaStatus, const std::string &strStatus);
-
-        //Noise diode values
-        void                                                rNoiseDiodeInputSource_callback(int64_t i64Timestamp_us, const std::string &strNoiseDiodeState, const std::string &strStatus);
-        void                                                rNoiseDiodeEnabled_callback(int64_t i64Timestamp_us, bool bNoiseDiodeEnabled, const std::string &strStatus);
-        void                                                rNoiseDiodeSelect_callback(int64_t i64Timestamp_us, int32_t i32NoiseDiodeSelect, const std::string &strStatus);
-        void                                                rNoiseDiodePWMMark_callback(int64_t i64Timestamp_us, int32_t i32NoiseDiodePWMMark, const std::string &strStatus);
-        void                                                rNoiseDiodePWMFrequency_callback(int64_t i64Timestamp_us, double dNoiseDiodePWMFrequency, const std::string &strStatus);
-
-        //Global experiment values
-        void                                                sourceSelection_callback(int64_t i64Timestamp_us, const std::string &strSourceName, double dRighAscension_deg, double dDeclination_deg);
-
-
-        //RF values
-        void                                                frequencySelectLcp_callback(int64_t i64Timestamp_us, bool bBandSelected, const std::string &strStatus);
-        void                                                frequencySelectRcp_callback(int64_t i64Timestamp_us, bool bBandSelected, const std::string &strStatus);
-        void                                                frequencyLOIntermediate5GHz_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_Hz, const std::string &strStatus);
-        void                                                frequencyLOIntermediate6_7GHz_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_Hz, const std::string &strStatus);
-        void                                                frequencyLOFinal_callback(int64_t i64Timestamp_us, double dFrequencyLO1_Hz, const std::string &strStatus);
-        void                                                receiverBandwidthLcp_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan0_Hz, const std::string &strStatus);
-        void                                                receiverBandwidthRcp_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan1_Hz, const std::string &strStatus);
-        void                                                receiverLcpAttenuation_callback(int64_t i64Timestamp_us, double dReceiverLcpAttenuation_dB, const std::string &strStatus);
-        void                                                receiverRcpAttenuation_callback(int64_t i64Timestamp_us, double dReceiverRcpAttenuation_dB, const std::string &strStatus);
-
-        //Env values
-        void                                                envWindSpeed_callback(int64_t i64Timestamp_us, double dWindSpeed_mps, const std::string &strStatus);
-        void                                                envWindDirection_callback(int64_t i64Timestamp_us, double dWindDirection_degrees, const std::string &strStatus);
-        void                                                envTemperature_callback(int64_t i64Timestamp_us, double dTemperature_degreesC, const std::string &strStatus);
-        void                                                envAbsolutePressure_callback(int64_t i64Timestamp_us, double dPressure_mbar, const std::string &strStatus);
-        void                                                envRelativeHumidity_callback(int64_t i64Timestamp_us, double dHumidity_percent, const std::string &strStatus);
-        */
 
         //Locals for ROACH values
         bool                                                m_bRoachKATCPConnected;
@@ -228,12 +160,6 @@ protected:
     static int32_t                                          roachSetNoiseDiodeDutyCycleOnDuration_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
     static int32_t                                          roachSetNoiseDiodeDutyCycleOffDuration_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
 
-    /*//RF GUI information (These should be a temporary solution)
-    static int32_t                                          RFGUIIgnore_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
-    static int32_t                                          RFGUIReceiveValonFrequency_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
-    static int32_t                                          RFGUIReceiveSensorOutput_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
-    */
-
     //Sensor get functions (Use by KATCP to read sensor values. Requires thread safe access where necessary)
     //Station controller values:
     static int                                              getIsStationControllerKATCPConnected(struct katcp_dispatch *pD, katcp_acquire *pA);
@@ -246,9 +172,6 @@ protected:
     static int32_t                                          getRecordingRemainingTime_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
     static double                                           getRecordingFileSize_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
     static double                                           getDiskSpace_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
-
-    //Noise diode
-    //static char*                                            getNoiseDiodeSource(struct katcp_dispatch *pD, struct katcp_acquire *pA);
 
     //Roach values:
     static int32_t                                          getIsRoachKATCPConnected(struct katcp_dispatch *pD, katcp_acquire *pA);

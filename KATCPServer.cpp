@@ -86,7 +86,7 @@ void cKATCPServer::serverThreadFunction()
     oSSCompileTime << string(__TIME__);
 
     //Add a version number to KATCTP server
-    add_version_katcp(m_pKATCPDispatch, const_cast<char*>("RoachAcquisitionServer"), 0, const_cast<char*>("0.1"), &oSSCompileTime.str()[0]);
+    add_version_katcp(m_pKATCPDispatch, const_cast<char*>("RoachAcquisitionServer"), 0, const_cast<char*>("0.9"), &oSSCompileTime.str()[0]);
 
     //Declare sensors
     //Station controller
@@ -466,7 +466,7 @@ int32_t cKATCPServer::startRecording_KATCPCallback(struct katcp_dispatch *pKATCP
         //Redundant arguments
         log_message_katcp(pKATCPDispatch, KATCP_LEVEL_WARN, NULL, const_cast<char*>("startRecording: Warning %i redundant argument(s) for stop recording, ignoring."), i32ArgC - 4);
     }
-    string strFilePrefix("");
+    string strFileSuffix("");
     int64_t i64StartTime_us = 0;
     int64_t i64Duration_us = 0;
 
@@ -474,11 +474,11 @@ int32_t cKATCPServer::startRecording_KATCPCallback(struct katcp_dispatch *pKATCP
     {
         try
         {
-            strFilePrefix = string(arg_string_katcp(pKATCPDispatch, 1));
+            strFileSuffix = string(arg_string_katcp(pKATCPDispatch, 1));
         }
         catch(std::logic_error &oError)
         {
-            cout << "cKATCPServer::startRecording_callback() Error unable to intepret filename prefix. Ignoring" << endl;
+            cout << "cKATCPServer::startRecording_callback() Error unable to intepret filename suffix. Ignoring" << endl;
             cout << "Error was " << oError.what() << endl;
         }
     }
@@ -492,12 +492,12 @@ int32_t cKATCPServer::startRecording_KATCPCallback(struct katcp_dispatch *pKATCP
 
     cout << "--------------------------------------------------------------" << endl;
     cout << "cKATCPServer::startRecording_callback() Got request to record:" << endl;
-    cout << "File prefix = " << strFilePrefix << endl;
+    cout << "File suffix = " << strFileSuffix << endl;
     cout << "Start time  = " << i64StartTime_us << " (" << AVN::stringFromTimestamp_full(i64StartTime_us) << ")" << endl;
     cout << "Duration    = " << i64Duration_us << " (" << AVN::stringFromTimeDuration(i64Duration_us) << ")" << endl;
     cout << "--------------------------------------------------------------" << endl;
 
-    m_pFileWriter->startRecording(strFilePrefix, i64StartTime_us, i64Duration_us);
+    m_pFileWriter->startRecording(strFileSuffix, i64StartTime_us, i64Duration_us);
     if (m_pStationControllerKATCPClient) //i.e. if the thing has actually been connected. Otherwise it segfaults.
     {
         m_pStationControllerKATCPClient->subscribeSensorData();
@@ -1180,7 +1180,7 @@ void cKATCPServer::cKATCPClientCallbackHandler::connected_callback(bool bConnect
     }
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::startRecording_callback(const string &strFilePrefix, int64_t i64StartTime_us, int64_t i64Duration_us)
+void cKATCPServer::cKATCPClientCallbackHandler::startRecording_callback(const string &strFileSuffix, int64_t i64StartTime_us, int64_t i64Duration_us)
 {
     //Not used. Note, the HDF5FileWriter class is also a callback handler for KATCPClient so it get this callback to too and reacts to it there.
 }
