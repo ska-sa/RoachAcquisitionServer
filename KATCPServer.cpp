@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <fstream>
 #include <cstdlib>
+#include <ctime>
 
 //Library includes
 extern "C" {
@@ -488,6 +489,14 @@ int32_t cKATCPServer::startRecording_KATCPCallback(struct katcp_dispatch *pKATCP
 
     if(i32ArgC >= 4)
         i64Duration_us = strtoll(arg_string_katcp(pKATCPDispatch, 3), NULL, 10);
+
+    // Little bit of data validation never hurt anyone.
+    if ( i64StartTime_us < time(0)*1e6 )
+    {
+        cout << "cKATCPServer::startRecording_callback() Warning: Time specified is in the past. Starting recording immediately." << endl;
+        log_message_katcp(pKATCPDispatch, KATCP_LEVEL_WARN, NULL, const_cast<char*>("startRecording: Warning: %i is in the past, starting recording immediately."), i64StartTime_us);
+        i64StartTime_us = 0;
+    }
 
 
     cout << "--------------------------------------------------------------" << endl;
