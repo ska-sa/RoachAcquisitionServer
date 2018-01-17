@@ -795,6 +795,12 @@ int32_t cKATCPServer::roachSetStokesEnabled_KATCPCallback(struct katcp_dispatch 
 
 int32_t cKATCPServer::roachSetAccumulationLength_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC)
 {
+    if(i32ArgC != 2)
+    {
+        log_message_katcp(pKATCPDispatch, KATCP_LEVEL_ERROR, NULL, const_cast<char*>("setRoachAccumulationLength: Incorrect number of arguments."));
+        return KATCP_RESULT_FAIL;
+    }
+
     if(!m_pRoachKATCPClient.get())
     {
         //No file writer set. Do nothing
@@ -815,6 +821,12 @@ int32_t cKATCPServer::roachSetAccumulationLength_KATCPCallback(struct katcp_disp
 
 int32_t cKATCPServer::roachSetCoarseChannelSelect_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC)
 {
+    if(i32ArgC != 2)
+    {
+        log_message_katcp(pKATCPDispatch, KATCP_LEVEL_ERROR, NULL, const_cast<char*>("setRoachCoarseChannelSelect: Incorrect number of arguments."));
+        return KATCP_RESULT_FAIL;
+    }
+
     if(!m_pRoachKATCPClient.get())
     {
         //No file writer set. Do nothing
@@ -835,6 +847,12 @@ int32_t cKATCPServer::roachSetCoarseChannelSelect_KATCPCallback(struct katcp_dis
 
 int32_t cKATCPServer::roachSetCoarseFFTShiftMask_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC)
 {
+    if(i32ArgC != 2)
+    {
+        log_message_katcp(pKATCPDispatch, KATCP_LEVEL_ERROR, NULL, const_cast<char*>("setRoachCoarseFFTMask: Incorrect number of arguments."));
+        return KATCP_RESULT_FAIL;
+    }
+
     if(!m_pRoachKATCPClient.get())
     {
         //No file writer set. Do nothing
@@ -855,6 +873,12 @@ int32_t cKATCPServer::roachSetCoarseFFTShiftMask_KATCPCallback(struct katcp_disp
 
 int32_t cKATCPServer::roachSetADC0Attenuation_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC)
 {
+    if(i32ArgC != 2)
+    {
+        log_message_katcp(pKATCPDispatch, KATCP_LEVEL_ERROR, NULL, const_cast<char*>("setRoachADC0Attenuation: Incorrect number of arguments."));
+        return KATCP_RESULT_FAIL;
+    }
+
     if(!m_pRoachKATCPClient.get())
     {
         //No file writer set. Do nothing
@@ -874,6 +898,12 @@ int32_t cKATCPServer::roachSetADC0Attenuation_KATCPCallback(struct katcp_dispatc
 
 int32_t cKATCPServer::roachSetADC1Attenuation_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC)
 {
+    if(i32ArgC != 2)
+    {
+        log_message_katcp(pKATCPDispatch, KATCP_LEVEL_ERROR, NULL, const_cast<char*>("setRoachADC1Attenuation: Incorrect number of arguments."));
+        return KATCP_RESULT_FAIL;
+    }
+
     if(!m_pRoachKATCPClient.get())
     {
         //No file writer set. Do nothing
@@ -893,6 +923,12 @@ int32_t cKATCPServer::roachSetADC1Attenuation_KATCPCallback(struct katcp_dispatc
 
 int32_t cKATCPServer::roachSetNoiseDiodeEnabled_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC)
 {
+    if(i32ArgC != 2)
+    {
+        log_message_katcp(pKATCPDispatch, KATCP_LEVEL_ERROR, NULL, const_cast<char*>("setRoachNoiseDiodeEnabled: Incorrect number of arguments."));
+        return KATCP_RESULT_FAIL;
+    }
+
     if(!m_pRoachKATCPClient.get())
     {
         //No file writer set. Do nothing
@@ -912,6 +948,12 @@ int32_t cKATCPServer::roachSetNoiseDiodeEnabled_KATCPCallback(struct katcp_dispa
 
 int32_t cKATCPServer::roachSetNoiseDiodeDutyCycleEnabled_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC)
 {
+    if(i32ArgC != 2)
+    {
+        log_message_katcp(pKATCPDispatch, KATCP_LEVEL_ERROR, NULL, const_cast<char*>("setRoachNoiseDiodeDutyCycleEnabled: Incorrect number of arguments."));
+        return KATCP_RESULT_FAIL;
+    }
+
     if(!m_pRoachKATCPClient.get())
     {
         //No file writer set. Do nothing
@@ -931,6 +973,12 @@ int32_t cKATCPServer::roachSetNoiseDiodeDutyCycleEnabled_KATCPCallback(struct ka
 
 int32_t cKATCPServer::roachSetNoiseDiodeDutyCycleOnDuration_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC)
 {
+    if(i32ArgC != 2)
+    {
+        log_message_katcp(pKATCPDispatch, KATCP_LEVEL_ERROR, NULL, const_cast<char*>("setRoachNoiseDiodeDutyCycleOnDuration: Incorrect number of arguments."));
+        return KATCP_RESULT_FAIL;
+    }
+
     if(!m_pRoachKATCPClient.get())
     {
         //No file writer set. Do nothing
@@ -950,6 +998,12 @@ int32_t cKATCPServer::roachSetNoiseDiodeDutyCycleOnDuration_KATCPCallback(struct
 
 int32_t cKATCPServer::roachSetNoiseDiodeDutyCycleOffDuration_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC)
 {
+    if(i32ArgC != 2)
+    {
+        log_message_katcp(pKATCPDispatch, KATCP_LEVEL_ERROR, NULL, const_cast<char*>("setRoachNoiseDiodeDutyCycleOffDuration: Incorrect number of arguments."));
+        return KATCP_RESULT_FAIL;
+    }
+
     if(!m_pRoachKATCPClient.get())
     {
         //No file writer set. Do nothing
