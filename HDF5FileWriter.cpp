@@ -732,129 +732,105 @@ void cHDF5FileWriter::stopRecording_callback()
 
 void cHDF5FileWriter::acsRequestedAz_callback(int64_t i64Timestamp_us,double dAzimuth_deg, const string &strStatus)
 {
-    if(getState() != RECORDING)
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSAcsRequestedAzim_us)
     {
-        if (i64Timestamp_us > m_oInitialValueSet.m_i64TSAcsRequestedAzim_us)
-        {
-            boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
-            m_oInitialValueSet.m_i64TSAcsRequestedAzim_us = i64Timestamp_us;
-            m_oInitialValueSet.m_dVAcsRequestedAzim_deg = dAzimuth_deg;
-            sprintf(m_oInitialValueSet.m_chaAcsRequestedAzimStatus, "%s", strStatus.c_str());
-        }
+        boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+        m_oInitialValueSet.m_i64TSAcsRequestedAzim_us = i64Timestamp_us;
+        m_oInitialValueSet.m_dVAcsRequestedAzim_deg = dAzimuth_deg;
+        sprintf(m_oInitialValueSet.m_chaAcsRequestedAzimStatus, "%s", strStatus.c_str());
     }
-    else
+    if(getState() == RECORDING)
         m_pHDF5File->addAcsRequestedAz(i64Timestamp_us, dAzimuth_deg, strStatus);
 }
 
 void cHDF5FileWriter::acsRequestedEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const string &strStatus)
 {
-    if(getState() != RECORDING)
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSAcsRequestedElev_us)
     {
-        if (i64Timestamp_us > m_oInitialValueSet.m_i64TSAcsRequestedElev_us)
-        {
-            boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
-            m_oInitialValueSet.m_i64TSAcsRequestedElev_us = i64Timestamp_us;
-            m_oInitialValueSet.m_dVAcsRequestedElev_deg = dElevation_deg;
-            sprintf(m_oInitialValueSet.m_chaAcsRequestedElevStatus, "%s", strStatus.c_str());
-        }
+        boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+        m_oInitialValueSet.m_i64TSAcsRequestedElev_us = i64Timestamp_us;
+        m_oInitialValueSet.m_dVAcsRequestedElev_deg = dElevation_deg;
+        sprintf(m_oInitialValueSet.m_chaAcsRequestedElevStatus, "%s", strStatus.c_str());
     }
-    else
+    if(getState() == RECORDING)
         m_pHDF5File->addAcsRequestedEl(i64Timestamp_us, dElevation_deg, strStatus);
 }
 
 void cHDF5FileWriter::acsActualAz_callback(int64_t i64Timestamp_us,double dAzimuth_deg, const string &strStatus)
 {
-    if(getState() != RECORDING)
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSAcsActualAzim_us)
     {
-        if (i64Timestamp_us > m_oInitialValueSet.m_i64TSAcsActualAzim_us)
-        {
-            boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
-            m_oInitialValueSet.m_i64TSAcsActualAzim_us = i64Timestamp_us;
-            m_oInitialValueSet.m_dVAcsActualAzim_deg = dAzimuth_deg;
-            sprintf(m_oInitialValueSet.m_chaAcsActualAzimStatus, "%s", strStatus.c_str());
-        }
+        boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+        m_oInitialValueSet.m_i64TSAcsActualAzim_us = i64Timestamp_us;
+        m_oInitialValueSet.m_dVAcsActualAzim_deg = dAzimuth_deg;
+        sprintf(m_oInitialValueSet.m_chaAcsActualAzimStatus, "%s", strStatus.c_str());
     }
-    else
+    if(getState() == RECORDING)
         m_pHDF5File->addAcsActualAz(i64Timestamp_us, dAzimuth_deg, strStatus);
 }
 
 void cHDF5FileWriter::acsActualEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const string &strStatus)
 {
-    if(getState() != RECORDING)
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSAcsActualElev_us)
     {
-        if (i64Timestamp_us > m_oInitialValueSet.m_i64TSAcsActualElev_us)
-        {
-            boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
-            m_oInitialValueSet.m_i64TSAcsActualElev_us = i64Timestamp_us;
-            m_oInitialValueSet.m_dVAcsActualElev_deg = dElevation_deg;
-            sprintf(m_oInitialValueSet.m_chaAcsActualElevStatus, "%s", strStatus.c_str());
-        }
+        boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+        m_oInitialValueSet.m_i64TSAcsActualElev_us = i64Timestamp_us;
+        m_oInitialValueSet.m_dVAcsActualElev_deg = dElevation_deg;
+        sprintf(m_oInitialValueSet.m_chaAcsActualElevStatus, "%s", strStatus.c_str());
     }
-    else
+    if(getState() == RECORDING)
         m_pHDF5File->addAcsActualEl(i64Timestamp_us, dElevation_deg, strStatus);
 }
 
 void cHDF5FileWriter::skyRequestedAz_callback(int64_t i64Timestamp_us,double dAzimuth_deg, const string &strStatus)
 {
-    if(getState() != RECORDING)
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSSkyRequestedAzim_us)
     {
-        if (i64Timestamp_us > m_oInitialValueSet.m_i64TSSkyRequestedAzim_us)
-        {
-            boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
-            m_oInitialValueSet.m_i64TSSkyRequestedAzim_us = i64Timestamp_us;
-            m_oInitialValueSet.m_dVSkyRequestedAzim_deg = dAzimuth_deg;
-            sprintf(m_oInitialValueSet.m_chaSkyRequestedAzimStatus, "%s", strStatus.c_str());
-        }
+        boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+        m_oInitialValueSet.m_i64TSSkyRequestedAzim_us = i64Timestamp_us;
+        m_oInitialValueSet.m_dVSkyRequestedAzim_deg = dAzimuth_deg;
+        sprintf(m_oInitialValueSet.m_chaSkyRequestedAzimStatus, "%s", strStatus.c_str());
     }
-    else
+    if(getState() == RECORDING)
         m_pHDF5File->addSkyRequestedAz(i64Timestamp_us, dAzimuth_deg, strStatus);
 }
 
 void cHDF5FileWriter::skyRequestedEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const string &strStatus)
 {
-    if(getState() != RECORDING)
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSSkyRequestedElev_us)
     {
-        if (i64Timestamp_us > m_oInitialValueSet.m_i64TSSkyRequestedElev_us)
-        {
-            boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
-            m_oInitialValueSet.m_i64TSSkyRequestedElev_us = i64Timestamp_us;
-            m_oInitialValueSet.m_dVSkyRequestedElev_deg = dElevation_deg;
-            sprintf(m_oInitialValueSet.m_chaSkyRequestedElevStatus, "%s", strStatus.c_str());
-        }
+        boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+        m_oInitialValueSet.m_i64TSSkyRequestedElev_us = i64Timestamp_us;
+        m_oInitialValueSet.m_dVSkyRequestedElev_deg = dElevation_deg;
+        sprintf(m_oInitialValueSet.m_chaSkyRequestedElevStatus, "%s", strStatus.c_str());
     }
-    else
+    if(getState() == RECORDING)
         m_pHDF5File->addSkyRequestedEl(i64Timestamp_us, dElevation_deg, strStatus);
 }
 
 void cHDF5FileWriter::skyActualAz_callback(int64_t i64Timestamp_us,double dAzimuth_deg, const string &strStatus)
 {
-    if(getState() != RECORDING)
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSSkyActualAzim_us)
     {
-        if (i64Timestamp_us > m_oInitialValueSet.m_i64TSSkyActualAzim_us)
-        {
-            boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
-            m_oInitialValueSet.m_i64TSSkyActualAzim_us = i64Timestamp_us;
-            m_oInitialValueSet.m_dVSkyActualAzim_deg = dAzimuth_deg;
-            sprintf(m_oInitialValueSet.m_chaSkyActualAzimStatus, "%s", strStatus.c_str());
-        }
+        boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+        m_oInitialValueSet.m_i64TSSkyActualAzim_us = i64Timestamp_us;
+        m_oInitialValueSet.m_dVSkyActualAzim_deg = dAzimuth_deg;
+        sprintf(m_oInitialValueSet.m_chaSkyActualAzimStatus, "%s", strStatus.c_str());
     }
-    else
+    if(getState() == RECORDING)
         m_pHDF5File->addSkyActualAz(i64Timestamp_us, dAzimuth_deg, strStatus);
 }
 
 void cHDF5FileWriter::skyActualEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const string &strStatus)
 {
-    if(getState() != RECORDING)
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSSkyActualElev_us)
     {
-        if (i64Timestamp_us > m_oInitialValueSet.m_i64TSSkyActualElev_us)
-        {
-            boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
-            m_oInitialValueSet.m_i64TSSkyActualElev_us = i64Timestamp_us;
-            m_oInitialValueSet.m_dVSkyActualElev_deg = dElevation_deg;
-            sprintf(m_oInitialValueSet.m_chaSkyActualElevStatus, "%s", strStatus.c_str());
-        }
+        boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+        m_oInitialValueSet.m_i64TSSkyActualElev_us = i64Timestamp_us;
+        m_oInitialValueSet.m_dVSkyActualElev_deg = dElevation_deg;
+        sprintf(m_oInitialValueSet.m_chaSkyActualElevStatus, "%s", strStatus.c_str());
     }
-    else
+    if(getState() == RECORDING)
         m_pHDF5File->addSkyActualEl(i64Timestamp_us, dElevation_deg, strStatus);
 }
 
@@ -916,49 +892,40 @@ void cHDF5FileWriter::antennaLatitude_callback(const string &strAntennaLatitude)
 
 void cHDF5FileWriter::rNoiseDiodeInputSource_callback(int64_t i64Timestamp_us, const string &strInputSource, const string &strStatus)
 {
-    if(getState() != RECORDING)
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSNoiseDiodeInputSource_us)
     {
-        if (i64Timestamp_us > m_oInitialValueSet.m_i64TSNoiseDiodeInputSource_us)
-        {
-            boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
-            m_oInitialValueSet.m_i64TSNoiseDiodeInputSource_us = i64Timestamp_us;
-            sprintf(m_oInitialValueSet.m_chaVNoiseDiodeInputSource, "%s", strInputSource.c_str());
-            sprintf(m_oInitialValueSet.m_chaNoiseDiodeInputSourceStatus, "%s", strStatus.c_str());
-        }
+        boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+        m_oInitialValueSet.m_i64TSNoiseDiodeInputSource_us = i64Timestamp_us;
+        sprintf(m_oInitialValueSet.m_chaVNoiseDiodeInputSource, "%s", strInputSource.c_str());
+        sprintf(m_oInitialValueSet.m_chaNoiseDiodeInputSourceStatus, "%s", strStatus.c_str());
     }
-    else
+    if(getState() == RECORDING)
         m_pHDF5File->addNoiseDiodeInputSource(i64Timestamp_us, strInputSource, strStatus);
 }
 
 void cHDF5FileWriter::rNoiseDiodeEnabled_callback(int64_t i64Timestamp_us, bool bNoiseDiodeEnabled, const string &strStatus)
 {
-    if (getState() != RECORDING)
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSNoiseDiodeEnabled_us)
     {
-        if (i64Timestamp_us > m_oInitialValueSet.m_i64TSNoiseDiodeEnabled_us)
-        {
-            boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
-            m_oInitialValueSet.m_i64TSNoiseDiodeEnabled_us = i64Timestamp_us;
-            m_oInitialValueSet.m_bVNoiseDiodeEnabled = bNoiseDiodeEnabled;
-            sprintf(m_oInitialValueSet.m_chaNoiseDiodeEnabledStatus, "%s", strStatus.c_str());
-        }
+        boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+        m_oInitialValueSet.m_i64TSNoiseDiodeEnabled_us = i64Timestamp_us;
+        m_oInitialValueSet.m_bVNoiseDiodeEnabled = bNoiseDiodeEnabled;
+        sprintf(m_oInitialValueSet.m_chaNoiseDiodeEnabledStatus, "%s", strStatus.c_str());
     }
-    else
+    if(getState() == RECORDING)
         m_pHDF5File->addNoiseDiodeEnable(i64Timestamp_us, bNoiseDiodeEnabled, strStatus);
 }
 
 void cHDF5FileWriter::rNoiseDiodeSelect_callback(int64_t i64Timestamp_us, int32_t i32NoiseDiodeSelect, const string &strStatus)
 {
-    if (getState() != RECORDING)
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSNoiseDiodeSelect_us)
     {
-        if (i64Timestamp_us > m_oInitialValueSet.m_i64TSNoiseDiodeSelect_us)
-        {
-            boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
-            m_oInitialValueSet.m_i64TSNoiseDiodeSelect_us = i64Timestamp_us;
-            m_oInitialValueSet.m_i32VNoiseDiodeSelect = i32NoiseDiodeSelect;
-            sprintf(m_oInitialValueSet.m_chaNoiseDiodeSelectStatus, "%s", strStatus.c_str());
-        }
+        boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+        m_oInitialValueSet.m_i64TSNoiseDiodeSelect_us = i64Timestamp_us;
+        m_oInitialValueSet.m_i32VNoiseDiodeSelect = i32NoiseDiodeSelect;
+        sprintf(m_oInitialValueSet.m_chaNoiseDiodeSelectStatus, "%s", strStatus.c_str());
     }
-    else
+    if(getState() == RECORDING)
         m_pHDF5File->addNoiseDiodeSelect(i64Timestamp_us, i32NoiseDiodeSelect, strStatus);
 }
 
@@ -971,7 +938,7 @@ void cHDF5FileWriter::rNoiseDiodePWMMark_callback(int64_t i64Timestamp_us, int32
         m_oInitialValueSet.m_i32VNoiseDiodePWMMark = i32NoiseDiodePWMMark;
         sprintf(m_oInitialValueSet.m_chaNoiseDiodePWMMarkStatus, "%s", strStatus.c_str());
     }
-    else
+    if(getState() == RECORDING)
         m_pHDF5File->addNoiseDiodePWMMark(i64Timestamp_us, i32NoiseDiodePWMMark, strStatus);
 }
 
@@ -984,7 +951,7 @@ void cHDF5FileWriter::rNoiseDiodePWMFrequency_callback(int64_t i64Timestamp_us, 
         m_oInitialValueSet.m_dVNoiseDiodePWMFrequency_Hz = dNoiseDiodePWMFrequency;
         sprintf(m_oInitialValueSet.m_chaNoiseDiodePWMFrequencyStatus, "%s", strStatus.c_str());
     }
-    else
+    if(getState() == RECORDING)
         m_pHDF5File->addNoiseDiodePWMFrequency(i64Timestamp_us, dNoiseDiodePWMFrequency, strStatus);
 }
 
@@ -998,33 +965,27 @@ void cHDF5FileWriter::sourceSelection_callback(int64_t i64Timestamp_us, const st
 
 void cHDF5FileWriter::frequencySelectLcp_callback(int64_t i64Timestamp_us, bool bFrequencySelectLcp, const string &strStatus)
 {
-    if(getState() != RECORDING)
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSFrequencySelectLcp_us)
     {
-        if (i64Timestamp_us > m_oInitialValueSet.m_i64TSFrequencySelectLcp_us)
-        {
-            boost::unique_lock<boost::shared_mutex>  oLock(m_oMutex);
-            m_oInitialValueSet.m_i64TSFrequencySelectLcp_us = i64Timestamp_us;
-            m_oInitialValueSet.m_chVFrequencySelectLcp = bFrequencySelectLcp;
-            sprintf(m_oInitialValueSet.m_chaFrequencySelectLcpStatus, "%s", strStatus.c_str());
-        }
+        boost::unique_lock<boost::shared_mutex>  oLock(m_oMutex);
+        m_oInitialValueSet.m_i64TSFrequencySelectLcp_us = i64Timestamp_us;
+        m_oInitialValueSet.m_chVFrequencySelectLcp = bFrequencySelectLcp;
+        sprintf(m_oInitialValueSet.m_chaFrequencySelectLcpStatus, "%s", strStatus.c_str());
     }
-    else
+    if(getState() == RECORDING)
         m_pHDF5File->addFrequencySelectLcp(i64Timestamp_us, bFrequencySelectLcp, strStatus);
 }
 
 void cHDF5FileWriter::frequencySelectRcp_callback(int64_t i64Timestamp_us, bool bFrequencySelectRcp, const string &strStatus)
 {
-    if(getState() != RECORDING)
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSFrequencySelectRcp_us)
     {
-        if (i64Timestamp_us > m_oInitialValueSet.m_i64TSFrequencySelectRcp_us)
-        {
-            boost::unique_lock<boost::shared_mutex>  oLock(m_oMutex);
-            m_oInitialValueSet.m_i64TSFrequencySelectRcp_us = i64Timestamp_us;
-            m_oInitialValueSet.m_chVFrequencySelectRcp = bFrequencySelectRcp;
-            sprintf(m_oInitialValueSet.m_chaFrequencySelectRcpStatus, "%s", strStatus.c_str());
-        }
+        boost::unique_lock<boost::shared_mutex>  oLock(m_oMutex);
+        m_oInitialValueSet.m_i64TSFrequencySelectRcp_us = i64Timestamp_us;
+        m_oInitialValueSet.m_chVFrequencySelectRcp = bFrequencySelectRcp;
+        sprintf(m_oInitialValueSet.m_chaFrequencySelectRcpStatus, "%s", strStatus.c_str());
     }
-    else
+    if(getState() == RECORDING)
         m_pHDF5File->addFrequencySelectRcp(i64Timestamp_us, bFrequencySelectRcp, strStatus);
 }
 
@@ -1070,113 +1031,92 @@ void cHDF5FileWriter::receiverBandwidthRcp_callback(int64_t i64Timestamp_us, dou
 
 void cHDF5FileWriter::receiverLcpAttenuation_callback(int64_t i64Timestamp_us, double dReceiverLcpAttenuation_dB, const string &strStatus)
 {
-    if(getState() != RECORDING)
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSReceiverLcpAtten_us)
     {
-        if (i64Timestamp_us > m_oInitialValueSet.m_i64TSReceiverLcpAtten_us)
-        {
-            boost::unique_lock<boost::shared_mutex>  oLock(m_oMutex);
-            m_oInitialValueSet.m_i64TSReceiverLcpAtten_us = i64Timestamp_us;
-            m_oInitialValueSet.m_dVReceiverLcpAtten_dB = dReceiverLcpAttenuation_dB;
-            sprintf(m_oInitialValueSet.m_chaReceiverLcpAttenStatus, "%s", strStatus.c_str());
-        }
+        boost::unique_lock<boost::shared_mutex>  oLock(m_oMutex);
+        m_oInitialValueSet.m_i64TSReceiverLcpAtten_us = i64Timestamp_us;
+        m_oInitialValueSet.m_dVReceiverLcpAtten_dB = dReceiverLcpAttenuation_dB;
+        sprintf(m_oInitialValueSet.m_chaReceiverLcpAttenStatus, "%s", strStatus.c_str());
     }
-    else
+    if(getState() == RECORDING)
         m_pHDF5File->addReceiverLcpAttenuation(i64Timestamp_us, dReceiverLcpAttenuation_dB, strStatus);
 }
 
 void cHDF5FileWriter::receiverRcpAttenuation_callback(int64_t i64Timestamp_us, double dReceiverRcpAttenuation_dB, const string &strStatus)
 {
-    if(getState() != RECORDING)
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSReceiverRcpAtten_us)
     {
-        if (i64Timestamp_us > m_oInitialValueSet.m_i64TSReceiverRcpAtten_us)
-        {
-            boost::unique_lock<boost::shared_mutex>  oLock(m_oMutex);
-            m_oInitialValueSet.m_i64TSReceiverRcpAtten_us = i64Timestamp_us;
-            m_oInitialValueSet.m_dVReceiverRcpAtten_dB = dReceiverRcpAttenuation_dB;
-            sprintf(m_oInitialValueSet.m_chaReceiverRcpAttenStatus, "%s", strStatus.c_str());
-        }
+        boost::unique_lock<boost::shared_mutex>  oLock(m_oMutex);
+        m_oInitialValueSet.m_i64TSReceiverRcpAtten_us = i64Timestamp_us;
+        m_oInitialValueSet.m_dVReceiverRcpAtten_dB = dReceiverRcpAttenuation_dB;
+        sprintf(m_oInitialValueSet.m_chaReceiverRcpAttenStatus, "%s", strStatus.c_str());
     }
-    else
+    if(getState() == RECORDING)
         m_pHDF5File->addReceiverRcpAttenuation(i64Timestamp_us, dReceiverRcpAttenuation_dB, strStatus);
 }
 
 void cHDF5FileWriter::envWindSpeed_callback(int64_t i64Timestamp_us, double dWindSpeed_mps, const string &strStatus)
 {
-    if(getState() != RECORDING) // Update initial values if the stored ones are older than the received ones.
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSWindSpeed_us)
     {
-        if (i64Timestamp_us > m_oInitialValueSet.m_i64TSWindSpeed_us)
-        {
-            boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
-            m_oInitialValueSet.m_i64TSWindSpeed_us = i64Timestamp_us;
-            m_oInitialValueSet.m_dVWindSpeed_mps = dWindSpeed_mps;
-            sprintf(m_oInitialValueSet.m_chaWindSpeedStatus, "%s", strStatus.c_str());
-        }
+        boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+        m_oInitialValueSet.m_i64TSWindSpeed_us = i64Timestamp_us;
+        m_oInitialValueSet.m_dVWindSpeed_mps = dWindSpeed_mps;
+        sprintf(m_oInitialValueSet.m_chaWindSpeedStatus, "%s", strStatus.c_str());
     }
-    else
+    if(getState() == RECORDING)
         m_pHDF5File->addWindSpeed(i64Timestamp_us, dWindSpeed_mps, strStatus);
 }
 
 void cHDF5FileWriter::envWindDirection_callback(int64_t i64Timestamp_us, double dWindDirection_degrees, const string &strStatus)
 {
-    if(getState() != RECORDING) // Update initial values if the stored ones are older than the received ones.
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSWindDirection_us)
     {
-        if (i64Timestamp_us > m_oInitialValueSet.m_i64TSWindDirection_us)
-        {
-            boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
-            m_oInitialValueSet.m_i64TSWindDirection_us = i64Timestamp_us;
-            m_oInitialValueSet.m_dVWindDirection_deg = dWindDirection_degrees;
-            sprintf(m_oInitialValueSet.m_chaWindDirectionStatus, "%s", strStatus.c_str());
-        }
+        boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+        m_oInitialValueSet.m_i64TSWindDirection_us = i64Timestamp_us;
+        m_oInitialValueSet.m_dVWindDirection_deg = dWindDirection_degrees;
+        sprintf(m_oInitialValueSet.m_chaWindDirectionStatus, "%s", strStatus.c_str());
     }
-    else
+    if(getState() == RECORDING)
         m_pHDF5File->addWindDirection(i64Timestamp_us, dWindDirection_degrees, strStatus);
 }
 
 void cHDF5FileWriter::envTemperature_callback(int64_t i64Timestamp_us, double dTemperature_degreesC, const string &strStatus)
 {
-    if(getState() != RECORDING) // Update initial values if the stored ones are older than the received ones.
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSTemperature_us)
     {
-        if (i64Timestamp_us > m_oInitialValueSet.m_i64TSTemperature_us)
-        {
-            boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
-            m_oInitialValueSet.m_i64TSTemperature_us = i64Timestamp_us;
-            m_oInitialValueSet.m_dVTemperature_degC = dTemperature_degreesC;
-            sprintf(m_oInitialValueSet.m_chaTemperatureStatus, "%s", strStatus.c_str());
-        }
+        boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+        m_oInitialValueSet.m_i64TSTemperature_us = i64Timestamp_us;
+        m_oInitialValueSet.m_dVTemperature_degC = dTemperature_degreesC;
+        sprintf(m_oInitialValueSet.m_chaTemperatureStatus, "%s", strStatus.c_str());
     }
-    else
+    if(getState() == RECORDING)
         m_pHDF5File->addTemperature(i64Timestamp_us, dTemperature_degreesC, strStatus);
 }
 
 void cHDF5FileWriter::envAbsolutePressure_callback(int64_t i64Timestamp_us, double dPressure_mbar, const string &strStatus)
 {
-    if(getState() != RECORDING) // Update initial values if the stored ones are older than the received ones.
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSAbsolutePressure_us)
     {
-        if (i64Timestamp_us > m_oInitialValueSet.m_i64TSAbsolutePressure_us)
-        {
-            boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
-            m_oInitialValueSet.m_i64TSAbsolutePressure_us = i64Timestamp_us;
-            m_oInitialValueSet.m_dVAbsolutePressure_mbar = dPressure_mbar;
-            sprintf(m_oInitialValueSet.m_chaAbsolutePressureStatus, "%s", strStatus.c_str());
-        }
+        boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+        m_oInitialValueSet.m_i64TSAbsolutePressure_us = i64Timestamp_us;
+        m_oInitialValueSet.m_dVAbsolutePressure_mbar = dPressure_mbar;
+        sprintf(m_oInitialValueSet.m_chaAbsolutePressureStatus, "%s", strStatus.c_str());
     }
-    else
+    if(getState() == RECORDING)
         m_pHDF5File->addAbsolutePressure(i64Timestamp_us, dPressure_mbar, strStatus);
 }
 
 void cHDF5FileWriter::envRelativeHumidity_callback(int64_t i64Timestamp_us, double dHumidity_percent, const string &strStatus)
 {
-    if(getState() != RECORDING) // Update initial values if the stored ones are older than the received ones.
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSRelativeHumidity_us)
     {
-        if (i64Timestamp_us > m_oInitialValueSet.m_i64TSRelativeHumidity_us)
-        {
-            boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
-            m_oInitialValueSet.m_i64TSRelativeHumidity_us = i64Timestamp_us;
-            m_oInitialValueSet.m_dVRelativeHumidity_percent = dHumidity_percent;
-            sprintf(m_oInitialValueSet.m_chaRelativeHumidityStatus, "%s", strStatus.c_str());
-        }
+        boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+        m_oInitialValueSet.m_i64TSRelativeHumidity_us = i64Timestamp_us;
+        m_oInitialValueSet.m_dVRelativeHumidity_percent = dHumidity_percent;
+        sprintf(m_oInitialValueSet.m_chaRelativeHumidityStatus, "%s", strStatus.c_str());
     }
-    else
+    if(getState() == RECORDING)
         m_pHDF5File->addRelativeHumidity(i64Timestamp_us, dHumidity_percent, strStatus);
 }
 

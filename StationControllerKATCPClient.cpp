@@ -29,6 +29,38 @@ cStationControllerKATCPClient::cStationControllerKATCPClient() :
     m_vstrSensorSampling.push_back("acs.request-azim period 1000");
     m_vstrSensorSampling.push_back("acs.request-elev period 1000");
 
+    // Pointing model
+    m_vstrSensorSampling.push_back("SCM.pmodel1 event");
+    m_vstrSensorSampling.push_back("SCM.pmodel2 event");
+    m_vstrSensorSampling.push_back("SCM.pmodel3 event");
+    m_vstrSensorSampling.push_back("SCM.pmodel4 event");
+    m_vstrSensorSampling.push_back("SCM.pmodel5 event");
+    m_vstrSensorSampling.push_back("SCM.pmodel6 event");
+    m_vstrSensorSampling.push_back("SCM.pmodel7 event");
+    m_vstrSensorSampling.push_back("SCM.pmodel8 event");
+    m_vstrSensorSampling.push_back("SCM.pmodel9 event");
+    m_vstrSensorSampling.push_back("SCM.pmodel10 event");
+    m_vstrSensorSampling.push_back("SCM.pmodel11 event");
+    m_vstrSensorSampling.push_back("SCM.pmodel12 event");
+    m_vstrSensorSampling.push_back("SCM.pmodel13 event");
+    m_vstrSensorSampling.push_back("SCM.pmodel14 event");
+    m_vstrSensorSampling.push_back("SCM.pmodel15 event");
+    m_vstrSensorSampling.push_back("SCM.pmodel16 event");
+    m_vstrSensorSampling.push_back("SCM.pmodel17 event");
+    m_vstrSensorSampling.push_back("SCM.pmodel18 event");
+    m_vstrSensorSampling.push_back("SCM.pmodel19 event");
+    m_vstrSensorSampling.push_back("SCM.pmodel20 event");
+    m_vstrSensorSampling.push_back("SCM.pmodel21 event");
+    m_vstrSensorSampling.push_back("SCM.pmodel22 event");
+    m_vstrSensorSampling.push_back("SCM.pmodel23 event");
+    m_vstrSensorSampling.push_back("SCM.pmodel24 event");
+    m_vstrSensorSampling.push_back("SCM.pmodel25 event");
+    m_vstrSensorSampling.push_back("SCM.pmodel26 event");
+    m_vstrSensorSampling.push_back("SCM.pmodel27 event");
+    m_vstrSensorSampling.push_back("SCM.pmodel28 event");
+    m_vstrSensorSampling.push_back("SCM.pmodel29 event");
+    m_vstrSensorSampling.push_back("SCM.pmodel30 event");
+
     // Signal-chain values.
     m_vstrSensorSampling.push_back("RFC.IntermediateStage_5GHz event");
     m_vstrSensorSampling.push_back("RFC.IntermediateStage_6_7GHz event");
