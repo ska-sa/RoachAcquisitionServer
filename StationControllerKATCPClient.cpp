@@ -259,6 +259,40 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
     }
     */
 
+    if (    !vstrTokens[3].compare("SCM.pmodel1") ||
+            !vstrTokens[3].compare("SCM.pmodel2") ||
+            !vstrTokens[3].compare("SCM.pmodel3") ||
+            !vstrTokens[3].compare("SCM.pmodel4") ||
+            !vstrTokens[3].compare("SCM.pmodel5") ||
+            !vstrTokens[3].compare("SCM.pmodel6") ||
+            !vstrTokens[3].compare("SCM.pmodel7") ||
+            !vstrTokens[3].compare("SCM.pmodel8") ||
+            !vstrTokens[3].compare("SCM.pmodel9") ||
+            !vstrTokens[3].compare("SCM.pmodel10") ||
+            !vstrTokens[3].compare("SCM.pmodel11") ||
+            !vstrTokens[3].compare("SCM.pmodel12") ||
+            !vstrTokens[3].compare("SCM.pmodel13") ||
+            !vstrTokens[3].compare("SCM.pmodel14") ||
+            !vstrTokens[3].compare("SCM.pmodel15") ||
+            !vstrTokens[3].compare("SCM.pmodel16") ||
+            !vstrTokens[3].compare("SCM.pmodel17") ||
+            !vstrTokens[3].compare("SCM.pmodel18") ||
+            !vstrTokens[3].compare("SCM.pmodel19") ||
+            !vstrTokens[3].compare("SCM.pmodel20") ||
+            !vstrTokens[3].compare("SCM.pmodel21") ||
+            !vstrTokens[3].compare("SCM.pmodel22") ||
+            !vstrTokens[3].compare("SCM.pmodel23") ||
+            !vstrTokens[3].compare("SCM.pmodel24") ||
+            !vstrTokens[3].compare("SCM.pmodel25") ||
+            !vstrTokens[3].compare("SCM.pmodel26") ||
+            !vstrTokens[3].compare("SCM.pmodel27") ||
+            !vstrTokens[3].compare("SCM.pmodel28") ||
+            !vstrTokens[3].compare("SCM.pmodel29") ||
+            !vstrTokens[3].compare("SCM.pmodel30")      )
+    {
+        sendPointingModelParameter( strtol(vstrTokens[3].substr(10,vstrTokens[3].size() - 10).c_str(), NULL, 10), strtod(vstrTokens[5].c_str(), NULL));
+    }
+
     if(!vstrTokens[3].compare("RFC.NoiseDiode_1"))
     {
         sendNoiseDiodeState( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtol(vstrTokens[5].c_str(), NULL, 10), vstrTokens[4].c_str() );
@@ -659,6 +693,26 @@ void cStationControllerKATCPClient::sendActualAntennaDec(int64_t i64Timestamp_us
     }
 }
 */
+
+void cStationControllerKATCPClient::sendPointingModelParameter(uint8_t ui8ParameterNumber, double dParameterValue)
+{
+    boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
+
+    //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
+    //to call function added in the derived version of the callback handler interface class
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
+    {
+        cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
+        pHandler->pointingModel_callback(ui8ParameterNumber, dParameterValue);
+    }
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
+    {
+        boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
+        pHandler->pointingModel_callback(ui8ParameterNumber, dParameterValue);
+    }
+}
 
 void cStationControllerKATCPClient::sendAntennaStatus(int64_t i64Timestamp_us, std::string strAntennaStatus, const string &strStatus)
 {

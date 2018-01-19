@@ -31,6 +31,8 @@ public:
         virtual void                                    skyActualAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus) = 0;
         virtual void                                    skyActualEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus) = 0;
 
+        virtual void                                    pointingModel_callback(uint8_t i8ParameterNumber, double dParameterValue) = 0;
+
         virtual void                                    antennaStatus_callback(int64_t i64Timestamp_us, const std::string &strAntennaStatus, const std::string &strStatus) = 0;
 
         //Global experiment values
@@ -95,6 +97,7 @@ private:
     void                                                sendSkyActualAntennaAz(int64_t i64Timestamp_us,double dAzimuth_deg, const std::string &strStatus);
     void                                                sendSkyActualAntennaEl(int64_t i64Timestamp_us,double dElevation_deg, const std::string &strStatus);
 
+    void                                                sendPointingModelParameter(uint8_t ui8ParameterNumber, double dParameterValue);
     // TODO: Figure out what to do about this one.
     void                                                sendAntennaStatus(int64_t i64Timestamp_us, std::string strAntennaStatus, const std::string &strStatus);
 

@@ -87,6 +87,8 @@ class cHDF5FileWriter : public cSpectrometerDataStreamInterpreter::cCallbackInte
         double  m_dVSkyActualElev_deg;
         char    m_chaSkyActualElevStatus[7];
 
+        double  m_aPointingModel[30];
+
         // Receiver chain intermediate LO frequency - 5GHz LO - cTimestampedDouble
         int64_t m_i64TSReceiverLOFreqIntermediate5GHz_us;
         double  m_dVReceiverLOFreqIntermediate5GHz_Hz;
@@ -228,19 +230,11 @@ public:
     void                                                skyRequestedEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus);
     void                                                skyActualAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus);
     void                                                skyActualEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus);
-    /* Marked for removal.
-    void                                                actualSourceOffsetAz_callback(int64_t i64Timestamp_us, double dAzimuthOffset_deg, const std::string &strStatus);
-    void                                                actualSourceOffsetEl_callback(int64_t i64Timestamp_us, double dElevationOffset_deg, const std::string &strStatus);
-    void                                                actualAntennaRA_callback(int64_t i64Timestamp_us, double dRighAscension_deg, const std::string &strStatus);
-    void                                                actualAntennaDec_callback(int64_t i64Timestamp_us, double dDeclination_deg, const std::string &strStatus);
-    */
+
+    void                                                pointingModel_callback(uint8_t ui8ParameterNumber, double dParameterValue);
+
     void                                                antennaStatus_callback(int64_t i64Timestamp_us, const std::string &strAntennaStatus, const std::string &strStatus);
-    /* Marked for removal.
-    void                                                motorTorqueAzMaster_callback(int64_t i64Timestamp_us, double dAzMaster_mNm, const std::string &strStatus);
-    void                                                motorTorqueAzSlave_callback(int64_t i64Timestamp_us, double dAzSlave_mNm, const std::string &strStatus);
-    void                                                motorTorqueElMaster_callback(int64_t i64Timestamp_us, double dElMaster_mNm, const std::string &strStatus);
-    void                                                motorTorqueElSlave_callback(int64_t i64Timestamp_us, double dElSlave_mNm, const std::string &strStatus);
-    */
+
     void                                                appliedPointingModel_callback(const std::string &strModelName, const std::vector<double> &vdPointingModelParams);
     void                                                antennaName_callback(const std::string &strAntennaName);
     void                                                antennaDiameter_callback(const std::string &strAntennaDiameter);

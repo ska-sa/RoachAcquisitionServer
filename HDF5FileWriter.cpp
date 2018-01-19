@@ -59,6 +59,9 @@ cHDF5FileWriter::cHDF5FileWriter(const string &strRecordingDirectory, uint32_t u
         m_oInitialValueSet.m_dVSkyActualElev_deg = 0;
         sprintf(m_oInitialValueSet.m_chaSkyActualElevStatus, "0");
 
+        for (int i = 0; i < 30; i++)
+            m_oInitialValueSet.m_aPointingModel[i] = 0;
+
         m_oInitialValueSet.m_i64TSReceiverLOFreqIntermediate5GHz_us = 0;
         m_oInitialValueSet.m_dVReceiverLOFreqIntermediate5GHz_Hz = 0;
         sprintf(m_oInitialValueSet.m_chaReceiverLOFreqIntermediate5GHzStatus, "0");
@@ -315,6 +318,8 @@ void cHDF5FileWriter::getNextFrame_callback(const std::vector<int> &vi32Chan0, c
             m_pHDF5File->addSkyActualEl(m_oInitialValueSet.m_i64TSSkyActualElev_us,
                                         m_oInitialValueSet.m_dVSkyActualElev_deg,
                                         m_oInitialValueSet.m_chaSkyActualElevStatus);
+        for (int i = 0; i < 30; i++)
+            m_pHDF5File->addPointingModelParameter(i, m_oInitialValueSet.m_aPointingModel[i]);
         if (m_oInitialValueSet.m_i64TSReceiverLOFreqIntermediate5GHz_us)
             m_pHDF5File->addFrequencyLOIntermed5GHz(m_oInitialValueSet.m_i64TSReceiverLOFreqIntermediate5GHz_us,
                                                         m_oInitialValueSet.m_dVReceiverLOFreqIntermediate5GHz_Hz,
@@ -834,6 +839,16 @@ void cHDF5FileWriter::skyActualEl_callback(int64_t i64Timestamp_us, double dElev
         m_pHDF5File->addSkyActualEl(i64Timestamp_us, dElevation_deg, strStatus);
 }
 
+void cHDF5FileWriter::pointingModel_callback(uint8_t ui8ParameterNumber, double dParameterValue)
+{
+    {
+        boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+        m_oInitialValueSet.m_aPointingModel[ui8ParameterNumber - 1] = dParameterValue;
+    }
+    if (getState() == RECORDING)
+        m_pHDF5File->addPointingModelParameter(ui8ParameterNumber - 1, dParameterValue);
+}
+
 void cHDF5FileWriter::antennaStatus_callback(int64_t i64Timestamp_us, const string &strAntennaStatus, const string &strStatus)
 {
     if(getState() != RECORDING)
@@ -847,7 +862,7 @@ void cHDF5FileWriter::appliedPointingModel_callback(const string &strModelName, 
     if(getState() != RECORDING)
         return;
 
-    m_pHDF5File->setAppliedPointingModel(strModelName, vdPointingModelParams);
+    //m_pHDF5File->setAppliedPointingModel(strModelName, vdPointingModelParams);
 }
 
 void cHDF5FileWriter::antennaName_callback(const string &strAntennaName)
