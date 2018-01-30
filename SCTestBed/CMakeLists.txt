@@ -4,7 +4,8 @@ cmake_minimum_required(VERSION 2.8)
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
 ##Add the source files we want to build (best done explicitly)
-file(GLOB SRC_LIST "./*.cpp")
+file(GLOB SRC_LIST "./*.cpp"
+                    "../AVNUtilLibs/Sockets/InterruptibleBlockingSockets/*.cpp")
 
 add_definitions(-DUSE_BOOST_TIME) #Use boost library for current time derivation in AVNUtilLibs/Timestamp/Timestamp.cpp
 add_definitions(-DKATCP_USE_FLOATS) #Adding floating point support for KATCP sensors
@@ -58,4 +59,3 @@ elseif(CMAKE_BUILD_TYPE MATCHES "Release")
 endif()
 
 message(STATUS "Make generation finished for build type " ${CMAKE_BUILD_TYPE})
-
