@@ -27,12 +27,16 @@ int extract_dontcare_boolean_katcp(struct katcp_dispatch *d, struct katcp_sensor
 }
 
 // Define static members of cKATCPServer
-double                            cKATCPServer::m_dSkyActualAzim_deg;
 boost::scoped_ptr<boost::thread>  cKATCPServer::m_pKATCPThread;
 struct katcp_dispatch             *cKATCPServer::m_pKATCPDispatch;
-std::string                                         cKATCPServer::m_strListenInterface;
-uint16_t                                            cKATCPServer::m_u16Port;
-uint32_t                                            cKATCPServer::m_u32MaxClients;
+std::string                       cKATCPServer::m_strListenInterface;
+uint16_t                          cKATCPServer::m_u16Port;
+uint32_t                          cKATCPServer::m_u32MaxClients;
+
+boost::shared_mutex               cKATCPServer::m_oMutex;
+
+double                            cKATCPServer::m_dSkyActualAzim_deg;
+
 
 cKATCPServer::cKATCPServer(const string &strListenInterface, uint16_t u16Port, uint32_t u32MaxClients)
 {
@@ -98,6 +102,13 @@ void cKATCPServer::serverThreadFunction()
   //Add a version number to KATCTP server
   add_version_katcp(m_pKATCPDispatch, const_cast<char*>("StationControllerSimulator"), 0, const_cast<char*>("0.9"), &oSSCompileTime.str()[0]);
 
+  // Sensors go in here.
+  register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                const_cast<char*>("SCM.actual-azim"),
+                                const_cast<char*>("Sky-space actual azimuth."),
+                                const_cast<char*>("deg"),
+                                &getSkyActualAzim_callback, NULL, NULL, 0, 10e9, NULL);
+
   //Make a server listening interface from hostname and port string
   stringstream oSSServer;
   oSSServer << m_strListenInterface;
@@ -111,4 +122,11 @@ void cKATCPServer::serverThreadFunction()
 
   cout << "Exiting server thread." << endl;
 
+}
+
+double cKATCPServer::getSkyActualAzim_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_dSkyActualAzim_deg;
 }
