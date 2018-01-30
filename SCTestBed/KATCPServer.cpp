@@ -29,11 +29,13 @@ int extract_dontcare_boolean_katcp(struct katcp_dispatch *d, struct katcp_sensor
 // Define static members of cKATCPServer
 boost::scoped_ptr<boost::thread>  cKATCPServer::m_pKATCPThread;
 struct katcp_dispatch             *cKATCPServer::m_pKATCPDispatch;
+boost::scoped_ptr<boost::thread>  cKATCPServer::m_pSimulatorThread;
 std::string                       cKATCPServer::m_strListenInterface;
 uint16_t                          cKATCPServer::m_u16Port;
 uint32_t                          cKATCPServer::m_u32MaxClients;
 
 boost::shared_mutex               cKATCPServer::m_oMutex;
+bool                              cKATCPServer::m_bStopSimulation = false;
 
 double                            cKATCPServer::m_dSkyActualAzim_deg;
 
@@ -61,11 +63,17 @@ void cKATCPServer::startServer(const std::string &strListenInterface, uint16_t u
   m_u32MaxClients         = u32MaxClients;
 
   m_pKATCPThread.reset(new boost::thread(&cKATCPServer::serverThreadFunction));
+  m_pSimulatorThread.reset(new boost::thread(&cKATCPServer::dataSimulatorThreadFunction));
 }
 
 void cKATCPServer::stopServer()
 {
   cout << "Stopping KATCP server." << endl;
+
+  {
+    boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+    m_bStopSimulation = true;
+  }
 
   terminate_katcp(m_pKATCPDispatch, KATCP_EXIT_QUIT); //Stops server
 
@@ -75,8 +83,11 @@ void cKATCPServer::stopServer()
       cInterruptibleBlockingTCPSocket oTempSocket(m_strListenInterface, m_u16Port);
   }
 
-  //Now we can join the server thread
+  //Now we can join the threads
+  m_pSimulatorThread->join();
   m_pKATCPThread->join();
+
+  m_pSimulatorThread.reset();
   m_pKATCPThread.reset();
 
   shutdown_katcp(m_pKATCPDispatch); //Cleans up memory of the dispatch struct
@@ -129,4 +140,23 @@ double cKATCPServer::getSkyActualAzim_callback(struct katcp_dispatch *pD, struct
   boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
 
   return m_dSkyActualAzim_deg;
+}
+
+void cKATCPServer::dataSimulatorThreadFunction()
+{
+  // Random seed, commented out for the time being.
+  // srand(time(NULL));
+  while (1)
+  {
+    {
+      boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+
+      if (m_bStopSimulation)
+        break;
+
+      m_dSkyActualAzim_deg += (float)((rand() % 100) - 50) / 100;
+    }
+    boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
+  }
+  cout << "Data simulator thread exiting." << endl;
 }

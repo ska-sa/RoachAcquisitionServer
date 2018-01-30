@@ -24,6 +24,7 @@ public:
   static void startServer(const std::string &strListenInterface, uint16_t u16Port, uint32_t u32MaxClients);
   static void stopServer();
   static void serverThreadFunction();
+  static void dataSimulatorThreadFunction();
 
 protected:
   static double    getSkyActualAzim_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
@@ -36,8 +37,10 @@ private:
 
   static boost::scoped_ptr<boost::thread> m_pKATCPThread;
   static struct katcp_dispatch            *m_pKATCPDispatch;
+  static boost::scoped_ptr<boost::thread> m_pSimulatorThread;
 
   static boost::shared_mutex              m_oMutex;
+  static bool                             m_bStopSimulation;
 
   static double                           m_dSkyActualAzim_deg;
 
