@@ -37,7 +37,7 @@ extern "C" {
 #include "StationControllerKATCPClient.h"
 
 //This class is pure static to allow callback functions to comply with the C callback format required by the KATCP library.
-//This means only a single instance of this class can exist but this should suite just about every use case.
+//This means only a single instance of this class can exist but this should suit just about every use case.
 //It seems unlikely that an application would require multiple servers. In this case the class can, however, be cloned.
 
 //NB use of this class requires libkatcp compiled with -DKATCP_USE_FLOATS to enable double based sensors.
