@@ -36,6 +36,51 @@ protected:
   static double     getAntennaRequestedAzim_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
   static double     getAntennaRequestedElev_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
 
+  static double     getP1_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+  static double     getP2_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+  static double     getP3_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+  static double     getP4_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+  static double     getP5_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+  static double     getP6_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+  static double     getP7_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+  static double     getP8_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+  static double     getP9_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+  static double     getP10_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+  static double     getP11_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+  static double     getP12_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+  static double     getP13_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+  static double     getP14_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+  static double     getP15_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+  static double     getP16_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+  static double     getP17_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+  static double     getP18_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+  static double     getP19_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+  static double     getP20_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+  static double     getP21_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+  static double     getP22_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+  static double     getP23_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+  static double     getP24_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+  static double     getP25_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+  static double     getP26_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+  static double     getP27_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+  static double     getP28_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+  static double     getP29_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+  static double     getP30_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+
+  static double getRFCIntermediate5GHz_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+  static double getRFCIntermediate6p7GHz_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+  static double getFinalStage_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+  static double getLCPAttenuation_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+  static double getRCPAttenuation_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+  static int   getLCPFreqSel_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+  static int   getRCPFreqSel_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+
+  static double getWindSpeed_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+  static double getWindDirection_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+  static double getTemperature_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+  static double getAbsolutePressure_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+  static double getRelativeHumidity_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+
 
 private:
 
@@ -96,7 +141,11 @@ private:
   static double                           m_dLCPAttenuation_dB;
   static double                           m_dRCPAttenuation_dB;
   static bool                             m_bLCPFreqSel;
+  static struct katcp_acquire*            m_pKALCPFreqSel;
   static bool                             m_bRCPFreqSel;
+  static struct katcp_acquire*            m_pKARCPFreqSel;
+
+  static uint16_t                         m_ui16NoiseDiodeState;
 
   static double                           m_dWindSpeed_mps;
   static double                           m_dWindDirection_deg;

@@ -46,6 +46,55 @@ double                            cKATCPServer::m_dAntennaActualElev_deg;
 double                            cKATCPServer::m_dAntennaRequestedAzim_deg;
 double                            cKATCPServer::m_dAntennaRequestedElev_deg;
 
+double                           cKATCPServer::m_dP1;
+double                           cKATCPServer::m_dP2;
+double                           cKATCPServer::m_dP3;
+double                           cKATCPServer::m_dP4;
+double                           cKATCPServer::m_dP5;
+double                           cKATCPServer::m_dP6;
+double                          cKATCPServer::m_dP7;
+double                           cKATCPServer::m_dP8;
+double                           cKATCPServer::m_dP9;
+double                           cKATCPServer::m_dP10;
+double                           cKATCPServer::m_dP11;
+double                           cKATCPServer::m_dP12;
+double                          cKATCPServer::m_dP13;
+double                          cKATCPServer::m_dP14;
+double                          cKATCPServer::m_dP15;
+double                           cKATCPServer::m_dP16;
+double                           cKATCPServer::m_dP17;
+double                           cKATCPServer::m_dP18;
+double                           cKATCPServer::m_dP19;
+double                           cKATCPServer::m_dP20;
+double                           cKATCPServer::m_dP21;
+double                           cKATCPServer::m_dP22;
+double                           cKATCPServer::m_dP23;
+double                           cKATCPServer::m_dP24;
+double                           cKATCPServer::m_dP25;
+double                           cKATCPServer::m_dP26;
+double                           cKATCPServer::m_dP27;
+double                           cKATCPServer::m_dP28;
+double                           cKATCPServer::m_dP29;
+double                           cKATCPServer::m_dP30;
+
+double                           cKATCPServer::m_dRFCIntermediate5GHz_Hz;
+double                           cKATCPServer::m_dRFCIntermediate6p7GHz_Hz;
+double                           cKATCPServer::m_dFinalStage_Hz;
+double                           cKATCPServer::m_dLCPAttenuation_dB;
+double                           cKATCPServer::m_dRCPAttenuation_dB;
+bool                             cKATCPServer::m_bLCPFreqSel;
+struct katcp_acquire*            cKATCPServer::m_pKALCPFreqSel;
+bool                             cKATCPServer::m_bRCPFreqSel;
+struct katcp_acquire*            cKATCPServer::m_pKARCPFreqSel;
+
+uint16_t                         cKATCPServer::m_ui16NoiseDiodeState;
+
+double                           cKATCPServer::m_dWindSpeed_mps;
+double                           cKATCPServer::m_dWindDirection_deg;
+double                           cKATCPServer::m_dTemperature_degC;
+double                           cKATCPServer::m_dAbsolutePressure_mbar;
+double                           cKATCPServer::m_dRelativeHumidity_percent;
+
 cKATCPServer::cKATCPServer(const string &strListenInterface, uint16_t u16Port, uint32_t u32MaxClients)
 {
   cout << "Starting Station Controller virtualiser..." << endl;
@@ -168,6 +217,264 @@ void cKATCPServer::serverThreadFunction()
                                 const_cast<char*>("deg"),
                                 &getAntennaRequestedElev_callback, NULL, NULL, 0, 90, NULL);
 
+  register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                const_cast<char*>("SCM.pmodel1"),
+                                const_cast<char*>("P1."),
+                                const_cast<char*>(""),
+                                &getP1_callback, NULL, NULL, -5, 5, NULL);
+
+  register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                const_cast<char*>("SCM.pmodel2"),
+                                const_cast<char*>("P2."),
+                                const_cast<char*>(""),
+                                &getP2_callback, NULL, NULL, -5, 5, NULL);
+
+  register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                const_cast<char*>("SCM.pmodel3"),
+                                const_cast<char*>("P3."),
+                                const_cast<char*>(""),
+                                &getP3_callback, NULL, NULL, -5, 5, NULL);
+
+  register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                const_cast<char*>("SCM.pmodel4"),
+                                const_cast<char*>("P4."),
+                                const_cast<char*>(""),
+                                &getP4_callback, NULL, NULL, -5, 5, NULL);
+
+  register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                const_cast<char*>("SCM.pmodel5"),
+                                const_cast<char*>("P5."),
+                                const_cast<char*>(""),
+                                &getP5_callback, NULL, NULL, -5, 5, NULL);
+
+  register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                const_cast<char*>("SCM.pmodel6"),
+                                const_cast<char*>("P6."),
+                                const_cast<char*>(""),
+                                &getP6_callback, NULL, NULL, -5, 5, NULL);
+
+  register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                const_cast<char*>("SCM.pmodel7"),
+                                const_cast<char*>("P7."),
+                                const_cast<char*>(""),
+                                &getP7_callback, NULL, NULL, -5, 5, NULL);
+
+  register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                const_cast<char*>("SCM.pmodel8"),
+                                const_cast<char*>("P8."),
+                                const_cast<char*>(""),
+                                &getP8_callback, NULL, NULL, -5, 5, NULL);
+
+  register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                const_cast<char*>("SCM.pmodel9"),
+                                const_cast<char*>("P9."),
+                                const_cast<char*>(""),
+                                &getP9_callback, NULL, NULL, -5, 5, NULL);
+
+  register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                const_cast<char*>("SCM.pmodel10"),
+                                const_cast<char*>("P10."),
+                                const_cast<char*>(""),
+                                &getP10_callback, NULL, NULL, -5, 5, NULL);
+
+  register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                const_cast<char*>("SCM.pmodel11"),
+                                const_cast<char*>("P11."),
+                                const_cast<char*>(""),
+                                &getP11_callback, NULL, NULL, -5, 5, NULL);
+
+  register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                const_cast<char*>("SCM.pmodel12"),
+                                const_cast<char*>("P12."),
+                                const_cast<char*>(""),
+                                &getP12_callback, NULL, NULL, -5, 5, NULL);
+
+  register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                const_cast<char*>("SCM.pmodel13"),
+                                const_cast<char*>("P13."),
+                                const_cast<char*>(""),
+                                &getP13_callback, NULL, NULL, -5, 5, NULL);
+
+  register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                const_cast<char*>("SCM.pmodel14"),
+                                const_cast<char*>("P14."),
+                                const_cast<char*>(""),
+                                &getP14_callback, NULL, NULL, -5, 5, NULL);
+
+  register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                const_cast<char*>("SCM.pmodel15"),
+                                const_cast<char*>("P15."),
+                                const_cast<char*>(""),
+                                &getP15_callback, NULL, NULL, -5, 5, NULL);
+
+  register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                const_cast<char*>("SCM.pmodel16"),
+                                const_cast<char*>("P16."),
+                                const_cast<char*>(""),
+                                &getP16_callback, NULL, NULL, -5, 5, NULL);
+
+  register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                const_cast<char*>("SCM.pmodel17"),
+                                const_cast<char*>("P17."),
+                                const_cast<char*>(""),
+                                &getP17_callback, NULL, NULL, -5, 5, NULL);
+
+  register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                const_cast<char*>("SCM.pmodel18"),
+                                const_cast<char*>("P18."),
+                                const_cast<char*>(""),
+                                &getP18_callback, NULL, NULL, -5, 5, NULL);
+
+  register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                const_cast<char*>("SCM.pmodel19"),
+                                const_cast<char*>("P19."),
+                                const_cast<char*>(""),
+                                &getP19_callback, NULL, NULL, -5, 5, NULL);
+
+  register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                const_cast<char*>("SCM.pmodel20"),
+                                const_cast<char*>("P20."),
+                                const_cast<char*>(""),
+                                &getP20_callback, NULL, NULL, -5, 5, NULL);
+
+  register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                const_cast<char*>("SCM.pmodel21"),
+                                const_cast<char*>("P21."),
+                                const_cast<char*>(""),
+                                &getP21_callback, NULL, NULL, -5, 5, NULL);
+
+  register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                const_cast<char*>("SCM.pmodel22"),
+                                const_cast<char*>("P22."),
+                                const_cast<char*>(""),
+                                &getP22_callback, NULL, NULL, -5, 5, NULL);
+
+  register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                const_cast<char*>("SCM.pmodel23"),
+                                const_cast<char*>("P23."),
+                                const_cast<char*>(""),
+                                &getP23_callback, NULL, NULL, -5, 5, NULL);
+
+  register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                const_cast<char*>("SCM.pmodel24"),
+                                const_cast<char*>("P24."),
+                                const_cast<char*>(""),
+                                &getP24_callback, NULL, NULL, -5, 5, NULL);
+
+  register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                const_cast<char*>("SCM.pmodel25"),
+                                const_cast<char*>("P25."),
+                                const_cast<char*>(""),
+                                &getP25_callback, NULL, NULL, -5, 5, NULL);
+
+  register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                const_cast<char*>("SCM.pmodel26"),
+                                const_cast<char*>("P26."),
+                                const_cast<char*>(""),
+                                &getP26_callback, NULL, NULL, -5, 5, NULL);
+
+  register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                const_cast<char*>("SCM.pmodel27"),
+                                const_cast<char*>("P27."),
+                                const_cast<char*>(""),
+                                &getP27_callback, NULL, NULL, -5, 5, NULL);
+
+  register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                const_cast<char*>("SCM.pmodel28"),
+                                const_cast<char*>("P28."),
+                                const_cast<char*>(""),
+                                &getP28_callback, NULL, NULL, -5, 5, NULL);
+
+  register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                const_cast<char*>("SCM.pmodel29"),
+                                const_cast<char*>("P29."),
+                                const_cast<char*>(""),
+                                &getP29_callback, NULL, NULL, -5, 5, NULL);
+
+  register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                const_cast<char*>("SCM.pmodel30"),
+                                const_cast<char*>("P30."),
+                                const_cast<char*>(""),
+                                &getP30_callback, NULL, NULL, -5, 5, NULL);
+
+  register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                const_cast<char*>("RFC.IntermediateStage_5GHz"),
+                                const_cast<char*>("Intermediate stage 5 GHz LO freq"),
+                                const_cast<char*>("Hz"),
+                                &getRFCIntermediate5GHz_callback, NULL, NULL, 1e3, 1e9, NULL);
+
+ register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                const_cast<char*>("RFC.IntermediateStage_6_7GHz"),
+                                const_cast<char*>("Intermediate stage 6.7 GHz LO freq"),
+                                const_cast<char*>("Hz"),
+                                &getRFCIntermediate6p7GHz_callback, NULL, NULL, 1e3, 1e9, NULL);
+
+ register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                const_cast<char*>("RFC.FinalStage"),
+                                const_cast<char*>("Final stage LO freq"),
+                                const_cast<char*>("Hz"),
+                                &getFinalStage_callback, NULL, NULL, 1e3, 1e9, NULL);
+
+ register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                               const_cast<char*>("SCM.LcpAttenuation"),
+                               const_cast<char*>("Receiver chain LCP attenuation"),
+                               const_cast<char*>("dB"),
+                               &getLCPAttenuation_callback, NULL, NULL, 0, 31.5, NULL);
+
+ register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                               const_cast<char*>("SCM.RcpAttenuation"),
+                               const_cast<char*>("Receiver chain RCP attenuation"),
+                               const_cast<char*>("dB"),
+                               &getRCPAttenuation_callback, NULL, NULL, 0, 31.5, NULL);
+
+
+                               // TODO: Figure out why these are showing errors when zero. Shouldn't be.
+ m_pKALCPFreqSel = setup_boolean_acquire_katcp(m_pKATCPDispatch, &getLCPFreqSel_callback, NULL, NULL);
+ register_direct_multi_boolean_sensor_katcp(m_pKATCPDispatch, 0,
+                               const_cast<char*>("RFC.LcpFreqSel"),
+                               const_cast<char*>("LCP Frequency Select (0 - 5GHz, 1 - 6.7GHz)"),
+                               const_cast<char*>("none"),
+                               m_pKALCPFreqSel);
+
+ m_pKARCPFreqSel = setup_boolean_acquire_katcp(m_pKATCPDispatch, &getRCPFreqSel_callback, NULL, NULL);
+ register_direct_multi_boolean_sensor_katcp(m_pKATCPDispatch, 0,
+                               const_cast<char*>("RFC.RcpFreqSel"),
+                               const_cast<char*>("RCP Frequency Select (0 - 5GHz, 1 - 6.7GHz)"),
+                               const_cast<char*>("none"),
+                               m_pKARCPFreqSel);
+
+// TODO: Figure out the noise diode thing.
+
+ register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                               const_cast<char*>("EMS.WindSpeed"),
+                               const_cast<char*>("Wind Speed"),
+                               const_cast<char*>("m/s"),
+                               &getWindSpeed_callback, NULL, NULL, 0, 20, NULL);
+
+  register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                const_cast<char*>("EMS.WindDirection"),
+                                const_cast<char*>("Wind Direction"),
+                                const_cast<char*>("deg"),
+                                &getWindDirection_callback, NULL, NULL, 0, 20, NULL);
+
+  register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                const_cast<char*>("EMS.Temperature"),
+                                const_cast<char*>("Temperature"),
+                                const_cast<char*>("degC"),
+                                &getTemperature_callback, NULL, NULL, 20, 40, NULL);
+
+  register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                const_cast<char*>("EMS.AbsolutePressure"),
+                                const_cast<char*>("Air pressure"),
+                                const_cast<char*>("mbar"),
+                                &getAbsolutePressure_callback, NULL, NULL, 500, 1500, NULL);
+
+  register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                const_cast<char*>("EMS.RelativeHumidity"),
+                                const_cast<char*>("Humidity"),
+                                const_cast<char*>("percent"),
+                                &getRelativeHumidity_callback, NULL, NULL, 0, 100, NULL);
+
   //Make a server listening interface from hostname and port string
   stringstream oSSServer;
   oSSServer << m_strListenInterface;
@@ -239,10 +546,341 @@ double cKATCPServer::getAntennaRequestedElev_callback(struct katcp_dispatch *pD,
   return m_dAntennaRequestedElev_deg;
 }
 
+double     cKATCPServer::getP1_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_dP1;
+}
+
+double     cKATCPServer::getP2_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_dP2;
+}
+
+double     cKATCPServer::getP3_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_dP3;
+}
+
+double     cKATCPServer::getP4_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_dP4;
+}
+
+double     cKATCPServer::getP5_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_dP5;
+}
+
+double     cKATCPServer::getP6_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_dP6;
+}
+
+double     cKATCPServer::getP7_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_dP7;
+}
+
+double     cKATCPServer::getP8_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_dP8;
+}
+
+double     cKATCPServer::getP9_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_dP9;
+}
+
+double     cKATCPServer::getP10_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_dP10;
+}
+
+double     cKATCPServer::getP11_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_dP11;
+}
+
+double     cKATCPServer::getP12_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_dP12;
+}
+
+double     cKATCPServer::getP13_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_dP13;
+}
+
+double     cKATCPServer::getP14_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_dP14;
+}
+
+double     cKATCPServer::getP15_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_dP15;
+}
+
+double     cKATCPServer::getP16_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_dP16;
+}
+
+double     cKATCPServer::getP17_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_dP17;
+}
+
+double     cKATCPServer::getP18_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_dP18;
+}
+
+double     cKATCPServer::getP19_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_dP19;
+}
+
+double     cKATCPServer::getP20_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_dP20;
+}
+
+double     cKATCPServer::getP21_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_dP21;
+}
+
+double     cKATCPServer::getP22_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_dP22;
+}
+
+double     cKATCPServer::getP23_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_dP23;
+}
+
+double     cKATCPServer::getP24_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_dP24;
+}
+
+double     cKATCPServer::getP25_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_dP25;
+}
+
+double     cKATCPServer::getP26_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_dP26;
+}
+
+double     cKATCPServer::getP27_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_dP27;
+}
+
+double     cKATCPServer::getP28_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_dP28;
+}
+
+double     cKATCPServer::getP29_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_dP29;
+}
+
+double     cKATCPServer::getP30_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_dP30;
+}
+
+double cKATCPServer::getRFCIntermediate5GHz_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_dRFCIntermediate5GHz_Hz;
+}
+
+double cKATCPServer::getRFCIntermediate6p7GHz_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_dRFCIntermediate6p7GHz_Hz;
+}
+
+double cKATCPServer::getFinalStage_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_dFinalStage_Hz;
+}
+
+double cKATCPServer::getLCPAttenuation_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_dLCPAttenuation_dB;
+}
+
+double cKATCPServer::getRCPAttenuation_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_dRCPAttenuation_dB;
+}
+
+int   cKATCPServer::getLCPFreqSel_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_bLCPFreqSel;
+}
+
+int   cKATCPServer::getRCPFreqSel_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_bRCPFreqSel;
+}
+
+double cKATCPServer::getWindSpeed_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_dWindSpeed_mps;
+}
+
+double cKATCPServer::getWindDirection_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_dWindDirection_deg;
+}
+
+double cKATCPServer::getTemperature_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_dTemperature_degC;
+}
+
+double cKATCPServer::getAbsolutePressure_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_dAbsolutePressure_mbar;
+}
+
+double cKATCPServer::getRelativeHumidity_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_dRelativeHumidity_percent;
+}
+
 void cKATCPServer::dataSimulatorThreadFunction()
 {
   // Random seed, commented out for the time being.
   // srand(time(NULL));
+
+  {
+    // Pointing model only really needs initial values.
+    boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+
+    m_dP1 = (float)((rand() % 100) - 50) / 10;
+    m_dP2 = (float)((rand() % 100) - 50) / 10;
+    m_dP3 = (float)((rand() % 100) - 50) / 10;
+    m_dP4 = (float)((rand() % 100) - 50) / 10;
+    m_dP5 = (float)((rand() % 100) - 50) / 10;
+    m_dP6 = (float)((rand() % 100) - 50) / 10;
+    m_dP7 = (float)((rand() % 100) - 50) / 10;
+    m_dP8 = (float)((rand() % 100) - 50) / 10;
+    m_dP9 = (float)((rand() % 100) - 50) / 10;
+    m_dP10 = (float)((rand() % 100) - 50) / 10;
+    m_dP11 = (float)((rand() % 100) - 50) / 10;
+    m_dP12 = (float)((rand() % 100) - 50) / 10;
+    m_dP13 = (float)((rand() % 100) - 50) / 10;
+    m_dP14 = (float)((rand() % 100) - 50) / 10;
+    m_dP15 = (float)((rand() % 100) - 50) / 10;
+    m_dP16 = (float)((rand() % 100) - 50) / 10;
+    m_dP17 = (float)((rand() % 100) - 50) / 10;
+    m_dP18 = (float)((rand() % 100) - 50) / 10;
+    m_dP19 = (float)((rand() % 100) - 50) / 10;
+    m_dP20 = (float)((rand() % 100) - 50) / 10;
+    m_dP21 = (float)((rand() % 100) - 50) / 10;
+    m_dP22 = (float)((rand() % 100) - 50) / 10;
+    m_dP23 = (float)((rand() % 100) - 50) / 10;
+    m_dP24 = (float)((rand() % 100) - 50) / 10;
+    m_dP25 = (float)((rand() % 100) - 50) / 10;
+    m_dP26 = (float)((rand() % 100) - 50) / 10;
+    m_dP27 = (float)((rand() % 100) - 50) / 10;
+    m_dP28 = (float)((rand() % 100) - 50) / 10;
+    m_dP29 = (float)((rand() % 100) - 50) / 10;
+    m_dP30 = (float)((rand() % 100) - 50) / 10;
+  }
+
   while (!m_bStopSimulation)
   {
     {
@@ -257,6 +895,9 @@ void cKATCPServer::dataSimulatorThreadFunction()
       m_dAntennaActualElev_deg += (float)((rand() % 100) - 50) / 100;
       m_dAntennaRequestedAzim_deg += (float)((rand() % 100) - 50) / 100;
       m_dAntennaRequestedElev_deg += (float)((rand() % 100) - 50) / 100;
+
+      // TODO: Add the other values here.
+
     }
 
     boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
