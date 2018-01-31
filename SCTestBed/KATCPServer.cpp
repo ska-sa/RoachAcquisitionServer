@@ -38,7 +38,13 @@ boost::shared_mutex               cKATCPServer::m_oMutex;
 bool                              cKATCPServer::m_bStopSimulation = false;
 
 double                            cKATCPServer::m_dSkyActualAzim_deg;
-
+double                            cKATCPServer::m_dSkyActualElev_deg;
+double                            cKATCPServer::m_dSkyRequestedAzim_deg;
+double                            cKATCPServer::m_dSkyRequestedElev_deg;
+double                            cKATCPServer::m_dAntennaActualAzim_deg;
+double                            cKATCPServer::m_dAntennaActualElev_deg;
+double                            cKATCPServer::m_dAntennaRequestedAzim_deg;
+double                            cKATCPServer::m_dAntennaRequestedElev_deg;
 
 cKATCPServer::cKATCPServer(const string &strListenInterface, uint16_t u16Port, uint32_t u32MaxClients)
 {
@@ -118,7 +124,49 @@ void cKATCPServer::serverThreadFunction()
                                 const_cast<char*>("SCM.actual-azim"),
                                 const_cast<char*>("Sky-space actual azimuth."),
                                 const_cast<char*>("deg"),
-                                &getSkyActualAzim_callback, NULL, NULL, 0, 10e9, NULL);
+                                &getSkyActualAzim_callback, NULL, NULL, 0, 360, NULL);
+
+  register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                const_cast<char*>("SCM.actual-elev"),
+                                const_cast<char*>("Sky-space actual elevation."),
+                                const_cast<char*>("deg"),
+                                &getSkyActualElev_callback, NULL, NULL, 0, 90, NULL);
+
+  register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                const_cast<char*>("SCM.request-azim"),
+                                const_cast<char*>("Sky-space requested azimuth."),
+                                const_cast<char*>("deg"),
+                                &getSkyRequestedAzim_callback, NULL, NULL, 0, 360, NULL);
+
+  register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                const_cast<char*>("SCM.request-elev"),
+                                const_cast<char*>("Sky-space requested elevation."),
+                                const_cast<char*>("deg"),
+                                &getSkyRequestedElev_callback, NULL, NULL, 0, 90, NULL);
+
+  register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                const_cast<char*>("acs.actual-azim"),
+                                const_cast<char*>("Antenna-space actual azimuth."),
+                                const_cast<char*>("deg"),
+                                &getAntennaActualAzim_callback, NULL, NULL, 0, 360, NULL);
+
+  register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                const_cast<char*>("acs.actual-elev"),
+                                const_cast<char*>("Antenna-space actual elevation."),
+                                const_cast<char*>("deg"),
+                                &getAntennaActualElev_callback, NULL, NULL, 0, 90, NULL);
+
+  register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                const_cast<char*>("acs.request-azim"),
+                                const_cast<char*>("Antenna-space requested azimuth."),
+                                const_cast<char*>("deg"),
+                                &getAntennaRequestedAzim_callback, NULL, NULL, 0, 360, NULL);
+
+  register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                const_cast<char*>("acs.request-elev"),
+                                const_cast<char*>("Antenna-space requested elevation."),
+                                const_cast<char*>("deg"),
+                                &getAntennaRequestedElev_callback, NULL, NULL, 0, 90, NULL);
 
   //Make a server listening interface from hostname and port string
   stringstream oSSServer;
@@ -142,20 +190,75 @@ double cKATCPServer::getSkyActualAzim_callback(struct katcp_dispatch *pD, struct
   return m_dSkyActualAzim_deg;
 }
 
+double cKATCPServer::getSkyActualElev_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_dSkyActualElev_deg;
+}
+
+double cKATCPServer::getSkyRequestedAzim_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_dSkyRequestedAzim_deg;
+}
+
+double cKATCPServer::getSkyRequestedElev_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_dSkyRequestedElev_deg;
+}
+
+double cKATCPServer::getAntennaActualAzim_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_dAntennaActualAzim_deg;
+}
+
+double cKATCPServer::getAntennaActualElev_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_dAntennaActualElev_deg;
+}
+
+double cKATCPServer::getAntennaRequestedAzim_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_dAntennaRequestedAzim_deg;
+}
+
+double cKATCPServer::getAntennaRequestedElev_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_dAntennaRequestedElev_deg;
+}
+
 void cKATCPServer::dataSimulatorThreadFunction()
 {
   // Random seed, commented out for the time being.
   // srand(time(NULL));
-  while (1)
+  while (!m_bStopSimulation)
   {
     {
+      // Lock needs to be separated from the thread pause otherwise it hogs things and the other thread can never actually do its work.
       boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
 
-      if (m_bStopSimulation)
-        break;
-
       m_dSkyActualAzim_deg += (float)((rand() % 100) - 50) / 100;
+      m_dSkyActualElev_deg += (float)((rand() % 100) - 50) / 100;
+      m_dSkyRequestedAzim_deg += (float)((rand() % 100) - 50) / 100;
+      m_dSkyRequestedElev_deg += (float)((rand() % 100) - 50) / 100;
+      m_dAntennaActualAzim_deg += (float)((rand() % 100) - 50) / 100;
+      m_dAntennaActualElev_deg += (float)((rand() % 100) - 50) / 100;
+      m_dAntennaRequestedAzim_deg += (float)((rand() % 100) - 50) / 100;
+      m_dAntennaRequestedElev_deg += (float)((rand() % 100) - 50) / 100;
     }
+
     boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
   }
   cout << "Data simulator thread exiting." << endl;
