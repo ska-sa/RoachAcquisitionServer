@@ -75,6 +75,8 @@ protected:
   static int   getLCPFreqSel_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
   static int   getRCPFreqSel_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
 
+  static int   getNoiseDiode_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+
   static double getWindSpeed_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
   static double getWindDirection_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
   static double getTemperature_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);

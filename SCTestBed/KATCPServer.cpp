@@ -443,7 +443,11 @@ void cKATCPServer::serverThreadFunction()
                                const_cast<char*>("none"),
                                m_pKARCPFreqSel);
 
-// TODO: Figure out the noise diode thing.
+ register_integer_sensor_katcp(m_pKATCPDispatch, 0,
+                               const_cast<char*>("RFC.NoiseDiode_1"),
+                               const_cast<char*>("Noise diode bitfield"),
+                               const_cast<char*>(""),
+                               &getNoiseDiode_callback, NULL, NULL, 0, 65535, NULL);
 
  register_double_sensor_katcp(m_pKATCPDispatch, 0,
                                const_cast<char*>("EMS.WindSpeed"),
@@ -805,6 +809,13 @@ int   cKATCPServer::getRCPFreqSel_callback(struct katcp_dispatch *pD, struct kat
   return m_bRCPFreqSel;
 }
 
+int cKATCPServer::getNoiseDiode_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_ui16NoiseDiodeState;
+}
+
 double cKATCPServer::getWindSpeed_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
 {
   boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
@@ -896,7 +907,21 @@ void cKATCPServer::dataSimulatorThreadFunction()
       m_dAntennaRequestedAzim_deg += (float)((rand() % 100) - 50) / 100;
       m_dAntennaRequestedElev_deg += (float)((rand() % 100) - 50) / 100;
 
-      // TODO: Add the other values here.
+      m_dRFCIntermediate5GHz_Hz += (float)((rand() % 100) + 2000);
+      m_dRFCIntermediate6p7GHz_Hz += (float)((rand() % 100) + 2000);
+      m_dFinalStage_Hz += (float)((rand() % 100) + 500);
+      m_dLCPAttenuation_dB += (float)((rand() % 15) + 15);
+      m_dRCPAttenuation_dB += (float)((rand() % 15) + 15);
+      m_bLCPFreqSel = (bool)(rand() % 2);
+      m_bRCPFreqSel = (bool)(rand() % 2);
+
+      m_ui16NoiseDiodeState = (rand() % 65536);
+
+      m_dWindSpeed_mps += (float)((rand() % 100) - 50) / 100;
+      m_dWindDirection_deg += (float)((rand() % 100) - 50) / 100;
+      m_dTemperature_degC += (float)((rand() % 100) - 50) / 100;
+      m_dAbsolutePressure_mbar += (float)((rand() % 100) - 50) / 100;
+      m_dRelativeHumidity_percent += (float)((rand() % 100) - 50) / 100;
 
     }
 
