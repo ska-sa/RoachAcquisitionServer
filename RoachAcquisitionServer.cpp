@@ -92,11 +92,6 @@ void cRoachAcquisitionServer::startKATCPServer(std::string strInterface, uint16_
         m_pKATCPServer->setRoachKATCPClient(m_pRoachKATCPClient);
     }
 
-    if(m_pStationControllerKATCPClient.get())
-    {
-        m_pKATCPServer->setStationControllerKATCPClient(m_pStationControllerKATCPClient);
-    }
-
 }
 
 void cRoachAcquisitionServer::stopKATCPServer()
@@ -176,12 +171,6 @@ void cRoachAcquisitionServer::startStationControllerKATCPClient(std::string strS
             = boost::dynamic_pointer_cast<cKATCPClientBase::cCallbackInterface>(pStationControllerKATCPTClientCallbackInterface);
     m_pStationControllerKATCPClient->registerCallbackHandler(pKATCPClientBaseCallbackInterface);
 
-    //Connection to server if available
-    if(m_pKATCPServer.get())
-    {
-        m_pKATCPServer->setStationControllerKATCPClient(m_pStationControllerKATCPClient);
-    }
-
     //Last argument is auto reconnect. Will keep attemping until a connection is made
     m_pStationControllerKATCPClient->connect(m_strStationControllerKATCPAddress, m_u16StationControllerKATCPPort, string("stationController"), true);
 }
@@ -192,12 +181,6 @@ void cRoachAcquisitionServer::stopStationControllerKATCPClient()
     //Check for valid pointer to object
     if(!m_pStationControllerKATCPClient.get())
         return;
-
-    //Disconnect from server if available
-    if(m_pKATCPServer.get())
-    {
-        m_pKATCPServer->setStationControllerKATCPClient(boost::make_shared<cStationControllerKATCPClient>());
-    }
 
     m_pStationControllerKATCPClient.reset();
 }

@@ -124,7 +124,6 @@ public:
 
     static void                                             setFileWriter(boost::shared_ptr<cHDF5FileWriter> pFileWriter);
     static void                                             setRoachKATCPClient(boost::shared_ptr<cRoachKATCPClient> pRoachKATCPClient);
-    static void                                             setStationControllerKATCPClient(boost::shared_ptr<cStationControllerKATCPClient> pKATCPClient);
 
     static void                                             startServer(const std::string &strListenInterface, uint16_t u16Port, uint32_t u32MaxClients);
     static void                                             stopServer();
