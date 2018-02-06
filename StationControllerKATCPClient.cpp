@@ -61,6 +61,9 @@ cStationControllerKATCPClient::cStationControllerKATCPClient() :
     m_vstrSensorSampling.push_back("SCM.pmodel29 event");
     m_vstrSensorSampling.push_back("SCM.pmodel30 event");
 
+    // Antenna status
+    m_vstrSensorSampling.push_back("SCM.AntennaStatus event");
+
     // Signal-chain values.
     m_vstrSensorSampling.push_back("RFC.IntermediateStage_5GHz event");
     m_vstrSensorSampling.push_back("RFC.IntermediateStage_6_7GHz event");
@@ -80,7 +83,7 @@ cStationControllerKATCPClient::cStationControllerKATCPClient() :
     m_vstrSensorSampling.push_back("EMS.AbsolutePressure period 10000");
     m_vstrSensorSampling.push_back("EMS.RelativeHumidity period 10000");
 
-    //TODO: Pointing model, observation metadata such as targets, etc.
+    //TODO: Observation metadata such as targets, etc.
 }
 
 cStationControllerKATCPClient::~cStationControllerKATCPClient()
@@ -169,15 +172,6 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
         return;
     }
 
-    /* TODO: I'm still not sure what to do about this one.
-    if( !vstrTokens[0].compare("#antennaStatus") )
-    {
-        //cout << "cStationControllerKATCPClient::processKATCPMessage: Antenna status received: " << vstrTokens[1] << endl;
-        m_strAntennaStatus = vstrTokens[1];
-        return;
-    }
-    */
-
     // All other known KATCP messages are 5 tokens long.
     // The *1e3 next to each timestamp is because the functions take timestamps in us
     // and katcp gives them in ms. The us thing was a decision by Craig a while ago,
@@ -250,15 +244,6 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
         return;
     }
 
-    /* TODO: Think about what to do about this.
-    if(!vstrTokens[3].compare("antennaStatus"))
-    {
-        cout << "cStationControllerKATCPClient::processKATCPMessage: Antenna Status command received: " << m_strAntennaStatus << endl;
-        sendAntennaStatus( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, m_strAntennaStatus, vstrTokens[4].c_str() );
-        return;
-    }
-    */
-
     if (    !vstrTokens[3].compare("SCM.pmodel1") ||
             !vstrTokens[3].compare("SCM.pmodel2") ||
             !vstrTokens[3].compare("SCM.pmodel3") ||
@@ -291,6 +276,12 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
             !vstrTokens[3].compare("SCM.pmodel30")      )
     {
         sendPointingModelParameter( strtol(vstrTokens[3].substr(10,vstrTokens[3].size() - 10).c_str(), NULL, 10), strtod(vstrTokens[5].c_str(), NULL));
+    }
+
+    if(!vstrTokens[3].compare("SCM.AntennaStatus"))
+    {
+        sendAntennaStatus( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, vstrTokens[5].c_str(), vstrTokens[4].c_str() );
+        return;
     }
 
     if(!vstrTokens[3].compare("RFC.NoiseDiode_1"))

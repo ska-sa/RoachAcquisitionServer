@@ -158,7 +158,8 @@ void cKATCPServer::serverThreadFunction()
                                   const_cast<char*>("none"),
                                   &getCoarseChannelSelect_KATCPCallback, NULL, NULL, 0, INT_MAX, NULL);
 
-    register_double_sensor_katcp(m_pKATCPDispatch, 0, const_cast<char*>("roachFrequencyFs"),
+    register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                 const_cast<char*>("roachFrequencyFs"),
                                  const_cast<char*>("ADC sample rate"),
                                  const_cast<char*>("Hz"),
                                  &getFrequencyFs_KATCPCallback, NULL, NULL, 799999999, 800000001, NULL);
@@ -342,43 +343,6 @@ void cKATCPServer::serverThreadFunction()
 
     cout << "cKATCPServer::serverThreadFunction(): Exiting thread function." << endl;
 }
-
-/*
-void cKATCPServer::initialSensorDataThreadFunction()
-{
-    //TODO: Mark for removal. This functionality has been handled in the HDF5 file writer class.
-
-    //Record data which was stored before the file started recording (i.e. most recent sensor data).
-    //General idea: If it's non-zero, we have received a value before the recording started.
-    //Add a timestamp ten seconds ago (to ensure that it starts a bit before the file starts) and push to the file writer.
-
-    //Sleep for a bit to ensure that the calling function is sufficiently dead. I noticed that if I tried to do this in the recordingStarted_callback then
-    //it exited without acctually accomplishing its task. So it had to be in a new thread and wait for a bit to ensure that the HDF5 file was actually created
-    //before it tries to record stuff. Weird.
-    boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
-
-    //Lock access for the rest of the function
-    boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oSensorDataMutex);
-
-    if (m_oKATCPClientCallbackHandler.m_dFrequencyLO0Chan0_Hz != 0.0)
-    {
-        m_pFileWriter->frequencyLOIntermediate5GHz_callback((time(0) - 10)*1e6, m_oKATCPClientCallbackHandler.m_dFrequencyLO0Chan0_Hz, "nominal");
-    }
-    if (m_oKATCPClientCallbackHandler.m_dFrequencyLO0Chan1_Hz != 0.0)
-    {
-        m_pFileWriter->frequencyLOIntermediate6_7GHz_callback((time(0) - 10)*1e6, m_oKATCPClientCallbackHandler.m_dFrequencyLO0Chan1_Hz, "nominal");
-    }
-    if (m_oKATCPClientCallbackHandler.m_dFrequencyLO1_Hz != 0.0)
-    {
-        m_pFileWriter->frequencyLOFinal_callback((time(0) - 10)*1e6, m_oKATCPClientCallbackHandler.m_dFrequencyLO1_Hz, "nominal");
-    }
-
-    //Won't check for defaults here, because this should be zero as a default anyway.
-    m_pFileWriter->frequencySelectLcp_callback((time(0) - 10)*1e6, m_oKATCPClientCallbackHandler.m_bBandSelectedLCP, "nominal");
-    m_pFileWriter->frequencySelectRcp_callback((time(0) - 10)*1e6, m_oKATCPClientCallbackHandler.m_bBandSelectedRCP, "nominal");
-
-}
-*/
 
 void cKATCPServer::startServer(const string &strInterface, uint16_t u16Port, uint32_t u32MaxClients)
 {

@@ -89,6 +89,10 @@ class cHDF5FileWriter : public cSpectrometerDataStreamInterpreter::cCallbackInte
 
         double  m_aPointingModel[30];
 
+        int64_t m_i64TSAntennaStatus_us;
+        char    m_chaVAntennaStatus[16];
+        char    m_chaAntennaStatusStatus[7];
+
         // Receiver chain intermediate LO frequency - 5GHz LO - cTimestampedDouble
         int64_t m_i64TSReceiverLOFreqIntermediate5GHz_us;
         double  m_dVReceiverLOFreqIntermediate5GHz_Hz;

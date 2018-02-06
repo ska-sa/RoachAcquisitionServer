@@ -130,7 +130,7 @@ public:
 
 protected:
     //Callback handlers (Need to have new actual objects here as we cannot derive the callback handler classes with this class as it is static.)
-    static cHDF5FileWriterCallbackHandler                   m_oHDF5FileWriterCallBackHandler; //TODO: This needs to have a few callbacks added. I think.
+    static cHDF5FileWriterCallbackHandler                   m_oHDF5FileWriterCallBackHandler;
     static cKATCPClientCallbackHandler                      m_oKATCPClientCallbackHandler;
 
     static void                                             serverThreadFunction();
