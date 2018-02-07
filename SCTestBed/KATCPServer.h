@@ -67,6 +67,8 @@ protected:
   static double     getP29_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
   static double     getP30_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
 
+  static int  getAntennaStatus_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+
   static double getRFCIntermediate5GHz_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
   static double getRFCIntermediate6p7GHz_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
   static double getFinalStage_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
@@ -136,6 +138,10 @@ private:
   static double                           m_dP28;
   static double                           m_dP29;
   static double                           m_dP30;
+
+  static struct katcp_acquire*            m_pKAAntennaStatus;
+  static int                      m_iAntennaStatus;
+  static char*                           m_achaAntennaStatusDiscreteValues[4];
 
   static double                           m_dRFCIntermediate5GHz_Hz;
   static double                           m_dRFCIntermediate6p7GHz_Hz;

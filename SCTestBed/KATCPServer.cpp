@@ -77,6 +77,9 @@ double                           cKATCPServer::m_dP28;
 double                           cKATCPServer::m_dP29;
 double                           cKATCPServer::m_dP30;
 
+int                           cKATCPServer::m_iAntennaStatus;
+char*                           cKATCPServer::m_achaAntennaStatusDiscreteValues[]  = {"idle", "slew", "track", "scan"};
+
 double                           cKATCPServer::m_dRFCIntermediate5GHz_Hz;
 double                           cKATCPServer::m_dRFCIntermediate6p7GHz_Hz;
 double                           cKATCPServer::m_dFinalStage_Hz;
@@ -396,6 +399,13 @@ void cKATCPServer::serverThreadFunction()
                                 const_cast<char*>("P30."),
                                 const_cast<char*>(""),
                                 &getP30_callback, NULL, NULL, -5, 5, NULL);
+
+  //m_pKAAntennaStatus = setup_discrete_acquire_katcp(m_pKATCPDispatch, &getAntennaStatus_callback, NULL, NULL);
+  register_discrete_sensor_katcp(m_pKATCPDispatch, 0,
+                                const_cast<char*>("SCM.AntennaStatus"),
+                                const_cast<char*>("Antenna Status"),
+                                const_cast<char*>(""),
+                                &getAntennaStatus_callback, NULL, NULL, m_achaAntennaStatusDiscreteValues, 4);
 
   register_double_sensor_katcp(m_pKATCPDispatch, 0,
                                 const_cast<char*>("RFC.IntermediateStage_5GHz"),
@@ -760,6 +770,13 @@ double     cKATCPServer::getP30_callback(struct katcp_dispatch *pD, struct katcp
   return m_dP30;
 }
 
+int cKATCPServer::getAntennaStatus_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_iAntennaStatus;
+}
+
 double cKATCPServer::getRFCIntermediate5GHz_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
 {
   boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
@@ -923,6 +940,7 @@ void cKATCPServer::dataSimulatorThreadFunction()
       m_dAbsolutePressure_mbar += (float)((rand() % 100) - 50) / 100;
       m_dRelativeHumidity_percent += (float)((rand() % 100) - 50) / 100;
 
+      m_iAntennaStatus = (rand() % 4);
     }
 
     boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
