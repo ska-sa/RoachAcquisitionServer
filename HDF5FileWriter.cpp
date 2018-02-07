@@ -62,6 +62,10 @@ cHDF5FileWriter::cHDF5FileWriter(const string &strRecordingDirectory, uint32_t u
         for (int i = 0; i < 30; i++)
             m_oInitialValueSet.m_aPointingModel[i] = 0;
 
+        m_oInitialValueSet.m_i64TSAntennaStatus_us = 0;
+        sprintf(m_oInitialValueSet.m_chaVAntennaStatus, "idle");
+        sprintf(m_oInitialValueSet.m_chaAntennaStatusStatus, "0");
+
         m_oInitialValueSet.m_i64TSReceiverLOFreqIntermediate5GHz_us = 0;
         m_oInitialValueSet.m_dVReceiverLOFreqIntermediate5GHz_Hz = 0;
         sprintf(m_oInitialValueSet.m_chaReceiverLOFreqIntermediate5GHzStatus, "0");
@@ -320,6 +324,10 @@ void cHDF5FileWriter::getNextFrame_callback(const std::vector<int> &vi32Chan0, c
                                         m_oInitialValueSet.m_chaSkyActualElevStatus);
         for (int i = 0; i < 30; i++)
             m_pHDF5File->addPointingModelParameter(i, m_oInitialValueSet.m_aPointingModel[i]);
+        if (m_oInitialValueSet.m_i64TSAntennaStatus_us)
+            m_pHDF5File->addAntennaStatus(m_oInitialValueSet.m_i64TSAntennaStatus_us,
+                                          m_oInitialValueSet.m_chaVAntennaStatus,
+                                          m_oInitialValueSet.m_chaAntennaStatusStatus);
         if (m_oInitialValueSet.m_i64TSReceiverLOFreqIntermediate5GHz_us)
             m_pHDF5File->addFrequencyLOIntermed5GHz(m_oInitialValueSet.m_i64TSReceiverLOFreqIntermediate5GHz_us,
                                                         m_oInitialValueSet.m_dVReceiverLOFreqIntermediate5GHz_Hz,
