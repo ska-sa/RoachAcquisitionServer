@@ -47,7 +47,7 @@ endif()
 
 ## Compiler flags
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -O0 -std=c++11")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O2 -std=c++11")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -ggdb -std=c++11")
 
 if(CMAKE_BUILD_TYPE MATCHES "Debug")
     message(STATUS "Debug compiler flags are:   " ${CMAKE_CXX_FLAGS_DEBUG} ${CMAKE_CXX_FLAGS})

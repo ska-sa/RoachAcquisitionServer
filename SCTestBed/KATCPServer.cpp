@@ -18,40 +18,6 @@ extern "C" {
 
 using namespace std;
 
-//Extract function for boolean sensors which don't care whether or not they're true or false.
-//Courtesy Marc Welz
-int extract_dontcare_discrete_katcp(struct katcp_dispatch *d, struct katcp_sensor *sn)
-{
-  return 0;
-}
-
-int extract_discrete_katcp(struct katcp_dispatch *d, struct katcp_sensor *sn)
-{
-  struct katcp_acquire *a;
-  struct katcp_discrete_acquire *da;
-  struct katcp_discrete_sensor *ds;
-
-  a = sn->s_acquire;
-
-  if(sn->s_type != KATCP_SENSOR_DISCRETE){
-    log_message_katcp(d, KATCP_LEVEL_ERROR, NULL, "logic problem - discrete operation applied to type %d", sn->s_type);
-    return -1;
-  }
-
-  ds = sn->s_more;
-  da = a->a_more;
-
-  if(da->da_current > ds->ds_size){
-    log_message_katcp(d, KATCP_LEVEL_ERROR, NULL, "extracted discrete position %u for sensor %s not in advertised range 0-%d", da->da_current, sn->s_name, ds->ds_size);
-    return -1;
-  }
-
-  ds->ds_current = da->da_current;
-
-  set_status_sensor_katcp(sn, KATCP_STATUS_NOMINAL);
-
-  return 0;
-}
 
 // Define static members of cKATCPServer
 boost::scoped_ptr<boost::thread>  cKATCPServer::m_pKATCPThread;
@@ -105,8 +71,19 @@ double                           cKATCPServer::m_dP29;
 double                           cKATCPServer::m_dP30;
 
 int                              cKATCPServer::m_iAntennaStatus;
-struct      katcp_acquire*       cKATCPServer::m_pKAAntennaStatus;
-char*                            cKATCPServer::m_achaAntennaStatusDiscreteValues[]  = {"foo", "bar", "baz", "bleh"};
+char*                            cKATCPServer::m_achaAntennaStatusDiscreteValues[]  = {"idle", "slew", "track", "scan"};
+int                              cKATCPServer::m_iTarget;
+char*                            cKATCPServer::m_achaTargetDiscreteValues[]  = {"name1 | *name A, radec cal, 11:34:56.7, -01:34:34.2, (1000.0 2000.0 1.0)",
+                                                                                "name2 | *name B, radec cal, 12:34:56.7, -02:34:34.2, (1000.0 2000.0 1.0)",
+                                                                                "name3 | *name C, radec cal, 13:34:56.7, -03:34:34.2, (1000.0 2000.0 1.0)",
+                                                                                "name4 | *name D, radec cal, 14:34:56.7, -04:34:34.2, (1000.0 2000.0 1.0)",
+                                                                                "name5 | *name E, radec cal, 15:34:56.7, -05:34:34.2, (1000.0 2000.0 1.0)",
+                                                                                "name6 | *name F, radec cal, 16:34:56.7, -06:34:34.2, (1000.0 2000.0 1.0)",
+                                                                                "name7 | *name G, radec cal, 17:34:56.7, -07:34:34.2, (1000.0 2000.0 1.0)",
+                                                                                "name8 | *name H, radec cal, 18:34:56.7, -08:34:34.2, (1000.0 2000.0 1.0)",
+                                                                                "name9 | *name I, radec cal, 19:34:56.7, -09:34:34.2, (1000.0 2000.0 1.0)",
+                                                                                "name10 | *name J, radec cal, 20:34:56.7, -10:34:34.2, (1000.0 2000.0 1.0)",
+                                                                               };
 
 double                           cKATCPServer::m_dRFCIntermediate5GHz_Hz;
 double                           cKATCPServer::m_dRFCIntermediate6p7GHz_Hz;
@@ -435,20 +412,18 @@ void cKATCPServer::serverThreadFunction()
                                 const_cast<char*>(""),
                                 &getP30_callback, NULL, NULL, -5, 5, NULL);
 
-  m_pKAAntennaStatus = setup_discrete_acquire_katcp(m_pKATCPDispatch, &getAntennaStatus_callback, NULL, NULL);
-  register_multi_discrete_sensor_katcp(m_pKATCPDispatch, 0,
-                                      const_cast<char*>("SCM.AntennaStatus"),
-                                      const_cast<char*>("Antenna Status"),
-                                      const_cast<char*>(""),
-                                      m_achaAntennaStatusDiscreteValues, 4,
-                                      m_pKAAntennaStatus, extract_discrete_katcp, NULL);
-
-/*  register_discrete_sensor_katcp(m_pKATCPDispatch, 0,
+  register_discrete_sensor_katcp(m_pKATCPDispatch, 0,
                                 const_cast<char*>("SCM.AntennaStatus"),
                                 const_cast<char*>("Antenna Status"),
                                 const_cast<char*>(""),
                                 &getAntennaStatus_callback, NULL, NULL, m_achaAntennaStatusDiscreteValues, 4);
-*/
+
+  register_discrete_sensor_katcp(m_pKATCPDispatch, 0,
+                                const_cast<char*>("SCM.Target"),
+                                const_cast<char*>("Target"),
+                                const_cast<char*>(""),
+                                &getTarget_callback, NULL, NULL, m_achaTargetDiscreteValues, 10);
+
   register_double_sensor_katcp(m_pKATCPDispatch, 0,
                                 const_cast<char*>("RFC.IntermediateStage_5GHz"),
                                 const_cast<char*>("Intermediate stage 5 GHz LO freq"),
@@ -819,6 +794,13 @@ int cKATCPServer::getAntennaStatus_callback(struct katcp_dispatch *pD, struct ka
   return m_iAntennaStatus;
 }
 
+int cKATCPServer::getTarget_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+
+  return m_iTarget;
+}
+
 double cKATCPServer::getRFCIntermediate5GHz_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
 {
   boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
@@ -983,6 +965,7 @@ void cKATCPServer::dataSimulatorThreadFunction()
       m_dRelativeHumidity_percent += (float)((rand() % 100) - 50) / 100;
 
       m_iAntennaStatus = (rand() % 4);
+      m_iTarget = (rand() % 10);
     }
 
     boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
