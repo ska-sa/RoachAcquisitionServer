@@ -26,6 +26,8 @@ public:
   static void serverThreadFunction();
   static void dataSimulatorThreadFunction();
 
+  static int extract_dontcare_discrete_katcp(struct katcp_dispatch *d, struct katcp_sensor *sn);
+
 protected:
   static double     getSkyActualAzim_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
   static double     getSkyActualElev_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
@@ -140,7 +142,7 @@ private:
   static double                           m_dP30;
 
   static struct katcp_acquire*            m_pKAAntennaStatus;
-  static int                      m_iAntennaStatus;
+  static int                            m_iAntennaStatus;
   static char*                           m_achaAntennaStatusDiscreteValues[4];
 
   static double                           m_dRFCIntermediate5GHz_Hz;

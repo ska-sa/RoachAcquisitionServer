@@ -20,7 +20,7 @@ using namespace std;
 
 //Extract function for boolean sensors which don't care whether or not they're true or false.
 //Courtesy Marc Welz
-int extract_dontcare_boolean_katcp(struct katcp_dispatch *d, struct katcp_sensor *sn)
+int extract_dontcare_discrete_katcp(struct katcp_dispatch *d, struct katcp_sensor *sn)
 {
   set_status_sensor_katcp(sn, KATCP_STATUS_NOMINAL);
   return 0;
@@ -77,8 +77,9 @@ double                           cKATCPServer::m_dP28;
 double                           cKATCPServer::m_dP29;
 double                           cKATCPServer::m_dP30;
 
-int                           cKATCPServer::m_iAntennaStatus;
-char*                           cKATCPServer::m_achaAntennaStatusDiscreteValues[]  = {"idle", "slew", "track", "scan"};
+int                              cKATCPServer::m_iAntennaStatus;
+struct      katcp_acquire*       cKATCPServer::m_pKAAntennaStatus;
+char*                            cKATCPServer::m_achaAntennaStatusDiscreteValues[]  = {"foo", "bar", "baz", "bleh"};
 
 double                           cKATCPServer::m_dRFCIntermediate5GHz_Hz;
 double                           cKATCPServer::m_dRFCIntermediate6p7GHz_Hz;
@@ -109,6 +110,13 @@ cKATCPServer::~cKATCPServer()
   cout << "Stopping Station Controller virtualiser..." << endl;
   stopServer();
   cout << "Station Controller virtualiser stopped." << endl;
+}
+
+int cKATCPServer::extract_dontcare_discrete_katcp(struct katcp_dispatch *d, struct katcp_sensor *sn)
+{
+  boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
+  set_status_sensor_katcp(sn, KATCP_STATUS_NOMINAL);
+  return 0;
 }
 
 void cKATCPServer::startServer(const std::string &strListenInterface, uint16_t u16Port, uint32_t u32MaxClients)
@@ -400,13 +408,20 @@ void cKATCPServer::serverThreadFunction()
                                 const_cast<char*>(""),
                                 &getP30_callback, NULL, NULL, -5, 5, NULL);
 
-  //m_pKAAntennaStatus = setup_discrete_acquire_katcp(m_pKATCPDispatch, &getAntennaStatus_callback, NULL, NULL);
-  register_discrete_sensor_katcp(m_pKATCPDispatch, 0,
+  m_pKAAntennaStatus = setup_discrete_acquire_katcp(m_pKATCPDispatch, &getAntennaStatus_callback, NULL, NULL);
+  register_multi_discrete_sensor_katcp(m_pKATCPDispatch, 0,
+                                      const_cast<char*>("SCM.AntennaStatus"),
+                                      const_cast<char*>("Antenna Status"),
+                                      const_cast<char*>(""),
+                                      m_achaAntennaStatusDiscreteValues, 4,
+                                      m_pKAAntennaStatus, extract_dontcare_discrete_katcp, NULL);
+
+/*  register_discrete_sensor_katcp(m_pKATCPDispatch, 0,
                                 const_cast<char*>("SCM.AntennaStatus"),
                                 const_cast<char*>("Antenna Status"),
                                 const_cast<char*>(""),
                                 &getAntennaStatus_callback, NULL, NULL, m_achaAntennaStatusDiscreteValues, 4);
-
+*/
   register_double_sensor_katcp(m_pKATCPDispatch, 0,
                                 const_cast<char*>("RFC.IntermediateStage_5GHz"),
                                 const_cast<char*>("Intermediate stage 5 GHz LO freq"),
@@ -774,6 +789,8 @@ int cKATCPServer::getAntennaStatus_callback(struct katcp_dispatch *pD, struct ka
 {
   boost::shared_lock<boost::shared_mutex> oLock(m_oMutex);
 
+  cout << "cKATCPServer::getAntennaStatus_callback: " << m_iAntennaStatus << endl;
+
   return m_iAntennaStatus;
 }
 
@@ -941,6 +958,7 @@ void cKATCPServer::dataSimulatorThreadFunction()
       m_dRelativeHumidity_percent += (float)((rand() % 100) - 50) / 100;
 
       m_iAntennaStatus = (rand() % 4);
+      cout << "Set antenna status to " << m_achaAntennaStatusDiscreteValues[m_iAntennaStatus] << endl;
     }
 
     boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
