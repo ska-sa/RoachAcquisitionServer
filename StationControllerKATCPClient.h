@@ -36,7 +36,7 @@ public:
         virtual void                                    antennaStatus_callback(int64_t i64Timestamp_us, const std::string &strAntennaStatus, const std::string &strStatus) = 0;
 
         //Global experiment values
-        virtual void                                    sourceSelection_callback(int64_t i64Timestamp_us, const std::string &strSourceName, double dRighAscension_deg, double dDeclination_deg) = 0;
+        virtual void                                    sourceSelection_callback(int64_t i64Timestamp_us, const std::string &strSourceName, const std::string &strStatus) = 0;
 
         //RF values
         virtual void                                    frequencySelectLcp_callback(int64_t i64Timestamp_us, bool bFrequencySelectChan0, const std::string &strStatus) = 0;
@@ -105,7 +105,7 @@ private:
     void                                                sendNoiseDiodeState(int64_t i64Timestamp_us, int32_t i32NoiseDiodeState, const std::string &strStatus);
 
     //Global experiment values
-    void                                                sendSourceSelection(int64_t i64Timestamp_us, const std::string &strSourceName, double dRighAscension_deg, double dDeclination_deg);
+    void                                                sendSourceSelection(int64_t i64Timestamp_us, const std::string &strSourceName, const std::string &strStatus);
 
     //RFE values
     void                                                sendFrequencySelectLcp(int64_t i64Timestamp_us, double dFreqencyRF_MHz, const std::string &strStatus);

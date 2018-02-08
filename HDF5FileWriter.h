@@ -255,7 +255,7 @@ public:
 
 
     //Global experiment values
-    void                                                sourceSelection_callback(int64_t i64Timestamp_us, const std::string &strSourceName, double dRighAscension_deg, double dDeclination_deg);
+    void                                                sourceSelection_callback(int64_t i64Timestamp_us, const std::string &strSourceName, const string &strStatus);
 
 
     //RF values

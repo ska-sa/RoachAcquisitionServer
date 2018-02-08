@@ -293,7 +293,7 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
     if(!vstrTokens[3].compare("sourceSelection"))
     {
         //TODO: Process this one. Doesn't have any other values as yet. Look at how MeerKAT does it. How does KatDAL get this data from the catalog?
-        //sendSourceSelection( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, vstrTokens[2], strtod(vstrTokens[3].c_str(), NULL), strtod(vstrTokens[4].c_str(), NULL) );
+        sendSourceSelection( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, vstrTokens[5].c_str(), vstrTokens[4].c_str()  );
         return;
     }
 
@@ -891,8 +891,9 @@ void cStationControllerKATCPClient::sendNoiseDiodeState(int64_t i64Timestamp_us,
     }
 }
 
-void cStationControllerKATCPClient::sendSourceSelection(int64_t i64Timestamp_us, const string &strSourceName, double dRighAscension_deg, double dDeclination_deg)
+void cStationControllerKATCPClient::sendSourceSelection(int64_t i64Timestamp_us, const string &strSourceName, const string &strStatus)
 {
+    // TODO: Start here.
     boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
 
     //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
@@ -901,13 +902,13 @@ void cStationControllerKATCPClient::sendSourceSelection(int64_t i64Timestamp_us,
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
     {
         cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
-        pHandler->sourceSelection_callback(i64Timestamp_us, strSourceName, dRighAscension_deg, dDeclination_deg);
+        pHandler->sourceSelection_callback(i64Timestamp_us, strSourceName, strStatus);
     }
 
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
     {
         boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
-        pHandler->sourceSelection_callback(i64Timestamp_us, strSourceName, dRighAscension_deg, dDeclination_deg);
+        pHandler->sourceSelection_callback(i64Timestamp_us, strSourceName, strStatus);
     }
 }
 

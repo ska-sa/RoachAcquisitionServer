@@ -978,12 +978,12 @@ void cHDF5FileWriter::rNoiseDiodePWMFrequency_callback(int64_t i64Timestamp_us, 
         m_pHDF5File->addNoiseDiodePWMFrequency(i64Timestamp_us, dNoiseDiodePWMFrequency, strStatus);
 }
 
-void cHDF5FileWriter::sourceSelection_callback(int64_t i64Timestamp_us, const string &strSourceName, double dRighAscension_deg, double dDeclination_deg)
+void cHDF5FileWriter::sourceSelection_callback(int64_t i64Timestamp_us, const string &strSourceName, const string &strStatus)
 {
     if(getState() != RECORDING)
         return;
 
-    m_pHDF5File->addSourceSelection(i64Timestamp_us, strSourceName, dRighAscension_deg, dDeclination_deg);
+    m_pHDF5File->addSourceSelection(i64Timestamp_us, strSourceName, strStatus);
 }
 
 void cHDF5FileWriter::frequencySelectLcp_callback(int64_t i64Timestamp_us, bool bFrequencySelectLcp, const string &strStatus)
