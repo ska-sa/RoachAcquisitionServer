@@ -26,7 +26,7 @@ public:
   static void serverThreadFunction();
   static void dataSimulatorThreadFunction();
 
-  static int extract_dontcare_discrete_katcp(struct katcp_dispatch *d, struct katcp_sensor *sn);
+  //static int extract_dontcare_discrete_katcp(struct katcp_dispatch *d, struct katcp_sensor *sn);
 
 protected:
   static double     getSkyActualAzim_callback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
