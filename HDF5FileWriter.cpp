@@ -983,6 +983,7 @@ void cHDF5FileWriter::sourceSelection_callback(int64_t i64Timestamp_us, const st
     if(getState() != RECORDING)
         return;
 
+    // TODO: This needs to be updated with the old ways.
     m_pHDF5File->addSourceSelection(i64Timestamp_us, strSourceName, strStatus);
 }
 
