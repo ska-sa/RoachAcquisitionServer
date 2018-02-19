@@ -88,6 +88,7 @@ public:
         int32_t                                             m_i32SizeOfCoarseFFT_nSamp;
         int32_t                                             m_i32SizeOfFineFFT_nSamp;
         int32_t                                             m_i32CoarseFFTShiftMask;
+        uint32_t                                            m_dDspGain;
         double                                              m_dADCAttenuationChan0_dB;
         double                                              m_dADCAttenuationChan1_dB;
         bool                                                m_bNoiseDiodeEnabled;
@@ -107,6 +108,7 @@ public:
         void                                                sizeOfCoarseFFT_callback(uint32_t u32SizeOfCoarseFFT_nSamp);
         void                                                sizeOfFineFFT_callback(uint32_t u32FineFFTSize_nSamp);
         void                                                coarseFFTShiftMask_callback(int64_t i64Timestamp_us, uint32_t u32ShiftMask);
+        void                                                dspGain_callback(int64_t i64Timestamp_us, double dDspGain);
         void                                                attenuationADCChan0_callback(int64_t i64Timestamp_us, double dADCAttenuationChan0_dB);
         void                                                attenuationADCChan1_callback(int64_t i64Timestamp_us, double dADCAttenuationChan1_dB);
         void                                                noiseDiodeEnabled_callback(int64_t i64Timestamp_us, bool bNoideDiodeEnabled);
@@ -182,6 +184,7 @@ protected:
     static int32_t                                          getSizeOfCoarseFFT_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
     static int32_t                                          getSizeOfFineFFT_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
     static int32_t                                          getCoarseFFTShiftMask_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
+    static double                                           getDspGain_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
     static double                                           getADCAttenuationChan0_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
     static double                                           getADCAttenuationChan1_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);
     static int32_t                                          getNoiseDiodeEnabled_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA);

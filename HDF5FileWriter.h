@@ -178,6 +178,30 @@ class cHDF5FileWriter : public cSpectrometerDataStreamInterpreter::cCallbackInte
         double  m_dVRelativeHumidity_percent;
         char    m_chaRelativeHumidityStatus[7];
 
+        // accumulationLength - u32
+        int64_t  m_i64TSAccumulationLength_us;
+        uint32_t m_u32VAccumulationLength_frames;
+
+        // coarseChannelSelect - u32
+        int64_t  m_i64TSCoarseChannelSelect_us;
+        uint32_t m_u32VCoarseChannelSelect;
+
+        // coarseFFTShiftMask - u32
+        int64_t  m_i64TSCoarseFFTShiftMask_us;
+        uint32_t m_u32VCoarseFFTShiftMask;
+
+        // dspGain - d
+        int64_t  m_i64TSDspGain_us;
+        double   m_dVDspGain;
+
+        // attenuationADCChan0
+        int64_t  m_i64TSAttenuationADCChan0_us;
+        double   m_dVAttenuationADCChan0_dB;
+
+        // attenuationADCChan1
+        int64_t  m_i64TSAttenuationADCChan1_us;
+        double   m_dVAttenuationADCChan1_dB;
+
     } cInitialValueSet;
 
 public:
@@ -286,6 +310,7 @@ public:
     void                                                sizeOfCoarseFFT_callback(uint32_t u32SizeOfCoarseFFT_nSamp);
     void                                                sizeOfFineFFT_callback(uint32_t u32FineFFTSize_nSamp);
     void                                                coarseFFTShiftMask_callback(int64_t i64Timestamp_us, uint32_t u32ShiftMask);
+    void                                                dspGain_callback(int64_t i64Timestamp_us, double dDspGain);
     void                                                attenuationADCChan0_callback(int64_t i64Timestamp_us, double dADCAttenuationChan0_dB);
     void                                                attenuationADCChan1_callback(int64_t i64Timestamp_us, double dADCAttenuationChan1_dB);
     //The noise diode information is spliced into the Roach 10 GbE data stream and interpreted from there so it is not necessary to implement these functions:

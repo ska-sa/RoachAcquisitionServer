@@ -133,6 +133,24 @@ cHDF5FileWriter::cHDF5FileWriter(const string &strRecordingDirectory, uint32_t u
         m_oInitialValueSet.m_i64TSRelativeHumidity_us = 0;
         m_oInitialValueSet.m_dVRelativeHumidity_percent = 0;
         sprintf(m_oInitialValueSet.m_chaRelativeHumidityStatus, "0");
+
+        m_oInitialValueSet.m_i64TSAccumulationLength_us = 0;
+        m_oInitialValueSet.m_u32VAccumulationLength_frames = 0;
+
+        m_oInitialValueSet.m_i64TSCoarseChannelSelect_us = 0;
+        m_oInitialValueSet.m_u32VCoarseChannelSelect = 0;
+
+        m_oInitialValueSet.m_i64TSCoarseFFTShiftMask_us = 0;
+        m_oInitialValueSet.m_u32VCoarseFFTShiftMask = 0;
+
+        m_oInitialValueSet.m_i64TSDspGain_us = 0;
+        m_oInitialValueSet.m_dVDspGain = 0;
+
+        m_oInitialValueSet.m_i64TSAttenuationADCChan0_us = 0;
+        m_oInitialValueSet.m_dVAttenuationADCChan0_dB = 0;
+
+        m_oInitialValueSet.m_i64TSAttenuationADCChan1_us = 0;
+        m_oInitialValueSet.m_dVAttenuationADCChan1_dB = 0;
     }
 }
 
@@ -396,6 +414,24 @@ void cHDF5FileWriter::getNextFrame_callback(const std::vector<int> &vi32Chan0, c
             m_pHDF5File->addRelativeHumidity(m_oInitialValueSet.m_i64TSRelativeHumidity_us,
                                              m_oInitialValueSet.m_dVRelativeHumidity_percent,
                                              m_oInitialValueSet.m_chaRelativeHumidityStatus);
+        if (m_oInitialValueSet.m_i64TSAccumulationLength_us)
+            m_pHDF5File->addAccumulationLength(m_oInitialValueSet.m_i64TSAccumulationLength_us,
+                                               m_oInitialValueSet.m_u32VAccumulationLength_frames);
+        if (m_oInitialValueSet.m_i64TSCoarseChannelSelect_us)
+            m_pHDF5File->addCoarseChannelSelect(m_oInitialValueSet.m_i64TSCoarseChannelSelect_us,
+                                                m_oInitialValueSet.m_u32VCoarseChannelSelect);
+        if (m_oInitialValueSet.m_i64TSCoarseFFTShiftMask_us)
+            m_pHDF5File->addCoarseFFTShiftMask(m_oInitialValueSet.m_i64TSCoarseFFTShiftMask_us,
+                                               m_oInitialValueSet.m_u32VCoarseFFTShiftMask);
+        if (m_oInitialValueSet.m_i64TSDspGain_us)
+            m_pHDF5File->addDspGain(m_oInitialValueSet.m_i64TSDspGain_us,
+                                    m_oInitialValueSet.m_dVDspGain);
+        if (m_oInitialValueSet.m_i64TSAttenuationADCChan0_us)
+            m_pHDF5File->addAttenuationADCChan0(m_oInitialValueSet.m_i64TSAttenuationADCChan0_us,
+                                                m_oInitialValueSet.m_dVAttenuationADCChan0_dB);
+        if (m_oInitialValueSet.m_i64TSAttenuationADCChan1_us)
+            m_pHDF5File->addAttenuationADCChan0(m_oInitialValueSet.m_i64TSAttenuationADCChan1_us,
+                                                m_oInitialValueSet.m_dVAttenuationADCChan1_dB);
 
         setState(RECORDING);
 
@@ -1144,20 +1180,30 @@ void cHDF5FileWriter::envRelativeHumidity_callback(int64_t i64Timestamp_us, doub
         m_pHDF5File->addRelativeHumidity(i64Timestamp_us, dHumidity_percent, strStatus);
 }
 
+// TODO: All the below stuff needs to get initial value support.
+
 void cHDF5FileWriter::accumulationLength_callback(int64_t i64Timestamp_us, uint32_t u32NSamples)
 {
-    if(getState() != RECORDING)
-        return;
-
-    m_pHDF5File->addAccumulationLength(i64Timestamp_us, u32NSamples);
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSAccumulationLength_us)
+    {
+        boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+        m_oInitialValueSet.m_i64TSAccumulationLength_us = i64Timestamp_us;
+        m_oInitialValueSet.m_u32VAccumulationLength_frames = u32NSamples;
+    }
+    if(getState() == RECORDING)
+        m_pHDF5File->addAccumulationLength(i64Timestamp_us, u32NSamples);
 }
 
 void cHDF5FileWriter::coarseChannelSelect_callback(int64_t i64Timestamp_us, uint32_t u32ChannelNo)
 {
-    if(getState() != RECORDING)
-        return;
-
-    m_pHDF5File->addCoarseChannelSelect(i64Timestamp_us, u32ChannelNo);
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSCoarseChannelSelect_us)
+    {
+        boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+        m_oInitialValueSet.m_i64TSCoarseChannelSelect_us = i64Timestamp_us;
+        m_oInitialValueSet.m_u32VCoarseChannelSelect = u32ChannelNo;
+    }
+    if(getState() == RECORDING)
+        m_pHDF5File->addCoarseChannelSelect(i64Timestamp_us, u32ChannelNo);
 }
 
 void cHDF5FileWriter::frequencyFs_callback(double dFrequencyFs_Hz)
@@ -1186,10 +1232,26 @@ void cHDF5FileWriter::sizeOfFineFFT_callback(uint32_t u32SizeOfFineFFT_nSamp)
 
 void cHDF5FileWriter::coarseFFTShiftMask_callback(int64_t i64Timestamp_us, uint32_t u32ShiftMask)
 {
-    if(getState() != RECORDING)
-        return;
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSCoarseFFTShiftMask_us)
+    {
+        boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+        m_oInitialValueSet.m_i64TSCoarseChannelSelect_us = i64Timestamp_us;
+        m_oInitialValueSet.m_u32VCoarseFFTShiftMask = u32ShiftMask;
+    }
+    if(getState() == RECORDING)
+        m_pHDF5File->addCoarseFFTShiftMask(i64Timestamp_us, u32ShiftMask);
+}
 
-    m_pHDF5File->addCoarseFFTShiftMask(i64Timestamp_us, u32ShiftMask);
+void cHDF5FileWriter::dspGain_callback(int64_t i64Timestamp_us, double dDspGain)
+{
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSRelativeHumidity_us)
+    {
+        boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+        m_oInitialValueSet.m_i64TSDspGain_us = i64Timestamp_us;
+        m_oInitialValueSet.m_dVDspGain = dDspGain;
+    }
+    if(getState() == RECORDING)
+        m_pHDF5File->addDspGain(i64Timestamp_us, dDspGain);
 }
 
 void cHDF5FileWriter::attenuationADCChan0_callback(int64_t i64Timestamp_us, double dADCAttenuationChan0_dB)

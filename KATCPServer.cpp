@@ -183,6 +183,12 @@ void cKATCPServer::serverThreadFunction()
                                   &getCoarseFFTShiftMask_KATCPCallback, NULL, NULL, 0, INT_MAX, NULL);
 
     register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                 const_cast<char*>("roachDSPGain"),
+                                 const_cast<char*>("Digital gain in the ROACH signal chain"),
+                                 const_cast<char*>("none"),
+                                 &getDspGain_KATCPCallback, NULL, NULL, 0, 31.5, NULL); //Assume KATADC
+
+    register_double_sensor_katcp(m_pKATCPDispatch, 0,
                                  const_cast<char*>("roachAttenuationADCChan0"),
                                  const_cast<char*>("Attenuation of ADC channel 0"),
                                  const_cast<char*>("dB"),
@@ -1049,6 +1055,13 @@ int32_t cKATCPServer::getCoarseFFTShiftMask_KATCPCallback(struct katcp_dispatch 
     return m_oKATCPClientCallbackHandler.m_i32CoarseFFTShiftMask;
 }
 
+double cKATCPServer::getDspGain_KATCPCallback(katcp_dispatch *pD, katcp_acquire *pA)
+{
+    boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oRoachMutex);
+
+    return m_oKATCPClientCallbackHandler.m_dDspGain;
+}
+
 double cKATCPServer::getADCAttenuationChan0_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oRoachMutex);
@@ -1245,6 +1258,13 @@ void cKATCPServer::cKATCPClientCallbackHandler::coarseFFTShiftMask_callback(int6
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oRoachMutex);
 
     m_i32CoarseFFTShiftMask = u32ShiftMask;
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::dspGain_callback(int64_t i64Timestamp_us, double dDspGain)
+{
+    boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oRoachMutex);
+
+    m_dDspGain = dDspGain;
 }
 
 void cKATCPServer::cKATCPClientCallbackHandler::attenuationADCChan0_callback(int64_t i64Timestamp_us, double dAttenuationChan0_dB)
