@@ -254,6 +254,12 @@ void cKATCPServer::serverThreadFunction()
                                   &getSizeOfFineFFT_KATCPCallback, NULL, NULL, 0, INT_MAX, NULL);
 
     register_integer_sensor_katcp(m_pKATCPDispatch, 0,
+                                  const_cast<char*>("roachNumFrequencyChannels"),
+                                  const_cast<char*>("Number of frequency channels"),
+                                  const_cast<char*>("freq channels"),
+                                  &getNumberChannels_KATCPCallback, NULL, NULL, 1023, 4097, NULL);
+
+    register_integer_sensor_katcp(m_pKATCPDispatch, 0,
                                   const_cast<char*>("roachCoarseFFTShiftMask"),
                                   const_cast<char*>("Mask determining the scaling with the FFT stages"),
                                   const_cast<char*>("none"),
@@ -1399,6 +1405,18 @@ int32_t cKATCPServer::getSizeOfFineFFT_KATCPCallback(struct katcp_dispatch *pD, 
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oRoachMutex);
 
     return m_oKATCPClientCallbackHandler.m_i32SizeOfFineFFT_nSamp;
+}
+
+int32_t cKATCPServer::getNumberChannels_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+    boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oRoachMutex);
+
+    // This isn't terribly discerning code. If we had more modes we would need to do this better,
+    // but it is mainly just for the automated test suite.
+    if (m_oKATCPClientCallbackHandler.m_i32SizeOfFineFFT_nSamp == 0)
+        return 1024;
+    else
+        return 4096;
 }
 
 int32_t cKATCPServer::getCoarseFFTShiftMask_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
