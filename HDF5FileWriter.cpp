@@ -35,6 +35,14 @@ cHDF5FileWriter::cHDF5FileWriter(const string &strRecordingDirectory, uint32_t u
         m_oInitialValueSet.m_dVAcsRequestedElev_deg = 0;
         sprintf(m_oInitialValueSet.m_chaAcsRequestedElevStatus, "0");
 
+        m_oInitialValueSet.m_i64TSAcsDesiredAzim_us = 0;
+        m_oInitialValueSet.m_dVAcsDesiredAzim_deg = 0;
+        sprintf(m_oInitialValueSet.m_chaAcsDesiredAzimStatus, "0");
+
+        m_oInitialValueSet.m_i64TSAcsDesiredElev_us = 0;
+        m_oInitialValueSet.m_dVAcsDesiredElev_deg = 0;
+        sprintf(m_oInitialValueSet.m_chaAcsDesiredElevStatus, "0");
+
         m_oInitialValueSet.m_i64TSAcsActualAzim_us = 0;
         m_oInitialValueSet.m_dVAcsActualAzim_deg = 0;
         sprintf(m_oInitialValueSet.m_chaAcsActualAzimStatus, "0");
@@ -50,6 +58,14 @@ cHDF5FileWriter::cHDF5FileWriter(const string &strRecordingDirectory, uint32_t u
         m_oInitialValueSet.m_i64TSSkyRequestedElev_us = 0;
         m_oInitialValueSet.m_dVSkyRequestedElev_deg = 0;
         sprintf(m_oInitialValueSet.m_chaSkyRequestedElevStatus, "0");
+
+        m_oInitialValueSet.m_i64TSSkyDesiredAzim_us = 0;
+        m_oInitialValueSet.m_dVSkyDesiredAzim_deg = 0;
+        sprintf(m_oInitialValueSet.m_chaSkyDesiredAzimStatus, "0");
+
+        m_oInitialValueSet.m_i64TSSkyDesiredElev_us = 0;
+        m_oInitialValueSet.m_dVSkyDesiredElev_deg = 0;
+        sprintf(m_oInitialValueSet.m_chaSkyDesiredElevStatus, "0");
 
         m_oInitialValueSet.m_i64TSSkyActualAzim_us = 0;
         m_oInitialValueSet.m_dVSkyActualAzim_deg = 0;
@@ -316,6 +332,14 @@ void cHDF5FileWriter::getNextFrame_callback(const std::vector<int> &vi32Chan0, c
             m_pHDF5File->addAcsRequestedEl(m_oInitialValueSet.m_i64TSAcsRequestedElev_us,
                                            m_oInitialValueSet.m_dVAcsRequestedElev_deg,
                                            m_oInitialValueSet.m_chaAcsRequestedElevStatus);
+        if (m_oInitialValueSet.m_i64TSAcsDesiredAzim_us)
+            m_pHDF5File->addAcsDesiredAz(m_oInitialValueSet.m_i64TSAcsDesiredAzim_us,
+                                         m_oInitialValueSet.m_dVAcsDesiredAzim_deg,
+                                         m_oInitialValueSet.m_chaAcsDesiredAzimStatus);
+        if (m_oInitialValueSet.m_i64TSAcsDesiredElev_us)
+            m_pHDF5File->addAcsDesiredEl(m_oInitialValueSet.m_i64TSAcsDesiredElev_us,
+                                         m_oInitialValueSet.m_dVAcsDesiredElev_deg,
+                                         m_oInitialValueSet.m_chaAcsDesiredElevStatus);
         if (m_oInitialValueSet.m_i64TSAcsActualAzim_us)
             m_pHDF5File->addAcsActualAz(m_oInitialValueSet.m_i64TSAcsActualAzim_us,
                                         m_oInitialValueSet.m_dVAcsActualAzim_deg,
@@ -332,6 +356,14 @@ void cHDF5FileWriter::getNextFrame_callback(const std::vector<int> &vi32Chan0, c
             m_pHDF5File->addSkyRequestedEl(m_oInitialValueSet.m_i64TSSkyRequestedElev_us,
                                            m_oInitialValueSet.m_dVSkyRequestedElev_deg,
                                            m_oInitialValueSet.m_chaSkyRequestedElevStatus);
+        if (m_oInitialValueSet.m_i64TSSkyDesiredAzim_us)
+            m_pHDF5File->addSkyDesiredAz(m_oInitialValueSet.m_i64TSSkyDesiredAzim_us,
+                                         m_oInitialValueSet.m_dVSkyDesiredAzim_deg,
+                                         m_oInitialValueSet.m_chaSkyDesiredAzimStatus);
+        if (m_oInitialValueSet.m_i64TSSkyDesiredElev_us)
+            m_pHDF5File->addSkyDesiredEl(m_oInitialValueSet.m_i64TSSkyDesiredElev_us,
+                                         m_oInitialValueSet.m_dVSkyDesiredElev_deg,
+                                         m_oInitialValueSet.m_chaSkyDesiredElevStatus);
         if (m_oInitialValueSet.m_i64TSSkyActualAzim_us)
             m_pHDF5File->addSkyActualAz(m_oInitialValueSet.m_i64TSSkyActualAzim_us,
                                         m_oInitialValueSet.m_dVSkyActualAzim_deg,
@@ -805,6 +837,32 @@ void cHDF5FileWriter::acsRequestedEl_callback(int64_t i64Timestamp_us, double dE
         m_pHDF5File->addAcsRequestedEl(i64Timestamp_us, dElevation_deg, strStatus);
 }
 
+void cHDF5FileWriter::acsDesiredAz_callback(int64_t i64Timestamp_us,double dAzimuth_deg, const string &strStatus)
+{
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSAcsDesiredAzim_us)
+    {
+        boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+        m_oInitialValueSet.m_i64TSAcsDesiredAzim_us = i64Timestamp_us;
+        m_oInitialValueSet.m_dVAcsDesiredAzim_deg = dAzimuth_deg;
+        sprintf(m_oInitialValueSet.m_chaAcsDesiredAzimStatus, "%s", strStatus.c_str());
+    }
+    if(getState() == RECORDING)
+        m_pHDF5File->addAcsDesiredAz(i64Timestamp_us, dAzimuth_deg, strStatus);
+}
+
+void cHDF5FileWriter::acsDesiredEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const string &strStatus)
+{
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSAcsDesiredElev_us)
+    {
+        boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+        m_oInitialValueSet.m_i64TSAcsDesiredElev_us = i64Timestamp_us;
+        m_oInitialValueSet.m_dVAcsDesiredElev_deg = dElevation_deg;
+        sprintf(m_oInitialValueSet.m_chaAcsDesiredElevStatus, "%s", strStatus.c_str());
+    }
+    if(getState() == RECORDING)
+        m_pHDF5File->addAcsDesiredEl(i64Timestamp_us, dElevation_deg, strStatus);
+}
+
 void cHDF5FileWriter::acsActualAz_callback(int64_t i64Timestamp_us,double dAzimuth_deg, const string &strStatus)
 {
     if (i64Timestamp_us > m_oInitialValueSet.m_i64TSAcsActualAzim_us)
@@ -855,6 +913,32 @@ void cHDF5FileWriter::skyRequestedEl_callback(int64_t i64Timestamp_us, double dE
     }
     if(getState() == RECORDING)
         m_pHDF5File->addSkyRequestedEl(i64Timestamp_us, dElevation_deg, strStatus);
+}
+
+void cHDF5FileWriter::skyDesiredAz_callback(int64_t i64Timestamp_us,double dAzimuth_deg, const string &strStatus)
+{
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSSkyDesiredAzim_us)
+    {
+        boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+        m_oInitialValueSet.m_i64TSSkyDesiredAzim_us = i64Timestamp_us;
+        m_oInitialValueSet.m_dVSkyDesiredAzim_deg = dAzimuth_deg;
+        sprintf(m_oInitialValueSet.m_chaSkyDesiredAzimStatus, "%s", strStatus.c_str());
+    }
+    if(getState() == RECORDING)
+        m_pHDF5File->addSkyDesiredAz(i64Timestamp_us, dAzimuth_deg, strStatus);
+}
+
+void cHDF5FileWriter::skyDesiredEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const string &strStatus)
+{
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSSkyDesiredElev_us)
+    {
+        boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+        m_oInitialValueSet.m_i64TSSkyDesiredElev_us = i64Timestamp_us;
+        m_oInitialValueSet.m_dVSkyDesiredElev_deg = dElevation_deg;
+        sprintf(m_oInitialValueSet.m_chaSkyDesiredElevStatus, "%s", strStatus.c_str());
+    }
+    if(getState() == RECORDING)
+        m_pHDF5File->addSkyDesiredEl(i64Timestamp_us, dElevation_deg, strStatus);
 }
 
 void cHDF5FileWriter::skyActualAz_callback(int64_t i64Timestamp_us,double dAzimuth_deg, const string &strStatus)

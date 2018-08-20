@@ -16,16 +16,16 @@ cStationControllerKATCPClient::cStationControllerKATCPClient() :
     //Sky space.
     m_vstrSensorSampling.push_back("SCM.actual-azim period 1000");
     m_vstrSensorSampling.push_back("SCM.actual-elev period 1000");
-    //m_vstrSensorNames.push_back("SCM.desired-azim period 1000");
-    //m_vstrSensorNames.push_back("SCM.desired-elev period 1000");
+    m_vstrSensorSampling.push_back("SCM.desired-azim period 1000");
+    m_vstrSensorSampling.push_back("SCM.desired-elev period 1000");
     m_vstrSensorSampling.push_back("SCM.request-azim period 1000");
     m_vstrSensorSampling.push_back("SCM.request-elev period 1000");
 
     // Antenna space.
     m_vstrSensorSampling.push_back("acs.actual-azim period 1000");
     m_vstrSensorSampling.push_back("acs.actual-elev period 1000");
-    //m_vstrSensorNames.push_back("acs.desired-azim period 1000");
-    //m_vstrSensorNames.push_back("acs.desired-elev period 1000");
+    m_vstrSensorSampling.push_back("acs.desired-azim period 1000");
+    m_vstrSensorSampling.push_back("acs.desired-elev period 1000");
     m_vstrSensorSampling.push_back("acs.request-azim period 1000");
     m_vstrSensorSampling.push_back("acs.request-elev period 1000");
 
@@ -194,14 +194,23 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
         return;
     }
 
-
     if( !vstrTokens[3].compare("acs.request-elev") )
     {
         sendAcsRequestedAntennaEl( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
         return;
     }
 
-    // TODO: Think about adding "desired" functions.
+    if( !vstrTokens[3].compare("acs.desired-azim") )
+    {
+        sendAcsDesiredAntennaAz( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+        return;
+    }
+
+    if( !vstrTokens[3].compare("acs.desired-elev") )
+    {
+        sendAcsDesiredAntennaEl( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+        return;
+    }
 
     if(!vstrTokens[3].compare("acs.actual-azim"))
     {
@@ -209,13 +218,11 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
         return;
     }
 
-
     if(!vstrTokens[3].compare("acs.actual-elev"))
     {
         sendAcsActualAntennaEl( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
         return;
     }
-
 
     if( !vstrTokens[3].compare("SCM.request-azim") )
     {
@@ -223,21 +230,29 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
         return;
     }
 
-
     if( !vstrTokens[3].compare("SCM.request-elev") )
     {
         sendSkyRequestedAntennaEl( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
         return;
     }
 
-    // TODO: Think about adding "desired" functions.
+    if( !vstrTokens[3].compare("SCM.desired-azim") )
+    {
+        sendSkyDesiredAntennaAz( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+        return;
+    }
+
+    if( !vstrTokens[3].compare("SCM.desired-elev") )
+    {
+        sendSkyDesiredAntennaEl( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+        return;
+    }
 
     if(!vstrTokens[3].compare("SCM.actual-azim"))
     {
         sendSkyActualAntennaAz( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
         return;
     }
-
 
     if(!vstrTokens[3].compare("SCM.actual-elev"))
     {
@@ -481,6 +496,46 @@ void cStationControllerKATCPClient::sendAcsRequestedAntennaEl(int64_t i64Timesta
     }
 }
 
+void cStationControllerKATCPClient::sendAcsDesiredAntennaAz(int64_t i64Timestamp_us,double dAzimuth_deg, const string &strStatus)
+{
+    boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
+
+    //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
+    //to call function added in the derived version of the callback handler interface class
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
+    {
+        cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
+        pHandler->acsDesiredAz_callback(i64Timestamp_us, dAzimuth_deg, strStatus);
+    }
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
+    {
+        boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
+        pHandler->acsDesiredAz_callback(i64Timestamp_us, dAzimuth_deg, strStatus);
+    }
+}
+
+void cStationControllerKATCPClient::sendAcsDesiredAntennaEl(int64_t i64Timestamp_us,double dElevation_deg, const string &strStatus)
+{
+    boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
+
+    //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
+    //to call function added in the derived version of the callback handler interface class
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
+    {
+        cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
+        pHandler->acsDesiredEl_callback(i64Timestamp_us, dElevation_deg, strStatus);
+    }
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
+    {
+        boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
+        pHandler->acsDesiredEl_callback(i64Timestamp_us, dElevation_deg, strStatus);
+    }
+}
+
 void cStationControllerKATCPClient::sendAcsActualAntennaAz(int64_t i64Timestamp_us,double dAzimuth_deg, const string &strStatus)
 {
     boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
@@ -559,6 +614,46 @@ void cStationControllerKATCPClient::sendSkyRequestedAntennaEl(int64_t i64Timesta
     {
         boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
         pHandler->skyRequestedEl_callback(i64Timestamp_us, dElevation_deg, strStatus);
+    }
+}
+
+void cStationControllerKATCPClient::sendSkyDesiredAntennaAz(int64_t i64Timestamp_us,double dAzimuth_deg, const string &strStatus)
+{
+    boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
+
+    //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
+    //to call function added in the derived version of the callback handler interface class
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
+    {
+        cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
+        pHandler->skyDesiredAz_callback(i64Timestamp_us, dAzimuth_deg, strStatus);
+    }
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
+    {
+        boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
+        pHandler->skyDesiredAz_callback(i64Timestamp_us, dAzimuth_deg, strStatus);
+    }
+}
+
+void cStationControllerKATCPClient::sendSkyDesiredAntennaEl(int64_t i64Timestamp_us,double dElevation_deg, const string &strStatus)
+{
+    boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
+
+    //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
+    //to call function added in the derived version of the callback handler interface class
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
+    {
+        cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
+        pHandler->skyDesiredEl_callback(i64Timestamp_us, dElevation_deg, strStatus);
+    }
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
+    {
+        boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
+        pHandler->skyDesiredEl_callback(i64Timestamp_us, dElevation_deg, strStatus);
     }
 }
 

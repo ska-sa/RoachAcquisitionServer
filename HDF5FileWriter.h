@@ -57,6 +57,16 @@ class cHDF5FileWriter : public cSpectrometerDataStreamInterpreter::cCallbackInte
         double  m_dVAcsRequestedElev_deg;
         char    m_chaAcsRequestedElevStatus[7];
 
+        // Antenna-space desired azim - cTimestampedDouble
+        int64_t m_i64TSAcsDesiredAzim_us;
+        double  m_dVAcsDesiredAzim_deg;
+        char    m_chaAcsDesiredAzimStatus[7];
+
+        // Antenna-space desired elev - cTimestampedDouble
+        int64_t m_i64TSAcsDesiredElev_us;
+        double  m_dVAcsDesiredElev_deg;
+        char    m_chaAcsDesiredElevStatus[7];
+
         // Antenna-space actual azim - cTimestampedDouble
         int64_t m_i64TSAcsActualAzim_us;
         double  m_dVAcsActualAzim_deg;
@@ -76,6 +86,16 @@ class cHDF5FileWriter : public cSpectrometerDataStreamInterpreter::cCallbackInte
         int64_t m_i64TSSkyRequestedElev_us;
         double  m_dVSkyRequestedElev_deg;
         char    m_chaSkyRequestedElevStatus[7];
+
+        // Sky-space desired azim - cTimestampedDouble
+        int64_t m_i64TSSkyDesiredAzim_us;
+        double  m_dVSkyDesiredAzim_deg;
+        char    m_chaSkyDesiredAzimStatus[7];
+
+        // Sky-space desired elev - cTimestampedDouble
+        int64_t m_i64TSSkyDesiredElev_us;
+        double  m_dVSkyDesiredElev_deg;
+        char    m_chaSkyDesiredElevStatus[7];
 
         // Sky-space actual azim - cTimestampedDouble
         int64_t m_i64TSSkyActualAzim_us;
@@ -251,11 +271,15 @@ public:
     //Antenna values
     void                                                acsRequestedAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus);
     void                                                acsRequestedEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus);
+    void                                                acsDesiredAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus);
+    void                                                acsDesiredEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus);
     void                                                acsActualAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus);
     void                                                acsActualEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus);
 
     void                                                skyRequestedAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus);
     void                                                skyRequestedEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus);
+    void                                                skyDesiredAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus);
+    void                                                skyDesiredEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus);
     void                                                skyActualAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus);
     void                                                skyActualEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus);
 
