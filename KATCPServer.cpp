@@ -858,6 +858,8 @@ int32_t cKATCPServer::roachSetDspGain_KATCPCallback(struct katcp_dispatch *pKATC
     // digital_gain register has a binary-point of 12 bits
     double dRequestedGain = strtod(arg_string_katcp(pKATCPDispatch, 1), NULL) / (2^12);
 
+    cout << "cKATCPServer::roachSetDspGain_KATCPCallback: Requested " << dRequestedGain << " gain." << endl;
+
     if (dRequestedGain < 0)
     {
         log_message_katcp(pKATCPDispatch, KATCP_LEVEL_ERROR, NULL, const_cast<char*>("setRoachDspGain: Cannot set a negative gain."));
@@ -866,6 +868,7 @@ int32_t cKATCPServer::roachSetDspGain_KATCPCallback(struct katcp_dispatch *pKATC
 
     // digital_gain register is unsigned. Check for positive numbers.
     uint32_t ui32Gain = int(dRequestedGain * (2^12));
+    cout << "cKATCPServer::roachSetDspGain_KATCPCallback: converted to int " << ui32Gain << endl;
 
     if(m_pRoachKATCPClient->writeRoachRegister(string("digital_gain"), ui32Gain))
     {
