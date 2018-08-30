@@ -313,6 +313,11 @@ void cKATCPServer::serverThreadFunction()
                    &cKATCPServer::roachSetCoarseFFTShiftMask_KATCPCallback);
 
     register_katcp(m_pKATCPDispatch,
+                   const_cast<char*>("?setRoachDspGain"),
+                   const_cast<char*>("Digital gain for DSP signal chain"),
+                   &cKATCPServer::roachSetDspGain_KATCPCallback);
+
+    register_katcp(m_pKATCPDispatch,
                    const_cast<char*>("?setRoachADC0Attenuation"),
                    const_cast<char*>("Attenuation of ADC0 (0.5 dB per step max 31.5 dB)"),
                    &cKATCPServer::roachSetADC0Attenuation_KATCPCallback);
@@ -825,6 +830,44 @@ int32_t cKATCPServer::roachSetCoarseFFTShiftMask_KATCPCallback(struct katcp_disp
     }
 
     if(m_pRoachKATCPClient->writeRoachRegister(string("coarse_fft_shift_mask"), strtoul(arg_string_katcp(pKATCPDispatch, 1), NULL, 10)))
+    {
+        return KATCP_RESULT_OK;
+    }
+    else
+    {
+        return KATCP_RESULT_FAIL;
+    }
+}
+
+
+int32_t cKATCPServer::roachSetDspGain_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC)
+{
+    if(i32ArgC != 2)
+    {
+        log_message_katcp(pKATCPDispatch, KATCP_LEVEL_ERROR, NULL, const_cast<char*>("setRoachDspGain: Incorrect number of arguments."));
+        return KATCP_RESULT_FAIL;
+    }
+
+    if(!m_pRoachKATCPClient.get())
+    {
+        //No file writer set. Do nothing
+        log_message_katcp(pKATCPDispatch, KATCP_LEVEL_ERROR, NULL, const_cast<char*>("setRoachDspGain: No KATCPclient object for Roach control set."));
+        return KATCP_RESULT_FAIL;
+    }
+
+    // digital_gain register has a binary-point of 12 bits
+    double dRequestedGain = strtod(arg_string_katcp(pKATCPDispatch, 1), NULL) / (2^12);
+
+    if (dRequestedGain < 0)
+    {
+        log_message_katcp(pKATCPDispatch, KATCP_LEVEL_ERROR, NULL, const_cast<char*>("setRoachDspGain: Cannot set a negative gain."));
+        return KATCP_RESULT_FAIL;
+    }
+
+    // digital_gain register is unsigned. Check for positive numbers.
+    uint32_t ui32Gain = int(dRequestedGain * (2^12));
+
+    if(m_pRoachKATCPClient->writeRoachRegister(string("digital_gain"), ui32Gain))
     {
         return KATCP_RESULT_OK;
     }

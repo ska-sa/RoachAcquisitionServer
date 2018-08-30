@@ -154,6 +154,7 @@ protected:
     static int32_t                                          roachSetAccumulationLength_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
     static int32_t                                          roachSetCoarseChannelSelect_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
     static int32_t                                          roachSetCoarseFFTShiftMask_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
+    static int32_t                                          roachSetDspGain_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
     static int32_t                                          roachSetADC0Attenuation_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
     static int32_t                                          roachSetADC1Attenuation_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
     static int32_t                                          roachSetNoiseDiodeEnabled_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC);
