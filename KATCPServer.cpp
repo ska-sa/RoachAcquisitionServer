@@ -857,7 +857,7 @@ int32_t cKATCPServer::roachSetDspGain_KATCPCallback(struct katcp_dispatch *pKATC
     }
 
     // digital_gain register has a binary-point of 12 bits
-    double dRequestedGain = strtod(arg_string_katcp(pKATCPDispatch, 1), NULL) / pow(2,12);
+    double dRequestedGain = strtod(arg_string_katcp(pKATCPDispatch, 1), NULL);// / pow(2,12);
 
     if (dRequestedGain < 0)
     {
