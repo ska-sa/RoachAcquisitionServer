@@ -88,7 +88,7 @@ public:
         int32_t                                             m_i32SizeOfCoarseFFT_nSamp;
         int32_t                                             m_i32SizeOfFineFFT_nSamp;
         int32_t                                             m_i32CoarseFFTShiftMask;
-        uint32_t                                            m_dDspGain;
+        double                                              m_dDspGain;
         double                                              m_dADCAttenuationChan0_dB;
         double                                              m_dADCAttenuationChan1_dB;
         bool                                                m_bNoiseDiodeEnabled;
