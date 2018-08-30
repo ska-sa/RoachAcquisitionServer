@@ -190,10 +190,11 @@ void cKATCPServer::serverThreadFunction()
                                   &getCoarseFFTShiftMask_KATCPCallback, NULL, NULL, 0, INT_MAX, NULL);
 
     register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                 const_cast<char*>("roachDSPGain"),
+                                 const_cast<char*>("roachDspGain"),
                                  const_cast<char*>("Digital gain in the ROACH signal chain"),
                                  const_cast<char*>("none"),
-                                 &getDspGain_KATCPCallback, NULL, NULL, 0, 31.5, NULL); //Assume KATADC
+                                 &getDspGain_KATCPCallback, NULL, NULL, 0, pow(2,20), NULL);
+                                 //20-bit integer maximum, ridiculously high but no real reason to flag this for the time being.
 
     register_double_sensor_katcp(m_pKATCPDispatch, 0,
                                  const_cast<char*>("roachAttenuationADCChan0"),
