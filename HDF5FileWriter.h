@@ -57,6 +57,16 @@ class cHDF5FileWriter : public cSpectrometerDataStreamInterpreter::cCallbackInte
         double  m_dVAcsRequestedElev_deg;
         char    m_chaAcsRequestedElevStatus[7];
 
+        // Antenna-space desired azim - cTimestampedDouble
+        int64_t m_i64TSAcsDesiredAzim_us;
+        double  m_dVAcsDesiredAzim_deg;
+        char    m_chaAcsDesiredAzimStatus[7];
+
+        // Antenna-space desired elev - cTimestampedDouble
+        int64_t m_i64TSAcsDesiredElev_us;
+        double  m_dVAcsDesiredElev_deg;
+        char    m_chaAcsDesiredElevStatus[7];
+
         // Antenna-space actual azim - cTimestampedDouble
         int64_t m_i64TSAcsActualAzim_us;
         double  m_dVAcsActualAzim_deg;
@@ -76,6 +86,16 @@ class cHDF5FileWriter : public cSpectrometerDataStreamInterpreter::cCallbackInte
         int64_t m_i64TSSkyRequestedElev_us;
         double  m_dVSkyRequestedElev_deg;
         char    m_chaSkyRequestedElevStatus[7];
+
+        // Sky-space desired azim - cTimestampedDouble
+        int64_t m_i64TSSkyDesiredAzim_us;
+        double  m_dVSkyDesiredAzim_deg;
+        char    m_chaSkyDesiredAzimStatus[7];
+
+        // Sky-space desired elev - cTimestampedDouble
+        int64_t m_i64TSSkyDesiredElev_us;
+        double  m_dVSkyDesiredElev_deg;
+        char    m_chaSkyDesiredElevStatus[7];
 
         // Sky-space actual azim - cTimestampedDouble
         int64_t m_i64TSSkyActualAzim_us;
@@ -178,6 +198,30 @@ class cHDF5FileWriter : public cSpectrometerDataStreamInterpreter::cCallbackInte
         double  m_dVRelativeHumidity_percent;
         char    m_chaRelativeHumidityStatus[7];
 
+        // accumulationLength - u32
+        int64_t  m_i64TSAccumulationLength_us;
+        uint32_t m_u32VAccumulationLength_frames;
+
+        // coarseChannelSelect - u32
+        int64_t  m_i64TSCoarseChannelSelect_us;
+        uint32_t m_u32VCoarseChannelSelect;
+
+        // coarseFFTShiftMask - u32
+        int64_t  m_i64TSCoarseFFTShiftMask_us;
+        uint32_t m_u32VCoarseFFTShiftMask;
+
+        // dspGain - d
+        int64_t  m_i64TSDspGain_us;
+        double   m_dVDspGain;
+
+        // attenuationADCChan0
+        int64_t  m_i64TSAttenuationADCChan0_us;
+        double   m_dVAttenuationADCChan0_dB;
+
+        // attenuationADCChan1
+        int64_t  m_i64TSAttenuationADCChan1_us;
+        double   m_dVAttenuationADCChan1_dB;
+
     } cInitialValueSet;
 
 public:
@@ -227,11 +271,15 @@ public:
     //Antenna values
     void                                                acsRequestedAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus);
     void                                                acsRequestedEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus);
+    void                                                acsDesiredAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus);
+    void                                                acsDesiredEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus);
     void                                                acsActualAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus);
     void                                                acsActualEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus);
 
     void                                                skyRequestedAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus);
     void                                                skyRequestedEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus);
+    void                                                skyDesiredAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus);
+    void                                                skyDesiredEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus);
     void                                                skyActualAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus);
     void                                                skyActualEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus);
 
@@ -255,7 +303,7 @@ public:
 
 
     //Global experiment values
-    void                                                sourceSelection_callback(int64_t i64Timestamp_us, const std::string &strSourceName, double dRighAscension_deg, double dDeclination_deg);
+    void                                                sourceSelection_callback(int64_t i64Timestamp_us, const std::string &strSourceName, const string &strStatus);
 
 
     //RF values
@@ -286,6 +334,7 @@ public:
     void                                                sizeOfCoarseFFT_callback(uint32_t u32SizeOfCoarseFFT_nSamp);
     void                                                sizeOfFineFFT_callback(uint32_t u32FineFFTSize_nSamp);
     void                                                coarseFFTShiftMask_callback(int64_t i64Timestamp_us, uint32_t u32ShiftMask);
+    void                                                dspGain_callback(int64_t i64Timestamp_us, double dDspGain);
     void                                                attenuationADCChan0_callback(int64_t i64Timestamp_us, double dADCAttenuationChan0_dB);
     void                                                attenuationADCChan1_callback(int64_t i64Timestamp_us, double dADCAttenuationChan1_dB);
     //The noise diode information is spliced into the Roach 10 GbE data stream and interpreted from there so it is not necessary to implement these functions:

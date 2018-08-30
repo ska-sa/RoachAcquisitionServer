@@ -177,10 +177,22 @@ void cKATCPServer::serverThreadFunction()
                                   &getSizeOfFineFFT_KATCPCallback, NULL, NULL, 0, INT_MAX, NULL);
 
     register_integer_sensor_katcp(m_pKATCPDispatch, 0,
+                                  const_cast<char*>("roachNumFrequencyChannels"),
+                                  const_cast<char*>("Number of frequency channels"),
+                                  const_cast<char*>("freq channels"),
+                                  &getNumberChannels_KATCPCallback, NULL, NULL, 1023, 4097, NULL);
+
+    register_integer_sensor_katcp(m_pKATCPDispatch, 0,
                                   const_cast<char*>("roachCoarseFFTShiftMask"),
                                   const_cast<char*>("Mask determining the scaling with the FFT stages"),
                                   const_cast<char*>("none"),
                                   &getCoarseFFTShiftMask_KATCPCallback, NULL, NULL, 0, INT_MAX, NULL);
+
+    register_double_sensor_katcp(m_pKATCPDispatch, 0,
+                                 const_cast<char*>("roachDSPGain"),
+                                 const_cast<char*>("Digital gain in the ROACH signal chain"),
+                                 const_cast<char*>("none"),
+                                 &getDspGain_KATCPCallback, NULL, NULL, 0, 31.5, NULL); //Assume KATADC
 
     register_double_sensor_katcp(m_pKATCPDispatch, 0,
                                  const_cast<char*>("roachAttenuationADCChan0"),
@@ -1042,11 +1054,30 @@ int32_t cKATCPServer::getSizeOfFineFFT_KATCPCallback(struct katcp_dispatch *pD, 
     return m_oKATCPClientCallbackHandler.m_i32SizeOfFineFFT_nSamp;
 }
 
+int32_t cKATCPServer::getNumberChannels_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
+{
+    boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oRoachMutex);
+
+    // This isn't terribly discerning code. If we had more modes we would need to do this better,
+    // but it is mainly just for the automated test suite.
+    if (m_oKATCPClientCallbackHandler.m_i32SizeOfFineFFT_nSamp == 0)
+        return 1024;
+    else
+        return 4096;
+}
+
 int32_t cKATCPServer::getCoarseFFTShiftMask_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oRoachMutex);
 
     return m_oKATCPClientCallbackHandler.m_i32CoarseFFTShiftMask;
+}
+
+double cKATCPServer::getDspGain_KATCPCallback(katcp_dispatch *pD, katcp_acquire *pA)
+{
+    boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oRoachMutex);
+
+    return m_oKATCPClientCallbackHandler.m_dDspGain;
 }
 
 double cKATCPServer::getADCAttenuationChan0_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
@@ -1245,6 +1276,13 @@ void cKATCPServer::cKATCPClientCallbackHandler::coarseFFTShiftMask_callback(int6
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oRoachMutex);
 
     m_i32CoarseFFTShiftMask = u32ShiftMask;
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::dspGain_callback(int64_t i64Timestamp_us, double dDspGain)
+{
+    boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oRoachMutex);
+
+    m_dDspGain = dDspGain;
 }
 
 void cKATCPServer::cKATCPClientCallbackHandler::attenuationADCChan0_callback(int64_t i64Timestamp_us, double dAttenuationChan0_dB)

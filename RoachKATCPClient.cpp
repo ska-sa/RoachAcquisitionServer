@@ -314,6 +314,28 @@ void cRoachKATCPClient::readAllRegisters(uint32_t u32SleepTime_ms)
         }
     }
 
+
+    //Wait a bit before next read
+    boost::this_thread::sleep_for(boost::chrono::milliseconds(u32SleepTime_ms));
+
+    if(disconnectRequested())
+        return;
+    {
+        boost::unique_lock<boost::mutex> oLock(m_oKATCPMutex);
+        if( readRoachRegister(string("digital_gain"), u32Value) )
+        {
+
+            double dDspGain = u32Value / (2^16);
+            sendDspGain(AVN::getTimeNow_us(), dDspGain);
+            //cout << "cRoachKATCPClient::threadWriteFunction(): Wrote digital_gain" << endl;
+        }
+        else
+        {
+            cout << "cRoachKATCPClient::threadWriteFunction(): Failed to read register: digital_gain" << endl;
+        }
+    }
+
+
     //Wait a bit before next read
     boost::this_thread::sleep_for(boost::chrono::milliseconds(u32SleepTime_ms));
 
@@ -647,6 +669,26 @@ void cRoachKATCPClient::sendCoarseFFTShiftMask(int64_t i64Timestamp_us, uint32_t
     {
         boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
         pHandler->coarseFFTShiftMask_callback(i64Timestamp_us, u32ShiftMask);
+    }
+}
+
+void cRoachKATCPClient::sendDspGain(int64_t i64Timestamp_us, double dDspGain)
+{
+    boost::shared_lock<boost::shared_mutex> oLock;
+
+    //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
+    //to call function added in the derived version of the callback handler interface class
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
+    {
+        cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
+        pHandler->dspGain_callback(i64Timestamp_us, dDspGain);
+    }
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
+    {
+        boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
+        pHandler->dspGain_callback(i64Timestamp_us, dDspGain);
     }
 }
 
