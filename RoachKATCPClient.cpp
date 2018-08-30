@@ -292,7 +292,7 @@ void cRoachKATCPClient::readAllRegisters(uint32_t u32SleepTime_ms)
         }
         else
         {
-            cout << "cRoachKATCPClient::threadWriteFunction(): Failed to read register: fine_fft_size" << endl;
+            cout << "cRoachKATCPClient::threadWriteFunction(): Failed to read register: fine_fft_size_nsamp" << endl;
         }
     }
 

@@ -71,18 +71,21 @@ double                           cKATCPServer::m_dP29;
 double                           cKATCPServer::m_dP30;
 
 int                              cKATCPServer::m_iAntennaStatus;
-char*                            cKATCPServer::m_achaAntennaStatusDiscreteValues[]  = {"idle", "slew", "track", "scan"};
+char*                            cKATCPServer::m_achaAntennaStatusDiscreteValues[]  = {const_cast<char*>("idle"),
+                                                                                       const_cast<char*>("slew"),
+                                                                                       const_cast<char*>("track"),
+                                                                                       const_cast<char*>("scan")};
 int                              cKATCPServer::m_iTarget;
-char*                            cKATCPServer::m_achaTargetDiscreteValues[]  = {"name1 | *name A, radec cal, 11:34:56.7, -01:34:34.2, (1000.0 2000.0 1.0)",
-                                                                                "name2 | *name B, radec cal, 12:34:56.7, -02:34:34.2, (1000.0 2000.0 1.0)",
-                                                                                "name3 | *name C, radec cal, 13:34:56.7, -03:34:34.2, (1000.0 2000.0 1.0)",
-                                                                                "name4 | *name D, radec cal, 14:34:56.7, -04:34:34.2, (1000.0 2000.0 1.0)",
-                                                                                "name5 | *name E, radec cal, 15:34:56.7, -05:34:34.2, (1000.0 2000.0 1.0)",
-                                                                                "name6 | *name F, radec cal, 16:34:56.7, -06:34:34.2, (1000.0 2000.0 1.0)",
-                                                                                "name7 | *name G, radec cal, 17:34:56.7, -07:34:34.2, (1000.0 2000.0 1.0)",
-                                                                                "name8 | *name H, radec cal, 18:34:56.7, -08:34:34.2, (1000.0 2000.0 1.0)",
-                                                                                "name9 | *name I, radec cal, 19:34:56.7, -09:34:34.2, (1000.0 2000.0 1.0)",
-                                                                                "name10 | *name J, radec cal, 20:34:56.7, -10:34:34.2, (1000.0 2000.0 1.0)",
+char*                            cKATCPServer::m_achaTargetDiscreteValues[]  = {const_cast<char*>("name1 | *name A, radec cal, 11:34:56.7, -01:34:34.2, (1000.0 2000.0 1.0)"),
+                                                                                const_cast<char*>("name2 | *name B, radec cal, 12:34:56.7, -02:34:34.2, (1000.0 2000.0 1.0)"),
+                                                                                const_cast<char*>("name3 | *name C, radec cal, 13:34:56.7, -03:34:34.2, (1000.0 2000.0 1.0)"),
+                                                                                const_cast<char*>("name4 | *name D, radec cal, 14:34:56.7, -04:34:34.2, (1000.0 2000.0 1.0)"),
+                                                                                const_cast<char*>("name5 | *name E, radec cal, 15:34:56.7, -05:34:34.2, (1000.0 2000.0 1.0)"),
+                                                                                const_cast<char*>("name6 | *name F, radec cal, 16:34:56.7, -06:34:34.2, (1000.0 2000.0 1.0)"),
+                                                                                const_cast<char*>("name7 | *name G, radec cal, 17:34:56.7, -07:34:34.2, (1000.0 2000.0 1.0)"),
+                                                                                const_cast<char*>("name8 | *name H, radec cal, 18:34:56.7, -08:34:34.2, (1000.0 2000.0 1.0)"),
+                                                                                const_cast<char*>("name9 | *name I, radec cal, 19:34:56.7, -09:34:34.2, (1000.0 2000.0 1.0)"),
+                                                                                const_cast<char*>("name10 | *name J, radec cal, 20:34:56.7, -10:34:34.2, (1000.0 2000.0 1.0)"),
                                                                                };
 
 double                           cKATCPServer::m_dRFCIntermediate5GHz_Hz;
