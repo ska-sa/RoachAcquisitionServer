@@ -5,6 +5,7 @@
 #include <fstream>
 #include <cstdlib>
 #include <ctime>
+#include <cmath>
 
 //Library includes
 extern "C" {
@@ -856,9 +857,7 @@ int32_t cKATCPServer::roachSetDspGain_KATCPCallback(struct katcp_dispatch *pKATC
     }
 
     // digital_gain register has a binary-point of 12 bits
-    double dRequestedGain = strtod(arg_string_katcp(pKATCPDispatch, 1), NULL) / (2^12);
-
-    cout << "cKATCPServer::roachSetDspGain_KATCPCallback: Requested " << dRequestedGain << " gain." << endl;
+    double dRequestedGain = strtod(arg_string_katcp(pKATCPDispatch, 1), NULL) / pow(2,12);
 
     if (dRequestedGain < 0)
     {
@@ -868,7 +867,6 @@ int32_t cKATCPServer::roachSetDspGain_KATCPCallback(struct katcp_dispatch *pKATC
 
     // digital_gain register is unsigned. Check for positive numbers.
     uint32_t ui32Gain = int(dRequestedGain * (2^12));
-    cout << "cKATCPServer::roachSetDspGain_KATCPCallback: converted to int " << ui32Gain << endl;
 
     if(m_pRoachKATCPClient->writeRoachRegister(string("digital_gain"), ui32Gain))
     {

@@ -1,4 +1,5 @@
 //System includes
+#include <cmath>
 
 //Library includes
 
@@ -325,9 +326,7 @@ void cRoachKATCPClient::readAllRegisters(uint32_t u32SleepTime_ms)
         if( readRoachRegister(string("digital_gain"), u32Value) )
         {
 
-            double dDspGain = double(u32Value) / (2^12); // DSP Gain on the ROACH has a binary-point of 12.
-            cout << "cRoachKATCPClient::readAllRegisters: Received int value " << double(u32Value) << endl;
-            cout << "cRoachKATCPClient::readAllRegisters: Converted to double " << dDspGain << endl;
+            double dDspGain = double(u32Value) / pow(2,12); // DSP Gain on the ROACH has a binary-point of 12.
             sendDspGain(AVN::getTimeNow_us(), dDspGain);
             //cout << "cRoachKATCPClient::threadWriteFunction(): Wrote digital_gain" << endl;
         }
