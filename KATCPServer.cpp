@@ -418,6 +418,18 @@ void cKATCPServer::setRoachKATCPClient(boost::shared_ptr<cRoachKATCPClient> pKAT
     }
 }
 
+void cKATCPServer::setStationControllerKATCPClient(boost::shared_ptr<cStationControllerKATCPClient> pStationControllerKATCPClient)
+{
+    m_pStationControllerKATCPClient = pStationControllerKATCPClient;
+
+    if(m_pStationControllerKATCPClient.get())
+    {
+        // Cast to RoachKATCPClient pointer to circumvent ambiguous implicit conversion
+        cStationControllerKATCPClient::cCallbackInterface* pStationControllerKATCPClientCallbackHandler
+                       = dynamic_cast<cStationControllerKATCPClient::cCallbackInterface*>(&m_oKATCPClientCallbackHandler);
+        m_pStationControllerKATCPClient->registerCallbackHandler(pStationControllerKATCPClientCallbackHandler);
+    }
+}
 
 int32_t cKATCPServer::startRecording_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC)
 /*
@@ -1401,6 +1413,175 @@ void cKATCPServer::cKATCPClientCallbackHandler::clockFrequency_callback(int64_t 
     m_i32ClockFrequency = u32ClockFrequency_Hz;
 }
 
+void cKATCPServer::cKATCPClientCallbackHandler::acsRequestedAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus)
+{
+
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::acsRequestedEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus)
+{
+
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::acsDesiredAz_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus)
+{
+
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::acsDesiredEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus)
+{
+
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::acsActualAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus)
+{
+
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::acsActualEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus)
+{
+
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::skyRequestedAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus)
+{
+
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::skyRequestedEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus)
+{
+
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::skyDesiredAz_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus)
+{
+
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::skyDesiredEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus)
+{
+
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::skyActualAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus)
+{
+
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::skyActualEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus)
+{
+
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::pointingModel_callback(uint8_t i8ParameterNumber, double dParameterValue)
+{
+
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::antennaStatus_callback(int64_t i64Timestamp_us, const std::string &strAntennaStatus, const std::string &strStatus)
+{
+
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::sourceSelection_callback(int64_t i64Timestamp_us, const std::string &strSourceName, const std::string &strStatus)
+{
+
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::frequencySelectLcp_callback(int64_t i64Timestamp_us, bool bFrequencySelectChan0, const std::string &strStatus)
+{
+
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::frequencySelectRcp_callback(int64_t i64Timestamp_us, bool bFrequencySelectChan1, const std::string &strStatus)
+{
+
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::frequencyLOIntermediate5GHz_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_Hz, const std::string &strStatus)
+{
+
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::frequencyLOIntermediate6_7GHz_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_Hz, const std::string &strStatus)
+{
+
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::frequencyLOFinal_callback(int64_t i64Timestamp_us, double dFrequencyLO1_Hz, const std::string &strStatus)
+{
+
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::receiverBandwidthLcp_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan0_Hz, const std::string &strStatus)
+{
+
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::receiverBandwidthRcp_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan1_Hz, const std::string &strStatus)
+{
+
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::receiverLcpAttenuation_callback(int64_t i64Timestamp_us, double dLCPAttenuation_dB, const std::string &strStatus)
+{
+
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::receiverRcpAttenuation_callback(int64_t i64Timestamp_us, double dRCPAttenuation_dB, const std::string &strStatus)
+{
+
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::rNoiseDiodeInputSource_callback(int64_t i64Timestamp_us, const std::string &strNoiseDiodeInputSource, const std::string &strStatus)
+{
+
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::rNoiseDiodeEnabled_callback(int64_t i64Timestamp_us, bool bNoiseDiodeEnabled, const std::string &strStatus)
+{
+
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::rNoiseDiodeSelect_callback(int64_t i64Timestamp_us, int32_t i32NoiseDiodeSelect, const std::string &strStatus)
+{
+
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::rNoiseDiodePWMMark_callback(int64_t i64Timestamp_us, int32_t i32NoiseDiodePWMMark, const std::string &strStatus)
+{
+
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::rNoiseDiodePWMFrequency_callback(int64_t i64Timestamp_us, double dNoiseDiodePWMFrequency, const std::string &strStatus)
+{
+
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::envWindSpeed_callback(int64_t i64Timestamp_us, double dWindSpeed_mps, const std::string &strStatus)
+{
+
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::envWindDirection_callback(int64_t i64Timestamp_us, double dWindDirection_degrees, const std::string &strStatus)
+{
+
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::envTemperature_callback(int64_t i64Timestamp_us, double dTemperature_degreesC, const std::string &strStatus)
+{
+
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::envAbsolutePressure_callback(int64_t i64Timestamp_us, double dPressure_mbar, const std::string &strStatus)
+{
+
+}
+
+void cKATCPServer::cKATCPClientCallbackHandler::envRelativeHumidity_callback(int64_t i64Timestamp_us, double dHumidity_percent, const std::string &strStatus)
+{
+
+}
 
 //Plagiarised from cKATCPClientBase
 std::vector<std::string> cKATCPServer::tokeniseString(const std::string &strInputString, const std::string &strSeparators)

@@ -59,7 +59,7 @@ public:
         void                                                recordingStopped_callback();
     };
 
-    struct cKATCPClientCallbackHandler : public cRoachKATCPClient::cCallbackInterface
+    struct cKATCPClientCallbackHandler : public cRoachKATCPClient::cCallbackInterface, public cStationControllerKATCPClient::cCallbackInterface
     {
         //Locals for metadata sensor values
         bool                                                m_bStationControllerKATCPConnected;
@@ -119,6 +119,54 @@ public:
         void                                                eth10GbEUp_callback(int64_t i64Timestamp_us, bool bEth10GbEUp);
         void                                                ppsCount_callback(int64_t i64Timestamp_us, uint32_t u32PPSCount);
         void                                                clockFrequency_callback(int64_t i64Timestamp_us, uint32_t u32ClockFrequency_Hz);
+
+        //Callback functions from the Station Controller KATCP client
+        //Antenna values
+        void                                    acsRequestedAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus);
+        void                                    acsRequestedEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus);
+        void                                    acsDesiredAz_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus);
+        void                                    acsDesiredEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus);
+        void                                    acsActualAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus);
+        void                                    acsActualEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus);
+
+        void                                    skyRequestedAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus);
+        void                                    skyRequestedEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus);
+        void                                    skyDesiredAz_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus);
+        void                                    skyDesiredEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus);
+        void                                    skyActualAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus);
+        void                                    skyActualEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus);
+
+        void                                    pointingModel_callback(uint8_t i8ParameterNumber, double dParameterValue);
+
+        void                                    antennaStatus_callback(int64_t i64Timestamp_us, const std::string &strAntennaStatus, const std::string &strStatus);
+
+        //Global experiment values
+        void                                    sourceSelection_callback(int64_t i64Timestamp_us, const std::string &strSourceName, const std::string &strStatus);
+
+        //RF values
+        void                                    frequencySelectLcp_callback(int64_t i64Timestamp_us, bool bFrequencySelectChan0, const std::string &strStatus);
+        void                                    frequencySelectRcp_callback(int64_t i64Timestamp_us, bool bFrequencySelectChan1, const std::string &strStatus);
+        void                                    frequencyLOIntermediate5GHz_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_Hz, const std::string &strStatus);
+        void                                    frequencyLOIntermediate6_7GHz_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_Hz, const std::string &strStatus);
+        void                                    frequencyLOFinal_callback(int64_t i64Timestamp_us, double dFrequencyLO1_Hz, const std::string &strStatus);
+        void                                    receiverBandwidthLcp_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan0_Hz, const std::string &strStatus);
+        void                                    receiverBandwidthRcp_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan1_Hz, const std::string &strStatus);
+        void                                    receiverLcpAttenuation_callback(int64_t i64Timestamp_us, double dLCPAttenuation_dB, const std::string &strStatus);
+        void                                    receiverRcpAttenuation_callback(int64_t i64Timestamp_us, double dRCPAttenuation_dB, const std::string &strStatus);
+
+        //Noise diode values
+        void                                    rNoiseDiodeInputSource_callback(int64_t i64Timestamp_us, const std::string &strNoiseDiodeInputSource, const std::string &strStatus);
+        void                                    rNoiseDiodeEnabled_callback(int64_t i64Timestamp_us, bool bNoiseDiodeEnabled, const std::string &strStatus);
+        void                                    rNoiseDiodeSelect_callback(int64_t i64Timestamp_us, int32_t i32NoiseDiodeSelect, const std::string &strStatus);
+        void                                    rNoiseDiodePWMMark_callback(int64_t i64Timestamp_us, int32_t i32NoiseDiodePWMMark, const std::string &strStatus);
+        void                                    rNoiseDiodePWMFrequency_callback(int64_t i64Timestamp_us, double dNoiseDiodePWMFrequency, const std::string &strStatus);
+
+        //Env values
+        void                                    envWindSpeed_callback(int64_t i64Timestamp_us, double dWindSpeed_mps, const std::string &strStatus);
+        void                                    envWindDirection_callback(int64_t i64Timestamp_us, double dWindDirection_degrees, const std::string &strStatus);
+        void                                    envTemperature_callback(int64_t i64Timestamp_us, double dTemperature_degreesC, const std::string &strStatus);
+        void                                    envAbsolutePressure_callback(int64_t i64Timestamp_us, double dPressure_mbar, const std::string &strStatus);
+        void                                    envRelativeHumidity_callback(int64_t i64Timestamp_us, double dHumidity_percent, const std::string &strStatus);
     };
 
     cKATCPServer(const std::string &strListenInterface = std::string("0.0.0.0"), uint16_t u16Port = 7147, uint32_t u32MaxClients = 5, const string &strRoachGatewareDirectory = std::string(""));
@@ -126,6 +174,7 @@ public:
 
     static void                                             setFileWriter(boost::shared_ptr<cHDF5FileWriter> pFileWriter);
     static void                                             setRoachKATCPClient(boost::shared_ptr<cRoachKATCPClient> pRoachKATCPClient);
+    static void                                             setStationControllerKATCPClient(boost::shared_ptr<cStationControllerKATCPClient> pStationControllerKATCPClient);
 
     static void                                             startServer(const std::string &strListenInterface, uint16_t u16Port, uint32_t u32MaxClients);
     static void                                             stopServer();
