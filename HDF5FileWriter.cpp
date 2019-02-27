@@ -403,7 +403,7 @@ void cHDF5FileWriter::getNextFrame_callback(const std::vector<int> &vi32Chan0, c
                                                m_oInitialValueSet.m_chVFrequencySelectLcp,
                                                m_oInitialValueSet.m_chaFrequencySelectLcpStatus);
         if (m_oInitialValueSet.m_i64TSFrequencySelectRcp_us)
-            m_pHDF5File->addFrequencySelectLcp(m_oInitialValueSet.m_i64TSFrequencySelectRcp_us,
+            m_pHDF5File->addFrequencySelectRcp(m_oInitialValueSet.m_i64TSFrequencySelectRcp_us,
                                                m_oInitialValueSet.m_chVFrequencySelectRcp,
                                                m_oInitialValueSet.m_chaFrequencySelectRcpStatus);
         if (m_oInitialValueSet.m_i64TSNoiseDiodeInputSource_us)
