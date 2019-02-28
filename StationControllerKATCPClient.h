@@ -116,8 +116,8 @@ private:
     void                                                sendSourceSelection(int64_t i64Timestamp_us, const std::string &strSourceName, const std::string &strStatus);
 
     //RFE values
-    void                                                sendFrequencySelectLcp(int64_t i64Timestamp_us, double dFreqencyRF_MHz, const std::string &strStatus);
-    void                                                sendFrequencySelectRcp(int64_t i64Timestamp_us, double dFreqencyRF_MHz, const std::string &strStatus);
+    void                                                sendFrequencySelectLcp(int64_t i64Timestamp_us, bool bFreqencyRFChan0_MHz, const std::string &strStatus);
+    void                                                sendFrequencySelectRcp(int64_t i64Timestamp_us, bool bFreqencyRF_MHz, const std::string &strStatus);
     void                                                sendFrequencyLOIntermediate5GHz(int64_t i64Timestamp_us, double dFrequencyIntermediate5GHz_MHz, const std::string &strStatus);
     void                                                sendFrequencyLOIntermediate6_7GHz(int64_t i64Timestamp_us, double dFrequencyLOIntermediate6_7GHz_MHz, const std::string &strStatus);
     void                                                sendFrequencyLOFinal(int64_t i64Timestamp_us, double dFrequencyLOFinal_MHz, const std::string &strStatus);
