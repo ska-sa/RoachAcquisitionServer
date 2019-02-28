@@ -62,7 +62,7 @@ cStationControllerKATCPClient::cStationControllerKATCPClient() :
     m_vstrSensorSampling.push_back("SCM.pmodel30 event");
 
     // Antenna status
-    m_vstrSensorSampling.push_back("SCM.AntennaStatus event");
+    m_vstrSensorSampling.push_back("SCM.AntennaActivity event");
     m_vstrSensorSampling.push_back("SCM.Target event");
 
     // Signal-chain values.
@@ -302,7 +302,7 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
         sendPointingModelParameter( strtol(vstrTokens[3].substr(10,vstrTokens[3].size() - 10).c_str(), NULL, 10), strtod(vstrTokens[5].c_str(), NULL));
     }
 
-    if(!vstrTokens[3].compare("SCM.AntennaStatus"))
+    if(!vstrTokens[3].compare("SCM.AntennaActivity"))
     {
         sendAntennaStatus( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, vstrTokens[5].c_str(), vstrTokens[4].c_str() );
         return;
