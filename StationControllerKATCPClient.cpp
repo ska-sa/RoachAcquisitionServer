@@ -379,7 +379,7 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
 
     if( !vstrTokens[3].compare("SCM.RcpAttenuation") )
     {
-        sendReceiverLcpAttenuation( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+        sendReceiverRcpAttenuation( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
         return;
     }
 
