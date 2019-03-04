@@ -41,7 +41,7 @@ void cRoachAcquisitionServer::start()
 
     //Data output handlers
     m_pTCPForwardingServer = boost::make_shared<cTCPForwardingServer>(m_strClientInterface, m_u16ClientDataPort, 5);
-    m_pHDF5FileWriter      = boost::make_shared<cHDF5FileWriter>(std::string("/home/avnuser/Data/RoachAcquisition"), m_u32MaxFileSize_MB);
+    m_pHDF5FileWriter      = boost::make_shared<cHDF5FileWriter>(m_strRecordingDir, m_u32MaxFileSize_MB);
     // TODO: The above directory name should probably not be hard-coded.
 
     //Register the output handlers to get data from the input handler
@@ -90,11 +90,6 @@ void cRoachAcquisitionServer::startKATCPServer(std::string strInterface, uint16_
     if(m_pRoachKATCPClient.get())
     {
         m_pKATCPServer->setRoachKATCPClient(m_pRoachKATCPClient);
-    }
-
-    if(m_pStationControllerKATCPClient.get())
-    {
-        m_pKATCPServer->setStationControllerKATCPClient(m_pStationControllerKATCPClient);
     }
 
 }
