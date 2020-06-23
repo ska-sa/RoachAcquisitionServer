@@ -2,10 +2,13 @@
 Description=Roach Acquisition Server
 
 [Service]
-ExecStart=/usr/bin/RoachAcquisitionServer -v catseye -g /home/avnuser/AVNSoftware/RoachLaunchers -t optimus -u 1234
+Type=simple
+User=avnuser
+ExecStart=/usr/local/bin/RoachAcquisitionServer -v 10.0.2.64 -g /home/avnuser/AVNSoftware/RoachLaunchers -t 10.8.5.9 -u 40001
+#KillSignal=SIGINT
+ExecStop=/bin/kill -SIGINT $MAINPID
 Restart=on-failure
-RestartSec=10
-KillSignal=SIGINT
+RestartSec=60
 
 [Install]
 WantedBy=multi-user.target

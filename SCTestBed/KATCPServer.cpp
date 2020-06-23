@@ -188,25 +188,25 @@ void cKATCPServer::serverThreadFunction()
 
   // Sensors go in here.
   register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                const_cast<char*>("SCM.actual-azim"),
+                                const_cast<char*>("SCS.actual-azim"),
                                 const_cast<char*>("Sky-space actual azimuth."),
                                 const_cast<char*>("deg"),
                                 &getSkyActualAzim_callback, NULL, NULL, 0, 360, NULL);
 
   register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                const_cast<char*>("SCM.actual-elev"),
+                                const_cast<char*>("SCS.actual-elev"),
                                 const_cast<char*>("Sky-space actual elevation."),
                                 const_cast<char*>("deg"),
                                 &getSkyActualElev_callback, NULL, NULL, 0, 90, NULL);
 
   register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                const_cast<char*>("SCM.request-azim"),
+                                const_cast<char*>("SCS.request-azim"),
                                 const_cast<char*>("Sky-space requested azimuth."),
                                 const_cast<char*>("deg"),
                                 &getSkyRequestedAzim_callback, NULL, NULL, 0, 360, NULL);
 
   register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                const_cast<char*>("SCM.request-elev"),
+                                const_cast<char*>("SCS.request-elev"),
                                 const_cast<char*>("Sky-space requested elevation."),
                                 const_cast<char*>("deg"),
                                 &getSkyRequestedElev_callback, NULL, NULL, 0, 90, NULL);
@@ -236,193 +236,193 @@ void cKATCPServer::serverThreadFunction()
                                 &getAntennaRequestedElev_callback, NULL, NULL, 0, 90, NULL);
 
   register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                const_cast<char*>("SCM.pmodel1"),
+                                const_cast<char*>("SCS.pmodel1"),
                                 const_cast<char*>("P1."),
                                 const_cast<char*>(""),
                                 &getP1_callback, NULL, NULL, -5, 5, NULL);
 
   register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                const_cast<char*>("SCM.pmodel2"),
+                                const_cast<char*>("SCS.pmodel2"),
                                 const_cast<char*>("P2."),
                                 const_cast<char*>(""),
                                 &getP2_callback, NULL, NULL, -5, 5, NULL);
 
   register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                const_cast<char*>("SCM.pmodel3"),
+                                const_cast<char*>("SCS.pmodel3"),
                                 const_cast<char*>("P3."),
                                 const_cast<char*>(""),
                                 &getP3_callback, NULL, NULL, -5, 5, NULL);
 
   register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                const_cast<char*>("SCM.pmodel4"),
+                                const_cast<char*>("SCS.pmodel4"),
                                 const_cast<char*>("P4."),
                                 const_cast<char*>(""),
                                 &getP4_callback, NULL, NULL, -5, 5, NULL);
 
   register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                const_cast<char*>("SCM.pmodel5"),
+                                const_cast<char*>("SCS.pmodel5"),
                                 const_cast<char*>("P5."),
                                 const_cast<char*>(""),
                                 &getP5_callback, NULL, NULL, -5, 5, NULL);
 
   register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                const_cast<char*>("SCM.pmodel6"),
+                                const_cast<char*>("SCS.pmodel6"),
                                 const_cast<char*>("P6."),
                                 const_cast<char*>(""),
                                 &getP6_callback, NULL, NULL, -5, 5, NULL);
 
   register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                const_cast<char*>("SCM.pmodel7"),
+                                const_cast<char*>("SCS.pmodel7"),
                                 const_cast<char*>("P7."),
                                 const_cast<char*>(""),
                                 &getP7_callback, NULL, NULL, -5, 5, NULL);
 
   register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                const_cast<char*>("SCM.pmodel8"),
+                                const_cast<char*>("SCS.pmodel8"),
                                 const_cast<char*>("P8."),
                                 const_cast<char*>(""),
                                 &getP8_callback, NULL, NULL, -5, 5, NULL);
 
   register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                const_cast<char*>("SCM.pmodel9"),
+                                const_cast<char*>("SCS.pmodel9"),
                                 const_cast<char*>("P9."),
                                 const_cast<char*>(""),
                                 &getP9_callback, NULL, NULL, -5, 5, NULL);
 
   register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                const_cast<char*>("SCM.pmodel10"),
+                                const_cast<char*>("SCS.pmodel10"),
                                 const_cast<char*>("P10."),
                                 const_cast<char*>(""),
                                 &getP10_callback, NULL, NULL, -5, 5, NULL);
 
   register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                const_cast<char*>("SCM.pmodel11"),
+                                const_cast<char*>("SCS.pmodel11"),
                                 const_cast<char*>("P11."),
                                 const_cast<char*>(""),
                                 &getP11_callback, NULL, NULL, -5, 5, NULL);
 
   register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                const_cast<char*>("SCM.pmodel12"),
+                                const_cast<char*>("SCS.pmodel12"),
                                 const_cast<char*>("P12."),
                                 const_cast<char*>(""),
                                 &getP12_callback, NULL, NULL, -5, 5, NULL);
 
   register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                const_cast<char*>("SCM.pmodel13"),
+                                const_cast<char*>("SCS.pmodel13"),
                                 const_cast<char*>("P13."),
                                 const_cast<char*>(""),
                                 &getP13_callback, NULL, NULL, -5, 5, NULL);
 
   register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                const_cast<char*>("SCM.pmodel14"),
+                                const_cast<char*>("SCS.pmodel14"),
                                 const_cast<char*>("P14."),
                                 const_cast<char*>(""),
                                 &getP14_callback, NULL, NULL, -5, 5, NULL);
 
   register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                const_cast<char*>("SCM.pmodel15"),
+                                const_cast<char*>("SCS.pmodel15"),
                                 const_cast<char*>("P15."),
                                 const_cast<char*>(""),
                                 &getP15_callback, NULL, NULL, -5, 5, NULL);
 
   register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                const_cast<char*>("SCM.pmodel16"),
+                                const_cast<char*>("SCS.pmodel16"),
                                 const_cast<char*>("P16."),
                                 const_cast<char*>(""),
                                 &getP16_callback, NULL, NULL, -5, 5, NULL);
 
   register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                const_cast<char*>("SCM.pmodel17"),
+                                const_cast<char*>("SCS.pmodel17"),
                                 const_cast<char*>("P17."),
                                 const_cast<char*>(""),
                                 &getP17_callback, NULL, NULL, -5, 5, NULL);
 
   register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                const_cast<char*>("SCM.pmodel18"),
+                                const_cast<char*>("SCS.pmodel18"),
                                 const_cast<char*>("P18."),
                                 const_cast<char*>(""),
                                 &getP18_callback, NULL, NULL, -5, 5, NULL);
 
   register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                const_cast<char*>("SCM.pmodel19"),
+                                const_cast<char*>("SCS.pmodel19"),
                                 const_cast<char*>("P19."),
                                 const_cast<char*>(""),
                                 &getP19_callback, NULL, NULL, -5, 5, NULL);
 
   register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                const_cast<char*>("SCM.pmodel20"),
+                                const_cast<char*>("SCS.pmodel20"),
                                 const_cast<char*>("P20."),
                                 const_cast<char*>(""),
                                 &getP20_callback, NULL, NULL, -5, 5, NULL);
 
   register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                const_cast<char*>("SCM.pmodel21"),
+                                const_cast<char*>("SCS.pmodel21"),
                                 const_cast<char*>("P21."),
                                 const_cast<char*>(""),
                                 &getP21_callback, NULL, NULL, -5, 5, NULL);
 
   register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                const_cast<char*>("SCM.pmodel22"),
+                                const_cast<char*>("SCS.pmodel22"),
                                 const_cast<char*>("P22."),
                                 const_cast<char*>(""),
                                 &getP22_callback, NULL, NULL, -5, 5, NULL);
 
   register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                const_cast<char*>("SCM.pmodel23"),
+                                const_cast<char*>("SCS.pmodel23"),
                                 const_cast<char*>("P23."),
                                 const_cast<char*>(""),
                                 &getP23_callback, NULL, NULL, -5, 5, NULL);
 
   register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                const_cast<char*>("SCM.pmodel24"),
+                                const_cast<char*>("SCS.pmodel24"),
                                 const_cast<char*>("P24."),
                                 const_cast<char*>(""),
                                 &getP24_callback, NULL, NULL, -5, 5, NULL);
 
   register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                const_cast<char*>("SCM.pmodel25"),
+                                const_cast<char*>("SCS.pmodel25"),
                                 const_cast<char*>("P25."),
                                 const_cast<char*>(""),
                                 &getP25_callback, NULL, NULL, -5, 5, NULL);
 
   register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                const_cast<char*>("SCM.pmodel26"),
+                                const_cast<char*>("SCS.pmodel26"),
                                 const_cast<char*>("P26."),
                                 const_cast<char*>(""),
                                 &getP26_callback, NULL, NULL, -5, 5, NULL);
 
   register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                const_cast<char*>("SCM.pmodel27"),
+                                const_cast<char*>("SCS.pmodel27"),
                                 const_cast<char*>("P27."),
                                 const_cast<char*>(""),
                                 &getP27_callback, NULL, NULL, -5, 5, NULL);
 
   register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                const_cast<char*>("SCM.pmodel28"),
+                                const_cast<char*>("SCS.pmodel28"),
                                 const_cast<char*>("P28."),
                                 const_cast<char*>(""),
                                 &getP28_callback, NULL, NULL, -5, 5, NULL);
 
   register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                const_cast<char*>("SCM.pmodel29"),
+                                const_cast<char*>("SCS.pmodel29"),
                                 const_cast<char*>("P29."),
                                 const_cast<char*>(""),
                                 &getP29_callback, NULL, NULL, -5, 5, NULL);
 
   register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                const_cast<char*>("SCM.pmodel30"),
+                                const_cast<char*>("SCS.pmodel30"),
                                 const_cast<char*>("P30."),
                                 const_cast<char*>(""),
                                 &getP30_callback, NULL, NULL, -5, 5, NULL);
 
   register_discrete_sensor_katcp(m_pKATCPDispatch, 0,
-                                const_cast<char*>("SCM.AntennaStatus"),
+                                const_cast<char*>("SCS.AntennaStatus"),
                                 const_cast<char*>("Antenna Status"),
                                 const_cast<char*>(""),
                                 &getAntennaStatus_callback, NULL, NULL, m_achaAntennaStatusDiscreteValues, 4);
 
   register_discrete_sensor_katcp(m_pKATCPDispatch, 0,
-                                const_cast<char*>("SCM.Target"),
+                                const_cast<char*>("SCS.Target"),
                                 const_cast<char*>("Target"),
                                 const_cast<char*>(""),
                                 &getTarget_callback, NULL, NULL, m_achaTargetDiscreteValues, 10);
@@ -446,13 +446,13 @@ void cKATCPServer::serverThreadFunction()
                                 &getFinalStage_callback, NULL, NULL, 1e3, 1e9, NULL);
 
  register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                               const_cast<char*>("SCM.LcpAttenuation"),
+                               const_cast<char*>("SCS.LcpAttenuation"),
                                const_cast<char*>("Receiver chain LCP attenuation"),
                                const_cast<char*>("dB"),
                                &getLCPAttenuation_callback, NULL, NULL, 0, 31.5, NULL);
 
  register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                               const_cast<char*>("SCM.RcpAttenuation"),
+                               const_cast<char*>("SCS.RcpAttenuation"),
                                const_cast<char*>("Receiver chain RCP attenuation"),
                                const_cast<char*>("dB"),
                                &getRCPAttenuation_callback, NULL, NULL, 0, 31.5, NULL);

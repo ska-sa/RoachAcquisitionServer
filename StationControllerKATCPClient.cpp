@@ -14,12 +14,12 @@ cStationControllerKATCPClient::cStationControllerKATCPClient() :
     cKATCPClientBase()
 {
     //Sky space.
-    m_vstrSensorSampling.push_back("SCM.actual-azim period 1000");
-    m_vstrSensorSampling.push_back("SCM.actual-elev period 1000");
-    m_vstrSensorSampling.push_back("SCM.desired-azim period 1000");
-    m_vstrSensorSampling.push_back("SCM.desired-elev period 1000");
-    m_vstrSensorSampling.push_back("SCM.request-azim period 1000");
-    m_vstrSensorSampling.push_back("SCM.request-elev period 1000");
+    m_vstrSensorSampling.push_back("SCS.actual-azim period 1000");
+    m_vstrSensorSampling.push_back("SCS.actual-elev period 1000");
+    m_vstrSensorSampling.push_back("SCS.desired-azim period 1000");
+    m_vstrSensorSampling.push_back("SCS.desired-elev period 1000");
+    m_vstrSensorSampling.push_back("SCS.request-azim period 1000");
+    m_vstrSensorSampling.push_back("SCS.request-elev period 1000");
 
     // Antenna space.
     m_vstrSensorSampling.push_back("acs.actual-azim period 1000");
@@ -30,47 +30,47 @@ cStationControllerKATCPClient::cStationControllerKATCPClient() :
     m_vstrSensorSampling.push_back("acs.request-elev period 1000");
 
     // Pointing model
-    m_vstrSensorSampling.push_back("SCM.pmodel1 event");
-    m_vstrSensorSampling.push_back("SCM.pmodel2 event");
-    m_vstrSensorSampling.push_back("SCM.pmodel3 event");
-    m_vstrSensorSampling.push_back("SCM.pmodel4 event");
-    m_vstrSensorSampling.push_back("SCM.pmodel5 event");
-    m_vstrSensorSampling.push_back("SCM.pmodel6 event");
-    m_vstrSensorSampling.push_back("SCM.pmodel7 event");
-    m_vstrSensorSampling.push_back("SCM.pmodel8 event");
-    m_vstrSensorSampling.push_back("SCM.pmodel9 event");
-    m_vstrSensorSampling.push_back("SCM.pmodel10 event");
-    m_vstrSensorSampling.push_back("SCM.pmodel11 event");
-    m_vstrSensorSampling.push_back("SCM.pmodel12 event");
-    m_vstrSensorSampling.push_back("SCM.pmodel13 event");
-    m_vstrSensorSampling.push_back("SCM.pmodel14 event");
-    m_vstrSensorSampling.push_back("SCM.pmodel15 event");
-    m_vstrSensorSampling.push_back("SCM.pmodel16 event");
-    m_vstrSensorSampling.push_back("SCM.pmodel17 event");
-    m_vstrSensorSampling.push_back("SCM.pmodel18 event");
-    m_vstrSensorSampling.push_back("SCM.pmodel19 event");
-    m_vstrSensorSampling.push_back("SCM.pmodel20 event");
-    m_vstrSensorSampling.push_back("SCM.pmodel21 event");
-    m_vstrSensorSampling.push_back("SCM.pmodel22 event");
-    m_vstrSensorSampling.push_back("SCM.pmodel23 event");
-    m_vstrSensorSampling.push_back("SCM.pmodel24 event");
-    m_vstrSensorSampling.push_back("SCM.pmodel25 event");
-    m_vstrSensorSampling.push_back("SCM.pmodel26 event");
-    m_vstrSensorSampling.push_back("SCM.pmodel27 event");
-    m_vstrSensorSampling.push_back("SCM.pmodel28 event");
-    m_vstrSensorSampling.push_back("SCM.pmodel29 event");
-    m_vstrSensorSampling.push_back("SCM.pmodel30 event");
+    m_vstrSensorSampling.push_back("SCS.pmodel1 event");
+    m_vstrSensorSampling.push_back("SCS.pmodel2 event");
+    m_vstrSensorSampling.push_back("SCS.pmodel3 event");
+    m_vstrSensorSampling.push_back("SCS.pmodel4 event");
+    m_vstrSensorSampling.push_back("SCS.pmodel5 event");
+    m_vstrSensorSampling.push_back("SCS.pmodel6 event");
+    m_vstrSensorSampling.push_back("SCS.pmodel7 event");
+    m_vstrSensorSampling.push_back("SCS.pmodel8 event");
+    m_vstrSensorSampling.push_back("SCS.pmodel9 event");
+    m_vstrSensorSampling.push_back("SCS.pmodel10 event");
+    m_vstrSensorSampling.push_back("SCS.pmodel11 event");
+    m_vstrSensorSampling.push_back("SCS.pmodel12 event");
+    m_vstrSensorSampling.push_back("SCS.pmodel13 event");
+    m_vstrSensorSampling.push_back("SCS.pmodel14 event");
+    m_vstrSensorSampling.push_back("SCS.pmodel15 event");
+    m_vstrSensorSampling.push_back("SCS.pmodel16 event");
+    m_vstrSensorSampling.push_back("SCS.pmodel17 event");
+    m_vstrSensorSampling.push_back("SCS.pmodel18 event");
+    m_vstrSensorSampling.push_back("SCS.pmodel19 event");
+    m_vstrSensorSampling.push_back("SCS.pmodel20 event");
+    m_vstrSensorSampling.push_back("SCS.pmodel21 event");
+    m_vstrSensorSampling.push_back("SCS.pmodel22 event");
+    m_vstrSensorSampling.push_back("SCS.pmodel23 event");
+    m_vstrSensorSampling.push_back("SCS.pmodel24 event");
+    m_vstrSensorSampling.push_back("SCS.pmodel25 event");
+    m_vstrSensorSampling.push_back("SCS.pmodel26 event");
+    m_vstrSensorSampling.push_back("SCS.pmodel27 event");
+    m_vstrSensorSampling.push_back("SCS.pmodel28 event");
+    m_vstrSensorSampling.push_back("SCS.pmodel29 event");
+    m_vstrSensorSampling.push_back("SCS.pmodel30 event");
 
     // Antenna status
-    m_vstrSensorSampling.push_back("SCM.AntennaActivity event");
-    m_vstrSensorSampling.push_back("SCM.Target event");
+    m_vstrSensorSampling.push_back("SCS.AntennaActivity event");
+    m_vstrSensorSampling.push_back("SCS.Target event");
 
     // Signal-chain values.
     m_vstrSensorSampling.push_back("RFC.IntermediateStage_5GHz event");
     m_vstrSensorSampling.push_back("RFC.IntermediateStage_6_7GHz event");
     m_vstrSensorSampling.push_back("RFC.FinalStage event");
-    m_vstrSensorSampling.push_back("SCM.LcpAttenuation event");
-    m_vstrSensorSampling.push_back("SCM.RcpAttenuation event");
+    m_vstrSensorSampling.push_back("SCS.LcpAttenuation event");
+    m_vstrSensorSampling.push_back("SCS.RcpAttenuation event");
     m_vstrSensorSampling.push_back("RFC.LcpFreqSel event");
     m_vstrSensorSampling.push_back("RFC.RcpFreqSel event");
 
@@ -232,83 +232,83 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
         return;
     }
 
-    if( !vstrTokens[3].compare("SCM.request-azim") )
+    if( !vstrTokens[3].compare("SCS.request-azim") )
     {
         sendSkyRequestedAntennaAz( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
         return;
     }
 
-    if( !vstrTokens[3].compare("SCM.request-elev") )
+    if( !vstrTokens[3].compare("SCS.request-elev") )
     {
         sendSkyRequestedAntennaEl( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
         return;
     }
 
-    if( !vstrTokens[3].compare("SCM.desired-azim") )
+    if( !vstrTokens[3].compare("SCS.desired-azim") )
     {
         sendSkyDesiredAntennaAz( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
         return;
     }
 
-    if( !vstrTokens[3].compare("SCM.desired-elev") )
+    if( !vstrTokens[3].compare("SCS.desired-elev") )
     {
         sendSkyDesiredAntennaEl( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
         return;
     }
 
-    if(!vstrTokens[3].compare("SCM.actual-azim"))
+    if(!vstrTokens[3].compare("SCS.actual-azim"))
     {
         sendSkyActualAntennaAz( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
         return;
     }
 
-    if(!vstrTokens[3].compare("SCM.actual-elev"))
+    if(!vstrTokens[3].compare("SCS.actual-elev"))
     {
         sendSkyActualAntennaEl( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
         return;
     }
 
-    if (    !vstrTokens[3].compare("SCM.pmodel1") ||
-            !vstrTokens[3].compare("SCM.pmodel2") ||
-            !vstrTokens[3].compare("SCM.pmodel3") ||
-            !vstrTokens[3].compare("SCM.pmodel4") ||
-            !vstrTokens[3].compare("SCM.pmodel5") ||
-            !vstrTokens[3].compare("SCM.pmodel6") ||
-            !vstrTokens[3].compare("SCM.pmodel7") ||
-            !vstrTokens[3].compare("SCM.pmodel8") ||
-            !vstrTokens[3].compare("SCM.pmodel9") ||
-            !vstrTokens[3].compare("SCM.pmodel10") ||
-            !vstrTokens[3].compare("SCM.pmodel11") ||
-            !vstrTokens[3].compare("SCM.pmodel12") ||
-            !vstrTokens[3].compare("SCM.pmodel13") ||
-            !vstrTokens[3].compare("SCM.pmodel14") ||
-            !vstrTokens[3].compare("SCM.pmodel15") ||
-            !vstrTokens[3].compare("SCM.pmodel16") ||
-            !vstrTokens[3].compare("SCM.pmodel17") ||
-            !vstrTokens[3].compare("SCM.pmodel18") ||
-            !vstrTokens[3].compare("SCM.pmodel19") ||
-            !vstrTokens[3].compare("SCM.pmodel20") ||
-            !vstrTokens[3].compare("SCM.pmodel21") ||
-            !vstrTokens[3].compare("SCM.pmodel22") ||
-            !vstrTokens[3].compare("SCM.pmodel23") ||
-            !vstrTokens[3].compare("SCM.pmodel24") ||
-            !vstrTokens[3].compare("SCM.pmodel25") ||
-            !vstrTokens[3].compare("SCM.pmodel26") ||
-            !vstrTokens[3].compare("SCM.pmodel27") ||
-            !vstrTokens[3].compare("SCM.pmodel28") ||
-            !vstrTokens[3].compare("SCM.pmodel29") ||
-            !vstrTokens[3].compare("SCM.pmodel30")      )
+    if (    !vstrTokens[3].compare("SCS.pmodel1") ||
+            !vstrTokens[3].compare("SCS.pmodel2") ||
+            !vstrTokens[3].compare("SCS.pmodel3") ||
+            !vstrTokens[3].compare("SCS.pmodel4") ||
+            !vstrTokens[3].compare("SCS.pmodel5") ||
+            !vstrTokens[3].compare("SCS.pmodel6") ||
+            !vstrTokens[3].compare("SCS.pmodel7") ||
+            !vstrTokens[3].compare("SCS.pmodel8") ||
+            !vstrTokens[3].compare("SCS.pmodel9") ||
+            !vstrTokens[3].compare("SCS.pmodel10") ||
+            !vstrTokens[3].compare("SCS.pmodel11") ||
+            !vstrTokens[3].compare("SCS.pmodel12") ||
+            !vstrTokens[3].compare("SCS.pmodel13") ||
+            !vstrTokens[3].compare("SCS.pmodel14") ||
+            !vstrTokens[3].compare("SCS.pmodel15") ||
+            !vstrTokens[3].compare("SCS.pmodel16") ||
+            !vstrTokens[3].compare("SCS.pmodel17") ||
+            !vstrTokens[3].compare("SCS.pmodel18") ||
+            !vstrTokens[3].compare("SCS.pmodel19") ||
+            !vstrTokens[3].compare("SCS.pmodel20") ||
+            !vstrTokens[3].compare("SCS.pmodel21") ||
+            !vstrTokens[3].compare("SCS.pmodel22") ||
+            !vstrTokens[3].compare("SCS.pmodel23") ||
+            !vstrTokens[3].compare("SCS.pmodel24") ||
+            !vstrTokens[3].compare("SCS.pmodel25") ||
+            !vstrTokens[3].compare("SCS.pmodel26") ||
+            !vstrTokens[3].compare("SCS.pmodel27") ||
+            !vstrTokens[3].compare("SCS.pmodel28") ||
+            !vstrTokens[3].compare("SCS.pmodel29") ||
+            !vstrTokens[3].compare("SCS.pmodel30")      )
     {
         sendPointingModelParameter( strtol(vstrTokens[3].substr(10,vstrTokens[3].size() - 10).c_str(), NULL, 10), strtod(vstrTokens[5].c_str(), NULL));
     }
 
-    if(!vstrTokens[3].compare("SCM.AntennaActivity"))
+    if(!vstrTokens[3].compare("SCS.AntennaActivity"))
     {
         sendAntennaStatus( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, vstrTokens[5].c_str(), vstrTokens[4].c_str() );
         return;
     }
 
-    if(!vstrTokens[3].compare("SCM.Target"))
+    if(!vstrTokens[3].compare("SCS.Target"))
     {
         sendSourceSelection( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, vstrTokens[5].c_str(), vstrTokens[4].c_str()  );
         return;
@@ -371,13 +371,13 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
         return;
     }
 
-    if( !vstrTokens[3].compare("SCM.LcpAttenuation") )
+    if( !vstrTokens[3].compare("SCS.LcpAttenuation") )
     {
         sendReceiverLcpAttenuation( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
         return;
     }
 
-    if( !vstrTokens[3].compare("SCM.RcpAttenuation") )
+    if( !vstrTokens[3].compare("SCS.RcpAttenuation") )
     {
         sendReceiverRcpAttenuation( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
         return;
