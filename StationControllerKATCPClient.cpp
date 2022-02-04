@@ -72,8 +72,8 @@ cStationControllerKATCPClient::cStationControllerKATCPClient() :
     m_vstrSensorSampling.push_back("rx.fe.gain.band2-rcp");
     m_vstrSensorSampling.push_back("rx.fe.freq.band1");
     m_vstrSensorSampling.push_back("rx.fe.freq.band2");
-    m_vstrSensorSampling.push_back("rx.fe.lcp-band-select");  // Done
-    m_vstrSensorSampling.push_back("rx.fe.rcp-band-select");  // Done
+    m_vstrSensorSampling.push_back("rx.fe.lcp-band-select");
+    m_vstrSensorSampling.push_back("rx.fe.rcp-band-select");
     m_vstrSensorSampling.push_back("rx.stage1.status.noisediode.band1");
     m_vstrSensorSampling.push_back("rx.stage1.status.noisediode.band2");
 
@@ -357,15 +357,27 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
         return;
     }
 
-    if( !vstrTokens[3].compare("SCS.LcpAttenuation") )
+    if( !vstrTokens[3].compare("rx.fe.gain.band1-lcp") )
     {
-        sendReceiverLcpAttenuation( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+        sendReceiverGain5GHzLcp( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
         return;
     }
 
-    if( !vstrTokens[3].compare("SCS.RcpAttenuation") )
+    if( !vstrTokens[3].compare("rx.fe.gain.band1-rcp") )
     {
-        sendReceiverRcpAttenuation( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+        sendReceiverGain5GHzRcp( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+        return;
+    }
+
+    if( !vstrTokens[3].compare("rx.fe.gain.band2-lcp") )
+    {
+        sendReceiverGain6_7GHzLcp( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+        return;
+    }
+
+    if( !vstrTokens[3].compare("rx.fe.gain.band2-rcp") )
+    {
+        sendReceiverGain6_7GHzRcp( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
         return;
     }
 
@@ -929,7 +941,7 @@ void cStationControllerKATCPClient::sendFrequencySky6_7GHz(int64_t i64Timestamp_
     }
 }
 
-void cStationControllerKATCPClient::sendReceiverLcpAttenuation(int64_t i64Timestamp_us, double dLcpAttenuation_dB, const string &strStatus)
+void cStationControllerKATCPClient::sendReceiverGain5GHzLcp(int64_t i64Timestamp_us, double dGain_dB, const string &strStatus)
 {
     boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
 
@@ -939,17 +951,17 @@ void cStationControllerKATCPClient::sendReceiverLcpAttenuation(int64_t i64Timest
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
     {
         cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
-        pHandler->receiverLcpAttenuation_callback(i64Timestamp_us, dLcpAttenuation_dB, strStatus);
+        pHandler->receiverGain5GHzLcp_callback(i64Timestamp_us, dGain_dB, strStatus);
     }
 
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
     {
         boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
-        pHandler->receiverLcpAttenuation_callback(i64Timestamp_us, dLcpAttenuation_dB, strStatus);
+        pHandler->receiverGain5GHzLcp_callback(i64Timestamp_us, dGain_dB, strStatus);
     }
 }
 
-void cStationControllerKATCPClient::sendReceiverRcpAttenuation(int64_t i64Timestamp_us, double dRcpAttenuation_dB, const string &strStatus)
+void cStationControllerKATCPClient::sendReceiverGain5GHzRcp(int64_t i64Timestamp_us, double dGain_dB, const string &strStatus)
 {
     boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
 
@@ -959,13 +971,53 @@ void cStationControllerKATCPClient::sendReceiverRcpAttenuation(int64_t i64Timest
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
     {
         cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
-        pHandler->receiverRcpAttenuation_callback(i64Timestamp_us, dRcpAttenuation_dB, strStatus);
+        pHandler->receiverGain5GHzRcp_callback(i64Timestamp_us, dGain_dB, strStatus);
     }
 
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
     {
         boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
-        pHandler->receiverRcpAttenuation_callback(i64Timestamp_us, dRcpAttenuation_dB, strStatus);
+        pHandler->receiverGain5GHzRcp_callback(i64Timestamp_us, dGain_dB, strStatus);
+    }
+}
+
+void cStationControllerKATCPClient::sendReceiverGain6_7GHzLcp(int64_t i64Timestamp_us, double dGain_dB, const string &strStatus)
+{
+    boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
+
+    //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
+    //to call function added in the derived version of the callback handler interface class
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
+    {
+        cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
+        pHandler->receiverGain6_7GHzLcp_callback(i64Timestamp_us, dGain_dB, strStatus);
+    }
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
+    {
+        boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
+        pHandler->receiverGain6_7GHzLcp_callback(i64Timestamp_us, dGain_dB, strStatus);
+    }
+}
+
+void cStationControllerKATCPClient::sendReceiverGain6_7GHzRcp(int64_t i64Timestamp_us, double dGain_dB, const string &strStatus)
+{
+    boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
+
+    //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
+    //to call function added in the derived version of the callback handler interface class
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
+    {
+        cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
+        pHandler->receiverGain6_7GHzRcp_callback(i64Timestamp_us, dGain_dB, strStatus);
+    }
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
+    {
+        boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
+        pHandler->receiverGain6_7GHzRcp_callback(i64Timestamp_us, dGain_dB, strStatus);
     }
 }
 

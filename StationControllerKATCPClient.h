@@ -47,8 +47,10 @@ public:
         virtual void                                    bandSelectRcp_callback(int64_t i64Timestamp_us, bool bFrequencySelectChan1, const std::string &strStatus) = 0;
         virtual void                                    frequencySky5GHz_callback(int64_t i64Timestamp_us, double dFrequencySky5GHz, const std::string &strStatus) = 0;
         virtual void                                    frequencySky6_7GHz_callback(int64_t i64Timestamp_us, double dFrequencySky6_7GHz, const std::string &strStatus) = 0;
-        virtual void                                    receiverLcpAttenuation_callback(int64_t i64Timestamp_us, double dLCPAttenuation_dB, const std::string &strStatus) = 0;
-        virtual void                                    receiverRcpAttenuation_callback(int64_t i64Timestamp_us, double dRCPAttenuation_dB, const std::string &strStatus) = 0;
+        virtual void                                    receiverGain5GHzLcp_callback(int64_t i64Timestamp_us, double dGain_dB, const std::string &strStatus) = 0;
+        virtual void                                    receiverGain5GHzRcp_callback(int64_t i64Timestamp_us, double dGain_dB, const std::string &strStatus) = 0;
+        virtual void                                    receiverGain6_7GHzLcp_callback(int64_t i64Timestamp_us, double dGain_dB, const std::string &strStatus) = 0;
+        virtual void                                    receiverGain6_7GHzRcp_callback(int64_t i64Timestamp_us, double dGain_dB, const std::string &strStatus) = 0;
 
         //Noise diode values
         virtual void                                    rNoiseDiodeInputSource_callback(int64_t i64Timestamp_us, const std::string &strNoiseDiodeInputSource, const std::string &strStatus) = 0;
@@ -118,8 +120,10 @@ private:
     void                                                sendFrequencySky5GHz(int64_t i64Timestamp_us, double dFrequencySky5GHz_MHz, const std::string &strStatus);
     void                                                sendFrequencySky6_7GHz(int64_t i64Timestamp_us, double dFrequencySky6_7GHz_MHz, const std::string &strStatus);
     void                                                sendFrequencyLOFinal(int64_t i64Timestamp_us, double dFrequencyLOFinal_MHz, const std::string &strStatus);
-    void                                                sendReceiverLcpAttenuation(int64_t i64Timestamp_us, double dLcpAttenuation_dB, const std::string &strStatus);
-    void                                                sendReceiverRcpAttenuation(int64_t i64Timestamp_us, double dRcpAttenuation_dB, const std::string &strStatus);
+    void                                                sendReceiverGain5GHzLcp(int64_t i64Timestamp_us, double dGain_dB, const std::string &strStatus);
+    void                                                sendReceiverGain5GHzRcp(int64_t i64Timestamp_us, double dGain_dB, const std::string &strStatus);
+    void                                                sendReceiverGain6_7GHzLcp(int64_t i64Timestamp_us, double dGain_dB, const std::string &strStatus);
+    void                                                sendReceiverGain6_7GHzRcp(int64_t i64Timestamp_us, double dGain_dB, const std::string &strStatus);
 
     // Environment values
     void                                                sendWindSpeed(int64_t i64Timestamp_us, double dWindSpeed_mps, const std::string &strStatus);

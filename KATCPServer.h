@@ -148,8 +148,10 @@ public:
         void                                    bandSelectRcp_callback(int64_t i64Timestamp_us, bool bBandSelectRCP, const std::string &strStatus);
         void                                    frequencySky5GHz_callback(int64_t i64Timestamp_us, double dFrequencySky5GHz, const std::string &strStatus);
         void                                    frequencySky6_7GHz_callback(int64_t i64Timestamp_us, double dFrequencySky6_7GHz, const std::string &strStatus);
-        void                                    receiverLcpAttenuation_callback(int64_t i64Timestamp_us, double dLCPAttenuation_dB, const std::string &strStatus);
-        void                                    receiverRcpAttenuation_callback(int64_t i64Timestamp_us, double dRCPAttenuation_dB, const std::string &strStatus);
+        void                                    receiverGain5GHzLcp_callback(int64_t i64Timestamp_us, double dGain_dB, const std::string &strStatus);
+        void                                    receiverGain5GHzRcp_callback(int64_t i64Timestamp_us, double dGain_dB, const std::string &strStatus);
+        void                                    receiverGain6_7GHzLcp_callback(int64_t i64Timestamp_us, double dGain_dB, const std::string &strStatus);
+        void                                    receiverGain6_7GHzRcp_callback(int64_t i64Timestamp_us, double dGain_dB, const std::string &strStatus);
 
         //Noise diode values
         void                                    rNoiseDiodeInputSource_callback(int64_t i64Timestamp_us, const std::string &strNoiseDiodeInputSource, const std::string &strStatus);

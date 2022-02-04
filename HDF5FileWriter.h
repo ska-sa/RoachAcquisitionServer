@@ -123,15 +123,22 @@ class cHDF5FileWriter : public cSpectrometerDataStreamInterpreter::cCallbackInte
         double  m_dVReceiverSkyFreq6_7GHz_Hz;
         char    m_chaReceiverSkyFreq6_7GHzStatus[7];
 
-        // Receiver chain LCP attenuation - cTimestampedDouble
-        int64_t m_i64TSReceiverLcpAtten_us;
-        double  m_dVReceiverLcpAtten_dB;
-        char    m_chaReceiverLcpAttenStatus[7];
-
-        // Receiver chain RCP attenuation - cTimestampedDouble
-        int64_t m_i64TSReceiverRcpAtten_us;
-        double  m_dVReceiverRcpAtten_dB;
-        char    m_chaReceiverRcpAttenStatus[7];
+        // Receiver gain 5GHz LCP - cTimestampedDouble
+        int64_t m_i64TSReceiverGain5GHzLcp_us;
+        double  m_dVReceiverGain5GHzLcp;
+        char    m_chaReceiverGain5GHzLcp[7];
+        // Receiver gain 5GHz RCP - cTimestampedDouble
+        int64_t m_i64TSReceiverGain5GHzRcp_us;
+        double  m_dVReceiverGain5GHzRcp;
+        char    m_chaReceiverGain5GHzRcp[7];
+        // Receiver gain 6.7GHz LCP - cTimestampedDouble
+        int64_t m_i64TSReceiverGain6_7GHzLcp_us;
+        double  m_dVReceiverGain6_7GHzLcp;
+        char    m_chaReceiverGain6_7GHzLcp[7];
+        // Receiver gain 6.7GHz RCP - cTimestampedDouble
+        int64_t m_i64TSReceiverGain6_7GHzRcp_us;
+        double  m_dVReceiverGain6_7GHzRcp;
+        char    m_chaReceiverGain6_7GHzRcp[7];
 
         // Receiver chain LCP Band Select - cTimestampedChar
         int64_t m_i64TSBandSelectLcp_us;
@@ -306,8 +313,10 @@ public:
     void                                                bandSelectRcp_callback(int64_t i64Timestamp_us, bool bBandSelectRcp, const std::string &strStatus);
     void                                                frequencySky5GHz_callback(int64_t i64Timestamp_us, double dFrequencySky5GHz, const std::string &strStatus);
     void                                                frequencySky6_7GHz_callback(int64_t i64Timestamp_us, double dFrequencySky6_7GHz, const std::string &strStatus);
-    void                                                receiverLcpAttenuation_callback(int64_t i64Timestamp_us, double dReceiverLcpAttenuation_dB, const std::string &strStatus);
-    void                                                receiverRcpAttenuation_callback(int64_t i64Timestamp_us, double dReceiverRcpAttenuation_dB, const std::string &strStatus);
+    void                                                receiverGain5GHzLcp_callback(int64_t i64Timestamp_us, double dGain_dB, const std::string &strStatus);
+    void                                                receiverGain5GHzRcp_callback(int64_t i64Timestamp_us, double dGain_dB, const std::string &strStatus);
+    void                                                receiverGain6_7GHzLcp_callback(int64_t i64Timestamp_us, double dGain_dB, const std::string &strStatus);
+    void                                                receiverGain6_7GHzRcp_callback(int64_t i64Timestamp_us, double dGain_dB, const std::string &strStatus);
 
     //Env values
     void                                                envWindSpeed_callback(int64_t i64Timestamp_us, double dWindSpeed_mps, const std::string &strStatus);

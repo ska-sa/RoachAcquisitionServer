@@ -1340,8 +1340,10 @@ void cKATCPServer::cKATCPClientCallbackHandler::bandSelectLcp_callback(int64_t i
 void cKATCPServer::cKATCPClientCallbackHandler::bandSelectRcp_callback(int64_t i64Timestamp_us, bool bBandSelectRCP, const std::string &strStatus) {}
 void cKATCPServer::cKATCPClientCallbackHandler::frequencySky5GHz_callback(int64_t i64Timestamp_us, double dFrequencySky5GHz, const std::string &strStatus) {}
 void cKATCPServer::cKATCPClientCallbackHandler::frequencySky6_7GHz_callback(int64_t i64Timestamp_us, double dFrequencySky6_7GHz, const std::string &strStatus) {}
-void cKATCPServer::cKATCPClientCallbackHandler::receiverLcpAttenuation_callback(int64_t i64Timestamp_us, double dLCPAttenuation_dB, const std::string &strStatus) {}
-void cKATCPServer::cKATCPClientCallbackHandler::receiverRcpAttenuation_callback(int64_t i64Timestamp_us, double dRCPAttenuation_dB, const std::string &strStatus) {}
+void cKATCPServer::cKATCPClientCallbackHandler::receiverGain5GHzLcp_callback(int64_t i64Timestamp_us, double dGain_dB, const std::string &strStatus) {}
+void cKATCPServer::cKATCPClientCallbackHandler::receiverGain5GHzRcp_callback(int64_t i64Timestamp_us, double dGain_dB, const std::string &strStatus) {}
+void cKATCPServer::cKATCPClientCallbackHandler::receiverGain6_7GHzLcp_callback(int64_t i64Timestamp_us, double dGain_dB, const std::string &strStatus) {}
+void cKATCPServer::cKATCPClientCallbackHandler::receiverGain6_7GHzRcp_callback(int64_t i64Timestamp_us, double dGain_dB, const std::string &strStatus) {}
 void cKATCPServer::cKATCPClientCallbackHandler::rNoiseDiodeInputSource_callback(int64_t i64Timestamp_us, const std::string &strNoiseDiodeInputSource, const std::string &strStatus) {}
 void cKATCPServer::cKATCPClientCallbackHandler::rNoiseDiodeEnabled_callback(int64_t i64Timestamp_us, bool bNoiseDiodeEnabled, const std::string &strStatus) {}
 void cKATCPServer::cKATCPClientCallbackHandler::rNoiseDiodeSelect_callback(int64_t i64Timestamp_us, int32_t i32NoiseDiodeSelect, const std::string &strStatus) {}
