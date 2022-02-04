@@ -53,9 +53,6 @@ int extract_dontcare_boolean_katcp(struct katcp_dispatch *d, struct katcp_sensor
   return 0;
 }
 
-
-
-
 cKATCPServer::cKATCPServer(const string &strInterface, uint16_t u16Port, uint32_t u32MaxClients, const string &strRoachGatewareDirectory)
 {
     m_strRoachGatewareDirectory = strRoachGatewareDirectory;
@@ -293,12 +290,7 @@ void cKATCPServer::serverThreadFunction()
                    const_cast<char*>("?programRoach"),
                    const_cast<char*>("Program the Roach by specifying a launch script"),
                    &cKATCPServer::roachProgram_KATCPCallback);
-/*
-    register_katcp(m_pKATCPDispatch,
-                   const_cast<char*>("?setRoachStokesEnabled"),
-                   const_cast<char*>("Enable stokes calculation to output LRQU (otherwise LRPP)"),
-                   &cKATCPServer::roachSetStokesEnabled_KATCPCallback);
-*/
+
     register_katcp(m_pKATCPDispatch,
                    const_cast<char*>("?setRoachAccumulationLength"),
                    const_cast<char*>("number of accumulations after final FFT stage"),
@@ -481,7 +473,6 @@ int32_t cKATCPServer::startRecording_KATCPCallback(struct katcp_dispatch *pKATCP
         i64StartTime_us = 0;
     }
 
-
     cout << "--------------------------------------------------------------" << endl;
     cout << "cKATCPServer::startRecording_callback() Got request to record:" << endl;
     cout << "File suffix = " << strFileSuffix << endl;
@@ -494,9 +485,6 @@ int32_t cKATCPServer::startRecording_KATCPCallback(struct katcp_dispatch *pKATCP
     {
         m_pStationControllerKATCPClient->subscribeSensorData();
     }
-
-
-
     return KATCP_RESULT_OK;
 }
 
@@ -548,7 +536,6 @@ int32_t cKATCPServer::getRecordingStatus_KATCPCallback(struct katcp_dispatch *pK
     return KATCP_RESULT_OK;
 }
 
-
 int32_t cKATCPServer::getCurrentFilename_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC)
 {
     if(m_pFileWriter->isRecordingEnabled())
@@ -565,7 +552,6 @@ int32_t cKATCPServer::getCurrentFilename_KATCPCallback(struct katcp_dispatch *pK
     return KATCP_RESULT_OK;
 }
 
-
 int32_t cKATCPServer::getRecordingStartTime_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
 {
     if(m_pFileWriter->isRecordingEnabled())
@@ -577,7 +563,6 @@ int32_t cKATCPServer::getRecordingStartTime_KATCPCallback(struct katcp_dispatch 
         return 0;
     }
 }
-
 
 int32_t cKATCPServer::getRecordingElapsedTime_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
 {
@@ -591,7 +576,6 @@ int32_t cKATCPServer::getRecordingElapsedTime_KATCPCallback(struct katcp_dispatc
     }
 }
 
-
 int32_t cKATCPServer::getRecordingStopTime_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
 {
     if(m_pFileWriter->isRecordingEnabled())
@@ -604,7 +588,6 @@ int32_t cKATCPServer::getRecordingStopTime_KATCPCallback(struct katcp_dispatch *
     }
 }
 
-
 int32_t cKATCPServer::getRecordingRemainingTime_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
 {
     if(m_pFileWriter->isRecordingEnabled())
@@ -616,7 +599,6 @@ int32_t cKATCPServer::getRecordingRemainingTime_KATCPCallback(struct katcp_dispa
         return 0;
     }
 }
-
 
 double cKATCPServer::getRecordingFileSize_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
 {
@@ -634,7 +616,6 @@ double cKATCPServer::getDiskSpace_KATCPCallback(struct katcp_dispatch *pD, struc
 {
     return boost::filesystem::space(m_pFileWriter->getRecordingDirectory()).available;
 }
-
 
 int32_t cKATCPServer::getRecordingInfo_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC)
 {
@@ -658,7 +639,6 @@ int32_t cKATCPServer::getRecordingInfo_KATCPCallback(struct katcp_dispatch *pKAT
 
     return KATCP_RESULT_OK;
 }
-
 
 //Controlling of Roach
 int32_t cKATCPServer::getRoachGatewareList_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC)
@@ -731,7 +711,6 @@ int32_t cKATCPServer::getRoachGatewareList_KATCPCallback(struct katcp_dispatch *
     return KATCP_RESULT_OK;
 }
 
-
 int32_t cKATCPServer::roachProgram_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC)
 {
     if(i32ArgC != 2)
@@ -754,27 +733,6 @@ int32_t cKATCPServer::roachProgram_KATCPCallback(struct katcp_dispatch *pKATCPDi
 
     return KATCP_RESULT_OK;
 }
-
-/*
-int32_t cKATCPServer::roachSetStokesEnabled_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC)
-{
-    if(!m_pRoachKATCPClient.get())
-    {
-        //No file writer set. Do nothing
-        log_message_katcp(pKATCPDispatch, KATCP_LEVEL_ERROR, NULL, const_cast<char*>("setRoachStokesEnabled: No KATCPclient object for Roach control set."));
-        return KATCP_RESULT_FAIL;
-    }
-
-    if(m_pRoachKATCPClient->writeRoachRegister(string("stokes_enable"), strtoul(arg_string_katcp(pKATCPDispatch, 1), NULL, 10)))
-    {
-        return KATCP_RESULT_OK;
-    }
-    else
-    {
-        return KATCP_RESULT_FAIL;
-    }
-}
-*/
 
 int32_t cKATCPServer::roachSetAccumulationLength_KATCPCallback(struct katcp_dispatch *pKATCPDispatch, int32_t i32ArgC)
 {
@@ -1065,50 +1023,33 @@ int32_t cKATCPServer::getIsRoachKATCPConnected(struct katcp_dispatch *pD, katcp_
         return 0;
 }
 
-/*
-int32_t cKATCPServer::getStokesEnabled(struct katcp_dispatch *pD, katcp_acquire *pA)
-{
-    boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oRoachMutex);
-
-    if(m_oKATCPClientCallbackHandler.m_bStokesEnabled)
-        return 1;
-    else
-        return 0;
-}
-*/
-
 int32_t cKATCPServer::getAccumulationLength_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oRoachMutex);
-
     return m_oKATCPClientCallbackHandler.m_i32AccumulationLength_nFrames;
 }
 
 int32_t cKATCPServer::getCoarseChannelSelect_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oRoachMutex);
-
     return m_oKATCPClientCallbackHandler.m_i32CoarseChannelSelection;
 }
 
 double cKATCPServer::getFrequencyFs_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oRoachMutex);
-
     return m_oKATCPClientCallbackHandler.m_dFrequencyFs_Hz;
 }
 
 int32_t cKATCPServer::getSizeOfCoarseFFT_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oRoachMutex);
-
     return m_oKATCPClientCallbackHandler.m_i32SizeOfCoarseFFT_nSamp;
 }
 
 int32_t cKATCPServer::getSizeOfFineFFT_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oRoachMutex);
-
     return m_oKATCPClientCallbackHandler.m_i32SizeOfFineFFT_nSamp;
 }
 
@@ -1127,84 +1068,72 @@ int32_t cKATCPServer::getNumberChannels_KATCPCallback(struct katcp_dispatch *pD,
 int32_t cKATCPServer::getCoarseFFTShiftMask_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oRoachMutex);
-
     return m_oKATCPClientCallbackHandler.m_i32CoarseFFTShiftMask;
 }
 
 double cKATCPServer::getDspGain_KATCPCallback(katcp_dispatch *pD, katcp_acquire *pA)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oRoachMutex);
-
     return m_oKATCPClientCallbackHandler.m_dDspGain;
 }
 
 double cKATCPServer::getADCAttenuationChan0_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oRoachMutex);
-
     return m_oKATCPClientCallbackHandler.m_dADCAttenuationChan0_dB;
 }
 
 double cKATCPServer::getADCAttenuationChan1_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oRoachMutex);
-
     return m_oKATCPClientCallbackHandler.m_dADCAttenuationChan1_dB;
 }
 
 int32_t cKATCPServer::getNoiseDiodeEnabled_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oRoachMutex);
-
     return m_oKATCPClientCallbackHandler.m_bNoiseDiodeEnabled;
 }
 
 int32_t cKATCPServer::getNoiseDiodeDutyCycleEnabled_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oRoachMutex);
-
     return m_oKATCPClientCallbackHandler.m_bNoiseDiodeDutyCycleEnabled;
 }
 
 int32_t cKATCPServer::getNoiseDiodeDutyCycleOnDuration_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oRoachMutex);
-
     return m_oKATCPClientCallbackHandler.m_i32NoiseDiodeDutyCycleOnDuration_nAccums;
 }
 
 int32_t cKATCPServer::getNoiseDiodeDutyCycleOffDuration_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oRoachMutex);
-
     return m_oKATCPClientCallbackHandler.m_i32NoiseDiodeDutyCycleOffDuration_nAccums;
 }
 
 int32_t  cKATCPServer::getOverflowsRegs_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oRoachMutex);
-
     return m_oKATCPClientCallbackHandler.m_i32OverflowRegs;
 }
 
 int32_t cKATCPServer::getEth10GbEUp_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oRoachMutex);
-
     return m_oKATCPClientCallbackHandler.m_bEth10GbEUp;
 }
 
 int32_t cKATCPServer::getPPSCount_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oRoachMutex);
-
     return m_oKATCPClientCallbackHandler.m_i32PPSCount;
 }
 
 int32_t cKATCPServer::getClockFrequency_KATCPCallback(struct katcp_dispatch *pD, struct katcp_acquire *pA)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oRoachMutex);
-
     return m_oKATCPClientCallbackHandler.m_i32ClockFrequency;
 }
 
@@ -1284,299 +1213,148 @@ void cKATCPServer::cKATCPClientCallbackHandler::connected_callback(bool bConnect
     }
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::startRecording_callback(const string &strFileSuffix, int64_t i64StartTime_us, int64_t i64Duration_us)
-{
-    //Not used. Note, the HDF5FileWriter class is also a callback handler for KATCPClient so it get this callback to too and reacts to it there.
-}
 
-void cKATCPServer::cKATCPClientCallbackHandler::stopRecording_callback()
-{
-    //Not used. Note, the HDF5FileWriter class is also a callback handler for KATCPClient so it get this callback to too and reacts to it there.
-}
 
 void cKATCPServer::cKATCPClientCallbackHandler::accumulationLength_callback(int64_t i64Timestamp_us, uint32_t u32NFrames)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oRoachMutex);
-
     m_i32AccumulationLength_nFrames = u32NFrames;
 }
 
 void cKATCPServer::cKATCPClientCallbackHandler::coarseChannelSelect_callback(int64_t i64Timestamp_us, uint32_t u32ChannelNo)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oRoachMutex);
-
     m_i32CoarseChannelSelection = u32ChannelNo;
 }
 
 void cKATCPServer::cKATCPClientCallbackHandler::frequencyFs_callback(double dFrequencyFs_Hz)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oRoachMutex);
-
     m_dFrequencyFs_Hz = dFrequencyFs_Hz;
 }
 
 void cKATCPServer::cKATCPClientCallbackHandler::sizeOfCoarseFFT_callback(uint32_t u32SizeOfCoarseFFT_nSamp)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oRoachMutex);
-
     m_i32SizeOfCoarseFFT_nSamp = u32SizeOfCoarseFFT_nSamp;
 }
 
 void cKATCPServer::cKATCPClientCallbackHandler::sizeOfFineFFT_callback(uint32_t u32SizeOfFineFFT_nSamp)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oRoachMutex);
-
     m_i32SizeOfFineFFT_nSamp = u32SizeOfFineFFT_nSamp;
 }
 
 void cKATCPServer::cKATCPClientCallbackHandler::coarseFFTShiftMask_callback(int64_t i64Timestamp_us, uint32_t u32ShiftMask)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oRoachMutex);
-
     m_i32CoarseFFTShiftMask = u32ShiftMask;
 }
 
 void cKATCPServer::cKATCPClientCallbackHandler::dspGain_callback(int64_t i64Timestamp_us, double dDspGain)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oRoachMutex);
-
     m_dDspGain = dDspGain;
 }
 
 void cKATCPServer::cKATCPClientCallbackHandler::attenuationADCChan0_callback(int64_t i64Timestamp_us, double dAttenuationChan0_dB)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oRoachMutex);
-
     m_dADCAttenuationChan0_dB = dAttenuationChan0_dB;
 }
 
 void cKATCPServer::cKATCPClientCallbackHandler::attenuationADCChan1_callback(int64_t i64Timestamp_us, double dAttenuationChan1_dB)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oRoachMutex);
-
     m_dADCAttenuationChan1_dB = dAttenuationChan1_dB;
 }
 
 void cKATCPServer::cKATCPClientCallbackHandler::noiseDiodeEnabled_callback(int64_t i64Timestamp_us, bool bNoideDiodeEnabled)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oRoachMutex);
-
     m_bNoiseDiodeEnabled = bNoideDiodeEnabled;
 }
 
 void cKATCPServer::cKATCPClientCallbackHandler::noiseDiodeDutyCycleEnabled_callback(int64_t i64Timestamp_us, bool bNoiseDiodeDutyCyleEnabled)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oRoachMutex);
-
     m_bNoiseDiodeDutyCycleEnabled = bNoiseDiodeDutyCyleEnabled;
 }
 
 void cKATCPServer::cKATCPClientCallbackHandler::noiseDiodeDutyCycleOnDuration_callback(int64_t i64Timestamp_us, uint32_t u32NAccums)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oRoachMutex);
-
     m_i32NoiseDiodeDutyCycleOnDuration_nAccums = u32NAccums;
 }
 
 void cKATCPServer::cKATCPClientCallbackHandler::noiseDiodeDutyCycleOffDuration_callback(int64_t i64Timestamp_us, uint32_t u32NAccums)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oRoachMutex);
-
     m_i32NoiseDiodeDutyCycleOffDuration_nAccums = u32NAccums;
 }
 
 void cKATCPServer::cKATCPClientCallbackHandler::overflowsRegs_callback(int64_t i64Timestamp_us, uint32_t u32OverflowRegs)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oRoachMutex);
-
     m_i32OverflowRegs = u32OverflowRegs;
 }
 
 void cKATCPServer::cKATCPClientCallbackHandler::eth10GbEUp_callback(int64_t i64Timestamp_us, bool bEth10GbEUp)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oRoachMutex);
-
     m_bEth10GbEUp = bEth10GbEUp;
 }
 
 void cKATCPServer::cKATCPClientCallbackHandler::ppsCount_callback(int64_t i64Timestamp_us, uint32_t u32PPSCount)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oRoachMutex);
-
     m_i32PPSCount = u32PPSCount;
 }
 
 void cKATCPServer::cKATCPClientCallbackHandler::clockFrequency_callback(int64_t i64Timestamp_us, uint32_t u32ClockFrequency_Hz)
 {
     boost::unique_lock<boost::mutex> oLock(m_oKATCPClientCallbackHandler.m_oRoachMutex);
-
     m_i32ClockFrequency = u32ClockFrequency_Hz;
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::acsRequestedAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus)
-{
+// Not used. Note, the HDF5FileWriter class is also a callback handler for
+// KATCPClient so it get these callbacks too and reacts appropriately.
+void cKATCPServer::cKATCPClientCallbackHandler::startRecording_callback(const string &strFileSuffix, int64_t i64StartTime_us, int64_t i64Duration_us) {}
+void cKATCPServer::cKATCPClientCallbackHandler::stopRecording_callback() {}
+void cKATCPServer::cKATCPClientCallbackHandler::acsRequestedAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus) {}
+void cKATCPServer::cKATCPClientCallbackHandler::acsRequestedEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus) {}
+void cKATCPServer::cKATCPClientCallbackHandler::acsDesiredAz_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus) {}
+void cKATCPServer::cKATCPClientCallbackHandler::acsDesiredEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus) {}
+void cKATCPServer::cKATCPClientCallbackHandler::acsActualAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus) {}
+void cKATCPServer::cKATCPClientCallbackHandler::acsActualEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus) {}
+void cKATCPServer::cKATCPClientCallbackHandler::skyRequestedAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus) {}
+void cKATCPServer::cKATCPClientCallbackHandler::skyRequestedEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus) {}
+void cKATCPServer::cKATCPClientCallbackHandler::skyDesiredAz_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus) {}
+void cKATCPServer::cKATCPClientCallbackHandler::skyDesiredEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus) {}
+void cKATCPServer::cKATCPClientCallbackHandler::skyActualAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus) {}
+void cKATCPServer::cKATCPClientCallbackHandler::skyActualEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus) {}
+void cKATCPServer::cKATCPClientCallbackHandler::pointingModel_callback(uint8_t i8ParameterNumber, double dParameterValue) {}
+void cKATCPServer::cKATCPClientCallbackHandler::antennaStatus_callback(int64_t i64Timestamp_us, const std::string &strAntennaStatus, const std::string &strStatus) {}
+void cKATCPServer::cKATCPClientCallbackHandler::sourceSelection_callback(int64_t i64Timestamp_us, const std::string &strSourceName, const std::string &strStatus) {}
+void cKATCPServer::cKATCPClientCallbackHandler::bandSelectLcp_callback(int64_t i64Timestamp_us, bool bBandSelectLCP, const std::string &strStatus) {}
+void cKATCPServer::cKATCPClientCallbackHandler::bandSelectRcp_callback(int64_t i64Timestamp_us, bool bBandSelectRCP, const std::string &strStatus) {}
+void cKATCPServer::cKATCPClientCallbackHandler::frequencyLOIntermediate5GHz_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_Hz, const std::string &strStatus) {}
+void cKATCPServer::cKATCPClientCallbackHandler::frequencyLOIntermediate6_7GHz_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_Hz, const std::string &strStatus) {}
+void cKATCPServer::cKATCPClientCallbackHandler::receiverBandwidthLcp_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan0_Hz, const std::string &strStatus) {}
+void cKATCPServer::cKATCPClientCallbackHandler::receiverBandwidthRcp_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan1_Hz, const std::string &strStatus) {}
+void cKATCPServer::cKATCPClientCallbackHandler::receiverLcpAttenuation_callback(int64_t i64Timestamp_us, double dLCPAttenuation_dB, const std::string &strStatus) {}
+void cKATCPServer::cKATCPClientCallbackHandler::receiverRcpAttenuation_callback(int64_t i64Timestamp_us, double dRCPAttenuation_dB, const std::string &strStatus) {}
+void cKATCPServer::cKATCPClientCallbackHandler::rNoiseDiodeInputSource_callback(int64_t i64Timestamp_us, const std::string &strNoiseDiodeInputSource, const std::string &strStatus) {}
+void cKATCPServer::cKATCPClientCallbackHandler::rNoiseDiodeEnabled_callback(int64_t i64Timestamp_us, bool bNoiseDiodeEnabled, const std::string &strStatus) {}
+void cKATCPServer::cKATCPClientCallbackHandler::rNoiseDiodeSelect_callback(int64_t i64Timestamp_us, int32_t i32NoiseDiodeSelect, const std::string &strStatus) {}
+void cKATCPServer::cKATCPClientCallbackHandler::rNoiseDiodePWMMark_callback(int64_t i64Timestamp_us, int32_t i32NoiseDiodePWMMark, const std::string &strStatus) {}
+void cKATCPServer::cKATCPClientCallbackHandler::rNoiseDiodePWMFrequency_callback(int64_t i64Timestamp_us, double dNoiseDiodePWMFrequency, const std::string &strStatus) {}
+void cKATCPServer::cKATCPClientCallbackHandler::envWindSpeed_callback(int64_t i64Timestamp_us, double dWindSpeed_mps, const std::string &strStatus) {}
+void cKATCPServer::cKATCPClientCallbackHandler::envWindDirection_callback(int64_t i64Timestamp_us, double dWindDirection_degrees, const std::string &strStatus) {}
+void cKATCPServer::cKATCPClientCallbackHandler::envTemperature_callback(int64_t i64Timestamp_us, double dTemperature_degreesC, const std::string &strStatus) {}
+void cKATCPServer::cKATCPClientCallbackHandler::envAbsolutePressure_callback(int64_t i64Timestamp_us, double dPressure_mbar, const std::string &strStatus) {}
+void cKATCPServer::cKATCPClientCallbackHandler::envRelativeHumidity_callback(int64_t i64Timestamp_us, double dHumidity_percent, const std::string &strStatus) {}
 
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::acsRequestedEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus)
-{
-
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::acsDesiredAz_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus)
-{
-
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::acsDesiredEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus)
-{
-
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::acsActualAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus)
-{
-
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::acsActualEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus)
-{
-
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::skyRequestedAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus)
-{
-
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::skyRequestedEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus)
-{
-
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::skyDesiredAz_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus)
-{
-
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::skyDesiredEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus)
-{
-
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::skyActualAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus)
-{
-
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::skyActualEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus)
-{
-
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::pointingModel_callback(uint8_t i8ParameterNumber, double dParameterValue)
-{
-
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::antennaStatus_callback(int64_t i64Timestamp_us, const std::string &strAntennaStatus, const std::string &strStatus)
-{
-
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::sourceSelection_callback(int64_t i64Timestamp_us, const std::string &strSourceName, const std::string &strStatus)
-{
-
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::bandSelectLcp_callback(int64_t i64Timestamp_us, bool bBandSelectLCP, const std::string &strStatus)
-{
-
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::bandSelectRcp_callback(int64_t i64Timestamp_us, bool bBandSelectRCP, const std::string &strStatus)
-{
-
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::frequencyLOIntermediate5GHz_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_Hz, const std::string &strStatus)
-{
-
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::frequencyLOIntermediate6_7GHz_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_Hz, const std::string &strStatus)
-{
-
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::receiverBandwidthLcp_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan0_Hz, const std::string &strStatus)
-{
-
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::receiverBandwidthRcp_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan1_Hz, const std::string &strStatus)
-{
-
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::receiverLcpAttenuation_callback(int64_t i64Timestamp_us, double dLCPAttenuation_dB, const std::string &strStatus)
-{
-
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::receiverRcpAttenuation_callback(int64_t i64Timestamp_us, double dRCPAttenuation_dB, const std::string &strStatus)
-{
-
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::rNoiseDiodeInputSource_callback(int64_t i64Timestamp_us, const std::string &strNoiseDiodeInputSource, const std::string &strStatus)
-{
-
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::rNoiseDiodeEnabled_callback(int64_t i64Timestamp_us, bool bNoiseDiodeEnabled, const std::string &strStatus)
-{
-
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::rNoiseDiodeSelect_callback(int64_t i64Timestamp_us, int32_t i32NoiseDiodeSelect, const std::string &strStatus)
-{
-
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::rNoiseDiodePWMMark_callback(int64_t i64Timestamp_us, int32_t i32NoiseDiodePWMMark, const std::string &strStatus)
-{
-
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::rNoiseDiodePWMFrequency_callback(int64_t i64Timestamp_us, double dNoiseDiodePWMFrequency, const std::string &strStatus)
-{
-
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::envWindSpeed_callback(int64_t i64Timestamp_us, double dWindSpeed_mps, const std::string &strStatus)
-{
-
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::envWindDirection_callback(int64_t i64Timestamp_us, double dWindDirection_degrees, const std::string &strStatus)
-{
-
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::envTemperature_callback(int64_t i64Timestamp_us, double dTemperature_degreesC, const std::string &strStatus)
-{
-
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::envAbsolutePressure_callback(int64_t i64Timestamp_us, double dPressure_mbar, const std::string &strStatus)
-{
-
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::envRelativeHumidity_callback(int64_t i64Timestamp_us, double dHumidity_percent, const std::string &strStatus)
-{
-
-}
 
 //Plagiarised from cKATCPClientBase
 std::vector<std::string> cKATCPServer::tokeniseString(const std::string &strInputString, const std::string &strSeparators)
