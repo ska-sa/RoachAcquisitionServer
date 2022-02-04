@@ -1344,11 +1344,14 @@ void cKATCPServer::cKATCPClientCallbackHandler::receiverGain5GHzLcp_callback(int
 void cKATCPServer::cKATCPClientCallbackHandler::receiverGain5GHzRcp_callback(int64_t i64Timestamp_us, double dGain_dB, const std::string &strStatus) {}
 void cKATCPServer::cKATCPClientCallbackHandler::receiverGain6_7GHzLcp_callback(int64_t i64Timestamp_us, double dGain_dB, const std::string &strStatus) {}
 void cKATCPServer::cKATCPClientCallbackHandler::receiverGain6_7GHzRcp_callback(int64_t i64Timestamp_us, double dGain_dB, const std::string &strStatus) {}
-void cKATCPServer::cKATCPClientCallbackHandler::rNoiseDiodeInputSource_callback(int64_t i64Timestamp_us, const std::string &strNoiseDiodeInputSource, const std::string &strStatus) {}
-void cKATCPServer::cKATCPClientCallbackHandler::rNoiseDiodeEnabled_callback(int64_t i64Timestamp_us, bool bNoiseDiodeEnabled, const std::string &strStatus) {}
-void cKATCPServer::cKATCPClientCallbackHandler::rNoiseDiodeSelect_callback(int64_t i64Timestamp_us, int32_t i32NoiseDiodeSelect, const std::string &strStatus) {}
-void cKATCPServer::cKATCPClientCallbackHandler::rNoiseDiodePWMMark_callback(int64_t i64Timestamp_us, int32_t i32NoiseDiodePWMMark, const std::string &strStatus) {}
-void cKATCPServer::cKATCPClientCallbackHandler::rNoiseDiodePWMFrequency_callback(int64_t i64Timestamp_us, double dNoiseDiodePWMFrequency, const std::string &strStatus) {}
+void cKATCPServer::cKATCPClientCallbackHandler::rNoiseDiode5GHzInputSource_callback(int64_t i64Timestamp_us, const std::string &strNoiseDiodeInputSource, const std::string &strStatus) {}
+void cKATCPServer::cKATCPClientCallbackHandler::rNoiseDiode5GHzLevel_callback(int64_t i64Timestamp_us, const int32_t i32NoiseDiodeLevel_dB, const std::string &strStatus) {}
+void cKATCPServer::cKATCPClientCallbackHandler::rNoiseDiode5GHzPWMMark_callback(int64_t i64Timestamp_us, int32_t i32NoiseDiodePWMMark, const std::string &strStatus) {}
+void cKATCPServer::cKATCPClientCallbackHandler::rNoiseDiode5GHzPWMFrequency_callback(int64_t i64Timestamp_us, double dNoiseDiodePWMFrequency, const std::string &strStatus) {}
+void cKATCPServer::cKATCPClientCallbackHandler::rNoiseDiode6_7GHzInputSource_callback(int64_t i64Timestamp_us, const std::string &strNoiseDiodeInputSource, const std::string &strStatus) {}
+void cKATCPServer::cKATCPClientCallbackHandler::rNoiseDiode6_7GHzLevel_callback(int64_t i64Timestamp_us, const int32_t i32NoiseDiodeLevel_dB, const std::string &strStatus) {}
+void cKATCPServer::cKATCPClientCallbackHandler::rNoiseDiode6_7GHzPWMMark_callback(int64_t i64Timestamp_us, int32_t i32NoiseDiodePWMMark, const std::string &strStatus) {}
+void cKATCPServer::cKATCPClientCallbackHandler::rNoiseDiode6_7GHzPWMFrequency_callback(int64_t i64Timestamp_us, double dNoiseDiodePWMFrequency, const std::string &strStatus) {}
 void cKATCPServer::cKATCPClientCallbackHandler::envWindSpeed_callback(int64_t i64Timestamp_us, double dWindSpeed_mps, const std::string &strStatus) {}
 void cKATCPServer::cKATCPClientCallbackHandler::envWindDirection_callback(int64_t i64Timestamp_us, double dWindDirection_degrees, const std::string &strStatus) {}
 void cKATCPServer::cKATCPClientCallbackHandler::envTemperature_callback(int64_t i64Timestamp_us, double dTemperature_degreesC, const std::string &strStatus) {}

@@ -320,9 +320,13 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
     }
 
     // Receiver Mk 2
-    if(!vstrTokens[3].compare("RFC.NoiseDiode_1"))
+    if(!vstrTokens[3].compare("rx.stage1.status.noisediode.band1") || !vstrTokens[3].compare("rx.stage1.status.noisediode.band2"))
     {
-        sendNoiseDiodeState( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtol(vstrTokens[5].c_str(), NULL, 10), vstrTokens[4].c_str() );
+        // Similar surgery to the band-select functions below, because I'm not
+        // horribly keen at this stage to type out this function twice but with
+        // basically one character's difference.
+        bool bNoiseDiodeSelect = (bool) strtol(vstrTokens[3].c_str() + 32, NULL, 10) - 1;
+        sendNoiseDiodeState( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtol(vstrTokens[5].c_str(), NULL, 10), bNoiseDiodeSelect, vstrTokens[4].c_str() );
         return;
     }
 
@@ -330,8 +334,7 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
     {
         // The latest SCS software doesn't just give us a 1 or 0, which is what
         // the data file expects, but a `band1` or `band2`, so we do a bit of
-        // surgery to get it into the format preferred by the data file. Chop
-        // off first four chars, convert to an int, subtract 1 and cast to bool.
+        // surgery to get it into the format preferred by the data file.
         bool bBandSelect = (bool) strtol(vstrTokens[5].c_str() + 4, NULL, 10) - 1;
         sendBandSelectLcp( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, bBandSelect, vstrTokens[4].c_str() );
         return;
@@ -747,33 +750,14 @@ void cStationControllerKATCPClient::sendAntennaStatus(int64_t i64Timestamp_us, s
 }
 
 
-void cStationControllerKATCPClient::sendNoiseDiodeState(int64_t i64Timestamp_us, int32_t i32NoiseDiodeState, const string &strStatus)
+void cStationControllerKATCPClient::sendNoiseDiodeState(int64_t i64Timestamp_us, int32_t i32NoiseDiodeState, bool bNoiseDiodeSelect, const string &strStatus)
 {
-    /* NoiseDiodeState is a bitfield which needs to be unpacked.
-     *  Bit       Description
-     *  0 – 1     Input Source Select:
-     *            00 – None
-     *            01 – Roach
-     *            10 – DBBC
-     *            11 – PC
-     *  2         N/A
-     *  3         Enable
-     *  4 – 7     Noise Diode Select:
-     *            0001 – ND1
-     *            0010 – ND2
-     *            0100 – ND3
-     *            1000 – ND4
-     *  8 – 13    PWM Mark (0 – 63)
-     *  14 – 15   Freq Select:
-     *            00 – 0.5Hz
-     *            01 – 1Hz
-     *            10 – 10Hz
-     *            11 – 200Hz
-     */
+    // NoiseDiodeState is a bitfield which needs to be unpacked.
+    // The description is in the Rx to SCS ICD.
 
     // For security. This should be only a 16-bit value.
     string strSource;
-    switch (i32NoiseDiodeState & 0b00000000000000000000000000000011)
+    switch (i32NoiseDiodeState & 0xFF)
     {
         case 0: strSource = "None";
                 break;
@@ -781,25 +765,24 @@ void cStationControllerKATCPClient::sendNoiseDiodeState(int64_t i64Timestamp_us,
                 break;
         case 2: strSource = "DBBC";
                 break;
-        case 3: strSource = "PC";
+        case 3: strSource = "SW";
                 break;
         default: strSource = "UNKNOWN";
                 break;
     }
 
-    bool bNoiseDiodeEnabled            = i32NoiseDiodeState & 0b00000000000000000000000000001000 >> 3;
-    uint32_t i32NoiseDiodeSelect       = i32NoiseDiodeState & 0b00000000000000000000000011110000 >> 4;
-    uint32_t i32NoiseDiodePWMMark      = i32NoiseDiodeState & 0b00000000000000000011111100000000 >> 8;
+    uint32_t ui32NoiseDiodeLevel       = i32NoiseDiodeState & 0x0000FF00 >> 8;
+
+    uint32_t i32NoiseDiodePWMMark      = i32NoiseDiodeState & 0xFF000000 >> 24;
+
     double dNoiseDiodePWMFrequency;
-    switch (i32NoiseDiodeState & 0b00000000000000001100000000000000 >> 14)
+    switch (i32NoiseDiodeState & 0x00FF0000 >> 16)
     {
-    case 0: dNoiseDiodePWMFrequency = 0.5;
-            break;
     case 1: dNoiseDiodePWMFrequency = 1.0;
             break;
     case 2: dNoiseDiodePWMFrequency = 10.0;
             break;
-    case 3: dNoiseDiodePWMFrequency = 200.0;
+    case 3: dNoiseDiodePWMFrequency = 100.0;
             break;
     default: dNoiseDiodePWMFrequency = -1;
             break;
@@ -807,27 +790,45 @@ void cStationControllerKATCPClient::sendNoiseDiodeState(int64_t i64Timestamp_us,
 
     boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
 
-    //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
-    //to call function added in the derived version of the callback handler interface class
-
-    for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
+    if (bNoiseDiodeSelect)
     {
-        cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
-        pHandler->rNoiseDiodeInputSource_callback(i64Timestamp_us, strSource, strStatus);
-        pHandler->rNoiseDiodeEnabled_callback(i64Timestamp_us, bNoiseDiodeEnabled, strStatus);
-        pHandler->rNoiseDiodeSelect_callback(i64Timestamp_us, i32NoiseDiodeSelect, strStatus);
-        pHandler->rNoiseDiodePWMMark_callback(i64Timestamp_us, i32NoiseDiodePWMMark, strStatus);
-        pHandler->rNoiseDiodePWMFrequency_callback(i64Timestamp_us, dNoiseDiodePWMFrequency, strStatus);
+        for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
+        {
+            cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
+            pHandler->rNoiseDiode6_7GHzInputSource_callback(i64Timestamp_us, strSource, strStatus);
+            pHandler->rNoiseDiode6_7GHzLevel_callback(i64Timestamp_us, ui32NoiseDiodeLevel, strStatus);
+            pHandler->rNoiseDiode6_7GHzPWMMark_callback(i64Timestamp_us, i32NoiseDiodePWMMark, strStatus);
+            pHandler->rNoiseDiode6_7GHzPWMFrequency_callback(i64Timestamp_us, dNoiseDiodePWMFrequency, strStatus);
+        }
+
+        for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
+        {
+            boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
+            pHandler->rNoiseDiode6_7GHzInputSource_callback(i64Timestamp_us, strSource, strStatus);
+            pHandler->rNoiseDiode6_7GHzLevel_callback(i64Timestamp_us, ui32NoiseDiodeLevel, strStatus);
+            pHandler->rNoiseDiode6_7GHzPWMMark_callback(i64Timestamp_us, i32NoiseDiodePWMMark, strStatus);
+            pHandler->rNoiseDiode6_7GHzPWMFrequency_callback(i64Timestamp_us, dNoiseDiodePWMFrequency, strStatus);
+        }
     }
-
-    for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
+    else
     {
-        boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
-        pHandler->rNoiseDiodeInputSource_callback(i64Timestamp_us, strSource, strStatus);
-        pHandler->rNoiseDiodeEnabled_callback(i64Timestamp_us, bNoiseDiodeEnabled, strStatus);
-        pHandler->rNoiseDiodeSelect_callback(i64Timestamp_us, i32NoiseDiodeSelect, strStatus);
-        pHandler->rNoiseDiodePWMMark_callback(i64Timestamp_us, i32NoiseDiodePWMMark, strStatus);
-        pHandler->rNoiseDiodePWMFrequency_callback(i64Timestamp_us, dNoiseDiodePWMFrequency, strStatus);
+        for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
+        {
+            cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
+            pHandler->rNoiseDiode5GHzInputSource_callback(i64Timestamp_us, strSource, strStatus);
+            pHandler->rNoiseDiode5GHzLevel_callback(i64Timestamp_us, ui32NoiseDiodeLevel, strStatus);
+            pHandler->rNoiseDiode5GHzPWMMark_callback(i64Timestamp_us, i32NoiseDiodePWMMark, strStatus);
+            pHandler->rNoiseDiode5GHzPWMFrequency_callback(i64Timestamp_us, dNoiseDiodePWMFrequency, strStatus);
+        }
+
+        for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
+        {
+            boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
+            pHandler->rNoiseDiode5GHzInputSource_callback(i64Timestamp_us, strSource, strStatus);
+            pHandler->rNoiseDiode5GHzLevel_callback(i64Timestamp_us, ui32NoiseDiodeLevel, strStatus);
+            pHandler->rNoiseDiode5GHzPWMMark_callback(i64Timestamp_us, i32NoiseDiodePWMMark, strStatus);
+            pHandler->rNoiseDiode5GHzPWMFrequency_callback(i64Timestamp_us, dNoiseDiodePWMFrequency, strStatus);
+        }
     }
 }
 
