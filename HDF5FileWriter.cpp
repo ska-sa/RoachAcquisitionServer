@@ -90,10 +90,6 @@ cHDF5FileWriter::cHDF5FileWriter(const string &strRecordingDirectory, uint32_t u
         m_oInitialValueSet.m_dVReceiverLOFreqIntermediate6_7GHz_Hz = 0;
         sprintf(m_oInitialValueSet.m_chaReceiverLOFreqIntermediate6_7GHzStatus, "0");
 
-        m_oInitialValueSet.m_i64TSReceiverLOFreqFinal_us = 0;
-        m_oInitialValueSet.m_dVReceiverLOFreqFinal_Hz = 0;
-        sprintf(m_oInitialValueSet.m_chaReceiverLOFreqFinalStatus, "0");
-
         m_oInitialValueSet.m_i64TSReceiverLcpAtten_us = 0;
         m_oInitialValueSet.m_dVReceiverLcpAtten_dB = 0;
         sprintf(m_oInitialValueSet.m_chaReceiverLcpAttenStatus, "0");
@@ -102,13 +98,13 @@ cHDF5FileWriter::cHDF5FileWriter(const string &strRecordingDirectory, uint32_t u
         m_oInitialValueSet.m_dVReceiverRcpAtten_dB = 0;
         sprintf(m_oInitialValueSet.m_chaReceiverRcpAttenStatus, "0");
 
-        m_oInitialValueSet.m_i64TSFrequencySelectLcp_us = 0;
-        m_oInitialValueSet.m_chVFrequencySelectLcp = 0;
-        sprintf(m_oInitialValueSet.m_chaFrequencySelectLcpStatus, "0");
+        m_oInitialValueSet.m_i64TSBandSelectLcp_us = 0;
+        m_oInitialValueSet.m_chVBandSelectLcp = 0;
+        sprintf(m_oInitialValueSet.m_chaBandSelectLcpStatus, "0");
 
-        m_oInitialValueSet.m_i64TSFrequencySelectRcp_us = 0;
-        m_oInitialValueSet.m_chVFrequencySelectRcp = 0;
-        sprintf(m_oInitialValueSet.m_chaFrequencySelectRcpStatus, "0");
+        m_oInitialValueSet.m_i64TSBandSelectRcp_us = 0;
+        m_oInitialValueSet.m_chVBandSelectRcp = 0;
+        sprintf(m_oInitialValueSet.m_chaBandSelectRcpStatus, "0");
 
         m_oInitialValueSet.m_i64TSNoiseDiodeInputSource_us = 0;
         sprintf(m_oInitialValueSet.m_chaVNoiseDiodeInputSource, "0");
@@ -386,10 +382,6 @@ void cHDF5FileWriter::getNextFrame_callback(const std::vector<int> &vi32Chan0, c
             m_pHDF5File->addFrequencyLOIntermed6_7GHz(m_oInitialValueSet.m_i64TSReceiverLOFreqIntermediate6_7GHz_us,
                                                           m_oInitialValueSet.m_dVReceiverLOFreqIntermediate6_7GHz_Hz,
                                                           m_oInitialValueSet.m_chaReceiverLOFreqIntermediate6_7GHzStatus);
-        if (m_oInitialValueSet.m_i64TSReceiverLOFreqFinal_us)
-            m_pHDF5File->addFrequencyLOFinal(m_oInitialValueSet.m_i64TSReceiverLOFreqFinal_us,
-                                             m_oInitialValueSet.m_dVReceiverLOFreqFinal_Hz,
-                                             m_oInitialValueSet.m_chaReceiverLOFreqFinalStatus);
         if (m_oInitialValueSet.m_i64TSReceiverLcpAtten_us)
             m_pHDF5File->addReceiverLcpAttenuation(m_oInitialValueSet.m_i64TSReceiverLcpAtten_us,
                                                    m_oInitialValueSet.m_dVReceiverLcpAtten_dB,
@@ -398,14 +390,14 @@ void cHDF5FileWriter::getNextFrame_callback(const std::vector<int> &vi32Chan0, c
             m_pHDF5File->addReceiverRcpAttenuation(m_oInitialValueSet.m_i64TSReceiverRcpAtten_us,
                                                    m_oInitialValueSet.m_dVReceiverRcpAtten_dB,
                                                    m_oInitialValueSet.m_chaReceiverRcpAttenStatus);
-        if (m_oInitialValueSet.m_i64TSFrequencySelectLcp_us)
-            m_pHDF5File->addFrequencySelectLcp(m_oInitialValueSet.m_i64TSFrequencySelectLcp_us,
-                                               m_oInitialValueSet.m_chVFrequencySelectLcp,
-                                               m_oInitialValueSet.m_chaFrequencySelectLcpStatus);
-        if (m_oInitialValueSet.m_i64TSFrequencySelectRcp_us)
-            m_pHDF5File->addFrequencySelectRcp(m_oInitialValueSet.m_i64TSFrequencySelectRcp_us,
-                                               m_oInitialValueSet.m_chVFrequencySelectRcp,
-                                               m_oInitialValueSet.m_chaFrequencySelectRcpStatus);
+        if (m_oInitialValueSet.m_i64TSBandSelectLcp_us)
+            m_pHDF5File->addBandSelectLcp(m_oInitialValueSet.m_i64TSBandSelectLcp_us,
+                                               m_oInitialValueSet.m_chVBandSelectLcp,
+                                               m_oInitialValueSet.m_chaBandSelectLcpStatus);
+        if (m_oInitialValueSet.m_i64TSBandSelectRcp_us)
+            m_pHDF5File->addBandSelectRcp(m_oInitialValueSet.m_i64TSBandSelectRcp_us,
+                                               m_oInitialValueSet.m_chVBandSelectRcp,
+                                               m_oInitialValueSet.m_chaBandSelectRcpStatus);
         if (m_oInitialValueSet.m_i64TSNoiseDiodeInputSource_us)
             m_pHDF5File->addNoiseDiodeInputSource(m_oInitialValueSet.m_i64TSNoiseDiodeInputSource_us,
                                                   m_oInitialValueSet.m_chaVNoiseDiodeInputSource,
@@ -1107,30 +1099,30 @@ void cHDF5FileWriter::sourceSelection_callback(int64_t i64Timestamp_us, const st
     m_pHDF5File->addSourceSelection(i64Timestamp_us, strSourceName, strStatus);
 }
 
-void cHDF5FileWriter::frequencySelectLcp_callback(int64_t i64Timestamp_us, bool bFrequencySelectLcp, const string &strStatus)
+void cHDF5FileWriter::bandSelectLcp_callback(int64_t i64Timestamp_us, bool bFrequencySelectLcp, const string &strStatus)
 {
-    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSFrequencySelectLcp_us)
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSBandSelectLcp_us)
     {
         boost::unique_lock<boost::shared_mutex>  oLock(m_oMutex);
-        m_oInitialValueSet.m_i64TSFrequencySelectLcp_us = i64Timestamp_us;
-        m_oInitialValueSet.m_chVFrequencySelectLcp = bFrequencySelectLcp;
-        sprintf(m_oInitialValueSet.m_chaFrequencySelectLcpStatus, "%s", strStatus.c_str());
+        m_oInitialValueSet.m_i64TSBandSelectLcp_us = i64Timestamp_us;
+        m_oInitialValueSet.m_chVBandSelectLcp = bFrequencySelectLcp;
+        sprintf(m_oInitialValueSet.m_chaBandSelectLcpStatus, "%s", strStatus.c_str());
     }
     if(getState() == RECORDING)
-        m_pHDF5File->addFrequencySelectLcp(i64Timestamp_us, bFrequencySelectLcp, strStatus);
+        m_pHDF5File->addBandSelectLcp(i64Timestamp_us, bFrequencySelectLcp, strStatus);
 }
 
-void cHDF5FileWriter::frequencySelectRcp_callback(int64_t i64Timestamp_us, bool bFrequencySelectRcp, const string &strStatus)
+void cHDF5FileWriter::bandSelectRcp_callback(int64_t i64Timestamp_us, bool bFrequencySelectRcp, const string &strStatus)
 {
-    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSFrequencySelectRcp_us)
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSBandSelectRcp_us)
     {
         boost::unique_lock<boost::shared_mutex>  oLock(m_oMutex);
-        m_oInitialValueSet.m_i64TSFrequencySelectRcp_us = i64Timestamp_us;
-        m_oInitialValueSet.m_chVFrequencySelectRcp = bFrequencySelectRcp;
-        sprintf(m_oInitialValueSet.m_chaFrequencySelectRcpStatus, "%s", strStatus.c_str());
+        m_oInitialValueSet.m_i64TSBandSelectRcp_us = i64Timestamp_us;
+        m_oInitialValueSet.m_chVBandSelectRcp = bFrequencySelectRcp;
+        sprintf(m_oInitialValueSet.m_chaBandSelectRcpStatus, "%s", strStatus.c_str());
     }
     if(getState() == RECORDING)
-        m_pHDF5File->addFrequencySelectRcp(i64Timestamp_us, bFrequencySelectRcp, strStatus);
+        m_pHDF5File->addBandSelectRcp(i64Timestamp_us, bFrequencySelectRcp, strStatus);
 }
 
 void cHDF5FileWriter::frequencyLOIntermediate5GHz_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_Hz, const string &strStatus)
@@ -1147,14 +1139,6 @@ void cHDF5FileWriter::frequencyLOIntermediate6_7GHz_callback(int64_t i64Timestam
         return;
 
     m_pHDF5File->addFrequencyLOIntermed6_7GHz(i64Timestamp_us, dFrequencyLO0Chan1_Hz, strStatus);
-}
-
-void cHDF5FileWriter::frequencyLOFinal_callback(int64_t i64Timestamp_us, double dFrequencyLO1_Hz, const string &strStatus)
-{
-    if(getState() != RECORDING)
-        return;
-
-    m_pHDF5File->addFrequencyLOFinal(i64Timestamp_us, dFrequencyLO1_Hz, strStatus);
 }
 
 void cHDF5FileWriter::receiverBandwidthLcp_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan0_Hz, const string &strStatus)

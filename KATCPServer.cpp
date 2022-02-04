@@ -1488,12 +1488,12 @@ void cKATCPServer::cKATCPClientCallbackHandler::sourceSelection_callback(int64_t
 
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::frequencySelectLcp_callback(int64_t i64Timestamp_us, bool bFrequencySelectChan0, const std::string &strStatus)
+void cKATCPServer::cKATCPClientCallbackHandler::bandSelectLcp_callback(int64_t i64Timestamp_us, bool bBandSelectLCP, const std::string &strStatus)
 {
 
 }
 
-void cKATCPServer::cKATCPClientCallbackHandler::frequencySelectRcp_callback(int64_t i64Timestamp_us, bool bFrequencySelectChan1, const std::string &strStatus)
+void cKATCPServer::cKATCPClientCallbackHandler::bandSelectRcp_callback(int64_t i64Timestamp_us, bool bBandSelectRCP, const std::string &strStatus)
 {
 
 }
@@ -1504,11 +1504,6 @@ void cKATCPServer::cKATCPClientCallbackHandler::frequencyLOIntermediate5GHz_call
 }
 
 void cKATCPServer::cKATCPClientCallbackHandler::frequencyLOIntermediate6_7GHz_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_Hz, const std::string &strStatus)
-{
-
-}
-
-void cKATCPServer::cKATCPClientCallbackHandler::frequencyLOFinal_callback(int64_t i64Timestamp_us, double dFrequencyLO1_Hz, const std::string &strStatus)
 {
 
 }
