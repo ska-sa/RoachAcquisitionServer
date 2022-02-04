@@ -82,13 +82,13 @@ cHDF5FileWriter::cHDF5FileWriter(const string &strRecordingDirectory, uint32_t u
         sprintf(m_oInitialValueSet.m_chaVAntennaStatus, "idle");
         sprintf(m_oInitialValueSet.m_chaAntennaStatusStatus, "0");
 
-        m_oInitialValueSet.m_i64TSReceiverLOFreqIntermediate5GHz_us = 0;
-        m_oInitialValueSet.m_dVReceiverLOFreqIntermediate5GHz_Hz = 0;
-        sprintf(m_oInitialValueSet.m_chaReceiverLOFreqIntermediate5GHzStatus, "0");
+        m_oInitialValueSet.m_i64TSReceiverSkyFreq5GHz_us = 0;
+        m_oInitialValueSet.m_dVReceiverSkyFreq5GHz_Hz = 0;
+        sprintf(m_oInitialValueSet.m_chaReceiverSkyFreq5GHzStatus, "0");
 
-        m_oInitialValueSet.m_i64TSReceiverLOFreqIntermediate6_7GHz_us = 0;
-        m_oInitialValueSet.m_dVReceiverLOFreqIntermediate6_7GHz_Hz = 0;
-        sprintf(m_oInitialValueSet.m_chaReceiverLOFreqIntermediate6_7GHzStatus, "0");
+        m_oInitialValueSet.m_i64TSReceiverSkyFreq6_7GHz_us = 0;
+        m_oInitialValueSet.m_dVReceiverSkyFreq6_7GHz_Hz = 0;
+        sprintf(m_oInitialValueSet.m_chaReceiverSkyFreq6_7GHzStatus, "0");
 
         m_oInitialValueSet.m_i64TSReceiverLcpAtten_us = 0;
         m_oInitialValueSet.m_dVReceiverLcpAtten_dB = 0;
@@ -374,14 +374,14 @@ void cHDF5FileWriter::getNextFrame_callback(const std::vector<int> &vi32Chan0, c
             m_pHDF5File->addAntennaStatus(m_oInitialValueSet.m_i64TSAntennaStatus_us,
                                           m_oInitialValueSet.m_chaVAntennaStatus,
                                           m_oInitialValueSet.m_chaAntennaStatusStatus);
-        if (m_oInitialValueSet.m_i64TSReceiverLOFreqIntermediate5GHz_us)
-            m_pHDF5File->addFrequencyLOIntermed5GHz(m_oInitialValueSet.m_i64TSReceiverLOFreqIntermediate5GHz_us,
-                                                        m_oInitialValueSet.m_dVReceiverLOFreqIntermediate5GHz_Hz,
-                                                        m_oInitialValueSet.m_chaReceiverLOFreqIntermediate5GHzStatus);
-        if (m_oInitialValueSet.m_i64TSReceiverLOFreqIntermediate6_7GHz_us)
-            m_pHDF5File->addFrequencyLOIntermed6_7GHz(m_oInitialValueSet.m_i64TSReceiverLOFreqIntermediate6_7GHz_us,
-                                                          m_oInitialValueSet.m_dVReceiverLOFreqIntermediate6_7GHz_Hz,
-                                                          m_oInitialValueSet.m_chaReceiverLOFreqIntermediate6_7GHzStatus);
+        if (m_oInitialValueSet.m_i64TSReceiverSkyFreq5GHz_us)
+            m_pHDF5File->addFrequencySky5GHz(m_oInitialValueSet.m_i64TSReceiverSkyFreq5GHz_us,
+                                             m_oInitialValueSet.m_dVReceiverSkyFreq5GHz_Hz,
+                                             m_oInitialValueSet.m_chaReceiverSkyFreq5GHzStatus);
+        if (m_oInitialValueSet.m_i64TSReceiverSkyFreq6_7GHz_us)
+            m_pHDF5File->addFrequencySky6_7GHz(m_oInitialValueSet.m_i64TSReceiverSkyFreq6_7GHz_us,
+                                               m_oInitialValueSet.m_dVReceiverSkyFreq6_7GHz_Hz,
+                                               m_oInitialValueSet.m_chaReceiverSkyFreq6_7GHzStatus);
         if (m_oInitialValueSet.m_i64TSReceiverLcpAtten_us)
             m_pHDF5File->addReceiverLcpAttenuation(m_oInitialValueSet.m_i64TSReceiverLcpAtten_us,
                                                    m_oInitialValueSet.m_dVReceiverLcpAtten_dB,
@@ -1125,20 +1125,20 @@ void cHDF5FileWriter::bandSelectRcp_callback(int64_t i64Timestamp_us, bool bFreq
         m_pHDF5File->addBandSelectRcp(i64Timestamp_us, bFrequencySelectRcp, strStatus);
 }
 
-void cHDF5FileWriter::frequencyLOIntermediate5GHz_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_Hz, const string &strStatus)
+void cHDF5FileWriter::frequencySky5GHz_callback(int64_t i64Timestamp_us, double dFrequencySky5GHz, const string &strStatus)
 {
     if(getState() != RECORDING)
         return;
 
-    m_pHDF5File->addFrequencyLOIntermed5GHz(i64Timestamp_us, dFrequencyLO0Chan0_Hz, strStatus);
+    m_pHDF5File->addFrequencySky5GHz(i64Timestamp_us, dFrequencySky5GHz, strStatus);
 }
 
-void cHDF5FileWriter::frequencyLOIntermediate6_7GHz_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_Hz, const string &strStatus)
+void cHDF5FileWriter::frequencySky6_7GHz_callback(int64_t i64Timestamp_us, double dFrequencySky6_7GHz, const string &strStatus)
 {
     if(getState() != RECORDING)
         return;
 
-    m_pHDF5File->addFrequencyLOIntermed6_7GHz(i64Timestamp_us, dFrequencyLO0Chan1_Hz, strStatus);
+    m_pHDF5File->addFrequencySky6_7GHz(i64Timestamp_us, dFrequencySky6_7GHz, strStatus);
 }
 
 void cHDF5FileWriter::receiverBandwidthLcp_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan0_Hz, const string &strStatus)

@@ -345,15 +345,15 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
         return;
     }
 
-    if(!vstrTokens[3].compare("RFC.IntermediateStage_5GHz"))
+    if(!vstrTokens[3].compare("rx.fe.freq.band1"))
     {
-        sendFrequencyLOIntermediate5GHz( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+        sendFrequencySky5GHz( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
         return;
     }
 
-    if(!vstrTokens[3].compare("RFC.IntermediateStage_6_7GHz"))
+    if(!vstrTokens[3].compare("rx.fe.freq.band2"))
     {
-        sendFrequencyLOIntermediate6_7GHz( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+        sendFrequencySky6_7GHz( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
         return;
     }
 
@@ -901,7 +901,7 @@ void cStationControllerKATCPClient::sendBandSelectRcp(int64_t i64Timestamp_us, b
     }
 }
 
-void cStationControllerKATCPClient::sendFrequencyLOIntermediate5GHz(int64_t i64Timestamp_us, double dFrequencyIntermediate5GHz_MHz, const string &strStatus)
+void cStationControllerKATCPClient::sendFrequencySky5GHz(int64_t i64Timestamp_us, double dFrequencySky5GHz_MHz, const string &strStatus)
 {
     boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
 
@@ -911,17 +911,17 @@ void cStationControllerKATCPClient::sendFrequencyLOIntermediate5GHz(int64_t i64T
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
     {
         cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
-        pHandler->frequencyLOIntermediate5GHz_callback(i64Timestamp_us, dFrequencyIntermediate5GHz_MHz, strStatus);
+        pHandler->frequencySky5GHz_callback(i64Timestamp_us, dFrequencySky5GHz_MHz, strStatus);
     }
 
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
     {
         boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
-        pHandler->frequencyLOIntermediate5GHz_callback(i64Timestamp_us, dFrequencyIntermediate5GHz_MHz, strStatus);
+        pHandler->frequencySky5GHz_callback(i64Timestamp_us, dFrequencySky5GHz_MHz, strStatus);
     }
 }
 
-void cStationControllerKATCPClient::sendFrequencyLOIntermediate6_7GHz(int64_t i64Timestamp_us, double dFrequencyLOIntermediate6_7GHz_MHz, const string &strStatus)
+void cStationControllerKATCPClient::sendFrequencySky6_7GHz(int64_t i64Timestamp_us, double dFrequencySky6_7GHz_MHz, const string &strStatus)
 {
     boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
 
@@ -931,13 +931,13 @@ void cStationControllerKATCPClient::sendFrequencyLOIntermediate6_7GHz(int64_t i6
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
     {
         cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
-        pHandler->frequencyLOIntermediate6_7GHz_callback(i64Timestamp_us, dFrequencyLOIntermediate6_7GHz_MHz, strStatus);
+        pHandler->frequencySky6_7GHz_callback(i64Timestamp_us, dFrequencySky6_7GHz_MHz, strStatus);
     }
 
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
     {
         boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
-        pHandler->frequencyLOIntermediate6_7GHz_callback(i64Timestamp_us, dFrequencyLOIntermediate6_7GHz_MHz, strStatus);
+        pHandler->frequencySky6_7GHz_callback(i64Timestamp_us, dFrequencySky6_7GHz_MHz, strStatus);
     }
 }
 

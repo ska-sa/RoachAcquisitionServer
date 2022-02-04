@@ -45,8 +45,8 @@ public:
         //RF values
         virtual void                                    bandSelectLcp_callback(int64_t i64Timestamp_us, bool bFrequencySelectChan0, const std::string &strStatus) = 0;
         virtual void                                    bandSelectRcp_callback(int64_t i64Timestamp_us, bool bFrequencySelectChan1, const std::string &strStatus) = 0;
-        virtual void                                    frequencyLOIntermediate5GHz_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_Hz, const std::string &strStatus) = 0;
-        virtual void                                    frequencyLOIntermediate6_7GHz_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_Hz, const std::string &strStatus) = 0;
+        virtual void                                    frequencySky5GHz_callback(int64_t i64Timestamp_us, double dFrequencySky5GHz, const std::string &strStatus) = 0;
+        virtual void                                    frequencySky6_7GHz_callback(int64_t i64Timestamp_us, double dFrequencySky6_7GHz, const std::string &strStatus) = 0;
         virtual void                                    receiverBandwidthLcp_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan0_Hz, const std::string &strStatus) = 0;
         virtual void                                    receiverBandwidthRcp_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan1_Hz, const std::string &strStatus) = 0;
         virtual void                                    receiverLcpAttenuation_callback(int64_t i64Timestamp_us, double dLCPAttenuation_dB, const std::string &strStatus) = 0;
@@ -117,8 +117,8 @@ private:
     //RFE values
     void                                                sendBandSelectLcp(int64_t i64Timestamp_us, bool bFreqencyRFChan0_MHz, const std::string &strStatus);
     void                                                sendBandSelectRcp(int64_t i64Timestamp_us, bool bFreqencyRF_MHz, const std::string &strStatus);
-    void                                                sendFrequencyLOIntermediate5GHz(int64_t i64Timestamp_us, double dFrequencyIntermediate5GHz_MHz, const std::string &strStatus);
-    void                                                sendFrequencyLOIntermediate6_7GHz(int64_t i64Timestamp_us, double dFrequencyLOIntermediate6_7GHz_MHz, const std::string &strStatus);
+    void                                                sendFrequencySky5GHz(int64_t i64Timestamp_us, double dFrequencySky5GHz_MHz, const std::string &strStatus);
+    void                                                sendFrequencySky6_7GHz(int64_t i64Timestamp_us, double dFrequencySky6_7GHz_MHz, const std::string &strStatus);
     void                                                sendFrequencyLOFinal(int64_t i64Timestamp_us, double dFrequencyLOFinal_MHz, const std::string &strStatus);
     void                                                sendReceiverBandwidthLcp(int64_t i64Timestamp_us, double dReceiverBandwidthLcp_MHz, const std::string &strStatus);
     void                                                sendReceiverBandwidthRcp(int64_t i64Timestamp_us, double dReceiverBandwidthRcp_MHz, const std::string &strStatus);

@@ -113,15 +113,15 @@ class cHDF5FileWriter : public cSpectrometerDataStreamInterpreter::cCallbackInte
         char    m_chaVAntennaStatus[16];
         char    m_chaAntennaStatusStatus[7];
 
-        // Receiver chain intermediate LO frequency - 5GHz LO - cTimestampedDouble
-        int64_t m_i64TSReceiverLOFreqIntermediate5GHz_us;
-        double  m_dVReceiverLOFreqIntermediate5GHz_Hz;
-        char    m_chaReceiverLOFreqIntermediate5GHzStatus[7];
+        // Receiver chain sky frequency - 5GHz band - cTimestampedDouble
+        int64_t m_i64TSReceiverSkyFreq5GHz_us;
+        double  m_dVReceiverSkyFreq5GHz_Hz;
+        char    m_chaReceiverSkyFreq5GHzStatus[7];
 
-        // Receiver chain intermediate LO frequency - 6_7GHz LO - cTimestampedDouble
-        int64_t m_i64TSReceiverLOFreqIntermediate6_7GHz_us;
-        double  m_dVReceiverLOFreqIntermediate6_7GHz_Hz;
-        char    m_chaReceiverLOFreqIntermediate6_7GHzStatus[7];
+        // Receiver chain sky frequency - 6_7GHz band - cTimestampedDouble
+        int64_t m_i64TSReceiverSkyFreq6_7GHz_us;
+        double  m_dVReceiverSkyFreq6_7GHz_Hz;
+        char    m_chaReceiverSkyFreq6_7GHzStatus[7];
 
         // Receiver chain LCP attenuation - cTimestampedDouble
         int64_t m_i64TSReceiverLcpAtten_us;
@@ -133,12 +133,12 @@ class cHDF5FileWriter : public cSpectrometerDataStreamInterpreter::cCallbackInte
         double  m_dVReceiverRcpAtten_dB;
         char    m_chaReceiverRcpAttenStatus[7];
 
-        // Receiver chain LCP Frequency Select - cTimestampedChar
+        // Receiver chain LCP Band Select - cTimestampedChar
         int64_t m_i64TSBandSelectLcp_us;
         char    m_chVBandSelectLcp;
         char    m_chaBandSelectLcpStatus[7];
 
-        // Receiver chain RCP Frequency Select - cTimestampedChar
+        // Receiver chain RCP Band Select - cTimestampedChar
         int64_t m_i64TSBandSelectRcp_us;
         char    m_chVBandSelectRcp;
         char    m_chaBandSelectRcpStatus[7];
@@ -304,8 +304,8 @@ public:
     //RF values
     void                                                bandSelectLcp_callback(int64_t i64Timestamp_us, bool bBandSelectLcp, const std::string &strStatus);
     void                                                bandSelectRcp_callback(int64_t i64Timestamp_us, bool bBandSelectRcp, const std::string &strStatus);
-    void                                                frequencyLOIntermediate5GHz_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_Hz, const std::string &strStatus);
-    void                                                frequencyLOIntermediate6_7GHz_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_Hz, const std::string &strStatus);
+    void                                                frequencySky5GHz_callback(int64_t i64Timestamp_us, double dFrequencySky5GHz, const std::string &strStatus);
+    void                                                frequencySky6_7GHz_callback(int64_t i64Timestamp_us, double dFrequencySky6_7GHz, const std::string &strStatus);
     void                                                receiverBandwidthLcp_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan0_Hz, const std::string &strStatus);
     void                                                receiverBandwidthRcp_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan1_Hz, const std::string &strStatus);
     void                                                receiverLcpAttenuation_callback(int64_t i64Timestamp_us, double dReceiverLcpAttenuation_dB, const std::string &strStatus);
