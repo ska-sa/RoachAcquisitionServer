@@ -1141,22 +1141,6 @@ void cHDF5FileWriter::frequencySky6_7GHz_callback(int64_t i64Timestamp_us, doubl
     m_pHDF5File->addFrequencySky6_7GHz(i64Timestamp_us, dFrequencySky6_7GHz, strStatus);
 }
 
-void cHDF5FileWriter::receiverBandwidthLcp_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan0_Hz, const string &strStatus)
-{
-    if(getState() != RECORDING)
-        return;
-
-    m_pHDF5File->addReceiverBandwidthLcp(i64Timestamp_us, dReceiverBandwidthChan0_Hz, strStatus);
-}
-
-void cHDF5FileWriter::receiverBandwidthRcp_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan1_Hz, const string &strStatus)
-{
-    if(getState() != RECORDING)
-        return;
-
-    m_pHDF5File->addReceiverBandwidthRcp(i64Timestamp_us, dReceiverBandwidthChan1_Hz, strStatus);
-}
-
 void cHDF5FileWriter::receiverLcpAttenuation_callback(int64_t i64Timestamp_us, double dReceiverLcpAttenuation_dB, const string &strStatus)
 {
     if (i64Timestamp_us > m_oInitialValueSet.m_i64TSReceiverLcpAtten_us)
