@@ -14,20 +14,20 @@ cStationControllerKATCPClient::cStationControllerKATCPClient() :
     cKATCPClientBase()
 {
     // Antenna space
-    m_vstrSensorSampling.push_back("acs.actual-azim period 1000");
-    m_vstrSensorSampling.push_back("acs.actual-elev period 1000");
-    m_vstrSensorSampling.push_back("acs.desired-azim period 1000");
-    m_vstrSensorSampling.push_back("acs.desired-elev period 1000");
-    m_vstrSensorSampling.push_back("acs.request-azim period 1000");
-    m_vstrSensorSampling.push_back("acs.request-elev period 1000");
+    m_vstrSensorSampling.push_back("acs.actual-azim period 1");
+    m_vstrSensorSampling.push_back("acs.actual-elev period 1");
+    m_vstrSensorSampling.push_back("acs.desired-azim period 1");
+    m_vstrSensorSampling.push_back("acs.desired-elev period 1");
+    m_vstrSensorSampling.push_back("acs.request-azim period 1");
+    m_vstrSensorSampling.push_back("acs.request-elev period 1");
 
     //Sky space
-    m_vstrSensorSampling.push_back("SCS.request-azim period 1000");
-    m_vstrSensorSampling.push_back("SCS.request-elev period 1000");
-    m_vstrSensorSampling.push_back("SCS.desired-azim period 1000");
-    m_vstrSensorSampling.push_back("SCS.desired-elev period 1000");
-    m_vstrSensorSampling.push_back("SCS.actual-azim period 1000");
-    m_vstrSensorSampling.push_back("SCS.actual-elev period 1000");
+    m_vstrSensorSampling.push_back("SCS.request-azim period 1");
+    m_vstrSensorSampling.push_back("SCS.request-elev period 1");
+    m_vstrSensorSampling.push_back("SCS.desired-azim period 1");
+    m_vstrSensorSampling.push_back("SCS.desired-elev period 1");
+    m_vstrSensorSampling.push_back("SCS.actual-azim period 1");
+    m_vstrSensorSampling.push_back("SCS.actual-elev period 1");
 
     // Pointing model
     m_vstrSensorSampling.push_back("SCS.pmodel1 event");
@@ -66,23 +66,23 @@ cStationControllerKATCPClient::cStationControllerKATCPClient() :
     m_vstrSensorSampling.push_back("SCS.Target event");
 
     // Receiver Mk2 values
-    m_vstrSensorSampling.push_back("rx.fe.gain.band1-lcp");
-    m_vstrSensorSampling.push_back("rx.fe.gain.band1-rcp");
-    m_vstrSensorSampling.push_back("rx.fe.gain.band2-lcp");
-    m_vstrSensorSampling.push_back("rx.fe.gain.band2-rcp");
-    m_vstrSensorSampling.push_back("rx.fe.freq.band1");
-    m_vstrSensorSampling.push_back("rx.fe.freq.band2");
-    m_vstrSensorSampling.push_back("rx.fe.lcp-band-select");
-    m_vstrSensorSampling.push_back("rx.fe.rcp-band-select");
-    m_vstrSensorSampling.push_back("rx.stage1.status.noisediode.band1");
-    m_vstrSensorSampling.push_back("rx.stage1.status.noisediode.band2");
+    m_vstrSensorSampling.push_back("rx.fe.gain.band1-lcp event");
+    m_vstrSensorSampling.push_back("rx.fe.gain.band1-rcp event");
+    m_vstrSensorSampling.push_back("rx.fe.gain.band2-lcp event");
+    m_vstrSensorSampling.push_back("rx.fe.gain.band2-rcp event");
+    m_vstrSensorSampling.push_back("rx.fe.freq.band1 event");
+    m_vstrSensorSampling.push_back("rx.fe.freq.band2 event");
+    m_vstrSensorSampling.push_back("rx.fe.lcp-band-select event");
+    m_vstrSensorSampling.push_back("rx.fe.rcp-band-select event");
+    m_vstrSensorSampling.push_back("rx.stage1.status.noisediode.band1 event");
+    m_vstrSensorSampling.push_back("rx.stage1.status.noisediode.band2 event");
 
     // Environment values.
-    m_vstrSensorSampling.push_back("EMS.WindSpeed period 10000");
-    m_vstrSensorSampling.push_back("EMS.WindDirection period 10000");
-    m_vstrSensorSampling.push_back("EMS.AirTemperature period 10000");
-    m_vstrSensorSampling.push_back("EMS.AbsolutePressure period 10000");
-    m_vstrSensorSampling.push_back("EMS.RelativeHumidity period 10000");
+    m_vstrSensorSampling.push_back("EMS.WindSpeed period 10");
+    m_vstrSensorSampling.push_back("EMS.WindDirection period 10");
+    m_vstrSensorSampling.push_back("EMS.AirTemperature period 10");
+    m_vstrSensorSampling.push_back("EMS.AbsolutePressure period 10");
+    m_vstrSensorSampling.push_back("EMS.RelativeHumidity period 10");
 
     //TODO: Observation metadata such as targets, etc.
 }
@@ -325,7 +325,7 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
         // Similar surgery to the band-select functions below, because I'm not
         // horribly keen at this stage to type out this function twice but with
         // basically one character's difference.
-        bool bNoiseDiodeSelect = (bool) strtol(vstrTokens[3].c_str() + 32, NULL, 10) - 1;
+        bool bNoiseDiodeSelect = (bool) (strtol(vstrTokens[3].c_str() + 32, NULL, 10) - 1);
         sendNoiseDiodeState( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtol(vstrTokens[5].c_str(), NULL, 10), bNoiseDiodeSelect, vstrTokens[4].c_str() );
         return;
     }
@@ -335,7 +335,7 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
         // The latest SCS software doesn't just give us a 1 or 0, which is what
         // the data file expects, but a `band1` or `band2`, so we do a bit of
         // surgery to get it into the format preferred by the data file.
-        bool bBandSelect = (bool) strtol(vstrTokens[5].c_str() + 4, NULL, 10) - 1;
+        bool bBandSelect = (bool) (strtol(vstrTokens[5].c_str() + 4, NULL, 10) - 1);
         sendBandSelectLcp( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, bBandSelect, vstrTokens[4].c_str() );
         return;
     }
@@ -343,7 +343,7 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
     if(!vstrTokens[3].compare("rx.fe.rcp-band-select"))
     {
         // see previous code block for explanation
-        bool bBandSelect = (bool) strtol(vstrTokens[5].c_str() + 4, NULL, 10) - 1;
+        bool bBandSelect = (bool) (strtol(vstrTokens[5].c_str() + 4, NULL, 10) - 1);
         sendBandSelectRcp( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, bBandSelect, vstrTokens[4].c_str() );
         return;
     }
@@ -759,24 +759,24 @@ void cStationControllerKATCPClient::sendNoiseDiodeState(int64_t i64Timestamp_us,
     string strSource;
     switch (i32NoiseDiodeState & 0xFF)
     {
-        case 0: strSource = "None";
-                break;
-        case 1: strSource = "ROACH";
+        case 1: strSource = "NONE";
                 break;
         case 2: strSource = "DBBC";
                 break;
-        case 3: strSource = "SW";
+        case 3: strSource = "ROACH";
+                break;
+        case 4: strSource = "SW";
                 break;
         default: strSource = "UNKNOWN";
                 break;
     }
 
-    uint32_t ui32NoiseDiodeLevel       = i32NoiseDiodeState & 0x0000FF00 >> 8;
+    uint32_t ui32NoiseDiodeLevel       = (i32NoiseDiodeState & 0x0000FF00) >> 8;
 
-    uint32_t i32NoiseDiodePWMMark      = i32NoiseDiodeState & 0xFF000000 >> 24;
+    uint32_t i32NoiseDiodePWMMark      = (i32NoiseDiodeState & 0xFF000000) >> 24;
 
     double dNoiseDiodePWMFrequency;
-    switch (i32NoiseDiodeState & 0x00FF0000 >> 16)
+    switch ((i32NoiseDiodeState & 0x00FF0000) >> 16)
     {
     case 1: dNoiseDiodePWMFrequency = 1.0;
             break;

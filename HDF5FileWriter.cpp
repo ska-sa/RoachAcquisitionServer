@@ -1206,18 +1206,28 @@ void cHDF5FileWriter::bandSelectRcp_callback(int64_t i64Timestamp_us, bool bFreq
 
 void cHDF5FileWriter::frequencySky5GHz_callback(int64_t i64Timestamp_us, double dFrequencySky5GHz, const string &strStatus)
 {
-    if(getState() != RECORDING)
-        return;
-
-    m_pHDF5File->addFrequencySky5GHz(i64Timestamp_us, dFrequencySky5GHz, strStatus);
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSReceiverSkyFreq5GHz_us)
+    {
+        boost::unique_lock<boost::shared_mutex>  oLock(m_oMutex);
+        m_oInitialValueSet.m_i64TSReceiverSkyFreq5GHz_us = i64Timestamp_us;
+        m_oInitialValueSet.m_dVReceiverSkyFreq5GHz_Hz = dFrequencySky5GHz;
+        sprintf(m_oInitialValueSet.m_chaReceiverSkyFreq5GHzStatus, "%s", strStatus.c_str());
+    }
+    if(getState() == RECORDING)
+        m_pHDF5File->addFrequencySky5GHz(i64Timestamp_us, dFrequencySky5GHz, strStatus);
 }
 
 void cHDF5FileWriter::frequencySky6_7GHz_callback(int64_t i64Timestamp_us, double dFrequencySky6_7GHz, const string &strStatus)
 {
-    if(getState() != RECORDING)
-        return;
-
-    m_pHDF5File->addFrequencySky6_7GHz(i64Timestamp_us, dFrequencySky6_7GHz, strStatus);
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSReceiverSkyFreq6_7GHz_us)
+    {
+        boost::unique_lock<boost::shared_mutex>  oLock(m_oMutex);
+        m_oInitialValueSet.m_i64TSReceiverSkyFreq6_7GHz_us = i64Timestamp_us;
+        m_oInitialValueSet.m_dVReceiverSkyFreq6_7GHz_Hz = dFrequencySky6_7GHz;
+        sprintf(m_oInitialValueSet.m_chaReceiverSkyFreq6_7GHzStatus, "%s", strStatus.c_str());
+    }
+    if(getState() == RECORDING)
+        m_pHDF5File->addFrequencySky6_7GHz(i64Timestamp_us, dFrequencySky6_7GHz, strStatus);
 }
 
 void cHDF5FileWriter::receiverGain5GHzLcp_callback(int64_t i64Timestamp_us, double dGain_dB, const string &strStatus)
