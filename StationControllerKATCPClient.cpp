@@ -181,6 +181,15 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
         return;
     }
 
+    /* If something changes on the SCS, like a component going down for instance,
+     * and then coming back up, we may lose some metadata. So any time the
+     * KATCP interface changes, we re-subscribe to all the sensors.
+     */
+    if (!vstrTokens[0].compare("#interface-changed"))
+    {
+        subscribeSensorData();
+    }
+
     // All other known KATCP messages are 5 tokens long.
     // The *1e3 next to each timestamp is because the functions take timestamps in us
     // and katcp gives them in ms. The us thing was a decision by Craig a while ago,
