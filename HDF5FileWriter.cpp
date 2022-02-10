@@ -1011,12 +1011,12 @@ void cHDF5FileWriter::pointingModel_callback(uint8_t ui8ParameterNumber, double 
 
 void cHDF5FileWriter::antennaStatus_callback(int64_t i64Timestamp_us, const string &strAntennaStatus, const string &strStatus)
 {
-    if(getState() != RECORDING)
-        return;
-
-    m_pHDF5File->addAntennaStatus(i64Timestamp_us, strAntennaStatus, strStatus);
+    if(getState() == RECORDING)
+        m_pHDF5File->addAntennaStatus(i64Timestamp_us, strAntennaStatus, strStatus);
 }
 
+/*  Doesn't correspond to any current function. May be implemented in station
+    controller at some point?
 void cHDF5FileWriter::appliedPointingModel_callback(const string &strModelName, const vector<double> &vdPointingModelParams)
 {
     if(getState() != RECORDING)
@@ -1024,45 +1024,36 @@ void cHDF5FileWriter::appliedPointingModel_callback(const string &strModelName, 
 
     //m_pHDF5File->setAppliedPointingModel(strModelName, vdPointingModelParams);
 }
+*/
 
 void cHDF5FileWriter::antennaName_callback(const string &strAntennaName)
 {
-    if(getState() != RECORDING)
-        return;
-
-    m_pHDF5File->setAntennaName(strAntennaName);
+    if(getState() == RECORDING)
+        m_pHDF5File->setAntennaName(strAntennaName);
 }
 
 void cHDF5FileWriter::antennaDiameter_callback(const string &strAntennaDiameter)
 {
-    if(getState() != RECORDING)
-        return;
-
-    m_pHDF5File->setAntennaBeamwidth(strAntennaDiameter);
+    if(getState() == RECORDING)
+        m_pHDF5File->setAntennaBeamwidth(strAntennaDiameter);
 }
 
 void cHDF5FileWriter::antennaBeamwidth_callback(const string &strAntennaBeamwidth)
 {
-    if(getState() != RECORDING)
-        return;
-
-    m_pHDF5File->setAntennaBeamwidth(strAntennaBeamwidth);
+    if(getState() == RECORDING)
+        m_pHDF5File->setAntennaBeamwidth(strAntennaBeamwidth);
 }
 
 void cHDF5FileWriter::antennaLongitude_callback(const string &strAntennaLongitude)
 {
-    if(getState() != RECORDING)
-        return;
-
-    m_pHDF5File->setAntennaLongitude(strAntennaLongitude);
+    if(getState() == RECORDING)
+        m_pHDF5File->setAntennaLongitude(strAntennaLongitude);
 }
 
 void cHDF5FileWriter::antennaLatitude_callback(const string &strAntennaLatitude)
 {
-    if(getState() != RECORDING)
-        return;
-
-    m_pHDF5File->setAntennaLatitude(strAntennaLatitude);
+    if(getState() == RECORDING)
+        m_pHDF5File->setAntennaLatitude(strAntennaLatitude);
 }
 
 void cHDF5FileWriter::rNoiseDiode5GHzInputSource_callback(int64_t i64Timestamp_us, const string &strInputSource, const string &strStatus)
@@ -1171,11 +1162,8 @@ void cHDF5FileWriter::rNoiseDiode6_7GHzPWMFrequency_callback(int64_t i64Timestam
 
 void cHDF5FileWriter::sourceSelection_callback(int64_t i64Timestamp_us, const string &strSourceName, const string &strStatus)
 {
-    if(getState() != RECORDING)
-        return;
-
-    // TODO: This needs to be updated with the old ways.
-    m_pHDF5File->addSourceSelection(i64Timestamp_us, strSourceName, strStatus);
+    if(getState() == RECORDING)
+        m_pHDF5File->addSourceSelection(i64Timestamp_us, strSourceName, strStatus);
 }
 
 void cHDF5FileWriter::bandSelectLcp_callback(int64_t i64Timestamp_us, bool bFrequencySelectLcp, const string &strStatus)
@@ -1347,8 +1335,6 @@ void cHDF5FileWriter::envRelativeHumidity_callback(int64_t i64Timestamp_us, doub
         m_pHDF5File->addRelativeHumidity(i64Timestamp_us, dHumidity_percent, strStatus);
 }
 
-// TODO: All the below stuff needs to get initial value support.
-
 void cHDF5FileWriter::accumulationLength_callback(int64_t i64Timestamp_us, uint32_t u32NSamples)
 {
     if (i64Timestamp_us > m_oInitialValueSet.m_i64TSAccumulationLength_us)
@@ -1375,26 +1361,20 @@ void cHDF5FileWriter::coarseChannelSelect_callback(int64_t i64Timestamp_us, uint
 
 void cHDF5FileWriter::frequencyFs_callback(double dFrequencyFs_Hz)
 {
-    if(getState() != RECORDING)
-        return;
-
-    m_pHDF5File->setFrequencyFs(dFrequencyFs_Hz);
+    if(getState() == RECORDING)
+        m_pHDF5File->setFrequencyFs(dFrequencyFs_Hz);
 }
 
 void cHDF5FileWriter::sizeOfCoarseFFT_callback(uint32_t u32SizeOfCoarseFFT_nSamp)
 {
-    if(getState() != RECORDING)
-        return;
-
-    m_pHDF5File->setSizeOfCoarseFFT(u32SizeOfCoarseFFT_nSamp);
+    if(getState() == RECORDING)
+        m_pHDF5File->setSizeOfCoarseFFT(u32SizeOfCoarseFFT_nSamp);
 }
 
 void cHDF5FileWriter::sizeOfFineFFT_callback(uint32_t u32SizeOfFineFFT_nSamp)
 {
-    if(getState() != RECORDING)
-        return;
-
-    m_pHDF5File->setSizeOfFineFFT(u32SizeOfFineFFT_nSamp);
+    if(getState() == RECORDING)
+        m_pHDF5File->setSizeOfFineFFT(u32SizeOfFineFFT_nSamp);
 }
 
 void cHDF5FileWriter::coarseFFTShiftMask_callback(int64_t i64Timestamp_us, uint32_t u32ShiftMask)
@@ -1423,18 +1403,14 @@ void cHDF5FileWriter::dspGain_callback(int64_t i64Timestamp_us, double dDspGain)
 
 void cHDF5FileWriter::attenuationADCChan0_callback(int64_t i64Timestamp_us, double dADCAttenuationChan0_dB)
 {
-    if(getState() != RECORDING)
-        return;
-
-    m_pHDF5File->addAttenuationADCChan0(i64Timestamp_us, dADCAttenuationChan0_dB);
+    if(getState() == RECORDING)
+        m_pHDF5File->addAttenuationADCChan0(i64Timestamp_us, dADCAttenuationChan0_dB);
 }
 
 void cHDF5FileWriter::attenuationADCChan1_callback(int64_t i64Timestamp_us, double dADCAttenuationChan1_dB)
 {
-    if(getState() != RECORDING)
-        return;
-
-    m_pHDF5File->addAttenuationADCChan1(i64Timestamp_us, dADCAttenuationChan1_dB);
+    if(getState() == RECORDING)
+        m_pHDF5File->addAttenuationADCChan1(i64Timestamp_us, dADCAttenuationChan1_dB);
 }
 
 void cHDF5FileWriter::overflowsRegs_callback(int64_t i64Timestamp_us, uint32_t u32OverflowRegs)
