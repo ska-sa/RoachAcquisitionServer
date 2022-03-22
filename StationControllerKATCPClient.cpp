@@ -78,11 +78,11 @@ cStationControllerKATCPClient::cStationControllerKATCPClient() :
     m_vstrSensorSampling.push_back("rx.stage1.status.noisediode.band2 event");
 
     // Environment values.
-    m_vstrSensorSampling.push_back("EMS.WindSpeed period 10");
-    m_vstrSensorSampling.push_back("EMS.WindDirection period 10");
-    m_vstrSensorSampling.push_back("EMS.AirTemperature period 10");
-    m_vstrSensorSampling.push_back("EMS.AbsolutePressure period 10");
-    m_vstrSensorSampling.push_back("EMS.RelativeHumidity period 10");
+    m_vstrSensorSampling.push_back("EMS.Logger.WindSpeed period 10");
+    m_vstrSensorSampling.push_back("EMS.Logger.WindDirection period 10");
+    m_vstrSensorSampling.push_back("EMS.Met4.Temperature period 10");
+    m_vstrSensorSampling.push_back("EMS.Met4.AbsolutePressure period 10");
+    m_vstrSensorSampling.push_back("EMS.Met4.RelativeHumidity period 10");
 
     //TODO: Observation metadata such as targets, etc.
 }
@@ -140,6 +140,7 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
     cout << endl;
     //*/
 
+#ifdef __KATCP_V4
     // This must come first!
     // The katcp server on the station controller sends #version and #build-state tokens on connection.
     // If they get through to the next tests, then the program segfaults because
@@ -154,6 +155,17 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
         printBuildState(vstrTokens[1]);
         return;
     }
+#else
+    if( !vstrTokens[0].compare("#version-connect") )
+    {
+        if( !vstrTokens[1].compare("katcp-device") )
+        {
+            printVersion(vstrTokens[2]);
+        }
+        return;
+    }
+
+#endif
 
     if (!vstrTokens[0].compare("!sensor-sampling"))
     {
@@ -188,11 +200,12 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
     if (!vstrTokens[0].compare("#interface-changed"))
     {
         subscribeSensorData();
+        return;
     }
 
     // All other known KATCP messages are 5 tokens long.
-    // The *1e3 next to each timestamp is because the functions take timestamps in us
-    // and katcp gives them in ms. The us thing was a decision by Craig a while ago,
+    // The *1e3 / * 1e6 next to each timestamp is because the functions take timestamps in us
+    // and katcp v4 gives them in ms and katcp v5 in seconds. The us thing was a decision by Craig a while ago,
     // and I'm too lazy to refactor it properly at this point. - James
     if(vstrTokens.size() < 5)
     {
@@ -208,74 +221,122 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
     // Antenna space
     if( !vstrTokens[3].compare("acs.request-azim") )
     {
+#ifdef __KATCP_V4
         sendAcsRequestedAntennaAz( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+#else
+        sendAcsRequestedAntennaAz( strtod(vstrTokens[1].c_str(), NULL)*1e6, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+#endif
         return;
     }
 
     if( !vstrTokens[3].compare("acs.request-elev") )
     {
+#ifdef __KATCP_V4
         sendAcsRequestedAntennaEl( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+#else
+        sendAcsRequestedAntennaEl( strtod(vstrTokens[1].c_str(), NULL)*1e6, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+#endif
         return;
     }
 
     if( !vstrTokens[3].compare("acs.desired-azim") )
     {
+#ifdef __KATCP_V4
         sendAcsDesiredAntennaAz( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+#else
+        sendAcsDesiredAntennaAz( strtod(vstrTokens[1].c_str(), NULL)*1e6, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+#endif
         return;
     }
 
     if( !vstrTokens[3].compare("acs.desired-elev") )
     {
+#ifdef __KATCP_V4
         sendAcsDesiredAntennaEl( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+#else
+        sendAcsDesiredAntennaEl( strtod(vstrTokens[1].c_str(), NULL)*1e6, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+#endif
         return;
     }
 
     if(!vstrTokens[3].compare("acs.actual-azim"))
     {
+#ifdef __KATCP_V4
         sendAcsActualAntennaAz( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+#else
+        sendAcsActualAntennaAz( strtod(vstrTokens[1].c_str(), NULL)*1e6, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+#endif
         return;
     }
 
     if(!vstrTokens[3].compare("acs.actual-elev"))
     {
+#ifdef __KATCP_V4
         sendAcsActualAntennaEl( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+#else
+        sendAcsActualAntennaEl( strtod(vstrTokens[1].c_str(), NULL)*1e6, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+#endif
         return;
     }
 
     // Sky space
     if( !vstrTokens[3].compare("SCS.request-azim") )
     {
+#ifdef __KATCP_V4
         sendSkyRequestedAntennaAz( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+#else
+        sendSkyRequestedAntennaAz( strtod(vstrTokens[1].c_str(), NULL)*1e6, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+#endif
         return;
     }
 
     if( !vstrTokens[3].compare("SCS.request-elev") )
     {
+#ifdef __KATCP_V4
         sendSkyRequestedAntennaEl( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+#else
+        sendSkyRequestedAntennaEl( strtod(vstrTokens[1].c_str(), NULL)*1e6, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+#endif
         return;
     }
 
     if( !vstrTokens[3].compare("SCS.desired-azim") )
     {
+#ifdef __KATCP_V4
         sendSkyDesiredAntennaAz( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+#else
+        sendSkyDesiredAntennaAz( strtod(vstrTokens[1].c_str(), NULL)*1e6, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+#endif
         return;
     }
 
     if( !vstrTokens[3].compare("SCS.desired-elev") )
     {
+#ifdef __KATCP_V4
         sendSkyDesiredAntennaEl( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+#else
+        sendSkyDesiredAntennaEl( strtod(vstrTokens[1].c_str(), NULL)*1e6, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+#endif
         return;
     }
 
     if(!vstrTokens[3].compare("SCS.actual-azim"))
     {
+#ifdef __KATCP_V4
         sendSkyActualAntennaAz( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+#else
+        sendSkyActualAntennaAz( strtod(vstrTokens[1].c_str(), NULL)*1e6, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+#endif
         return;
     }
 
     if(!vstrTokens[3].compare("SCS.actual-elev"))
     {
+#ifdef __KATCP_V4
         sendSkyActualAntennaEl( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+#else
+        sendSkyActualAntennaEl( strtod(vstrTokens[1].c_str(), NULL)*1e6, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+#endif
         return;
     }
 
@@ -318,13 +379,21 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
     // Antenna status
     if(!vstrTokens[3].compare("SCS.AntennaActivity"))
     {
+#ifdef __KATCP_V4
         sendAntennaStatus( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, vstrTokens[5].c_str(), vstrTokens[4].c_str() );
+#else
+        sendAntennaStatus( strtod(vstrTokens[1].c_str(), NULL)*1e6, vstrTokens[5].c_str(), vstrTokens[4].c_str() );
+#endif
         return;
     }
 
     if(!vstrTokens[3].compare("SCS.Target"))
     {
+#ifdef __KATCP_V4
         sendSourceSelection( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, vstrTokens[5].c_str(), vstrTokens[4].c_str()  );
+#else
+        sendSourceSelection( strtod(vstrTokens[1].c_str(), NULL)*1e6, vstrTokens[5].c_str(), vstrTokens[4].c_str()  );
+#endif
         return;
     }
 
@@ -335,7 +404,11 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
         // horribly keen at this stage to type out this function twice but with
         // basically one character's difference.
         bool bNoiseDiodeSelect = (bool) (strtol(vstrTokens[3].c_str() + 32, NULL, 10) - 1);
+#ifdef __KATCP_V4
         sendNoiseDiodeState( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtol(vstrTokens[5].c_str(), NULL, 10), bNoiseDiodeSelect, vstrTokens[4].c_str() );
+#else
+        sendNoiseDiodeState( strtod(vstrTokens[1].c_str(), NULL)*1e6, strtol(vstrTokens[5].c_str(), NULL, 10), bNoiseDiodeSelect, vstrTokens[4].c_str() );
+#endif
         return;
     }
 
@@ -345,7 +418,11 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
         // the data file expects, but a `band1` or `band2`, so we do a bit of
         // surgery to get it into the format preferred by the data file.
         bool bBandSelect = (bool) (strtol(vstrTokens[5].c_str() + 4, NULL, 10) - 1);
+#ifdef __KATCP_V4
         sendBandSelectLcp( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, bBandSelect, vstrTokens[4].c_str() );
+#else
+        sendBandSelectLcp( strtod(vstrTokens[1].c_str(), NULL)*1e6, bBandSelect, vstrTokens[4].c_str() );
+#endif
         return;
     }
 
@@ -353,74 +430,122 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
     {
         // see previous code block for explanation
         bool bBandSelect = (bool) (strtol(vstrTokens[5].c_str() + 4, NULL, 10) - 1);
+#ifdef __KATCP_V4
         sendBandSelectRcp( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, bBandSelect, vstrTokens[4].c_str() );
+#else
+        sendBandSelectRcp( strtod(vstrTokens[1].c_str(), NULL)*1e6, bBandSelect, vstrTokens[4].c_str() );
+#endif
         return;
     }
 
     if(!vstrTokens[3].compare("rx.fe.freq.band1"))
     {
+#ifdef __KATCP_V4
         sendFrequencySky5GHz( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+#else
+        sendFrequencySky5GHz( strtod(vstrTokens[1].c_str(), NULL)*1e6, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+#endif
         return;
     }
 
     if(!vstrTokens[3].compare("rx.fe.freq.band2"))
     {
+#ifdef __KATCP_V4
         sendFrequencySky6_7GHz( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+#else
+        sendFrequencySky6_7GHz( strtod(vstrTokens[1].c_str(), NULL)*1e6, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+#endif
         return;
     }
 
     if( !vstrTokens[3].compare("rx.fe.gain.band1-lcp") )
     {
+#ifdef __KATCP_V4
         sendReceiverGain5GHzLcp( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+#else
+        sendReceiverGain5GHzLcp( strtod(vstrTokens[1].c_str(), NULL)*1e6, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+#endif
         return;
     }
 
     if( !vstrTokens[3].compare("rx.fe.gain.band1-rcp") )
     {
+#ifdef __KATCP_V4
         sendReceiverGain5GHzRcp( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+#else
+        sendReceiverGain5GHzRcp( strtod(vstrTokens[1].c_str(), NULL)*1e6, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+#endif
         return;
     }
 
     if( !vstrTokens[3].compare("rx.fe.gain.band2-lcp") )
     {
+#ifdef __KATCP_V4
         sendReceiverGain6_7GHzLcp( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+#else
+        sendReceiverGain6_7GHzLcp( strtod(vstrTokens[1].c_str(), NULL)*1e6, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+#endif
         return;
     }
 
     if( !vstrTokens[3].compare("rx.fe.gain.band2-rcp") )
     {
+#ifdef __KATCP_V4
         sendReceiverGain6_7GHzRcp( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+#else
+        sendReceiverGain6_7GHzRcp( strtod(vstrTokens[1].c_str(), NULL)*1e6, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+#endif
         return;
     }
 
     // Environment values
-    if( !vstrTokens[3].compare("EMS.WindSpeed") )
+    if( !vstrTokens[3].compare("EMS.Logger.WindSpeed") )
     {
+#ifdef __KATCP_V4
         sendWindSpeed( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+#else
+        sendWindSpeed( strtod(vstrTokens[1].c_str(), NULL)*1e6, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+#endif
         return;
     }
 
-    if( !vstrTokens[3].compare("EMS.WindDirection") )
+    if( !vstrTokens[3].compare("EMS.Logger.WindDirection") )
     {
+#ifdef __KATCP_V4
         sendWindDirection( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+#else
+        sendWindDirection( strtod(vstrTokens[1].c_str(), NULL)*1e6, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+#endif
         return;
     }
 
-    if( !vstrTokens[3].compare("EMS.AirTemperature") )
+    if( !vstrTokens[3].compare("EMS.Met4.Temperature") )
     {
+#ifdef __KATCP_V4
         sendTemperature( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+#else
+        sendTemperature( strtod(vstrTokens[1].c_str(), NULL)*1e6, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+#endif
         return;
     }
 
-    if( !vstrTokens[3].compare("EMS.AbsolutePressure") )
+    if( !vstrTokens[3].compare("EMS.Met4.AbsolutePressure") )
     {
+#ifdef __KATCP_V4
         sendAbsolutePressure( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+#else
+        sendAbsolutePressure( strtod(vstrTokens[1].c_str(), NULL)*1e6, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+#endif
         return;
     }
 
-    if( !vstrTokens[3].compare("EMS.RelativeHumidity") )
+    if( !vstrTokens[3].compare("EMS.Met4.RelativeHumidity") )
     {
+#ifdef __KATCP_V4
         sendRelativeHumidity( strtoll(vstrTokens[1].c_str(), NULL, 10)*1e3, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+#else
+        sendRelativeHumidity( strtod(vstrTokens[1].c_str(), NULL)*1e6, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
+#endif
         return;
     }
 }
