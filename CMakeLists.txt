@@ -60,6 +60,24 @@ set(EXECUTABLE_OUTPUT_PATH
   "Directory where all executables will be stored"
 )
 
+set(build_version "unknown")
+
+find_package(Git)
+if(GIT_FOUND)
+  execute_process(
+    COMMAND ${GIT_EXECUTABLE} describe --always --tags --long --dirty
+    WORKING_DIRECTORY "${local_dir}"
+    OUTPUT_VARIABLE build_version
+    ERROR_QUIET
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+  )
+  message(STATUS "Git hash: ${build_version}")
+else()
+  message(STATUS "GIT not found")
+endif()
+
+add_definitions(-DBUILD_STATE=\"${build_version}\")
+
 #Check for build configuration
 if(NOT CMAKE_BUILD_TYPE)
     message(STATUS "No build configuration specified, defaulting to Release")

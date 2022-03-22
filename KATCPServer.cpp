@@ -77,15 +77,8 @@ void cKATCPServer::serverThreadFunction()
         cout << "cKATCPServer::cKATCPServer(): Error allocating KATCP server state." << endl;
     }
 
-    /* load up build and version information */
-    //Get compile time
-    stringstream oSSCompileTime;
-    oSSCompileTime << string(__DATE__);
-    oSSCompileTime << string(" ");
-    oSSCompileTime << string(__TIME__);
-
     //Add a version number to KATCTP server
-    add_version_katcp(m_pKATCPDispatch, const_cast<char*>("RoachAcquisitionServer"), 0, const_cast<char*>("0.9"), &oSSCompileTime.str()[0]);
+    add_version_katcp(m_pKATCPDispatch, const_cast<char*>("RoachAcquisitionServer"), 0, const_cast<char*>("0.9"), (char *) BUILD_STATE);
 
     //Declare sensors
     //Station controller
