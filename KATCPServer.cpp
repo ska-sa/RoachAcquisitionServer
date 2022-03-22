@@ -85,7 +85,7 @@ void cKATCPServer::serverThreadFunction()
 
     m_pKAStationControllerConnected = setup_boolean_acquire_katcp(m_pKATCPDispatch, &getIsStationControllerKATCPConnected, NULL, NULL);
     register_direct_multi_boolean_sensor_katcp(m_pKATCPDispatch, 0,
-                                  const_cast<char*>("stationControllerConnected"),
+                                  const_cast<char*>("SDB.stationControllerConnected"),
                                   const_cast<char*>("Is the RoachAcquisitionServer connected to the StationController's KATCP server"),
                                   const_cast<char*>("none"),
                                   m_pKAStationControllerConnected);
@@ -93,37 +93,37 @@ void cKATCPServer::serverThreadFunction()
     //Recording info.
     // TODO: figure out sensible min and max values for these.
     register_integer_sensor_katcp(m_pKATCPDispatch, 0,
-                                  const_cast<char*>("recordingStartTime"),
+                                  const_cast<char*>("SDB.recordingStartTime"),
                                   const_cast<char*>("Unix time at which the current recording started."),
                                   const_cast<char*>("seconds"),
                                   &getRecordingStartTime_KATCPCallback, NULL, NULL, 0, INT_MAX, NULL);
 
     register_integer_sensor_katcp(m_pKATCPDispatch, 0,
-                                  const_cast<char*>("recordingElapsedTime"),
+                                  const_cast<char*>("SDB.recordingElapsedTime"),
                                   const_cast<char*>("Duration of current recording."),
                                   const_cast<char*>("seconds"),
                                   &getRecordingElapsedTime_KATCPCallback, NULL, NULL, 0, INT_MAX, NULL);
 
     register_integer_sensor_katcp(m_pKATCPDispatch, 0,
-                                  const_cast<char*>("recordingStopTime"),
+                                  const_cast<char*>("SDB.recordingStopTime"),
                                   const_cast<char*>("Unix time at which the current recording is scheduled to stop."),
                                   const_cast<char*>("seconds"),
                                   &getRecordingStopTime_KATCPCallback, NULL, NULL, 0, INT_MAX, NULL);
 
     register_integer_sensor_katcp(m_pKATCPDispatch, 0,
-                                  const_cast<char*>("recordingRemainingTime"),
+                                  const_cast<char*>("SDB.recordingRemainingTime"),
                                   const_cast<char*>("Time until the current recording is scheduled to stop."),
                                   const_cast<char*>("seconds"),
                                   &getRecordingRemainingTime_KATCPCallback, NULL, NULL, 0, INT_MAX, NULL);
 
     register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                  const_cast<char*>("recordingFileSize"),
+                                  const_cast<char*>("SDB.recordingFileSize"),
                                   const_cast<char*>("Current size of file being recorded."),
                                   const_cast<char*>("bytes"),
                                   &getRecordingFileSize_KATCPCallback, NULL, NULL, 0, 10e9, NULL);
 
     register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                  const_cast<char*>("recordingDiskSpace"),
+                                  const_cast<char*>("SDB.recordingDiskSpace"),
                                   const_cast<char*>("Amount of disk space still available on SDB."),
                                   const_cast<char*>("bytes"),
                                   &getDiskSpace_KATCPCallback, NULL, NULL, 100e9, 20e12, NULL);
@@ -132,117 +132,117 @@ void cKATCPServer::serverThreadFunction()
 
     m_pKARoachConnected = setup_boolean_acquire_katcp(m_pKATCPDispatch, &getIsRoachKATCPConnected, NULL, NULL);
     register_direct_multi_boolean_sensor_katcp(m_pKATCPDispatch, 0,
-                                  const_cast<char*>("roachConnected"),
+                                  const_cast<char*>("SDB.roachConnected"),
                                   const_cast<char*>("Is the RoachAcquisitionServer connected to the ROACH's KATCP server"),
                                   const_cast<char*>("none"),
                                   m_pKARoachConnected);
 
     register_integer_sensor_katcp(m_pKATCPDispatch, 0,
-                                  const_cast<char*>("roachAccumulationLength"),
+                                  const_cast<char*>("SDB.roachAccumulationLength"),
                                   const_cast<char*>("number of FFT frames accumulated after the final PFB-FFT stage"),
                                   const_cast<char*>("none"),
                                   &getAccumulationLength_KATCPCallback, NULL, NULL, 0, INT_MAX, NULL);
 
     register_integer_sensor_katcp(m_pKATCPDispatch, 0,
-                                  const_cast<char*>("roachCoarseChannelSelect"),
+                                  const_cast<char*>("SDB.roachCoarseChannelSelect"),
                                   const_cast<char*>("canonical coarse FFT bin no. selected for narrow band FFT processing"),
                                   const_cast<char*>("none"),
                                   &getCoarseChannelSelect_KATCPCallback, NULL, NULL, 0, INT_MAX, NULL);
 
     register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                 const_cast<char*>("roachFrequencyFs"),
+                                 const_cast<char*>("SDB.roachFrequencyFs"),
                                  const_cast<char*>("ADC sample rate"),
                                  const_cast<char*>("Hz"),
                                  &getFrequencyFs_KATCPCallback, NULL, NULL, 799999999, 800000001, NULL);
 
     register_integer_sensor_katcp(m_pKATCPDispatch, 0,
-                                  const_cast<char*>("roachSizeOfCoarseFFT"),
+                                  const_cast<char*>("SDB.roachSizeOfCoarseFFT"),
                                   const_cast<char*>("Size of the the coarse FFT"),
                                   const_cast<char*>("no. of input time domain samples"),
                                   &getSizeOfCoarseFFT_KATCPCallback, NULL, NULL, 0, INT_MAX, NULL);
 
     register_integer_sensor_katcp(m_pKATCPDispatch, 0,
-                                  const_cast<char*>("roachSizeOfFineFFT"),
+                                  const_cast<char*>("SDB.roachSizeOfFineFFT"),
                                   const_cast<char*>("Size of the fine FFTs"),
                                   const_cast<char*>("no. of input time domain samples"),
                                   &getSizeOfFineFFT_KATCPCallback, NULL, NULL, 0, INT_MAX, NULL);
 
     register_integer_sensor_katcp(m_pKATCPDispatch, 0,
-                                  const_cast<char*>("roachNumFrequencyChannels"),
+                                  const_cast<char*>("SDB.roachNumFrequencyChannels"),
                                   const_cast<char*>("Number of frequency channels"),
                                   const_cast<char*>("freq channels"),
                                   &getNumberChannels_KATCPCallback, NULL, NULL, 1023, 4097, NULL);
 
     register_integer_sensor_katcp(m_pKATCPDispatch, 0,
-                                  const_cast<char*>("roachCoarseFFTShiftMask"),
+                                  const_cast<char*>("SDB.roachCoarseFFTShiftMask"),
                                   const_cast<char*>("Mask determining the scaling with the FFT stages"),
                                   const_cast<char*>("none"),
                                   &getCoarseFFTShiftMask_KATCPCallback, NULL, NULL, 0, INT_MAX, NULL);
 
     register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                 const_cast<char*>("roachDspGain"),
+                                 const_cast<char*>("SDB.roachDspGain"),
                                  const_cast<char*>("Digital gain in the ROACH signal chain"),
                                  const_cast<char*>("none"),
                                  &getDspGain_KATCPCallback, NULL, NULL, 0, pow(2,20), NULL);
                                  //20-bit integer maximum, ridiculously high but no real reason to flag this for the time being.
 
     register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                 const_cast<char*>("roachAttenuationADCChan0"),
+                                 const_cast<char*>("SDB.roachAttenuationADCChan0"),
                                  const_cast<char*>("Attenuation of ADC channel 0"),
                                  const_cast<char*>("dB"),
                                  &getADCAttenuationChan0_KATCPCallback, NULL, NULL, 0, 31.5, NULL); //Assume KATADC
 
     register_double_sensor_katcp(m_pKATCPDispatch, 0,
-                                 const_cast<char*>("roachAttenuationADCChan1"),
+                                 const_cast<char*>("SDB.roachAttenuationADCChan1"),
                                  const_cast<char*>("Attenuation of ADC channel 1"),
                                  const_cast<char*>("dB"),
                                  &getADCAttenuationChan1_KATCPCallback, NULL, NULL, 0, 31.5, NULL); //Assume KATADC
 
     register_integer_sensor_katcp(m_pKATCPDispatch, 0,
-                                  const_cast<char*>("roachNoiseDiodeEnabled"),
+                                  const_cast<char*>("SDB.roachNoiseDiodeEnabled"),
                                   const_cast<char*>("Is the Roach's noise diode control enabled"),
                                   const_cast<char*>("none"),
                                   &getNoiseDiodeEnabled_KATCPCallback, NULL, NULL, 0, 1, NULL);
 
     register_integer_sensor_katcp(m_pKATCPDispatch, 0,
-                                  const_cast<char*>("roachNoiseDiodeDutyCycleEnabled"),
+                                  const_cast<char*>("SDB.roachNoiseDiodeDutyCycleEnabled"),
                                   const_cast<char*>("Is the Roach's noise diode duty cycle mode enabled"),
                                   const_cast<char*>("none"),
                                   &getNoiseDiodeDutyCycleEnabled_KATCPCallback, NULL, NULL, 0, 1, NULL);
 
     register_integer_sensor_katcp(m_pKATCPDispatch, 0,
-                                  const_cast<char*>("roachNoiseDiodeDutyCycleOnDuration"),
+                                  const_cast<char*>("SDB.roachNoiseDiodeDutyCycleOnDuration"),
                                   const_cast<char*>("Duration of the ON part of the Roach noise diode duty cycle"),
                                   const_cast<char*>("no. of accumulations"),
                                   &getNoiseDiodeDutyCycleOnDuration_KATCPCallback, NULL, NULL, 0, INT_MAX, NULL);
 
     register_integer_sensor_katcp(m_pKATCPDispatch, 0,
-                                  const_cast<char*>("roachNoiseDiodeDutyCycleOffDuration"),
+                                  const_cast<char*>("SDB.roachNoiseDiodeDutyCycleOffDuration"),
                                   const_cast<char*>("Duration of the OFF part of the Roach noise diode duty cycle"),
                                   const_cast<char*>("no. of accumulations"),
                                   &getNoiseDiodeDutyCycleOffDuration_KATCPCallback, NULL, NULL, 0, INT_MAX, NULL);
 
     register_integer_sensor_katcp(m_pKATCPDispatch, 0,
-                                  const_cast<char*>("roachOverflowRegs"),
+                                  const_cast<char*>("SDB.roachOverflowRegs"),
                                   const_cast<char*>("Overflow registers"),
                                   const_cast<char*>("none"),
                                   &getOverflowsRegs_KATCPCallback, NULL, NULL, 0, INT_MAX, NULL);
 
     m_pKA10GbEUP = setup_boolean_acquire_katcp(m_pKATCPDispatch, &getEth10GbEUp_KATCPCallback, NULL, NULL);
     register_direct_multi_boolean_sensor_katcp(m_pKATCPDispatch, 0,
-                                  const_cast<char*>("roachEth10GbEUp"),
+                                  const_cast<char*>("SDB.roachEth10GbEUp"),
                                   const_cast<char*>("Is the relevant Roach 10GbE port for the current gateware link up"),
                                   const_cast<char*>("none"),
                                   m_pKA10GbEUP);
 
     register_integer_sensor_katcp(m_pKATCPDispatch, 0,
-                                  const_cast<char*>("roachPPSCount"),
+                                  const_cast<char*>("SDB.roachPPSCount"),
                                   const_cast<char*>("A count of the received PPS edges"),
                                   const_cast<char*>("none"),
                                   &getPPSCount_KATCPCallback, NULL, NULL, 0, INT_MAX, NULL);
 
     register_integer_sensor_katcp(m_pKATCPDispatch, 0,
-                                  const_cast<char*>("roachClockFrequency"),
+                                  const_cast<char*>("SDB.roachClockFrequency"),
                                   const_cast<char*>("The clock frequency of the FPGA"),
                                   const_cast<char*>("Hz"),
                                   &getClockFrequency_KATCPCallback, NULL, NULL, 199999999, 200000001, NULL);
