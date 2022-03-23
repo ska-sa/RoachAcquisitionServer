@@ -78,7 +78,7 @@ void cKATCPServer::serverThreadFunction()
     }
 
     //Add a version number to KATCTP server
-    add_version_katcp(m_pKATCPDispatch, const_cast<char*>("katcp-device"), 0, const_cast<char*>("RoachAcquisitionServer-0.9"), (char *) BUILD_STATE);
+    add_version_katcp(m_pKATCPDispatch, const_cast<char*>("katcp-device"), 0, const_cast<char*>("RoachAcquisitionServer-0.10"), (char *) BUILD_STATE);
 
     //Declare sensors
     //Station controller
