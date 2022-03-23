@@ -78,7 +78,7 @@ void cKATCPServer::serverThreadFunction()
     }
 
     //Add a version number to KATCTP server
-    add_version_katcp(m_pKATCPDispatch, const_cast<char*>("RoachAcquisitionServer"), 0, const_cast<char*>("0.9"), (char *) BUILD_STATE);
+    add_version_katcp(m_pKATCPDispatch, const_cast<char*>("katcp-device"), 0, const_cast<char*>("RoachAcquisitionServer-0.9"), (char *) BUILD_STATE);
 
     //Declare sensors
     //Station controller
@@ -687,7 +687,7 @@ int32_t cKATCPServer::getRoachGatewareList_KATCPCallback(struct katcp_dispatch *
             cout << "cKATCPServer::getRoachGatewareList_KATCPCallback(): Found Gateware [" << vstrValidFilenames[i].c_str() << "]" << endl;
         }
 
-        send_katcp( pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_STRING, "#getRoachGatewareList");
+        append_args_katcp( pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_STRING, "#getRoachGatewareList");
 
         for(int32_t i = 0; i < (int32_t)vstrValidFilenames.size() - 1; i++)
         {
@@ -698,7 +698,7 @@ int32_t cKATCPServer::getRoachGatewareList_KATCPCallback(struct katcp_dispatch *
 
     else
     {
-        send_katcp( pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_LAST | KATCP_FLAG_STRING, "#roachGatewareList");
+        send_katcp( pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_LAST | KATCP_FLAG_STRING, "#getRoachGatewareList");
     }
 
     return KATCP_RESULT_OK;
