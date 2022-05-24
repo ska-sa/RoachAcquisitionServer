@@ -41,7 +41,7 @@ int main(int iArgC, char *pchaArgV[])
     cout << "||-----------------------------------------------------------------------------------------------||" << endl;
     cout << endl;
 
-    cout << "Build date: " << __DATE__ << " " << __TIME__ << endl;
+    cout << "Build version: " << BUILD_STATE << endl;
 
     cout << endl;
 

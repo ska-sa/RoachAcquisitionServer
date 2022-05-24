@@ -82,53 +82,69 @@ cHDF5FileWriter::cHDF5FileWriter(const string &strRecordingDirectory, uint32_t u
         sprintf(m_oInitialValueSet.m_chaVAntennaStatus, "idle");
         sprintf(m_oInitialValueSet.m_chaAntennaStatusStatus, "0");
 
-        m_oInitialValueSet.m_i64TSReceiverLOFreqIntermediate5GHz_us = 0;
-        m_oInitialValueSet.m_dVReceiverLOFreqIntermediate5GHz_Hz = 0;
-        sprintf(m_oInitialValueSet.m_chaReceiverLOFreqIntermediate5GHzStatus, "0");
+        m_oInitialValueSet.m_i64TSReceiverSkyFreq5GHz_us = 0;
+        m_oInitialValueSet.m_dVReceiverSkyFreq5GHz_Hz = 0;
+        sprintf(m_oInitialValueSet.m_chaReceiverSkyFreq5GHzStatus, "0");
 
-        m_oInitialValueSet.m_i64TSReceiverLOFreqIntermediate6_7GHz_us = 0;
-        m_oInitialValueSet.m_dVReceiverLOFreqIntermediate6_7GHz_Hz = 0;
-        sprintf(m_oInitialValueSet.m_chaReceiverLOFreqIntermediate6_7GHzStatus, "0");
+        m_oInitialValueSet.m_i64TSReceiverSkyFreq6_7GHz_us = 0;
+        m_oInitialValueSet.m_dVReceiverSkyFreq6_7GHz_Hz = 0;
+        sprintf(m_oInitialValueSet.m_chaReceiverSkyFreq6_7GHzStatus, "0");
 
-        m_oInitialValueSet.m_i64TSReceiverLOFreqFinal_us = 0;
-        m_oInitialValueSet.m_dVReceiverLOFreqFinal_Hz = 0;
-        sprintf(m_oInitialValueSet.m_chaReceiverLOFreqFinalStatus, "0");
+        m_oInitialValueSet.m_i64TSReceiverGain5GHzLcp_us = 0;
+        m_oInitialValueSet.m_dVReceiverGain5GHzLcp = 0;
+        sprintf(m_oInitialValueSet.m_chaReceiverGain5GHzLcp, "0");
 
-        m_oInitialValueSet.m_i64TSReceiverLcpAtten_us = 0;
-        m_oInitialValueSet.m_dVReceiverLcpAtten_dB = 0;
-        sprintf(m_oInitialValueSet.m_chaReceiverLcpAttenStatus, "0");
+        m_oInitialValueSet.m_i64TSReceiverGain5GHzRcp_us = 0;
+        m_oInitialValueSet.m_dVReceiverGain5GHzRcp = 0;
+        sprintf(m_oInitialValueSet.m_chaReceiverGain5GHzRcp, "0");
 
-        m_oInitialValueSet.m_i64TSReceiverRcpAtten_us = 0;
-        m_oInitialValueSet.m_dVReceiverRcpAtten_dB = 0;
-        sprintf(m_oInitialValueSet.m_chaReceiverRcpAttenStatus, "0");
+        m_oInitialValueSet.m_i64TSReceiverGain6_7GHzLcp_us = 0;
+        m_oInitialValueSet.m_dVReceiverGain6_7GHzLcp = 0;
+        sprintf(m_oInitialValueSet.m_chaReceiverGain6_7GHzLcp, "0");
 
-        m_oInitialValueSet.m_i64TSFrequencySelectLcp_us = 0;
-        m_oInitialValueSet.m_chVFrequencySelectLcp = 0;
-        sprintf(m_oInitialValueSet.m_chaFrequencySelectLcpStatus, "0");
+        m_oInitialValueSet.m_i64TSReceiverGain6_7GHzRcp_us = 0;
+        m_oInitialValueSet.m_dVReceiverGain6_7GHzRcp = 0;
+        sprintf(m_oInitialValueSet.m_chaReceiverGain6_7GHzRcp, "0");
 
-        m_oInitialValueSet.m_i64TSFrequencySelectRcp_us = 0;
-        m_oInitialValueSet.m_chVFrequencySelectRcp = 0;
-        sprintf(m_oInitialValueSet.m_chaFrequencySelectRcpStatus, "0");
+        m_oInitialValueSet.m_i64TSBandSelectLcp_us = 0;
+        m_oInitialValueSet.m_chVBandSelectLcp = 0;
+        sprintf(m_oInitialValueSet.m_chaBandSelectLcpStatus, "0");
 
-        m_oInitialValueSet.m_i64TSNoiseDiodeInputSource_us = 0;
-        sprintf(m_oInitialValueSet.m_chaVNoiseDiodeInputSource, "0");
-        sprintf(m_oInitialValueSet.m_chaNoiseDiodeInputSourceStatus, "0");
+        m_oInitialValueSet.m_i64TSBandSelectRcp_us = 0;
+        m_oInitialValueSet.m_chVBandSelectRcp = 0;
+        sprintf(m_oInitialValueSet.m_chaBandSelectRcpStatus, "0");
 
-        m_oInitialValueSet.m_i64TSNoiseDiodeEnabled_us = 0;
-        m_oInitialValueSet.m_bVNoiseDiodeEnabled = 0;
-        sprintf(m_oInitialValueSet.m_chaNoiseDiodeEnabledStatus, "0");
+        m_oInitialValueSet.m_i64TSNoiseDiode5GHzInputSource_us = 0;
+        sprintf(m_oInitialValueSet.m_chaVNoiseDiode5GHzInputSource, "0");
+        sprintf(m_oInitialValueSet.m_chaNoiseDiode5GHzInputSourceStatus, "0");
 
-        m_oInitialValueSet.m_i64TSNoiseDiodeSelect_us = 0;
-        m_oInitialValueSet.m_i32VNoiseDiodeSelect = 0;
-        sprintf(m_oInitialValueSet.m_chaNoiseDiodeSelectStatus, "0");
+        m_oInitialValueSet.m_i64TSNoiseDiode5GHzLevel_us = 0;
+        m_oInitialValueSet.m_i32VNoiseDiode5GHzLevel = 0;
+        sprintf(m_oInitialValueSet.m_chaNoiseDiode5GHzLevelStatus, "0");
 
-        m_oInitialValueSet.m_i64TSNoiseDiodePWMMark_us = 0;
-        m_oInitialValueSet.m_i32VNoiseDiodePWMMark = 0;
-        sprintf(m_oInitialValueSet.m_chaNoiseDiodePWMMarkStatus, "0");
+        m_oInitialValueSet.m_i64TSNoiseDiode5GHzPWMMark_us = 0;
+        m_oInitialValueSet.m_i32VNoiseDiode5GHzPWMMark = 0;
+        sprintf(m_oInitialValueSet.m_chaNoiseDiode5GHzPWMMarkStatus, "0");
 
-        m_oInitialValueSet.m_i64TSNoiseDiodePWMFrequency_us = 0;
-        m_oInitialValueSet.m_dVNoiseDiodePWMFrequency_Hz = 0;
-        sprintf(m_oInitialValueSet.m_chaNoiseDiodePWMFrequencyStatus, "0");
+        m_oInitialValueSet.m_i64TSNoiseDiode5GHzPWMFrequency_us = 0;
+        m_oInitialValueSet.m_dVNoiseDiode5GHzPWMFrequency_Hz = 0;
+        sprintf(m_oInitialValueSet.m_chaNoiseDiode5GHzPWMFrequencyStatus, "0");
+
+        m_oInitialValueSet.m_i64TSNoiseDiode6_7GHzInputSource_us = 0;
+        sprintf(m_oInitialValueSet.m_chaVNoiseDiode6_7GHzInputSource, "0");
+        sprintf(m_oInitialValueSet.m_chaNoiseDiode6_7GHzInputSourceStatus, "0");
+
+        m_oInitialValueSet.m_i64TSNoiseDiode6_7GHzLevel_us = 0;
+        m_oInitialValueSet.m_i32VNoiseDiode6_7GHzLevel = 0;
+        sprintf(m_oInitialValueSet.m_chaNoiseDiode6_7GHzLevelStatus, "0");
+
+        m_oInitialValueSet.m_i64TSNoiseDiode6_7GHzPWMMark_us = 0;
+        m_oInitialValueSet.m_i32VNoiseDiode6_7GHzPWMMark = 0;
+        sprintf(m_oInitialValueSet.m_chaNoiseDiode6_7GHzPWMMarkStatus, "0");
+
+        m_oInitialValueSet.m_i64TSNoiseDiode6_7GHzPWMFrequency_us = 0;
+        m_oInitialValueSet.m_dVNoiseDiode6_7GHzPWMFrequency_Hz = 0;
+        sprintf(m_oInitialValueSet.m_chaNoiseDiode6_7GHzPWMFrequencyStatus, "0");
 
         m_oInitialValueSet.m_i64TSWindSpeed_us = 0;
         m_oInitialValueSet.m_dVWindSpeed_mps = 0;
@@ -378,54 +394,70 @@ void cHDF5FileWriter::getNextFrame_callback(const std::vector<int> &vi32Chan0, c
             m_pHDF5File->addAntennaStatus(m_oInitialValueSet.m_i64TSAntennaStatus_us,
                                           m_oInitialValueSet.m_chaVAntennaStatus,
                                           m_oInitialValueSet.m_chaAntennaStatusStatus);
-        if (m_oInitialValueSet.m_i64TSReceiverLOFreqIntermediate5GHz_us)
-            m_pHDF5File->addFrequencyLOIntermed5GHz(m_oInitialValueSet.m_i64TSReceiverLOFreqIntermediate5GHz_us,
-                                                        m_oInitialValueSet.m_dVReceiverLOFreqIntermediate5GHz_Hz,
-                                                        m_oInitialValueSet.m_chaReceiverLOFreqIntermediate5GHzStatus);
-        if (m_oInitialValueSet.m_i64TSReceiverLOFreqIntermediate6_7GHz_us)
-            m_pHDF5File->addFrequencyLOIntermed6_7GHz(m_oInitialValueSet.m_i64TSReceiverLOFreqIntermediate6_7GHz_us,
-                                                          m_oInitialValueSet.m_dVReceiverLOFreqIntermediate6_7GHz_Hz,
-                                                          m_oInitialValueSet.m_chaReceiverLOFreqIntermediate6_7GHzStatus);
-        if (m_oInitialValueSet.m_i64TSReceiverLOFreqFinal_us)
-            m_pHDF5File->addFrequencyLOFinal(m_oInitialValueSet.m_i64TSReceiverLOFreqFinal_us,
-                                             m_oInitialValueSet.m_dVReceiverLOFreqFinal_Hz,
-                                             m_oInitialValueSet.m_chaReceiverLOFreqFinalStatus);
-        if (m_oInitialValueSet.m_i64TSReceiverLcpAtten_us)
-            m_pHDF5File->addReceiverLcpAttenuation(m_oInitialValueSet.m_i64TSReceiverLcpAtten_us,
-                                                   m_oInitialValueSet.m_dVReceiverLcpAtten_dB,
-                                                   m_oInitialValueSet.m_chaReceiverLcpAttenStatus);
-        if (m_oInitialValueSet.m_i64TSReceiverRcpAtten_us)
-            m_pHDF5File->addReceiverRcpAttenuation(m_oInitialValueSet.m_i64TSReceiverRcpAtten_us,
-                                                   m_oInitialValueSet.m_dVReceiverRcpAtten_dB,
-                                                   m_oInitialValueSet.m_chaReceiverRcpAttenStatus);
-        if (m_oInitialValueSet.m_i64TSFrequencySelectLcp_us)
-            m_pHDF5File->addFrequencySelectLcp(m_oInitialValueSet.m_i64TSFrequencySelectLcp_us,
-                                               m_oInitialValueSet.m_chVFrequencySelectLcp,
-                                               m_oInitialValueSet.m_chaFrequencySelectLcpStatus);
-        if (m_oInitialValueSet.m_i64TSFrequencySelectRcp_us)
-            m_pHDF5File->addFrequencySelectRcp(m_oInitialValueSet.m_i64TSFrequencySelectRcp_us,
-                                               m_oInitialValueSet.m_chVFrequencySelectRcp,
-                                               m_oInitialValueSet.m_chaFrequencySelectRcpStatus);
-        if (m_oInitialValueSet.m_i64TSNoiseDiodeInputSource_us)
-            m_pHDF5File->addNoiseDiodeInputSource(m_oInitialValueSet.m_i64TSNoiseDiodeInputSource_us,
-                                                  m_oInitialValueSet.m_chaVNoiseDiodeInputSource,
-                                                  m_oInitialValueSet.m_chaNoiseDiodeInputSourceStatus);
-        if (m_oInitialValueSet.m_i64TSNoiseDiodeEnabled_us)
-            m_pHDF5File->addNoiseDiodeEnable(m_oInitialValueSet.m_i64TSNoiseDiodeEnabled_us,
-                                             m_oInitialValueSet.m_bVNoiseDiodeEnabled,
-                                             m_oInitialValueSet.m_chaNoiseDiodeEnabledStatus);
-        if (m_oInitialValueSet.m_i64TSNoiseDiodeSelect_us)
-            m_pHDF5File->addNoiseDiodeSelect(m_oInitialValueSet.m_i64TSNoiseDiodeSelect_us,
-                                             m_oInitialValueSet.m_i32VNoiseDiodeSelect,
-                                             m_oInitialValueSet.m_chaNoiseDiodeSelectStatus);
-        if (m_oInitialValueSet.m_i64TSNoiseDiodePWMMark_us)
-            m_pHDF5File->addNoiseDiodePWMMark(m_oInitialValueSet.m_i64TSNoiseDiodePWMMark_us,
-                                              m_oInitialValueSet.m_i32VNoiseDiodePWMMark,
-                                              m_oInitialValueSet.m_chaNoiseDiodePWMMarkStatus);
-        if (m_oInitialValueSet.m_i64TSNoiseDiodePWMFrequency_us)
-            m_pHDF5File->addNoiseDiodePWMFrequency(m_oInitialValueSet.m_i64TSNoiseDiodePWMFrequency_us,
-                                                   m_oInitialValueSet.m_dVNoiseDiodePWMFrequency_Hz,
-                                                   m_oInitialValueSet.m_chaNoiseDiodePWMFrequencyStatus);
+        if (m_oInitialValueSet.m_i64TSReceiverSkyFreq5GHz_us)
+            m_pHDF5File->addFrequencySky5GHz(m_oInitialValueSet.m_i64TSReceiverSkyFreq5GHz_us,
+                                             m_oInitialValueSet.m_dVReceiverSkyFreq5GHz_Hz,
+                                             m_oInitialValueSet.m_chaReceiverSkyFreq5GHzStatus);
+        if (m_oInitialValueSet.m_i64TSReceiverSkyFreq6_7GHz_us)
+            m_pHDF5File->addFrequencySky6_7GHz(m_oInitialValueSet.m_i64TSReceiverSkyFreq6_7GHz_us,
+                                               m_oInitialValueSet.m_dVReceiverSkyFreq6_7GHz_Hz,
+                                               m_oInitialValueSet.m_chaReceiverSkyFreq6_7GHzStatus);
+        if (m_oInitialValueSet.m_i64TSReceiverGain5GHzLcp_us)
+            m_pHDF5File->addReceiverGain5GHzLcp(m_oInitialValueSet.m_i64TSReceiverGain5GHzLcp_us,
+                                                   m_oInitialValueSet.m_dVReceiverGain5GHzLcp,
+                                                   m_oInitialValueSet.m_chaReceiverGain5GHzLcp);
+        if (m_oInitialValueSet.m_i64TSReceiverGain5GHzRcp_us)
+            m_pHDF5File->addReceiverGain5GHzRcp(m_oInitialValueSet.m_i64TSReceiverGain5GHzRcp_us,
+                                                   m_oInitialValueSet.m_dVReceiverGain5GHzRcp,
+                                                   m_oInitialValueSet.m_chaReceiverGain5GHzRcp);
+        if (m_oInitialValueSet.m_i64TSReceiverGain6_7GHzLcp_us)
+            m_pHDF5File->addReceiverGain6_7GHzLcp(m_oInitialValueSet.m_i64TSReceiverGain6_7GHzLcp_us,
+                                                   m_oInitialValueSet.m_dVReceiverGain6_7GHzLcp,
+                                                   m_oInitialValueSet.m_chaReceiverGain6_7GHzLcp);
+        if (m_oInitialValueSet.m_i64TSReceiverGain6_7GHzRcp_us)
+            m_pHDF5File->addReceiverGain6_7GHzRcp(m_oInitialValueSet.m_i64TSReceiverGain6_7GHzRcp_us,
+                                                   m_oInitialValueSet.m_dVReceiverGain6_7GHzRcp,
+                                                   m_oInitialValueSet.m_chaReceiverGain6_7GHzRcp);
+        if (m_oInitialValueSet.m_i64TSBandSelectLcp_us)
+            m_pHDF5File->addBandSelectLcp(m_oInitialValueSet.m_i64TSBandSelectLcp_us,
+                                               m_oInitialValueSet.m_chVBandSelectLcp,
+                                               m_oInitialValueSet.m_chaBandSelectLcpStatus);
+        if (m_oInitialValueSet.m_i64TSBandSelectRcp_us)
+            m_pHDF5File->addBandSelectRcp(m_oInitialValueSet.m_i64TSBandSelectRcp_us,
+                                               m_oInitialValueSet.m_chVBandSelectRcp,
+                                               m_oInitialValueSet.m_chaBandSelectRcpStatus);
+        if (m_oInitialValueSet.m_i64TSNoiseDiode5GHzInputSource_us)
+            m_pHDF5File->addNoiseDiode5GHzInputSource(m_oInitialValueSet.m_i64TSNoiseDiode5GHzInputSource_us,
+                                                  m_oInitialValueSet.m_chaVNoiseDiode5GHzInputSource,
+                                                  m_oInitialValueSet.m_chaNoiseDiode5GHzInputSourceStatus);
+        if (m_oInitialValueSet.m_i64TSNoiseDiode5GHzLevel_us)
+            m_pHDF5File->addNoiseDiode5GHzLevel(m_oInitialValueSet.m_i64TSNoiseDiode5GHzLevel_us,
+                                             m_oInitialValueSet.m_i32VNoiseDiode5GHzLevel,
+                                             m_oInitialValueSet.m_chaNoiseDiode5GHzLevelStatus);
+        if (m_oInitialValueSet.m_i64TSNoiseDiode5GHzPWMMark_us)
+            m_pHDF5File->addNoiseDiode5GHzPWMMark(m_oInitialValueSet.m_i64TSNoiseDiode5GHzPWMMark_us,
+                                              m_oInitialValueSet.m_i32VNoiseDiode5GHzPWMMark,
+                                              m_oInitialValueSet.m_chaNoiseDiode5GHzPWMMarkStatus);
+        if (m_oInitialValueSet.m_i64TSNoiseDiode5GHzPWMFrequency_us)
+            m_pHDF5File->addNoiseDiode5GHzPWMFrequency(m_oInitialValueSet.m_i64TSNoiseDiode5GHzPWMFrequency_us,
+                                                   m_oInitialValueSet.m_dVNoiseDiode5GHzPWMFrequency_Hz,
+                                                   m_oInitialValueSet.m_chaNoiseDiode5GHzPWMFrequencyStatus);
+        if (m_oInitialValueSet.m_i64TSNoiseDiode6_7GHzInputSource_us)
+            m_pHDF5File->addNoiseDiode6_7GHzInputSource(m_oInitialValueSet.m_i64TSNoiseDiode6_7GHzInputSource_us,
+                                                  m_oInitialValueSet.m_chaVNoiseDiode6_7GHzInputSource,
+                                                  m_oInitialValueSet.m_chaNoiseDiode6_7GHzInputSourceStatus);
+        if (m_oInitialValueSet.m_i64TSNoiseDiode6_7GHzLevel_us)
+            m_pHDF5File->addNoiseDiode6_7GHzLevel(m_oInitialValueSet.m_i64TSNoiseDiode6_7GHzLevel_us,
+                                             m_oInitialValueSet.m_i32VNoiseDiode6_7GHzLevel,
+                                             m_oInitialValueSet.m_chaNoiseDiode6_7GHzLevelStatus);
+        if (m_oInitialValueSet.m_i64TSNoiseDiode6_7GHzPWMMark_us)
+            m_pHDF5File->addNoiseDiode6_7GHzPWMMark(m_oInitialValueSet.m_i64TSNoiseDiode6_7GHzPWMMark_us,
+                                              m_oInitialValueSet.m_i32VNoiseDiode6_7GHzPWMMark,
+                                              m_oInitialValueSet.m_chaNoiseDiode6_7GHzPWMMarkStatus);
+        if (m_oInitialValueSet.m_i64TSNoiseDiode6_7GHzPWMFrequency_us)
+            m_pHDF5File->addNoiseDiode6_7GHzPWMFrequency(m_oInitialValueSet.m_i64TSNoiseDiode6_7GHzPWMFrequency_us,
+                                                   m_oInitialValueSet.m_dVNoiseDiode6_7GHzPWMFrequency_Hz,
+                                                   m_oInitialValueSet.m_chaNoiseDiode6_7GHzPWMFrequencyStatus);
         if (m_oInitialValueSet.m_i64TSWindSpeed_us)
             m_pHDF5File->addWindSpeed(m_oInitialValueSet.m_i64TSWindSpeed_us,
                                       m_oInitialValueSet.m_dVWindSpeed_mps,
@@ -695,7 +727,7 @@ void cHDF5FileWriter::registerCallbackHandler(cCallbackInterface *pNewHandler)
 
     m_vpCallbackHandlers.push_back(pNewHandler);
 
-    cout << "cHDF5FileWriter::registerCallbackHandler(): Successfully registered callback handler: " << pNewHandler << endl;
+    cout << "cHDF5FileWriter::registerCallbackHandler(): Successfully registered straight callback handler: " << pNewHandler << endl;
 }
 
 void cHDF5FileWriter::registerCallbackHandler(boost::shared_ptr<cCallbackInterface> pNewHandler)
@@ -704,7 +736,7 @@ void cHDF5FileWriter::registerCallbackHandler(boost::shared_ptr<cCallbackInterfa
 
     m_vpCallbackHandlers_shared.push_back(pNewHandler);
 
-    cout << "cHDF5FileWriter::registerCallbackHandler(): Successfully registered callback handler: " << pNewHandler.get() << endl;
+    cout << "cHDF5FileWriter::registerCallbackHandler(): Successfully registered shared callback handler: " << pNewHandler.get() << endl;
 }
 
 void cHDF5FileWriter::deregisterCallbackHandler(cCallbackInterface *pHandler)
@@ -979,12 +1011,12 @@ void cHDF5FileWriter::pointingModel_callback(uint8_t ui8ParameterNumber, double 
 
 void cHDF5FileWriter::antennaStatus_callback(int64_t i64Timestamp_us, const string &strAntennaStatus, const string &strStatus)
 {
-    if(getState() != RECORDING)
-        return;
-
-    m_pHDF5File->addAntennaStatus(i64Timestamp_us, strAntennaStatus, strStatus);
+    if(getState() == RECORDING)
+        m_pHDF5File->addAntennaStatus(i64Timestamp_us, strAntennaStatus, strStatus);
 }
 
+/*  Doesn't correspond to any current function. May be implemented in station
+    controller at some point?
 void cHDF5FileWriter::appliedPointingModel_callback(const string &strModelName, const vector<double> &vdPointingModelParams)
 {
     if(getState() != RECORDING)
@@ -992,211 +1024,250 @@ void cHDF5FileWriter::appliedPointingModel_callback(const string &strModelName, 
 
     //m_pHDF5File->setAppliedPointingModel(strModelName, vdPointingModelParams);
 }
+*/
 
 void cHDF5FileWriter::antennaName_callback(const string &strAntennaName)
 {
-    if(getState() != RECORDING)
-        return;
-
-    m_pHDF5File->setAntennaName(strAntennaName);
+    if(getState() == RECORDING)
+        m_pHDF5File->setAntennaName(strAntennaName);
 }
 
 void cHDF5FileWriter::antennaDiameter_callback(const string &strAntennaDiameter)
 {
-    if(getState() != RECORDING)
-        return;
-
-    m_pHDF5File->setAntennaBeamwidth(strAntennaDiameter);
+    if(getState() == RECORDING)
+        m_pHDF5File->setAntennaBeamwidth(strAntennaDiameter);
 }
 
 void cHDF5FileWriter::antennaBeamwidth_callback(const string &strAntennaBeamwidth)
 {
-    if(getState() != RECORDING)
-        return;
-
-    m_pHDF5File->setAntennaBeamwidth(strAntennaBeamwidth);
+    if(getState() == RECORDING)
+        m_pHDF5File->setAntennaBeamwidth(strAntennaBeamwidth);
 }
 
 void cHDF5FileWriter::antennaLongitude_callback(const string &strAntennaLongitude)
 {
-    if(getState() != RECORDING)
-        return;
-
-    m_pHDF5File->setAntennaLongitude(strAntennaLongitude);
+    if(getState() == RECORDING)
+        m_pHDF5File->setAntennaLongitude(strAntennaLongitude);
 }
 
 void cHDF5FileWriter::antennaLatitude_callback(const string &strAntennaLatitude)
 {
-    if(getState() != RECORDING)
-        return;
-
-    m_pHDF5File->setAntennaLatitude(strAntennaLatitude);
+    if(getState() == RECORDING)
+        m_pHDF5File->setAntennaLatitude(strAntennaLatitude);
 }
 
-void cHDF5FileWriter::rNoiseDiodeInputSource_callback(int64_t i64Timestamp_us, const string &strInputSource, const string &strStatus)
+void cHDF5FileWriter::rNoiseDiode5GHzInputSource_callback(int64_t i64Timestamp_us, const string &strInputSource, const string &strStatus)
 {
-    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSNoiseDiodeInputSource_us)
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSNoiseDiode5GHzInputSource_us)
     {
         boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
-        m_oInitialValueSet.m_i64TSNoiseDiodeInputSource_us = i64Timestamp_us;
-        sprintf(m_oInitialValueSet.m_chaVNoiseDiodeInputSource, "%s", strInputSource.c_str());
-        sprintf(m_oInitialValueSet.m_chaNoiseDiodeInputSourceStatus, "%s", strStatus.c_str());
+        m_oInitialValueSet.m_i64TSNoiseDiode5GHzInputSource_us = i64Timestamp_us;
+        sprintf(m_oInitialValueSet.m_chaVNoiseDiode5GHzInputSource, "%s", strInputSource.c_str());
+        sprintf(m_oInitialValueSet.m_chaNoiseDiode5GHzInputSourceStatus, "%s", strStatus.c_str());
     }
     if(getState() == RECORDING)
-        m_pHDF5File->addNoiseDiodeInputSource(i64Timestamp_us, strInputSource, strStatus);
+        m_pHDF5File->addNoiseDiode5GHzInputSource(i64Timestamp_us, strInputSource, strStatus);
 }
 
-void cHDF5FileWriter::rNoiseDiodeEnabled_callback(int64_t i64Timestamp_us, bool bNoiseDiodeEnabled, const string &strStatus)
+void cHDF5FileWriter::rNoiseDiode5GHzLevel_callback(int64_t i64Timestamp_us, int32_t i32NoiseDiodeLevel, const string &strStatus)
 {
-    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSNoiseDiodeEnabled_us)
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSNoiseDiode5GHzLevel_us)
     {
         boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
-        m_oInitialValueSet.m_i64TSNoiseDiodeEnabled_us = i64Timestamp_us;
-        m_oInitialValueSet.m_bVNoiseDiodeEnabled = bNoiseDiodeEnabled;
-        sprintf(m_oInitialValueSet.m_chaNoiseDiodeEnabledStatus, "%s", strStatus.c_str());
+        m_oInitialValueSet.m_i64TSNoiseDiode5GHzLevel_us = i64Timestamp_us;
+        m_oInitialValueSet.m_i32VNoiseDiode5GHzLevel = i32NoiseDiodeLevel;
+        sprintf(m_oInitialValueSet.m_chaNoiseDiode5GHzLevelStatus, "%s", strStatus.c_str());
     }
     if(getState() == RECORDING)
-        m_pHDF5File->addNoiseDiodeEnable(i64Timestamp_us, bNoiseDiodeEnabled, strStatus);
+        m_pHDF5File->addNoiseDiode5GHzLevel(i64Timestamp_us, i32NoiseDiodeLevel, strStatus);
 }
 
-void cHDF5FileWriter::rNoiseDiodeSelect_callback(int64_t i64Timestamp_us, int32_t i32NoiseDiodeSelect, const string &strStatus)
+void cHDF5FileWriter::rNoiseDiode5GHzPWMMark_callback(int64_t i64Timestamp_us, int32_t i32NoiseDiodePWMMark, const string &strStatus)
 {
-    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSNoiseDiodeSelect_us)
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSNoiseDiode5GHzPWMMark_us)
     {
         boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
-        m_oInitialValueSet.m_i64TSNoiseDiodeSelect_us = i64Timestamp_us;
-        m_oInitialValueSet.m_i32VNoiseDiodeSelect = i32NoiseDiodeSelect;
-        sprintf(m_oInitialValueSet.m_chaNoiseDiodeSelectStatus, "%s", strStatus.c_str());
+        m_oInitialValueSet.m_i64TSNoiseDiode5GHzPWMMark_us = i64Timestamp_us;
+        m_oInitialValueSet.m_i32VNoiseDiode5GHzPWMMark = i32NoiseDiodePWMMark;
+        sprintf(m_oInitialValueSet.m_chaNoiseDiode5GHzPWMMarkStatus, "%s", strStatus.c_str());
     }
     if(getState() == RECORDING)
-        m_pHDF5File->addNoiseDiodeSelect(i64Timestamp_us, i32NoiseDiodeSelect, strStatus);
+        m_pHDF5File->addNoiseDiode5GHzPWMMark(i64Timestamp_us, i32NoiseDiodePWMMark, strStatus);
 }
 
-void cHDF5FileWriter::rNoiseDiodePWMMark_callback(int64_t i64Timestamp_us, int32_t i32NoiseDiodePWMMark, const string &strStatus)
+void cHDF5FileWriter::rNoiseDiode5GHzPWMFrequency_callback(int64_t i64Timestamp_us, double dNoiseDiodePWMFrequency, const string &strStatus)
 {
-    if (getState() != RECORDING)
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSNoiseDiode5GHzPWMFrequency_us)
     {
         boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
-        m_oInitialValueSet.m_i64TSNoiseDiodePWMMark_us = i64Timestamp_us;
-        m_oInitialValueSet.m_i32VNoiseDiodePWMMark = i32NoiseDiodePWMMark;
-        sprintf(m_oInitialValueSet.m_chaNoiseDiodePWMMarkStatus, "%s", strStatus.c_str());
+        m_oInitialValueSet.m_i64TSNoiseDiode5GHzPWMFrequency_us = i64Timestamp_us;
+        m_oInitialValueSet.m_dVNoiseDiode5GHzPWMFrequency_Hz = dNoiseDiodePWMFrequency;
+        sprintf(m_oInitialValueSet.m_chaNoiseDiode5GHzPWMFrequencyStatus, "%s", strStatus.c_str());
     }
     if(getState() == RECORDING)
-        m_pHDF5File->addNoiseDiodePWMMark(i64Timestamp_us, i32NoiseDiodePWMMark, strStatus);
+        m_pHDF5File->addNoiseDiode5GHzPWMFrequency(i64Timestamp_us, dNoiseDiodePWMFrequency, strStatus);
 }
 
-void cHDF5FileWriter::rNoiseDiodePWMFrequency_callback(int64_t i64Timestamp_us, double dNoiseDiodePWMFrequency, const string &strStatus)
+void cHDF5FileWriter::rNoiseDiode6_7GHzInputSource_callback(int64_t i64Timestamp_us, const string &strInputSource, const string &strStatus)
 {
-    if (getState() != RECORDING)
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSNoiseDiode6_7GHzInputSource_us)
     {
         boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
-        m_oInitialValueSet.m_i64TSNoiseDiodePWMFrequency_us = i64Timestamp_us;
-        m_oInitialValueSet.m_dVNoiseDiodePWMFrequency_Hz = dNoiseDiodePWMFrequency;
-        sprintf(m_oInitialValueSet.m_chaNoiseDiodePWMFrequencyStatus, "%s", strStatus.c_str());
+        m_oInitialValueSet.m_i64TSNoiseDiode6_7GHzInputSource_us = i64Timestamp_us;
+        sprintf(m_oInitialValueSet.m_chaVNoiseDiode6_7GHzInputSource, "%s", strInputSource.c_str());
+        sprintf(m_oInitialValueSet.m_chaNoiseDiode6_7GHzInputSourceStatus, "%s", strStatus.c_str());
     }
     if(getState() == RECORDING)
-        m_pHDF5File->addNoiseDiodePWMFrequency(i64Timestamp_us, dNoiseDiodePWMFrequency, strStatus);
+        m_pHDF5File->addNoiseDiode6_7GHzInputSource(i64Timestamp_us, strInputSource, strStatus);
+}
+
+void cHDF5FileWriter::rNoiseDiode6_7GHzLevel_callback(int64_t i64Timestamp_us, int32_t i32NoiseDiodeLevel, const string &strStatus)
+{
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSNoiseDiode6_7GHzLevel_us)
+    {
+        boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+        m_oInitialValueSet.m_i64TSNoiseDiode6_7GHzLevel_us = i64Timestamp_us;
+        m_oInitialValueSet.m_i32VNoiseDiode6_7GHzLevel = i32NoiseDiodeLevel;
+        sprintf(m_oInitialValueSet.m_chaNoiseDiode6_7GHzLevelStatus, "%s", strStatus.c_str());
+    }
+    if(getState() == RECORDING)
+        m_pHDF5File->addNoiseDiode6_7GHzLevel(i64Timestamp_us, i32NoiseDiodeLevel, strStatus);
+}
+
+void cHDF5FileWriter::rNoiseDiode6_7GHzPWMMark_callback(int64_t i64Timestamp_us, int32_t i32NoiseDiodePWMMark, const string &strStatus)
+{
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSNoiseDiode6_7GHzPWMMark_us)
+    {
+        boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+        m_oInitialValueSet.m_i64TSNoiseDiode6_7GHzPWMMark_us = i64Timestamp_us;
+        m_oInitialValueSet.m_i32VNoiseDiode6_7GHzPWMMark = i32NoiseDiodePWMMark;
+        sprintf(m_oInitialValueSet.m_chaNoiseDiode6_7GHzPWMMarkStatus, "%s", strStatus.c_str());
+    }
+    if(getState() == RECORDING)
+        m_pHDF5File->addNoiseDiode6_7GHzPWMMark(i64Timestamp_us, i32NoiseDiodePWMMark, strStatus);
+}
+
+void cHDF5FileWriter::rNoiseDiode6_7GHzPWMFrequency_callback(int64_t i64Timestamp_us, double dNoiseDiodePWMFrequency, const string &strStatus)
+{
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSNoiseDiode6_7GHzPWMFrequency_us)
+    {
+        boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+        m_oInitialValueSet.m_i64TSNoiseDiode6_7GHzPWMFrequency_us = i64Timestamp_us;
+        m_oInitialValueSet.m_dVNoiseDiode6_7GHzPWMFrequency_Hz = dNoiseDiodePWMFrequency;
+        sprintf(m_oInitialValueSet.m_chaNoiseDiode6_7GHzPWMFrequencyStatus, "%s", strStatus.c_str());
+    }
+    if(getState() == RECORDING)
+        m_pHDF5File->addNoiseDiode6_7GHzPWMFrequency(i64Timestamp_us, dNoiseDiodePWMFrequency, strStatus);
 }
 
 void cHDF5FileWriter::sourceSelection_callback(int64_t i64Timestamp_us, const string &strSourceName, const string &strStatus)
 {
-    if(getState() != RECORDING)
-        return;
-
-    // TODO: This needs to be updated with the old ways.
-    m_pHDF5File->addSourceSelection(i64Timestamp_us, strSourceName, strStatus);
+    if(getState() == RECORDING)
+        m_pHDF5File->addSourceSelection(i64Timestamp_us, strSourceName, strStatus);
 }
 
-void cHDF5FileWriter::frequencySelectLcp_callback(int64_t i64Timestamp_us, bool bFrequencySelectLcp, const string &strStatus)
+void cHDF5FileWriter::bandSelectLcp_callback(int64_t i64Timestamp_us, bool bFrequencySelectLcp, const string &strStatus)
 {
-    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSFrequencySelectLcp_us)
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSBandSelectLcp_us)
     {
         boost::unique_lock<boost::shared_mutex>  oLock(m_oMutex);
-        m_oInitialValueSet.m_i64TSFrequencySelectLcp_us = i64Timestamp_us;
-        m_oInitialValueSet.m_chVFrequencySelectLcp = bFrequencySelectLcp;
-        sprintf(m_oInitialValueSet.m_chaFrequencySelectLcpStatus, "%s", strStatus.c_str());
+        m_oInitialValueSet.m_i64TSBandSelectLcp_us = i64Timestamp_us;
+        m_oInitialValueSet.m_chVBandSelectLcp = bFrequencySelectLcp;
+        sprintf(m_oInitialValueSet.m_chaBandSelectLcpStatus, "%s", strStatus.c_str());
     }
     if(getState() == RECORDING)
-        m_pHDF5File->addFrequencySelectLcp(i64Timestamp_us, bFrequencySelectLcp, strStatus);
+        m_pHDF5File->addBandSelectLcp(i64Timestamp_us, bFrequencySelectLcp, strStatus);
 }
 
-void cHDF5FileWriter::frequencySelectRcp_callback(int64_t i64Timestamp_us, bool bFrequencySelectRcp, const string &strStatus)
+void cHDF5FileWriter::bandSelectRcp_callback(int64_t i64Timestamp_us, bool bFrequencySelectRcp, const string &strStatus)
 {
-    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSFrequencySelectRcp_us)
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSBandSelectRcp_us)
     {
         boost::unique_lock<boost::shared_mutex>  oLock(m_oMutex);
-        m_oInitialValueSet.m_i64TSFrequencySelectRcp_us = i64Timestamp_us;
-        m_oInitialValueSet.m_chVFrequencySelectRcp = bFrequencySelectRcp;
-        sprintf(m_oInitialValueSet.m_chaFrequencySelectRcpStatus, "%s", strStatus.c_str());
+        m_oInitialValueSet.m_i64TSBandSelectRcp_us = i64Timestamp_us;
+        m_oInitialValueSet.m_chVBandSelectRcp = bFrequencySelectRcp;
+        sprintf(m_oInitialValueSet.m_chaBandSelectRcpStatus, "%s", strStatus.c_str());
     }
     if(getState() == RECORDING)
-        m_pHDF5File->addFrequencySelectRcp(i64Timestamp_us, bFrequencySelectRcp, strStatus);
+        m_pHDF5File->addBandSelectRcp(i64Timestamp_us, bFrequencySelectRcp, strStatus);
 }
 
-void cHDF5FileWriter::frequencyLOIntermediate5GHz_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_Hz, const string &strStatus)
+void cHDF5FileWriter::frequencySky5GHz_callback(int64_t i64Timestamp_us, double dFrequencySky5GHz, const string &strStatus)
 {
-    if(getState() != RECORDING)
-        return;
-
-    m_pHDF5File->addFrequencyLOIntermed5GHz(i64Timestamp_us, dFrequencyLO0Chan0_Hz, strStatus);
-}
-
-void cHDF5FileWriter::frequencyLOIntermediate6_7GHz_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_Hz, const string &strStatus)
-{
-    if(getState() != RECORDING)
-        return;
-
-    m_pHDF5File->addFrequencyLOIntermed6_7GHz(i64Timestamp_us, dFrequencyLO0Chan1_Hz, strStatus);
-}
-
-void cHDF5FileWriter::frequencyLOFinal_callback(int64_t i64Timestamp_us, double dFrequencyLO1_Hz, const string &strStatus)
-{
-    if(getState() != RECORDING)
-        return;
-
-    m_pHDF5File->addFrequencyLOFinal(i64Timestamp_us, dFrequencyLO1_Hz, strStatus);
-}
-
-void cHDF5FileWriter::receiverBandwidthLcp_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan0_Hz, const string &strStatus)
-{
-    if(getState() != RECORDING)
-        return;
-
-    m_pHDF5File->addReceiverBandwidthLcp(i64Timestamp_us, dReceiverBandwidthChan0_Hz, strStatus);
-}
-
-void cHDF5FileWriter::receiverBandwidthRcp_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan1_Hz, const string &strStatus)
-{
-    if(getState() != RECORDING)
-        return;
-
-    m_pHDF5File->addReceiverBandwidthRcp(i64Timestamp_us, dReceiverBandwidthChan1_Hz, strStatus);
-}
-
-void cHDF5FileWriter::receiverLcpAttenuation_callback(int64_t i64Timestamp_us, double dReceiverLcpAttenuation_dB, const string &strStatus)
-{
-    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSReceiverLcpAtten_us)
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSReceiverSkyFreq5GHz_us)
     {
         boost::unique_lock<boost::shared_mutex>  oLock(m_oMutex);
-        m_oInitialValueSet.m_i64TSReceiverLcpAtten_us = i64Timestamp_us;
-        m_oInitialValueSet.m_dVReceiverLcpAtten_dB = dReceiverLcpAttenuation_dB;
-        sprintf(m_oInitialValueSet.m_chaReceiverLcpAttenStatus, "%s", strStatus.c_str());
+        m_oInitialValueSet.m_i64TSReceiverSkyFreq5GHz_us = i64Timestamp_us;
+        m_oInitialValueSet.m_dVReceiverSkyFreq5GHz_Hz = dFrequencySky5GHz;
+        sprintf(m_oInitialValueSet.m_chaReceiverSkyFreq5GHzStatus, "%s", strStatus.c_str());
     }
     if(getState() == RECORDING)
-        m_pHDF5File->addReceiverLcpAttenuation(i64Timestamp_us, dReceiverLcpAttenuation_dB, strStatus);
+        m_pHDF5File->addFrequencySky5GHz(i64Timestamp_us, dFrequencySky5GHz, strStatus);
 }
 
-void cHDF5FileWriter::receiverRcpAttenuation_callback(int64_t i64Timestamp_us, double dReceiverRcpAttenuation_dB, const string &strStatus)
+void cHDF5FileWriter::frequencySky6_7GHz_callback(int64_t i64Timestamp_us, double dFrequencySky6_7GHz, const string &strStatus)
 {
-    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSReceiverRcpAtten_us)
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSReceiverSkyFreq6_7GHz_us)
     {
         boost::unique_lock<boost::shared_mutex>  oLock(m_oMutex);
-        m_oInitialValueSet.m_i64TSReceiverRcpAtten_us = i64Timestamp_us;
-        m_oInitialValueSet.m_dVReceiverRcpAtten_dB = dReceiverRcpAttenuation_dB;
-        sprintf(m_oInitialValueSet.m_chaReceiverRcpAttenStatus, "%s", strStatus.c_str());
+        m_oInitialValueSet.m_i64TSReceiverSkyFreq6_7GHz_us = i64Timestamp_us;
+        m_oInitialValueSet.m_dVReceiverSkyFreq6_7GHz_Hz = dFrequencySky6_7GHz;
+        sprintf(m_oInitialValueSet.m_chaReceiverSkyFreq6_7GHzStatus, "%s", strStatus.c_str());
     }
     if(getState() == RECORDING)
-        m_pHDF5File->addReceiverRcpAttenuation(i64Timestamp_us, dReceiverRcpAttenuation_dB, strStatus);
+        m_pHDF5File->addFrequencySky6_7GHz(i64Timestamp_us, dFrequencySky6_7GHz, strStatus);
+}
+
+void cHDF5FileWriter::receiverGain5GHzLcp_callback(int64_t i64Timestamp_us, double dGain_dB, const string &strStatus)
+{
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSReceiverGain5GHzLcp_us)
+    {
+        boost::unique_lock<boost::shared_mutex>  oLock(m_oMutex);
+        m_oInitialValueSet.m_i64TSReceiverGain5GHzLcp_us = i64Timestamp_us;
+        m_oInitialValueSet.m_dVReceiverGain5GHzLcp = dGain_dB;
+        sprintf(m_oInitialValueSet.m_chaReceiverGain5GHzLcp, "%s", strStatus.c_str());
+    }
+    if(getState() == RECORDING)
+        m_pHDF5File->addReceiverGain5GHzLcp(i64Timestamp_us, dGain_dB, strStatus);
+}
+
+void cHDF5FileWriter::receiverGain5GHzRcp_callback(int64_t i64Timestamp_us, double dGain_dB, const string &strStatus)
+{
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSReceiverGain5GHzRcp_us)
+    {
+        boost::unique_lock<boost::shared_mutex>  oLock(m_oMutex);
+        m_oInitialValueSet.m_i64TSReceiverGain5GHzRcp_us = i64Timestamp_us;
+        m_oInitialValueSet.m_dVReceiverGain5GHzRcp = dGain_dB;
+        sprintf(m_oInitialValueSet.m_chaReceiverGain5GHzRcp, "%s", strStatus.c_str());
+    }
+    if(getState() == RECORDING)
+        m_pHDF5File->addReceiverGain5GHzRcp(i64Timestamp_us, dGain_dB, strStatus);
+}
+
+void cHDF5FileWriter::receiverGain6_7GHzLcp_callback(int64_t i64Timestamp_us, double dGain_dB, const string &strStatus)
+{
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSReceiverGain6_7GHzLcp_us)
+    {
+        boost::unique_lock<boost::shared_mutex>  oLock(m_oMutex);
+        m_oInitialValueSet.m_i64TSReceiverGain6_7GHzLcp_us = i64Timestamp_us;
+        m_oInitialValueSet.m_dVReceiverGain6_7GHzLcp = dGain_dB;
+        sprintf(m_oInitialValueSet.m_chaReceiverGain6_7GHzLcp, "%s", strStatus.c_str());
+    }
+    if(getState() == RECORDING)
+        m_pHDF5File->addReceiverGain6_7GHzLcp(i64Timestamp_us, dGain_dB, strStatus);
+}
+
+void cHDF5FileWriter::receiverGain6_7GHzRcp_callback(int64_t i64Timestamp_us, double dGain_dB, const string &strStatus)
+{
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSReceiverGain6_7GHzRcp_us)
+    {
+        boost::unique_lock<boost::shared_mutex>  oLock(m_oMutex);
+        m_oInitialValueSet.m_i64TSReceiverGain6_7GHzRcp_us = i64Timestamp_us;
+        m_oInitialValueSet.m_dVReceiverGain6_7GHzRcp = dGain_dB;
+        sprintf(m_oInitialValueSet.m_chaReceiverGain6_7GHzRcp, "%s", strStatus.c_str());
+    }
+    if(getState() == RECORDING)
+        m_pHDF5File->addReceiverGain6_7GHzRcp(i64Timestamp_us, dGain_dB, strStatus);
 }
 
 void cHDF5FileWriter::envWindSpeed_callback(int64_t i64Timestamp_us, double dWindSpeed_mps, const string &strStatus)
@@ -1264,8 +1335,6 @@ void cHDF5FileWriter::envRelativeHumidity_callback(int64_t i64Timestamp_us, doub
         m_pHDF5File->addRelativeHumidity(i64Timestamp_us, dHumidity_percent, strStatus);
 }
 
-// TODO: All the below stuff needs to get initial value support.
-
 void cHDF5FileWriter::accumulationLength_callback(int64_t i64Timestamp_us, uint32_t u32NSamples)
 {
     if (i64Timestamp_us > m_oInitialValueSet.m_i64TSAccumulationLength_us)
@@ -1292,26 +1361,20 @@ void cHDF5FileWriter::coarseChannelSelect_callback(int64_t i64Timestamp_us, uint
 
 void cHDF5FileWriter::frequencyFs_callback(double dFrequencyFs_Hz)
 {
-    if(getState() != RECORDING)
-        return;
-
-    m_pHDF5File->setFrequencyFs(dFrequencyFs_Hz);
+    if(getState() == RECORDING)
+        m_pHDF5File->setFrequencyFs(dFrequencyFs_Hz);
 }
 
 void cHDF5FileWriter::sizeOfCoarseFFT_callback(uint32_t u32SizeOfCoarseFFT_nSamp)
 {
-    if(getState() != RECORDING)
-        return;
-
-    m_pHDF5File->setSizeOfCoarseFFT(u32SizeOfCoarseFFT_nSamp);
+    if(getState() == RECORDING)
+        m_pHDF5File->setSizeOfCoarseFFT(u32SizeOfCoarseFFT_nSamp);
 }
 
 void cHDF5FileWriter::sizeOfFineFFT_callback(uint32_t u32SizeOfFineFFT_nSamp)
 {
-    if(getState() != RECORDING)
-        return;
-
-    m_pHDF5File->setSizeOfFineFFT(u32SizeOfFineFFT_nSamp);
+    if(getState() == RECORDING)
+        m_pHDF5File->setSizeOfFineFFT(u32SizeOfFineFFT_nSamp);
 }
 
 void cHDF5FileWriter::coarseFFTShiftMask_callback(int64_t i64Timestamp_us, uint32_t u32ShiftMask)
@@ -1340,18 +1403,14 @@ void cHDF5FileWriter::dspGain_callback(int64_t i64Timestamp_us, double dDspGain)
 
 void cHDF5FileWriter::attenuationADCChan0_callback(int64_t i64Timestamp_us, double dADCAttenuationChan0_dB)
 {
-    if(getState() != RECORDING)
-        return;
-
-    m_pHDF5File->addAttenuationADCChan0(i64Timestamp_us, dADCAttenuationChan0_dB);
+    if(getState() == RECORDING)
+        m_pHDF5File->addAttenuationADCChan0(i64Timestamp_us, dADCAttenuationChan0_dB);
 }
 
 void cHDF5FileWriter::attenuationADCChan1_callback(int64_t i64Timestamp_us, double dADCAttenuationChan1_dB)
 {
-    if(getState() != RECORDING)
-        return;
-
-    m_pHDF5File->addAttenuationADCChan1(i64Timestamp_us, dADCAttenuationChan1_dB);
+    if(getState() == RECORDING)
+        m_pHDF5File->addAttenuationADCChan1(i64Timestamp_us, dADCAttenuationChan1_dB);
 }
 
 void cHDF5FileWriter::overflowsRegs_callback(int64_t i64Timestamp_us, uint32_t u32OverflowRegs)

@@ -1,3 +1,9 @@
 build/
 *.swp
 *.user
+CMakeFiles/
+bin/
+settings.json
+Makefile
+*.cbp
+.vscode

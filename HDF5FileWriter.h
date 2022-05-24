@@ -113,65 +113,79 @@ class cHDF5FileWriter : public cSpectrometerDataStreamInterpreter::cCallbackInte
         char    m_chaVAntennaStatus[16];
         char    m_chaAntennaStatusStatus[7];
 
-        // Receiver chain intermediate LO frequency - 5GHz LO - cTimestampedDouble
-        int64_t m_i64TSReceiverLOFreqIntermediate5GHz_us;
-        double  m_dVReceiverLOFreqIntermediate5GHz_Hz;
-        char    m_chaReceiverLOFreqIntermediate5GHzStatus[7];
+        // Receiver chain sky frequency - 5GHz band - cTimestampedDouble
+        int64_t m_i64TSReceiverSkyFreq5GHz_us;
+        double  m_dVReceiverSkyFreq5GHz_Hz;
+        char    m_chaReceiverSkyFreq5GHzStatus[7];
 
-        // Receiver chain intermediate LO frequency - 6_7GHz LO - cTimestampedDouble
-        int64_t m_i64TSReceiverLOFreqIntermediate6_7GHz_us;
-        double  m_dVReceiverLOFreqIntermediate6_7GHz_Hz;
-        char    m_chaReceiverLOFreqIntermediate6_7GHzStatus[7];
+        // Receiver chain sky frequency - 6_7GHz band - cTimestampedDouble
+        int64_t m_i64TSReceiverSkyFreq6_7GHz_us;
+        double  m_dVReceiverSkyFreq6_7GHz_Hz;
+        char    m_chaReceiverSkyFreq6_7GHzStatus[7];
 
-        // Receiver chain final LO frequency - cTimestampedDouble
-        int64_t m_i64TSReceiverLOFreqFinal_us;
-        double  m_dVReceiverLOFreqFinal_Hz;
-        char    m_chaReceiverLOFreqFinalStatus[7];
+        // Receiver gain 5GHz LCP - cTimestampedDouble
+        int64_t m_i64TSReceiverGain5GHzLcp_us;
+        double  m_dVReceiverGain5GHzLcp;
+        char    m_chaReceiverGain5GHzLcp[7];
+        // Receiver gain 5GHz RCP - cTimestampedDouble
+        int64_t m_i64TSReceiverGain5GHzRcp_us;
+        double  m_dVReceiverGain5GHzRcp;
+        char    m_chaReceiverGain5GHzRcp[7];
+        // Receiver gain 6.7GHz LCP - cTimestampedDouble
+        int64_t m_i64TSReceiverGain6_7GHzLcp_us;
+        double  m_dVReceiverGain6_7GHzLcp;
+        char    m_chaReceiverGain6_7GHzLcp[7];
+        // Receiver gain 6.7GHz RCP - cTimestampedDouble
+        int64_t m_i64TSReceiverGain6_7GHzRcp_us;
+        double  m_dVReceiverGain6_7GHzRcp;
+        char    m_chaReceiverGain6_7GHzRcp[7];
 
-        // Receiver chain LCP attenuation - cTimestampedDouble
-        int64_t m_i64TSReceiverLcpAtten_us;
-        double  m_dVReceiverLcpAtten_dB;
-        char    m_chaReceiverLcpAttenStatus[7];
+        // Receiver chain LCP Band Select - cTimestampedChar
+        int64_t m_i64TSBandSelectLcp_us;
+        char    m_chVBandSelectLcp;
+        char    m_chaBandSelectLcpStatus[7];
 
-        // Receiver chain RCP attenuation - cTimestampedDouble
-        int64_t m_i64TSReceiverRcpAtten_us;
-        double  m_dVReceiverRcpAtten_dB;
-        char    m_chaReceiverRcpAttenStatus[7];
-
-        // Receiver chain LCP Frequency Select - cTimestampedChar
-        int64_t m_i64TSFrequencySelectLcp_us;
-        char    m_chVFrequencySelectLcp;
-        char    m_chaFrequencySelectLcpStatus[7];
-
-        // Receiver chain RCP Frequency Select - cTimestampedChar
-        int64_t m_i64TSFrequencySelectRcp_us;
-        char    m_chVFrequencySelectRcp;
-        char    m_chaFrequencySelectRcpStatus[7];
+        // Receiver chain RCP Band Select - cTimestampedChar
+        int64_t m_i64TSBandSelectRcp_us;
+        char    m_chVBandSelectRcp;
+        char    m_chaBandSelectRcpStatus[7];
 
         // Noise diode input source - cNoiseDiodeSource
-        int64_t m_i64TSNoiseDiodeInputSource_us;
-        char    m_chaVNoiseDiodeInputSource[8];
-        char    m_chaNoiseDiodeInputSourceStatus[7];
+        int64_t m_i64TSNoiseDiode5GHzInputSource_us;
+        char    m_chaVNoiseDiode5GHzInputSource[8];
+        char    m_chaNoiseDiode5GHzInputSourceStatus[7];
 
-        // Noise diode enabled - cTimestampedBool
-        int64_t m_i64TSNoiseDiodeEnabled_us;
-        bool    m_bVNoiseDiodeEnabled;
-        char    m_chaNoiseDiodeEnabledStatus[7];
-
-        // Noise diode select - cTimestampedInt
-        int64_t  m_i64TSNoiseDiodeSelect_us;
-        int32_t  m_i32VNoiseDiodeSelect;
-        char     m_chaNoiseDiodeSelectStatus[7];
+        // Noise diode level - cTimestampedInt
+        int64_t  m_i64TSNoiseDiode5GHzLevel_us;
+        int32_t  m_i32VNoiseDiode5GHzLevel;
+        char     m_chaNoiseDiode5GHzLevelStatus[7];
 
         // Noise diode pwm mark - cTimestampedInt
-        int64_t  m_i64TSNoiseDiodePWMMark_us;
-        int32_t  m_i32VNoiseDiodePWMMark;
-        char     m_chaNoiseDiodePWMMarkStatus[7];
+        int64_t  m_i64TSNoiseDiode5GHzPWMMark_us;
+        int32_t  m_i32VNoiseDiode5GHzPWMMark;
+        char     m_chaNoiseDiode5GHzPWMMarkStatus[7];
 
         // Noise diode pwm frequency - cTimestampedDouble
-        int64_t  m_i64TSNoiseDiodePWMFrequency_us;
-        double   m_dVNoiseDiodePWMFrequency_Hz;
-        char     m_chaNoiseDiodePWMFrequencyStatus[7];
+        int64_t  m_i64TSNoiseDiode5GHzPWMFrequency_us;
+        double   m_dVNoiseDiode5GHzPWMFrequency_Hz;
+        char     m_chaNoiseDiode5GHzPWMFrequencyStatus[7];
+
+        // Same but for 6.7 GHz receiver
+        int64_t m_i64TSNoiseDiode6_7GHzInputSource_us;
+        char    m_chaVNoiseDiode6_7GHzInputSource[8];
+        char    m_chaNoiseDiode6_7GHzInputSourceStatus[7];
+
+        int64_t  m_i64TSNoiseDiode6_7GHzLevel_us;
+        int32_t  m_i32VNoiseDiode6_7GHzLevel;
+        char     m_chaNoiseDiode6_7GHzLevelStatus[7];
+
+        int64_t  m_i64TSNoiseDiode6_7GHzPWMMark_us;
+        int32_t  m_i32VNoiseDiode6_7GHzPWMMark;
+        char     m_chaNoiseDiode6_7GHzPWMMarkStatus[7];
+
+        int64_t  m_i64TSNoiseDiode6_7GHzPWMFrequency_us;
+        double   m_dVNoiseDiode6_7GHzPWMFrequency_Hz;
+        char     m_chaNoiseDiode6_7GHzPWMFrequencyStatus[7];
 
         // Wind speed - cTimestampedDouble
         int64_t m_i64TSWindSpeed_us;
@@ -295,27 +309,28 @@ public:
     void                                                antennaLatitude_callback(const std::string &strAntennaLatitude);
 
     //Noise diode values
-    void                                                rNoiseDiodeInputSource_callback(int64_t i64Timestamp_us, const std::string &strInputSource, const std::string &strStatus);
-    void                                                rNoiseDiodeEnabled_callback(int64_t i64Timestamp_us, bool bNoiseDiodeEnabled, const std::string &strStatus);
-    void                                                rNoiseDiodeSelect_callback(int64_t i64Timestamp_us, int32_t i32NoiseDiodeSelect, const std::string &strStatus);
-    void                                                rNoiseDiodePWMMark_callback(int64_t i64Timestamp_us, int32_t i32NoiseDiodePWMMark, const std::string &strStatus);
-    void                                                rNoiseDiodePWMFrequency_callback(int64_t i64Timestamp_us, double dNoiseDiodePWMFrequency, const std::string &strStatus);
-
+    void                                                rNoiseDiode5GHzInputSource_callback(int64_t i64Timestamp_us, const std::string &strNoiseDiodeInputSource, const std::string &strStatus);
+    void                                                rNoiseDiode5GHzLevel_callback(int64_t i64Timestamp_us, const int32_t i32NoiseDiodeLevel_dB, const std::string &strStatus);
+    void                                                rNoiseDiode5GHzPWMMark_callback(int64_t i64Timestamp_us, int32_t i32NoiseDiodePWMMark, const std::string &strStatus);
+    void                                                rNoiseDiode5GHzPWMFrequency_callback(int64_t i64Timestamp_us, double dNoiseDiodePWMFrequency, const std::string &strStatus);
+    void                                                rNoiseDiode6_7GHzInputSource_callback(int64_t i64Timestamp_us, const std::string &strNoiseDiodeInputSource, const std::string &strStatus);
+    void                                                rNoiseDiode6_7GHzLevel_callback(int64_t i64Timestamp_us, const int32_t i32NoiseDiodeLevel_dB, const std::string &strStatus);
+    void                                                rNoiseDiode6_7GHzPWMMark_callback(int64_t i64Timestamp_us, int32_t i32NoiseDiodePWMMark, const std::string &strStatus);
+    void                                                rNoiseDiode6_7GHzPWMFrequency_callback(int64_t i64Timestamp_us, double dNoiseDiodePWMFrequency, const std::string &strStatus);
 
     //Global experiment values
     void                                                sourceSelection_callback(int64_t i64Timestamp_us, const std::string &strSourceName, const string &strStatus);
 
 
     //RF values
-    void                                                frequencySelectLcp_callback(int64_t i64Timestamp_us, bool bFrequencySelectLcp, const std::string &strStatus);
-    void                                                frequencySelectRcp_callback(int64_t i64Timestamp_us, bool bFrequencySelectRcp, const std::string &strStatus);
-    void                                                frequencyLOIntermediate5GHz_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan0_Hz, const std::string &strStatus);
-    void                                                frequencyLOIntermediate6_7GHz_callback(int64_t i64Timestamp_us, double dFrequencyLO0Chan1_Hz, const std::string &strStatus);
-    void                                                frequencyLOFinal_callback(int64_t i64Timestamp_us, double dFrequencyLO1_Hz, const std::string &strStatus);
-    void                                                receiverBandwidthLcp_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan0_Hz, const std::string &strStatus);
-    void                                                receiverBandwidthRcp_callback(int64_t i64Timestamp_us, double dReceiverBandwidthChan1_Hz, const std::string &strStatus);
-    void                                                receiverLcpAttenuation_callback(int64_t i64Timestamp_us, double dReceiverLcpAttenuation_dB, const std::string &strStatus);
-    void                                                receiverRcpAttenuation_callback(int64_t i64Timestamp_us, double dReceiverRcpAttenuation_dB, const std::string &strStatus);
+    void                                                bandSelectLcp_callback(int64_t i64Timestamp_us, bool bBandSelectLcp, const std::string &strStatus);
+    void                                                bandSelectRcp_callback(int64_t i64Timestamp_us, bool bBandSelectRcp, const std::string &strStatus);
+    void                                                frequencySky5GHz_callback(int64_t i64Timestamp_us, double dFrequencySky5GHz, const std::string &strStatus);
+    void                                                frequencySky6_7GHz_callback(int64_t i64Timestamp_us, double dFrequencySky6_7GHz, const std::string &strStatus);
+    void                                                receiverGain5GHzLcp_callback(int64_t i64Timestamp_us, double dGain_dB, const std::string &strStatus);
+    void                                                receiverGain5GHzRcp_callback(int64_t i64Timestamp_us, double dGain_dB, const std::string &strStatus);
+    void                                                receiverGain6_7GHzLcp_callback(int64_t i64Timestamp_us, double dGain_dB, const std::string &strStatus);
+    void                                                receiverGain6_7GHzRcp_callback(int64_t i64Timestamp_us, double dGain_dB, const std::string &strStatus);
 
     //Env values
     void                                                envWindSpeed_callback(int64_t i64Timestamp_us, double dWindSpeed_mps, const std::string &strStatus);
