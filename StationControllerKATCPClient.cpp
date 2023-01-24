@@ -1,5 +1,6 @@
 
 //System includes
+#include <iostream>
 
 //Library includes
 #include <boost/foreach.hpp>
