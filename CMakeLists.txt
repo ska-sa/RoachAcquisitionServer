@@ -48,9 +48,9 @@ add_executable(${PROJECT_NAME} ${SRC_LIST})
 
 #Link libraries
 if(CMAKE_THREAD_LIBS_INIT)
-  target_link_libraries(${PROJECT_NAME} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES} ${HDF5_LIBRARIES} -lkatcp)
+  target_link_libraries(${PROJECT_NAME} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES} ${HDF5_LIBRARIES} ${HDF5_HL_LIBRARIES} -lkatcp)
 else()
-    target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES} ${HDF5_LIBRARIES} -lkatcp)
+    target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES} ${HDF5_LIBRARIES} ${HDF5_HL_LIBRARIES} -lkatcp)
 endif()
 
 ## Set the directory where the binaries will be stored
@@ -98,4 +98,3 @@ elseif(CMAKE_BUILD_TYPE MATCHES "Release")
 endif()
 
 message(STATUS "Make generation finished for build type " ${CMAKE_BUILD_TYPE})
-
