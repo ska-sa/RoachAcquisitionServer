@@ -19,7 +19,6 @@ RUN make
 RUN make -C katcp install
 
 WORKDIR /workspace
-RUN true
 RUN git clone --recursive https://github.com/ska-sa/RoachAcquisitionServer.git
 WORKDIR /workspace/RoachAcquisitionServer
 
