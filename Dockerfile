@@ -11,9 +11,9 @@ RUN apt-get update && apt-get install -y git \
 
 WORKDIR /workspace
 RUN git clone --recursive https://github.com/ska-sa/katcp_devel.git
+WORKDIR /workspace/katcp_devel
 # Change to KATCP v5.0
 RUN git checkout version-5.0
-WORKDIR /workspace/katcp_devel
 RUN make
 RUN make -C katcp install
 
