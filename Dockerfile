@@ -9,7 +9,8 @@ RUN apt-get update && apt-get install -y git \
     libboost-filesystem1.62-dev \
     libhdf5-dev \
     python2.7 \
-    python-pip
+    python-pip \
+    python-numpy
 
 RUN pip install katversion==0.9
 RUN pip install katcp==0.6.2
