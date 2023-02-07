@@ -8,9 +8,12 @@ RUN apt-get update && apt-get install -y git \
     libboost-program-options1.62-dev \
     libboost-filesystem1.62-dev \
     libhdf5-dev \
-    python2.7
+    python2.7 \
+    python-pip \
+    python-numpy
 
-RUN ln -s /usr/bin/python2.7 /usr/bin/python
+RUN pip install katversion==0.9
+RUN pip install katcp==0.6.2
 
 WORKDIR /workspace
 RUN git clone https://github.com/ska-sa/casperfpga.git
