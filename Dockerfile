@@ -7,7 +7,16 @@ RUN apt-get update && apt-get install -y git \
     libboost-thread1.62-dev \
     libboost-program-options1.62-dev \
     libboost-filesystem1.62-dev \
-    libhdf5-dev
+    libhdf5-dev \
+    python2.7
+
+RUN ln -s /usr/bin/python2.7 /usr/bin/python
+
+WORKDIR /workspace
+RUN git clone https://github.com/ska-sa/casperfpga.git
+WORKDIR /workspace/casperfpga
+RUN git checkout v0.4.3
+RUN python setup.py install
 
 WORKDIR /workspace
 RUN git clone --recursive https://github.com/ska-sa/katcp_devel.git
