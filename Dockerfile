@@ -1,12 +1,12 @@
-FROM debian:9.13-slim
+FROM debian:10.13-slim
 
 RUN apt-get update && apt-get install -y git \
     build-essential \
     cmake \
-    libboost-system1.62-dev \
-    libboost-thread1.62-dev \
-    libboost-program-options1.62-dev \
-    libboost-filesystem1.62-dev \
+    libboost-system-dev \
+    libboost-thread-dev \
+    libboost-program-options-dev \
+    libboost-filesystem-dev \
     libhdf5-dev \
     python2.7 \
     python-pip \
