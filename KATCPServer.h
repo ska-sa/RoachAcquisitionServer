@@ -139,6 +139,8 @@ public:
         void                                    pointingModel_callback(uint8_t i8ParameterNumber, double dParameterValue);
 
         void                                    antennaStatus_callback(int64_t i64Timestamp_us, const std::string &strAntennaStatus, const std::string &strStatus);
+        void                                    observationInfo_callback(const std::string &strObservationInfo);
+        void                                    antennaBeamwidth_callback(int64_t i64Timestamp_us, const std::string &strAntennaBeamwidth, const std::string &strStatus);
 
         //Global experiment values
         void                                    sourceSelection_callback(int64_t i64Timestamp_us, const std::string &strSourceName, const std::string &strStatus);

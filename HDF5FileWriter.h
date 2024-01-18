@@ -236,6 +236,16 @@ class cHDF5FileWriter : public cSpectrometerDataStreamInterpreter::cCallbackInte
         int64_t  m_i64TSAttenuationADCChan1_us;
         double   m_dVAttenuationADCChan1_dB;
 
+        // Antenna configuration
+        std::string         m_strObservationInformation;
+        //char                m_chaAntennaName[64];
+        //double              m_dAntennaDiameter_m;
+        double              m_dAntennaBeamwidth_deg;
+        //double              m_dAntennaLongitude_deg;
+        //double              m_dAntennaLatitude_deg;
+        //double              m_dAntennaAltitude_m;
+
+
     } cInitialValueSet;
 
 public:
@@ -302,11 +312,13 @@ public:
     void                                                antennaStatus_callback(int64_t i64Timestamp_us, const std::string &strAntennaStatus, const std::string &strStatus);
 
     void                                                appliedPointingModel_callback(const std::string &strModelName, const std::vector<double> &vdPointingModelParams);
-    void                                                antennaName_callback(const std::string &strAntennaName);
+    void                                                observationInfo_callback(const std::string &strObservationInfo);
+    void                                                antennaBeamwidth_callback(int64_t i64Timestamp_us, const std::string &strAntennaBeamwidth, const std::string &strStatus);
+    /* PJP
     void                                                antennaDiameter_callback(const std::string &strAntennaDiameter);
-    void                                                antennaBeamwidth_callback(const std::string &strAntennaBeamwidth);
     void                                                antennaLongitude_callback(const std::string &strAntennaLongitude);
     void                                                antennaLatitude_callback(const std::string &strAntennaLatitude);
+    */
 
     //Noise diode values
     void                                                rNoiseDiode5GHzInputSource_callback(int64_t i64Timestamp_us, const std::string &strNoiseDiodeInputSource, const std::string &strStatus);

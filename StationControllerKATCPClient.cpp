@@ -85,7 +85,9 @@ cStationControllerKATCPClient::cStationControllerKATCPClient() :
     m_vstrSensorSampling.push_back("EMS.Met4.AbsolutePressure period 10");
     m_vstrSensorSampling.push_back("EMS.Met4.RelativeHumidity period 10");
 
-    //TODO: Observation metadata such as targets, etc.
+    // Observation metadata such as targets, etc.
+    m_vstrSensorSampling.push_back("SCS.HPBW event");
+    m_vstrSensorSampling.push_back("SCS.ObservationInformation event");
 }
 
 cStationControllerKATCPClient::~cStationControllerKATCPClient()
@@ -549,6 +551,21 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
 #endif
         return;
     }
+
+// PJP
+    if( !vstrTokens[3].compare("SCS.HPBW") )
+    {
+        cout << "±±§§§§ :" << vstrTokens[3] << " " << vstrTokens[5] << "\n";
+        sendAntennaBeamwidth( strtod(vstrTokens[1].c_str(), NULL)*1e6, vstrTokens[5].c_str(), vstrTokens[4].c_str() );
+        return;
+    }
+
+    if( !vstrTokens[3].compare("SCS.ObservationInformation") )
+    {
+        sendObservationInfo( strtod(vstrTokens[1].c_str(), NULL)*1e6, vstrTokens[5].c_str(), vstrTokens[4].c_str() );
+        return;
+    }
+// PJP
 }
 
 void cStationControllerKATCPClient::printVersion(const std::string &strVersion)
@@ -1257,6 +1274,46 @@ void cStationControllerKATCPClient::sendRelativeHumidity(int64_t i64Timestamp_us
     }
 }
 
+void cStationControllerKATCPClient::sendAntennaBeamwidth(int64_t i64Timestamp_us, const string &strAntennaBeamwidth, const std::string &strStatus)
+{
+    boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
+
+    //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
+    //to call function added in the derived version of the callback handler interface class
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
+    {
+        cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
+        pHandler->antennaBeamwidth_callback(i64Timestamp_us, strAntennaBeamwidth, strStatus);
+    }
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
+    {
+        boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
+        pHandler->antennaBeamwidth_callback(i64Timestamp_us, strAntennaBeamwidth, strStatus);
+    }
+}
+
+void cStationControllerKATCPClient::sendObservationInfo(int64_t i64Timestamp_us, const string &strObservationInformation, const std::string &strStatus)
+{
+    boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
+
+    //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
+    //to call function added in the derived version of the callback handler interface class
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
+    {
+        cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
+        pHandler->observationInfo_callback(strObservationInformation);
+    }
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
+    {
+        boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
+        pHandler->observationInfo_callback(strObservationInformation);
+    }
+}
+
 
 // Don't remove - this should still be implemented in the station controller.
 // Eventually.
@@ -1278,46 +1335,6 @@ void cStationControllerKATCPClient::sendAppliedPointingModel(const string &strMo
     {
         boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
         pHandler->appliedPointingModel_callback(strModelName, vdPointingModelParams);
-    }
-}
-
-void cStationControllerKATCPClient::sendAntennaName(const string &strAntennaName)
-{
-    boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
-
-    //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
-    //to call function added in the derived version of the callback handler interface class
-
-    for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
-    {
-        cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
-        pHandler->antennaName_callback(strAntennaName);
-    }
-
-    for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
-    {
-        boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
-        pHandler->antennaName_callback(strAntennaName);
-    }
-}
-
-void cStationControllerKATCPClient::sendAntennaBeamwidth(const string &strAntennaBeamwidth)
-{
-    boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
-
-    //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
-    //to call function added in the derived version of the callback handler interface class
-
-    for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
-    {
-        cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
-        pHandler->antennaBeamwidth_callback(strAntennaBeamwidth);
-    }
-
-    for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
-    {
-        boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
-        pHandler->antennaBeamwidth_callback(strAntennaBeamwidth);
     }
 }
 
