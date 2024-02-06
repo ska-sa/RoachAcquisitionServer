@@ -555,7 +555,6 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
 // PJP
     if( !vstrTokens[3].compare("SCS.HPBW") )
     {
-        cout << "±±§§§§ :" << vstrTokens[3] << " " << vstrTokens[5] << "\n";
         sendAntennaBeamwidth( strtod(vstrTokens[1].c_str(), NULL)*1e6, vstrTokens[5].c_str(), vstrTokens[4].c_str() );
         return;
     }
