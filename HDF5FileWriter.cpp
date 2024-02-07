@@ -183,6 +183,10 @@ cHDF5FileWriter::cHDF5FileWriter(const string &strRecordingDirectory, uint32_t u
 
         m_oInitialValueSet.m_i64TSAttenuationADCChan1_us = 0;
         m_oInitialValueSet.m_dVAttenuationADCChan1_dB = 0;
+
+        // PJP
+        m_oInitialValueSet.m_dAntennaBeamwidth_deg = 0.0;
+        m_oInitialValueSet.m_strObservationInformation = "";
     }
 }
 
@@ -496,6 +500,12 @@ void cHDF5FileWriter::getNextFrame_callback(const std::vector<int> &vi32Chan0, c
         if (m_oInitialValueSet.m_i64TSAttenuationADCChan1_us)
             m_pHDF5File->addAttenuationADCChan0(m_oInitialValueSet.m_i64TSAttenuationADCChan1_us,
                                                 m_oInitialValueSet.m_dVAttenuationADCChan1_dB);
+        
+        if (m_oInitialValueSet.m_dAntennaBeamwidth_deg)
+            m_pHDF5File->setAntennaBeamwidth(m_oInitialValueSet.m_dAntennaBeamwidth_deg);
+
+        if ("" != m_oInitialValueSet.m_strObservationInformation)
+            m_pHDF5File->setObservationInfo(m_oInitialValueSet.m_strObservationInformation);
 
         setState(RECORDING);
 
@@ -1026,34 +1036,21 @@ void cHDF5FileWriter::appliedPointingModel_callback(const string &strModelName, 
 }
 */
 
-void cHDF5FileWriter::antennaName_callback(const string &strAntennaName)
+void cHDF5FileWriter::observationInfo_callback(const string &strObservationInfo)
 {
-    if(getState() == RECORDING)
-        m_pHDF5File->setAntennaName(strAntennaName);
+    m_oInitialValueSet.m_strObservationInformation = strObservationInfo;
+   if(getState() == RECORDING)
+        m_pHDF5File->setObservationInfo(m_oInitialValueSet.m_strObservationInformation);
 }
 
-void cHDF5FileWriter::antennaDiameter_callback(const string &strAntennaDiameter)
+void cHDF5FileWriter::antennaBeamwidth_callback(int64_t i64Timestamp_us, const std::string &strAntennaBeamwidth, const std::string &strStatus)
 {
-    if(getState() == RECORDING)
-        m_pHDF5File->setAntennaBeamwidth(strAntennaDiameter);
-}
+    m_oInitialValueSet.m_dAntennaBeamwidth_deg = stod(strAntennaBeamwidth);
 
-void cHDF5FileWriter::antennaBeamwidth_callback(const string &strAntennaBeamwidth)
-{
     if(getState() == RECORDING)
-        m_pHDF5File->setAntennaBeamwidth(strAntennaBeamwidth);
-}
-
-void cHDF5FileWriter::antennaLongitude_callback(const string &strAntennaLongitude)
-{
-    if(getState() == RECORDING)
-        m_pHDF5File->setAntennaLongitude(strAntennaLongitude);
-}
-
-void cHDF5FileWriter::antennaLatitude_callback(const string &strAntennaLatitude)
-{
-    if(getState() == RECORDING)
-        m_pHDF5File->setAntennaLatitude(strAntennaLatitude);
+    {
+        m_pHDF5File->setAntennaBeamwidth(m_oInitialValueSet.m_dAntennaBeamwidth_deg);
+    }
 }
 
 void cHDF5FileWriter::rNoiseDiode5GHzInputSource_callback(int64_t i64Timestamp_us, const string &strInputSource, const string &strStatus)

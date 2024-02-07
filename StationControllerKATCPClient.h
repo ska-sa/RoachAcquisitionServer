@@ -37,6 +37,8 @@ public:
 
         virtual void                                    pointingModel_callback(uint8_t i8ParameterNumber, double dParameterValue) = 0;
 
+        virtual void                                    observationInfo_callback(const std::string &strstrObservationInfo) = 0;
+        virtual void                                    antennaBeamwidth_callback(int64_t i64Timestamp_us, const std::string &strAntennaBeamwidth, const std::string &strStatus) = 0;
         virtual void                                    antennaStatus_callback(int64_t i64Timestamp_us, const std::string &strAntennaStatus, const std::string &strStatus) = 0;
 
         //Global experiment values
@@ -110,6 +112,10 @@ private:
     void                                                sendPointingModelParameter(uint8_t ui8ParameterNumber, double dParameterValue);
     // TODO: Figure out what to do about this one.
     void                                                sendAntennaStatus(int64_t i64Timestamp_us, std::string strAntennaStatus, const std::string &strStatus);
+// PJP    
+    void                                                sendAntennaBeamwidth(int64_t i64Timestamp_us, const std::string &strAntennaBeamwidth, const std::string &strStatus);
+    void                                                sendObservationInfo(int64_t i64Timestamp_us, const std::string &strObservationInformation, const std::string &strStatus);
+// PJP
 
     //Noise diode values
     void                                                sendNoiseDiodeState(int64_t i64Timestamp_us, int32_t i32NoiseDiodeState, bool bNoiseDiodeSelect, const std::string &strStatus);

@@ -687,7 +687,7 @@ int32_t cKATCPServer::getRoachGatewareList_KATCPCallback(struct katcp_dispatch *
             cout << "cKATCPServer::getRoachGatewareList_KATCPCallback(): Found Gateware [" << vstrValidFilenames[i].c_str() << "]" << endl;
         }
 
-        append_args_katcp( pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_STRING, "#getRoachGatewareList");
+        append_args_katcp( pKATCPDispatch, KATCP_FLAG_FIRST | KATCP_FLAG_STRING, (char *) "#getRoachGatewareList");
 
         for(int32_t i = 0; i < (int32_t)vstrValidFilenames.size() - 1; i++)
         {
@@ -1328,6 +1328,8 @@ void cKATCPServer::cKATCPClientCallbackHandler::skyActualAz_callback(int64_t i64
 void cKATCPServer::cKATCPClientCallbackHandler::skyActualEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus) {}
 void cKATCPServer::cKATCPClientCallbackHandler::pointingModel_callback(uint8_t i8ParameterNumber, double dParameterValue) {}
 void cKATCPServer::cKATCPClientCallbackHandler::antennaStatus_callback(int64_t i64Timestamp_us, const std::string &strAntennaStatus, const std::string &strStatus) {}
+void cKATCPServer::cKATCPClientCallbackHandler::observationInfo_callback(const std::string &strObservationInfo) {}
+void cKATCPServer::cKATCPClientCallbackHandler::antennaBeamwidth_callback(int64_t i64Timestamp_us, const std::string &strAntennaBeamwidth, const std::string &strStatus) {}
 void cKATCPServer::cKATCPClientCallbackHandler::sourceSelection_callback(int64_t i64Timestamp_us, const std::string &strSourceName, const std::string &strStatus) {}
 void cKATCPServer::cKATCPClientCallbackHandler::bandSelectLcp_callback(int64_t i64Timestamp_us, bool bBandSelectLCP, const std::string &strStatus) {}
 void cKATCPServer::cKATCPClientCallbackHandler::bandSelectRcp_callback(int64_t i64Timestamp_us, bool bBandSelectRCP, const std::string &strStatus) {}
