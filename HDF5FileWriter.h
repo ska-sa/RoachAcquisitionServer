@@ -109,9 +109,15 @@ class cHDF5FileWriter : public cSpectrometerDataStreamInterpreter::cCallbackInte
 
         double  m_aPointingModel[30];
 
+        // Antenna status
         int64_t m_i64TSAntennaStatus_us;
         char    m_chaVAntennaStatus[16];
         char    m_chaAntennaStatusStatus[7];
+
+        // SCS Target source selection
+        int64_t m_i64TSSourceSelection_us;
+        char    m_chaSourceSelection[164];
+        char    m_chaSourceSelectionStatus[7];
 
         // Receiver chain sky frequency - 5GHz band - cTimestampedDouble
         int64_t m_i64TSReceiverSkyFreq5GHz_us;
