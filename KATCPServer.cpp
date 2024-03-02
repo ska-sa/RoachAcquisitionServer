@@ -1331,6 +1331,7 @@ void cKATCPServer::cKATCPClientCallbackHandler::antennaStatus_callback(int64_t i
 void cKATCPServer::cKATCPClientCallbackHandler::observationInfo_callback(const std::string &strObservationInfo) {}
 void cKATCPServer::cKATCPClientCallbackHandler::antennaBeamwidth_callback(int64_t i64Timestamp_us, const std::string &strAntennaBeamwidth, const std::string &strStatus) {}
 void cKATCPServer::cKATCPClientCallbackHandler::sourceSelection_callback(int64_t i64Timestamp_us, const std::string &strSourceName, const std::string &strStatus) {}
+void cKATCPServer::cKATCPClientCallbackHandler::onSource_callback(int64_t i64Timestamp_us, const std::string &strValue, const std::string &strStatus) {}
 void cKATCPServer::cKATCPClientCallbackHandler::bandSelectLcp_callback(int64_t i64Timestamp_us, bool bBandSelectLCP, const std::string &strStatus) {}
 void cKATCPServer::cKATCPClientCallbackHandler::bandSelectRcp_callback(int64_t i64Timestamp_us, bool bBandSelectRCP, const std::string &strStatus) {}
 void cKATCPServer::cKATCPClientCallbackHandler::frequencySky5GHz_callback(int64_t i64Timestamp_us, double dFrequencySky5GHz, const std::string &strStatus) {}

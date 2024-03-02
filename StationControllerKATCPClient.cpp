@@ -65,6 +65,7 @@ cStationControllerKATCPClient::cStationControllerKATCPClient() :
     // Antenna status
     m_vstrSensorSampling.push_back("SCS.AntennaActivity event");
     m_vstrSensorSampling.push_back("SCS.Target event");
+    m_vstrSensorSampling.push_back("SCS.OnSource event");
 
     // Receiver Mk2 values
     m_vstrSensorSampling.push_back("rx.fe.gain.band1-lcp event");
@@ -397,6 +398,12 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
 #else
         sendSourceSelection( strtod(vstrTokens[1].c_str(), NULL)*1e6, vstrTokens[5].c_str(), vstrTokens[4].c_str()  );
 #endif
+        return;
+    }
+
+    if(!vstrTokens[3].compare("SCS.OnSource"))
+    {
+        sendOnSource( strtod(vstrTokens[1].c_str(), NULL)*1e6, vstrTokens[5].c_str(), vstrTokens[4].c_str());
         return;
     }
 
@@ -1009,6 +1016,26 @@ void cStationControllerKATCPClient::sendSourceSelection(int64_t i64Timestamp_us,
     {
         boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
         pHandler->sourceSelection_callback(i64Timestamp_us, oSS.str(), strStatus);
+    }
+}
+
+void cStationControllerKATCPClient::sendOnSource(int64_t i64Timestamp_us, const string &strValue, const string &strStatus)
+{
+    boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
+
+    //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
+    //to call function added in the derived version of the callback handler interface class
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
+    {
+        cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
+        pHandler->onSource_callback(i64Timestamp_us, strValue, strStatus);
+    }
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
+    {
+        boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
+        pHandler->onSource_callback(i64Timestamp_us, strValue, strStatus);
     }
 }
 

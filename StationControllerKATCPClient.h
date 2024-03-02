@@ -43,6 +43,8 @@ public:
 
         //Global experiment values
         virtual void                                    sourceSelection_callback(int64_t i64Timestamp_us, const std::string &strSourceName, const std::string &strStatus) = 0;
+        // Onsource sensor
+        virtual void                                    onSource_callback(int64_t i64Timestamp_us, const std::string &strValue, const std::string &strStatus) = 0;
 
         //RF values
         virtual void                                    bandSelectLcp_callback(int64_t i64Timestamp_us, bool bFrequencySelectChan0, const std::string &strStatus) = 0;
@@ -122,6 +124,7 @@ private:
 
     //Global experiment values
     void                                                sendSourceSelection(int64_t i64Timestamp_us, const std::string &strSourceName, const std::string &strStatus);
+    void                                                sendOnSource(int64_t i64Timestamp_us, const std::string &strValue, const std::string &strStatus);
 
     //RFE values
     void                                                sendBandSelectLcp(int64_t i64Timestamp_us, bool bFreqencyRFChan0_MHz, const std::string &strStatus);

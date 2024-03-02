@@ -144,6 +144,9 @@ public:
 
         //Global experiment values
         void                                    sourceSelection_callback(int64_t i64Timestamp_us, const std::string &strSourceName, const std::string &strStatus);
+        
+        // Onsource sensor
+        void                                    onSource_callback(int64_t i64Timestamp_us, const std::string &strValue, const std::string &strStatus);
 
         //RF values
         void                                    bandSelectLcp_callback(int64_t i64Timestamp_us, bool bBandSelectLCP, const std::string &strStatus);

@@ -86,6 +86,10 @@ cHDF5FileWriter::cHDF5FileWriter(const string &strRecordingDirectory, uint32_t u
         sprintf(m_oInitialValueSet.m_chaSourceSelection, "none");
         sprintf(m_oInitialValueSet.m_chaSourceSelectionStatus, "0");
 
+        m_oInitialValueSet.m_i64TSOnSource_us = 0;
+        sprintf(m_oInitialValueSet.m_chaOnSourceValue, "0");
+        sprintf(m_oInitialValueSet.m_chaOnSourceStatus, "0");
+
         m_oInitialValueSet.m_i64TSReceiverSkyFreq5GHz_us = 0;
         m_oInitialValueSet.m_dVReceiverSkyFreq5GHz_Hz = 0;
         sprintf(m_oInitialValueSet.m_chaReceiverSkyFreq5GHzStatus, "0");
@@ -405,6 +409,10 @@ void cHDF5FileWriter::getNextFrame_callback(const std::vector<int> &vi32Chan0, c
             m_pHDF5File->addSourceSelection(m_oInitialValueSet.m_i64TSSourceSelection_us,
                                           m_oInitialValueSet.m_chaSourceSelection,
                                           m_oInitialValueSet.m_chaSourceSelectionStatus);
+        if (m_oInitialValueSet.m_i64TSOnSource_us)
+            m_pHDF5File->addOnSource(m_oInitialValueSet.m_i64TSOnSource_us,
+                                    m_oInitialValueSet.m_chaOnSourceValue,
+                                    m_oInitialValueSet.m_chaOnSourceStatus);
         if (m_oInitialValueSet.m_i64TSReceiverSkyFreq5GHz_us)
             m_pHDF5File->addFrequencySky5GHz(m_oInitialValueSet.m_i64TSReceiverSkyFreq5GHz_us,
                                              m_oInitialValueSet.m_dVReceiverSkyFreq5GHz_Hz,
@@ -1175,6 +1183,19 @@ void cHDF5FileWriter::sourceSelection_callback(int64_t i64Timestamp_us, const st
     }
     if(getState() == RECORDING)
         m_pHDF5File->addSourceSelection(i64Timestamp_us, strSourceName, strStatus);
+}
+
+void cHDF5FileWriter::onSource_callback(int64_t i64Timestamp_us, const string &strValue, const std::string &strStatus)
+{
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSOnSource_us)
+    {
+        boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+        m_oInitialValueSet.m_i64TSOnSource_us = i64Timestamp_us;
+        sprintf(m_oInitialValueSet.m_chaOnSourceValue, "%s", strValue.c_str());;
+        sprintf(m_oInitialValueSet.m_chaOnSourceStatus, "%s", strStatus.c_str());
+    }
+    if(getState() == RECORDING)
+        m_pHDF5File->addOnSource(i64Timestamp_us, strValue, strStatus);
 }
 
 void cHDF5FileWriter::bandSelectLcp_callback(int64_t i64Timestamp_us, bool bFrequencySelectLcp, const string &strStatus)
