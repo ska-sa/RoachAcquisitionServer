@@ -109,9 +109,20 @@ class cHDF5FileWriter : public cSpectrometerDataStreamInterpreter::cCallbackInte
 
         double  m_aPointingModel[30];
 
+        // Antenna status
         int64_t m_i64TSAntennaStatus_us;
         char    m_chaVAntennaStatus[16];
         char    m_chaAntennaStatusStatus[7];
+
+        // SCS Target source selection
+        int64_t m_i64TSSourceSelection_us;
+        char    m_chaSourceSelection[164];
+        char    m_chaSourceSelectionStatus[7];
+
+        // SCS Target source selection
+        int64_t m_i64TSOnSource_us;
+        char    m_chaOnSourceValue[2];
+        char    m_chaOnSourceStatus[7];
 
         // Receiver chain sky frequency - 5GHz band - cTimestampedDouble
         int64_t m_i64TSReceiverSkyFreq5GHz_us;
@@ -321,6 +332,9 @@ public:
 
     //Global experiment values
     void                                                sourceSelection_callback(int64_t i64Timestamp_us, const std::string &strSourceName, const string &strStatus);
+    
+    // Target on source sensor
+    void                                                onSource_callback(int64_t i64Timestamp_us, const std::string &strvalue, const std::string &strStatus);
 
 
     //RF values
