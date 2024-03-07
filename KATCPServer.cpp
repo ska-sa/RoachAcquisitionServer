@@ -153,7 +153,7 @@ void cKATCPServer::serverThreadFunction()
                                  const_cast<char*>("SDB.roachFrequencyFs"),
                                  const_cast<char*>("ADC sample rate"),
                                  const_cast<char*>("Hz"),
-                                 &getFrequencyFs_KATCPCallback, NULL, NULL, 799999999, 800000001, NULL);
+                                 &getFrequencyFs_KATCPCallback, NULL, NULL, 1023999999, 1024000001, NULL);
 
     register_integer_sensor_katcp(m_pKATCPDispatch, 0,
                                   const_cast<char*>("SDB.roachSizeOfCoarseFFT"),
@@ -245,7 +245,7 @@ void cKATCPServer::serverThreadFunction()
                                   const_cast<char*>("SDB.roachClockFrequency"),
                                   const_cast<char*>("The clock frequency of the FPGA"),
                                   const_cast<char*>("Hz"),
-                                  &getClockFrequency_KATCPCallback, NULL, NULL, 199999999, 200000001, NULL);
+                                  &getClockFrequency_KATCPCallback, NULL, NULL, 255999999, 256000001, NULL);
 
     register_katcp(m_pKATCPDispatch,
                    const_cast<char*>("?startRecording"),
