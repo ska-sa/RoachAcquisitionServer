@@ -250,6 +250,8 @@ class cHDF5FileWriter : public cSpectrometerDataStreamInterpreter::cCallbackInte
         // Antenna configuration
         std::string         m_strObservationInformation;
         double              m_dAntennaBeamwidth_deg;
+        std::string         m_strObservedMaserName;
+        double              m_dObservedMaserVlsr_km_s;
 
     } cInitialValueSet;
 
@@ -319,6 +321,9 @@ public:
     void                                                appliedPointingModel_callback(const std::string &strModelName, const std::vector<double> &vdPointingModelParams);
     void                                                observationInfo_callback(const std::string &strObservationInfo);
     void                                                antennaBeamwidth_callback(int64_t i64Timestamp_us, const std::string &strAntennaBeamwidth, const std::string &strStatus);
+    void                                                observedMaserName_callback(int64_t i64Timestamp_us, const std::string &strObservedMaserName, const std::string &strStatus);
+    void                                                observedMaserVlsr_callback(int64_t i64Timestamp_us, double dObservedMaserVlsr_km_s, const std::string &strStatus);
+
 
     //Noise diode values
     void                                                rNoiseDiode5GHzInputSource_callback(int64_t i64Timestamp_us, const std::string &strNoiseDiodeInputSource, const std::string &strStatus);

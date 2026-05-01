@@ -1,5 +1,9 @@
 FROM debian:10.13-slim
 
+# Replace sources.list with archive.debian.org
+RUN sed -i 's|deb.debian.org|archive.debian.org|g' /etc/apt/sources.list \
+ && sed -i 's|security.debian.org|archive.debian.org/|g' /etc/apt/sources.list
+
 RUN apt-get update && apt-get install -y git \
     build-essential \
     cmake \

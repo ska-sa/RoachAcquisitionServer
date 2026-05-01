@@ -117,6 +117,8 @@ private:
 // PJP    
     void                                                sendAntennaBeamwidth(int64_t i64Timestamp_us, const std::string &strAntennaBeamwidth, const std::string &strStatus);
     void                                                sendObservationInfo(int64_t i64Timestamp_us, const std::string &strObservationInformation, const std::string &strStatus);
+    void                                                sendObservedMaserName(int64_t i64Timestamp_us, const std::string &strObservedMaserName, const std::string &strStatus);
+    void                                                sendObservedMaserVlsr(int64_t i64Timestamp_us, double dObservedMaserVlsr, const std::string &strStatus);
 // PJP
 
     //Noise diode values

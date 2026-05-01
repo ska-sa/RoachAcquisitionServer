@@ -89,6 +89,8 @@ cStationControllerKATCPClient::cStationControllerKATCPClient() :
     // Observation metadata such as targets, etc.
     m_vstrSensorSampling.push_back("SCS.HPBW event");
     m_vstrSensorSampling.push_back("SCS.ObservationInformation event");
+    m_vstrSensorSampling.push_back("SCS.observed-maser-name event");
+    m_vstrSensorSampling.push_back("SCS.observed-maser-vlsr event");
 }
 
 cStationControllerKATCPClient::~cStationControllerKATCPClient()
@@ -569,6 +571,18 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
     if( !vstrTokens[3].compare("SCS.ObservationInformation") )
     {
         sendObservationInfo( strtod(vstrTokens[1].c_str(), NULL)*1e6, vstrTokens[5].c_str(), vstrTokens[4].c_str() );
+        return;
+    }
+
+    if( !vstrTokens[3].compare("SCS.observed-maser-name") )
+    {
+        sendObservedMaserName( strtod(vstrTokens[1].c_str(), NULL)*1e6, vstrTokens[5].c_str(), vstrTokens[4].c_str() );
+        return;
+    }
+
+    if( !vstrTokens[3].compare("SCS.observed-maser-vlsr") )
+    {
+        sendObservedMaserVlsr( strtod(vstrTokens[1].c_str(), NULL)*1e6, strtod(vstrTokens[5].c_str(), NULL), vstrTokens[4].c_str() );
         return;
     }
 // PJP
@@ -1340,6 +1354,45 @@ void cStationControllerKATCPClient::sendObservationInfo(int64_t i64Timestamp_us,
     }
 }
 
+void cStationControllerKATCPClient::sendObservedMaserName(int64_t i64Timestamp_us, const string &strObservedMaserName, const std::string &strStatus)
+{
+    boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
+
+    //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
+    //to call function added in the derived version of the callback handler interface class
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
+    {
+        cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
+        pHandler->observedMaserName_callback(strObservedMaserName);
+    }
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
+    {
+        boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
+        pHandler->observedMaserName_callback(strObservedMaserName);
+    }
+}
+
+void cStationControllerKATCPClient::sendObservedMaserVlsr(int64_t i64Timestamp_us, double dObservedMaserVlsr, const std::string &strStatus)
+{
+    boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
+
+    //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
+    //to call function added in the derived version of the callback handler interface class
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
+    {
+        cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
+        pHandler->observedMaserVlsr_callback(i64Timestamp_us, dObservedMaserVlsr, strStatus);
+    }
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
+    {
+        boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
+        pHandler->observedMaserVlsr_callback(i64Timestamp_us, dObservedMaserVlsr, strStatus);
+    }
+}
 
 // Don't remove - this should still be implemented in the station controller.
 // Eventually.
