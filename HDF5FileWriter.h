@@ -250,8 +250,16 @@ class cHDF5FileWriter : public cSpectrometerDataStreamInterpreter::cCallbackInte
         // Antenna configuration
         std::string         m_strObservationInformation;
         double              m_dAntennaBeamwidth_deg;
-        std::string         m_strObservedMaserName;
-        double              m_dObservedMaserVlsr_km_s;
+        
+        // Observed Maser Name
+        int64_t  m_i64TSObservedMaserName_us;
+        char     m_chaVObservedMaserName[164];
+        char     m_chaObservedMaserNameStatus[7];
+        
+        // Observed Maser Vlsr
+        int64_t  m_i64TSObservedMaserVlsr_us;
+        double   m_dVObservedMaserVlsr_km_s;
+        char     m_chaObservedMaserVlsrStatus[7];
 
     } cInitialValueSet;
 
