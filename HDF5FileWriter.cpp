@@ -1080,14 +1080,14 @@ void cHDF5FileWriter::observedMaserName_callback(int64_t i64Timestamp_us, const 
 {
     m_oInitialValueSet.m_strObservedMaserName = strObservedMaserName;
     if(getState() == RECORDING)
-        m_pHDF5File->setObservedMaserName(m_oInitialValueSet.m_strObservedMaserName);
+        m_pHDF5File->addObservedMaserName(m_oInitialValueSet.m_strObservedMaserName);
 }
 
 void cHDF5FileWriter::observedMaserVlsr_callback(int64_t i64Timestamp_us, double dObservedMaserVlsr_km_s, const std::string &strStatus)
 {
     m_oInitialValueSet.m_dObservedMaserVlsr_km_s = dObservedMaserVlsr_km_s;
     if(getState() == RECORDING)
-        m_pHDF5File->setObservedMaserVlsr(m_oInitialValueSet.m_dObservedMaserVlsr_km_s);
+        m_pHDF5File->addObservedMaserVlsr(m_oInitialValueSet.m_dObservedMaserVlsr_km_s);
 }
 
 void cHDF5FileWriter::rNoiseDiode5GHzInputSource_callback(int64_t i64Timestamp_us, const string &strInputSource, const string &strStatus)

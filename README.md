@@ -10,7 +10,7 @@ If making changes to the SpectrometerDataStream repo (submodule located in AVNDa
 When committing and pushing, any changes to the SpectrometerDataStream repo must be committed first, so that the link to the submodule is preserved. Push the submodule, and then the main repo.
 
 ## Build Image
-`docker build -t roach2 .`
+`docker build --no-cache -t roach2 .`
 
 ## Run Container
 ```
@@ -33,5 +33,5 @@ roach2 /workspace/RoachAcquisitionServer/bin/RoachAcquisitionServer \
 Add the servers (Reber) ssh key to your GitHub account. Git pull as normal.
 After pulling, submodules may need to be sync'd: `git submodule update --init --recursive`
 If desired, save a copy of the current image: `docker tag roach2:latest roach2:20260501`
-Build the image: `docker build -t roach2 .`
+Build the image: `docker --no-cache build -t roach2 .`
 Run by executing `./startWBS.sh` in the home directory
