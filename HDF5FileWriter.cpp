@@ -1109,7 +1109,7 @@ void cHDF5FileWriter::observedMaserVlsr_callback(int64_t i64Timestamp_us, double
         sprintf(m_oInitialValueSet.m_chaObservedMaserVlsrStatus, "%s", strStatus.c_str());
     }
     if(getState() == RECORDING)
-        m_pHDF5File->addObservedMaserVlsr(i64Timestamp_us, m_dVObservedMaserVlsr_km_s, strStatus);
+        m_pHDF5File->addObservedMaserVlsr(i64Timestamp_us, dObservedMaserVlsr_km_s, strStatus);
 }
 
 void cHDF5FileWriter::rNoiseDiode5GHzInputSource_callback(int64_t i64Timestamp_us, const string &strInputSource, const string &strStatus)
