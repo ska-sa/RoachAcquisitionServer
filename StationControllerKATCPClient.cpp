@@ -1364,13 +1364,13 @@ void cStationControllerKATCPClient::sendObservedMaserName(int64_t i64Timestamp_u
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
     {
         cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
-        pHandler->observedMaserName_callback(strObservedMaserName);
+        pHandler->observedMaserName_callback(i64Timestamp_us, strObservedMaserName, strStatus);
     }
 
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
     {
         boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
-        pHandler->observedMaserName_callback(strObservedMaserName);
+        pHandler->observedMaserName_callback(i64Timestamp_us, strObservedMaserName, strStatus);
     }
 }
 
