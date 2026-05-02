@@ -7,7 +7,8 @@
 If making changes to the SpectrometerDataStream repo (submodule located in AVNDataTypes), you must checkout the `scam_integration` branch.
 
 ## Commit and Push
-When committing and pushing, any changes to the SpectrometerDataStream repo must be committed first, so that the link to the submodule is preserved. Push the submodule, and then the main repo.
+When committing and pushing, any changes to the SpectrometerDataStream repo must be committed first, so that the link to the submodule is preserved. Push the submodule, and then the main repo. You may need to change from https to ssh as follows:
+`git remote set-url origin git@github.com:ska-sa/AVNSpectrometerDataStream.git`
 
 ## Build Image
 `docker build --no-cache -t roach2 .`
