@@ -35,3 +35,10 @@ After pulling, submodules may need to be sync'd: `git submodule update --init --
 If desired, save a copy of the current image: `docker tag roach2:latest roach2:20260501`
 Build the image: `docker --no-cache build -t roach2 .`
 Run by executing `./startWBS.sh` in the home directory
+
+## Testing a branch on site
+Modify the Dockerfile in `/home/avnuser/AVNSoftware/RoachAcquisitionServer` add the followiong lines after the `WORKDIR /workspace/RoachAcquisitionServer`
+```
+RUN git checkout <branch-name>
+RUN git submodule update --init --recursive
+```
