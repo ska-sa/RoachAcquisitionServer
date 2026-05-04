@@ -1094,7 +1094,7 @@ void cHDF5FileWriter::skyRequestedRaOffset_callback(int64_t i64Timestamp_us,doub
         sprintf(m_oInitialValueSet.m_chaSkyRequestedRaOffsetStatus, "%s", strStatus.c_str());
     }
     if(getState() == RECORDING)
-        m_pHDF5File->addSkyRequestedAz(i64Timestamp_us, dRightAscensionOffset_deg, strStatus);
+        m_pHDF5File->addSkyRequestedRaOffset(i64Timestamp_us, dRightAscensionOffset_deg, strStatus);
 }
 
 void cHDF5FileWriter::skyRequestedDecOffset_callback(int64_t i64Timestamp_us,double dDeclinationOffset_deg, const string &strStatus)
@@ -1107,7 +1107,7 @@ void cHDF5FileWriter::skyRequestedDecOffset_callback(int64_t i64Timestamp_us,dou
         sprintf(m_oInitialValueSet.m_chaSkyRequestedDecOffsetStatus, "%s", strStatus.c_str());
     }
     if(getState() == RECORDING)
-        m_pHDF5File->addSkyRequestedAz(i64Timestamp_us, dDeclinationOffset_deg, strStatus);
+        m_pHDF5File->addSkyRequestedDecOffset(i64Timestamp_us, dDeclinationOffset_deg, strStatus);
 }
 
 void cHDF5FileWriter::skyRequestedAzOffset_callback(int64_t i64Timestamp_us,double dAzimuthOffset_deg, const string &strStatus)
@@ -1120,7 +1120,7 @@ void cHDF5FileWriter::skyRequestedAzOffset_callback(int64_t i64Timestamp_us,doub
         sprintf(m_oInitialValueSet.m_chaSkyRequestedAzOffsetStatus, "%s", strStatus.c_str());
     }
     if(getState() == RECORDING)
-        m_pHDF5File->addSkyRequestedAz(i64Timestamp_us, dAzimuthOffset_deg, strStatus);
+        m_pHDF5File->addSkyRequestedAzOffset(i64Timestamp_us, dAzimuthOffset_deg, strStatus);
 }
 
 void cHDF5FileWriter::skyRequestedElOffset_callback(int64_t i64Timestamp_us,double dElevationOffset_deg, const string &strStatus)
@@ -1133,7 +1133,7 @@ void cHDF5FileWriter::skyRequestedElOffset_callback(int64_t i64Timestamp_us,doub
         sprintf(m_oInitialValueSet.m_chaSkyRequestedElOffsetStatus, "%s", strStatus.c_str());
     }
     if(getState() == RECORDING)
-        m_pHDF5File->addSkyRequestedAz(i64Timestamp_us, dElevationOffset_deg, strStatus);
+        m_pHDF5File->addSkyRequestedElOffset(i64Timestamp_us, dElevationOffset_deg, strStatus);
 }
 
 void cHDF5FileWriter::antennaStatus_callback(int64_t i64Timestamp_us, const string &strAntennaStatus, const string &strStatus)
