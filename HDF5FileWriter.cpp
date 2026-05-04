@@ -78,6 +78,22 @@ cHDF5FileWriter::cHDF5FileWriter(const string &strRecordingDirectory, uint32_t u
         for (int i = 0; i < 30; i++)
             m_oInitialValueSet.m_aPointingModel[i] = 0;
 
+        m_oInitialValueSet.m_i64TSSkyRequestedRaOffset_us = 0;
+        m_oInitialValueSet.m_dVSkyRequestedRaOffset_deg = 0;
+        sprintf(m_oInitialValueSet.m_chaSkyRequestedRaOffsetStatus, "0");
+
+        m_oInitialValueSet.m_i64TSSkyRequestedDecOffset_us = 0;
+        m_oInitialValueSet.m_dVSkyRequestedDecOffset_deg = 0;
+        sprintf(m_oInitialValueSet.m_chaSkyRequestedDecOffsetStatus, "0");
+
+        m_oInitialValueSet.m_i64TSSkyRequestedAzOffset_us = 0;
+        m_oInitialValueSet.m_dVSkyRequestedAzOffset_deg = 0;
+        sprintf(m_oInitialValueSet.m_chaSkyRequestedAzOffsetStatus, "0");
+
+        m_oInitialValueSet.m_i64TSSkyRequestedElOffset_us = 0;
+        m_oInitialValueSet.m_dVSkyRequestedElOffset_deg = 0;
+        sprintf(m_oInitialValueSet.m_chaSkyRequestedElOffsetStatus, "0");
+
         m_oInitialValueSet.m_i64TSAntennaStatus_us = 0;
         sprintf(m_oInitialValueSet.m_chaVAntennaStatus, "idle");
         sprintf(m_oInitialValueSet.m_chaAntennaStatusStatus, "0");
@@ -409,6 +425,22 @@ void cHDF5FileWriter::getNextFrame_callback(const std::vector<int> &vi32Chan0, c
                                         m_oInitialValueSet.m_chaSkyActualElevStatus);
         for (int i = 0; i < 30; i++)
             m_pHDF5File->addPointingModelParameter(i, m_oInitialValueSet.m_aPointingModel[i]);
+        if (m_oInitialValueSet.m_i64TSSkyRequestedRaOffset_us)
+            m_pHDF5File->addSkyRequestedRaOffset(m_oInitialValueSet.m_i64TSSkyRequestedRaOffset_us,
+                                                 m_oInitialValueSet.m_dVSkyRequestedRaOffset_deg,
+                                                 m_oInitialValueSet.m_chaSkyRequestedRaOffsetStatus);
+        if (m_oInitialValueSet.m_i64TSSkyRequestedDecOffset_us)
+            m_pHDF5File->addSkyRequestedDecOffset(m_oInitialValueSet.m_i64TSSkyRequestedDecOffset_us,
+                                                  m_oInitialValueSet.m_dVSkyRequestedDecOffset_deg,
+                                                  m_oInitialValueSet.m_chaSkyRequestedDecOffsetStatus);
+        if (m_oInitialValueSet.m_i64TSSkyRequestedAzOffset_us)
+            m_pHDF5File->addSkyRequestedAzOffset(m_oInitialValueSet.m_i64TSSkyRequestedAzOffset_us,
+                                                 m_oInitialValueSet.m_dVSkyRequestedAzOffset_deg,
+                                                 m_oInitialValueSet.m_chaSkyRequestedAzOffsetStatus);
+        if (m_oInitialValueSet.m_i64TSSkyRequestedElOffset_us)
+            m_pHDF5File->addSkyRequestedElOffset(m_oInitialValueSet.m_i64TSSkyRequestedElOffset_us,
+                                                 m_oInitialValueSet.m_dVSkyRequestedElOffset_deg,
+                                                 m_oInitialValueSet.m_chaSkyRequestedElOffsetStatus);
         if (m_oInitialValueSet.m_i64TSAntennaStatus_us)
             m_pHDF5File->addAntennaStatus(m_oInitialValueSet.m_i64TSAntennaStatus_us,
                                           m_oInitialValueSet.m_chaVAntennaStatus,
@@ -1050,6 +1082,58 @@ void cHDF5FileWriter::pointingModel_callback(uint8_t ui8ParameterNumber, double 
     }
     if (getState() == RECORDING)
         m_pHDF5File->addPointingModelParameter(ui8ParameterNumber - 1, dParameterValue);
+}
+
+void cHDF5FileWriter::skyRequestedRaOffset_callback(int64_t i64Timestamp_us,double dRightAscensionOffset_deg, const string &strStatus)
+{
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSSkyRequestedRaOffset_us)
+    {
+        boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+        m_oInitialValueSet.m_i64TSSkyRequestedRaOffset_us = i64Timestamp_us;
+        m_oInitialValueSet.m_dVSkyRequestedRaOffset_deg = dRightAscensionOffset_deg;
+        sprintf(m_oInitialValueSet.m_chaSkyRequestedRaOffsetStatus, "%s", strStatus.c_str());
+    }
+    if(getState() == RECORDING)
+        m_pHDF5File->addSkyRequestedAz(i64Timestamp_us, dRightAscensionOffset_deg, strStatus);
+}
+
+void cHDF5FileWriter::skyRequestedDecOffset_callback(int64_t i64Timestamp_us,double dDeclinationOffset_deg, const string &strStatus)
+{
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSSkyRequestedDecOffset_us)
+    {
+        boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+        m_oInitialValueSet.m_i64TSSkyRequestedDecOffset_us = i64Timestamp_us;
+        m_oInitialValueSet.m_dVSkyRequestedDecOffset_deg = dDeclinationOffset_deg;
+        sprintf(m_oInitialValueSet.m_chaSkyRequestedDecOffsetStatus, "%s", strStatus.c_str());
+    }
+    if(getState() == RECORDING)
+        m_pHDF5File->addSkyRequestedAz(i64Timestamp_us, dDeclinationOffset_deg, strStatus);
+}
+
+void cHDF5FileWriter::skyRequestedAzOffset_callback(int64_t i64Timestamp_us,double dAzimuthOffset_deg, const string &strStatus)
+{
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSSkyRequestedAzOffset_us)
+    {
+        boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+        m_oInitialValueSet.m_i64TSSkyRequestedAzOffset_us = i64Timestamp_us;
+        m_oInitialValueSet.m_dVSkyRequestedAzOffset_deg = dAzimuthOffset_deg;
+        sprintf(m_oInitialValueSet.m_chaSkyRequestedAzOffsetStatus, "%s", strStatus.c_str());
+    }
+    if(getState() == RECORDING)
+        m_pHDF5File->addSkyRequestedAz(i64Timestamp_us, dAzimuthOffset_deg, strStatus);
+}
+
+void cHDF5FileWriter::skyRequestedElOffset_callback(int64_t i64Timestamp_us,double dElevationOffset_deg, const string &strStatus)
+{
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSSkyRequestedElOffset_us)
+    {
+        boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+        m_oInitialValueSet.m_i64TSSkyRequestedElOffset_us = i64Timestamp_us;
+        m_oInitialValueSet.m_dVSkyRequestedElOffset_deg = dElevationOffset_deg;
+        sprintf(m_oInitialValueSet.m_chaSkyRequestedElOffsetStatus, "%s", strStatus.c_str());
+    }
+    if(getState() == RECORDING)
+        m_pHDF5File->addSkyRequestedAz(i64Timestamp_us, dElevationOffset_deg, strStatus);
 }
 
 void cHDF5FileWriter::antennaStatus_callback(int64_t i64Timestamp_us, const string &strAntennaStatus, const string &strStatus)

@@ -109,6 +109,26 @@ class cHDF5FileWriter : public cSpectrometerDataStreamInterpreter::cCallbackInte
 
         double  m_aPointingModel[30];
 
+        // Sky-space requested RA offset - cTimestampedDouble
+        int64_t m_i64TSSkyRequestedRaOffset_us;
+        double  m_dVSkyRequestedRaOffset_deg;
+        char    m_chaSkyRequestedRaOffsetStatus[7];
+
+        // Sky-space requested Dec offset - cTimestampedDouble
+        int64_t m_i64TSSkyRequestedDecOffset_us;
+        double  m_dVSkyRequestedDecOffset_deg;
+        char    m_chaSkyRequestedDecOffsetStatus[7];
+
+        // Sky-space requested Azim offset - cTimestampedDouble
+        int64_t m_i64TSSkyRequestedAzOffset_us;
+        double  m_dVSkyRequestedAzOffset_deg;
+        char    m_chaSkyRequestedAzOffsetStatus[7];
+
+        // Sky-space requested Elev offset - cTimestampedDouble
+        int64_t m_i64TSSkyRequestedElOffset_us;
+        double  m_dVSkyRequestedElOffset_deg;
+        char    m_chaSkyRequestedElOffsetStatus[7];
+
         // Antenna status
         int64_t m_i64TSAntennaStatus_us;
         char    m_chaVAntennaStatus[16];
@@ -323,6 +343,12 @@ public:
     void                                                skyActualEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus);
 
     void                                                pointingModel_callback(uint8_t ui8ParameterNumber, double dParameterValue);
+
+    //Antenna offsets
+    void                                                skyRequestedRaOffset_callback(int64_t i64Timestamp_us, double dRightAscensionOffset_deg, const std::string &strStatus);
+    void                                                skyRequestedDecOffset_callback(int64_t i64Timestamp_us, double dDeclinationOffset_deg, const std::string &strStatus);
+    void                                                skyRequestedAzOffset_callback(int64_t i64Timestamp_us, double dAzimuthOffset_deg, const std::string &strStatus);
+    void                                                skyRequestedElOffset_callback(int64_t i64Timestamp_us, double dElevationOffset_deg, const std::string &strStatus);
 
     void                                                antennaStatus_callback(int64_t i64Timestamp_us, const std::string &strAntennaStatus, const std::string &strStatus);
 

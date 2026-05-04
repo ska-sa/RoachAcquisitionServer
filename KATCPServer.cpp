@@ -1327,6 +1327,10 @@ void cKATCPServer::cKATCPClientCallbackHandler::skyDesiredEl_callback(int64_t i6
 void cKATCPServer::cKATCPClientCallbackHandler::skyActualAz_callback(int64_t i64Timestamp_us, double dAzimuth_deg, const std::string &strStatus) {}
 void cKATCPServer::cKATCPClientCallbackHandler::skyActualEl_callback(int64_t i64Timestamp_us, double dElevation_deg, const std::string &strStatus) {}
 void cKATCPServer::cKATCPClientCallbackHandler::pointingModel_callback(uint8_t i8ParameterNumber, double dParameterValue) {}
+void cKATCPServer::cKATCPClientCallbackHandler::skyRequestedRaOffset_callback(int64_t i64Timestamp_us, double dRightAscensionOffset_deg, const std::string &strStatus) {};
+void cKATCPServer::cKATCPClientCallbackHandler::skyRequestedDecOffset_callback(int64_t i64Timestamp_us, double dDeclinationOffset_deg, const std::string &strStatus) {};
+void cKATCPServer::cKATCPClientCallbackHandler::skyRequestedAzOffset_callback(int64_t i64Timestamp_us, double dAzimuthOffset_deg, const std::string &strStatus) {};
+void cKATCPServer::cKATCPClientCallbackHandler::skyRequestedElOffset_callback(int64_t i64Timestamp_us, double dElevationOffset_deg, const std::string &strStatus) {};
 void cKATCPServer::cKATCPClientCallbackHandler::antennaStatus_callback(int64_t i64Timestamp_us, const std::string &strAntennaStatus, const std::string &strStatus) {}
 void cKATCPServer::cKATCPClientCallbackHandler::observationInfo_callback(const std::string &strObservationInfo) {}
 void cKATCPServer::cKATCPClientCallbackHandler::antennaBeamwidth_callback(int64_t i64Timestamp_us, const std::string &strAntennaBeamwidth, const std::string &strStatus) {}
