@@ -38,10 +38,10 @@ public:
         virtual void                                    pointingModel_callback(uint8_t i8ParameterNumber, double dParameterValue) = 0;
 
         //Antenna offsets
-        virtual void                                    skyRequestedRaOffset_callback(int64_t i64Timestamp_us, double dRightAscensionOffset_deg, const std::string &strStatus) = 0;
-        virtual void                                    skyRequestedDecOffset_callback(int64_t i64Timestamp_us, double dDeclinationOffset_deg, const std::string &strStatus) = 0;
-        virtual void                                    skyRequestedAzOffset_callback(int64_t i64Timestamp_us, double dAzimuthOffset_deg, const std::string &strStatus) = 0;
-        virtual void                                    skyRequestedElOffset_callback(int64_t i64Timestamp_us, double dElevationOffset_deg, const std::string &strStatus) = 0;
+        virtual void                                    RequestedRaOffset_callback(int64_t i64Timestamp_us, double dRightAscensionOffset_deg, const std::string &strStatus) = 0;
+        virtual void                                    RequestedDecOffset_callback(int64_t i64Timestamp_us, double dDeclinationOffset_deg, const std::string &strStatus) = 0;
+        virtual void                                    RequestedAzOffset_callback(int64_t i64Timestamp_us, double dAzimuthOffset_deg, const std::string &strStatus) = 0;
+        virtual void                                    RequestedElOffset_callback(int64_t i64Timestamp_us, double dElevationOffset_deg, const std::string &strStatus) = 0;
 
         virtual void                                    observationInfo_callback(const std::string &strstrObservationInfo) = 0;
         virtual void                                    antennaBeamwidth_callback(int64_t i64Timestamp_us, const std::string &strAntennaBeamwidth, const std::string &strStatus) = 0;

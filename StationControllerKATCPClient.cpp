@@ -939,13 +939,13 @@ void cStationControllerKATCPClient::sendRequestedRaOffset(int64_t i64Timestamp_u
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
     {
         cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
-        pHandler->skyRequestedRaOffset_callback(i64Timestamp_us, dRightAscensionOffset_deg, strStatus);
+        pHandler->RequestedRaOffset_callback(i64Timestamp_us, dRightAscensionOffset_deg, strStatus);
     }
 
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
     {
         boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
-        pHandler->skyRequestedRaOffset_callback(i64Timestamp_us, dRightAscensionOffset_deg, strStatus);
+        pHandler->RequestedRaOffset_callback(i64Timestamp_us, dRightAscensionOffset_deg, strStatus);
     }
 }
 
@@ -959,13 +959,13 @@ void cStationControllerKATCPClient::sendRequestedDecOffset(int64_t i64Timestamp_
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
     {
         cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
-        pHandler->skyRequestedDecOffset_callback(i64Timestamp_us, dDeclinationOffset_deg, strStatus);
+        pHandler->RequestedDecOffset_callback(i64Timestamp_us, dDeclinationOffset_deg, strStatus);
     }
 
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
     {
         boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
-        pHandler->skyRequestedDecOffset_callback(i64Timestamp_us, dDeclinationOffset_deg, strStatus);
+        pHandler->RequestedDecOffset_callback(i64Timestamp_us, dDeclinationOffset_deg, strStatus);
     }
 }
 
@@ -979,13 +979,13 @@ void cStationControllerKATCPClient::sendRequestedAzimOffset(int64_t i64Timestamp
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
     {
         cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
-        pHandler->skyRequestedAzOffset_callback(i64Timestamp_us, dAzimuthOffset_deg, strStatus);
+        pHandler->RequestedAzOffset_callback(i64Timestamp_us, dAzimuthOffset_deg, strStatus);
     }
 
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
     {
         boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
-        pHandler->skyRequestedAzOffset_callback(i64Timestamp_us, dAzimuthOffset_deg, strStatus);
+        pHandler->RequestedAzOffset_callback(i64Timestamp_us, dAzimuthOffset_deg, strStatus);
     }
 }
 
@@ -999,13 +999,13 @@ void cStationControllerKATCPClient::sendRequestedElevOffset(int64_t i64Timestamp
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
     {
         cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
-        pHandler->skyRequestedElOffset_callback(i64Timestamp_us, dElevationOffset_deg, strStatus);
+        pHandler->RequestedElOffset_callback(i64Timestamp_us, dElevationOffset_deg, strStatus);
     }
 
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
     {
         boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
-        pHandler->skyRequestedElOffset_callback(i64Timestamp_us, dElevationOffset_deg, strStatus);
+        pHandler->RequestedElOffset_callback(i64Timestamp_us, dElevationOffset_deg, strStatus);
     }
 }
 
