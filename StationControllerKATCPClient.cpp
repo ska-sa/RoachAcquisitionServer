@@ -94,7 +94,7 @@ cStationControllerKATCPClient::cStationControllerKATCPClient() :
 
     // Observation metadata such as targets, etc.
     m_vstrSensorSampling.push_back("SCS.HPBW event");
-    m_vstrSensorSampling.push_back("SCS.ObservationInformation event");
+    m_vstrSensorSampling.push_back("SCS.AntennaInfo event");
     m_vstrSensorSampling.push_back("SCS.observed-maser-name event");
     m_vstrSensorSampling.push_back("SCS.observed-maser-vlsr event");
 }
@@ -598,9 +598,9 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
         return;
     }
 
-    if( !vstrTokens[3].compare("SCS.ObservationInformation") )
+    if( !vstrTokens[3].compare("SCS.AntennaInfo") )
     {
-        sendObservationInfo( strtod(vstrTokens[1].c_str(), NULL)*1e6, vstrTokens[5].c_str(), vstrTokens[4].c_str() );
+        sendAntennaInfo( strtod(vstrTokens[1].c_str(), NULL)*1e6, vstrTokens[5].c_str(), vstrTokens[4].c_str() );
         return;
     }
 
@@ -1441,7 +1441,7 @@ void cStationControllerKATCPClient::sendAntennaBeamwidth(int64_t i64Timestamp_us
     }
 }
 
-void cStationControllerKATCPClient::sendObservationInfo(int64_t i64Timestamp_us, const string &strObservationInformation, const std::string &strStatus)
+void cStationControllerKATCPClient::sendAntennaInfo(int64_t i64Timestamp_us, const string &strAntennaInfo, const std::string &strStatus)
 {
     boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
 
@@ -1451,13 +1451,13 @@ void cStationControllerKATCPClient::sendObservationInfo(int64_t i64Timestamp_us,
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
     {
         cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
-        pHandler->observationInfo_callback(strObservationInformation);
+        pHandler->antennaInfo_callback(i64Timestamp_us, strAntennaInfo, strStatus);
     }
 
     for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
     {
         boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
-        pHandler->observationInfo_callback(strObservationInformation);
+        pHandler->antennaInfo_callback(i64Timestamp_us, strAntennaInfo, strStatus);
     }
 }
 

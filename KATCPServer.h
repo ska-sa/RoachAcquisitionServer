@@ -146,7 +146,7 @@ public:
 
 
         void                                    antennaStatus_callback(int64_t i64Timestamp_us, const std::string &strAntennaStatus, const std::string &strStatus);
-        void                                    observationInfo_callback(const std::string &strObservationInfo);
+        void                                    antennaInfo_callback(int64_t i64Timestamp_us, const std::string &strAntennaInfo, const std::string &strStatus);
         void                                    antennaBeamwidth_callback(int64_t i64Timestamp_us, const std::string &strAntennaBeamwidth, const std::string &strStatus);
 
         //Observed Maser values

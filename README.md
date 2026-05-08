@@ -11,6 +11,12 @@ When committing and pushing, any changes to the SpectrometerDataStream repo must
 `git remote set-url origin git@github.com:ska-sa/AVNSpectrometerDataStream.git`
 
 ## Build Image
+### Local Development Machine
+First build the base image, once off, followed by the development image whenever you want to test the code builds.
+`docker build -f Dockerfile-dev-base --no-cache -t roach2-base .`
+`docker build -f Dockerfile-dev --no-cache -t roach2-dev .`
+
+### Production Server
 `docker build --no-cache -t roach2 .`
 
 ## Run Container

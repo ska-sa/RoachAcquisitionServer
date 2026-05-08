@@ -268,12 +268,12 @@ class cHDF5FileWriter : public cSpectrometerDataStreamInterpreter::cCallbackInte
         double   m_dVAttenuationADCChan1_dB;
 
         // Antenna configuration
-        std::string         m_strObservationInformation;
-        double              m_dAntennaBeamwidth_deg;
+        std::string m_strAntennaInfo;
+        double      m_dAntennaBeamwidth_deg;
         
         // Observed Maser Name
         int64_t  m_i64TSObservedMaserName_us;
-        char     m_chaVObservedMaserName[164];
+        char     m_chaVObservedMaserName[32];
         char     m_chaObservedMaserNameStatus[7];
         
         // Observed Maser Vlsr
@@ -353,7 +353,7 @@ public:
     void                                                antennaStatus_callback(int64_t i64Timestamp_us, const std::string &strAntennaStatus, const std::string &strStatus);
 
     void                                                appliedPointingModel_callback(const std::string &strModelName, const std::vector<double> &vdPointingModelParams);
-    void                                                observationInfo_callback(const std::string &strObservationInfo);
+    void                                                antennaInfo_callback(int64_t i64Timestamp_us, const std::string &strAntennaInfo, const std::string &strStatus);
     void                                                antennaBeamwidth_callback(int64_t i64Timestamp_us, const std::string &strAntennaBeamwidth, const std::string &strStatus);
     void                                                observedMaserName_callback(int64_t i64Timestamp_us, const std::string &strObservedMaserName, const std::string &strStatus);
     void                                                observedMaserVlsr_callback(int64_t i64Timestamp_us, double dObservedMaserVlsr_km_s, const std::string &strStatus);

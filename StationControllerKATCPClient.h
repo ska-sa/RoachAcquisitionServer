@@ -43,7 +43,7 @@ public:
         virtual void                                    RequestedAzOffset_callback(int64_t i64Timestamp_us, double dAzimuthOffset_deg, const std::string &strStatus) = 0;
         virtual void                                    RequestedElOffset_callback(int64_t i64Timestamp_us, double dElevationOffset_deg, const std::string &strStatus) = 0;
 
-        virtual void                                    observationInfo_callback(const std::string &strstrObservationInfo) = 0;
+        virtual void                                    antennaInfo_callback(int64_t i64Timestamp_us, const std::string &strAntennaInfo, const std::string &strStatus) = 0;
         virtual void                                    antennaBeamwidth_callback(int64_t i64Timestamp_us, const std::string &strAntennaBeamwidth, const std::string &strStatus) = 0;
         virtual void                                    antennaStatus_callback(int64_t i64Timestamp_us, const std::string &strAntennaStatus, const std::string &strStatus) = 0;
 
@@ -133,7 +133,7 @@ private:
     void                                                sendAntennaStatus(int64_t i64Timestamp_us, std::string strAntennaStatus, const std::string &strStatus);
 // PJP    
     void                                                sendAntennaBeamwidth(int64_t i64Timestamp_us, const std::string &strAntennaBeamwidth, const std::string &strStatus);
-    void                                                sendObservationInfo(int64_t i64Timestamp_us, const std::string &strObservationInformation, const std::string &strStatus);
+    void                                                sendAntennaInfo(int64_t i64Timestamp_us, const std::string &strAntennaInfo, const std::string &strStatus);
     void                                                sendObservedMaserName(int64_t i64Timestamp_us, const std::string &strObservedMaserName, const std::string &strStatus);
     void                                                sendObservedMaserVlsr(int64_t i64Timestamp_us, double dObservedMaserVlsr, const std::string &strStatus);
 // PJP

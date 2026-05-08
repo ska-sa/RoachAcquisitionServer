@@ -1332,7 +1332,7 @@ void cKATCPServer::cKATCPClientCallbackHandler::RequestedDecOffset_callback(int6
 void cKATCPServer::cKATCPClientCallbackHandler::RequestedAzOffset_callback(int64_t i64Timestamp_us, double dAzimuthOffset_deg, const std::string &strStatus) {};
 void cKATCPServer::cKATCPClientCallbackHandler::RequestedElOffset_callback(int64_t i64Timestamp_us, double dElevationOffset_deg, const std::string &strStatus) {};
 void cKATCPServer::cKATCPClientCallbackHandler::antennaStatus_callback(int64_t i64Timestamp_us, const std::string &strAntennaStatus, const std::string &strStatus) {}
-void cKATCPServer::cKATCPClientCallbackHandler::observationInfo_callback(const std::string &strObservationInfo) {}
+void cKATCPServer::cKATCPClientCallbackHandler::antennaInfo_callback(int64_t i64Timestamp_us, const std::string &strAntennaInfo, const std::string &strStatus) {}
 void cKATCPServer::cKATCPClientCallbackHandler::antennaBeamwidth_callback(int64_t i64Timestamp_us, const std::string &strAntennaBeamwidth, const std::string &strStatus) {}
 void cKATCPServer::cKATCPClientCallbackHandler::observedMaserName_callback(int64_t i64Timestamp_us, const std::string &strObservedMaserName, const std::string &strStatus) {}
 void cKATCPServer::cKATCPClientCallbackHandler::observedMaserVlsr_callback(int64_t i64Timestamp_us, double dObservedMaserVlsr_km_s, const std::string &strStatus) {}

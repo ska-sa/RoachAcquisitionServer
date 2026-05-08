@@ -210,7 +210,7 @@ cHDF5FileWriter::cHDF5FileWriter(const string &strRecordingDirectory, uint32_t u
 
         // PJP
         m_oInitialValueSet.m_dAntennaBeamwidth_deg = 0.0;
-        m_oInitialValueSet.m_strObservationInformation = "";
+        m_oInitialValueSet.m_strAntennaInfo = "";
 
         m_oInitialValueSet.m_i64TSObservedMaserName_us = 0;
         sprintf(m_oInitialValueSet.m_chaVObservedMaserName, "");
@@ -559,8 +559,8 @@ void cHDF5FileWriter::getNextFrame_callback(const std::vector<int> &vi32Chan0, c
         if (m_oInitialValueSet.m_dAntennaBeamwidth_deg)
             m_pHDF5File->setAntennaBeamwidth(m_oInitialValueSet.m_dAntennaBeamwidth_deg);
 
-        if ("" != m_oInitialValueSet.m_strObservationInformation)
-            m_pHDF5File->setObservationInfo(m_oInitialValueSet.m_strObservationInformation);
+        if ("" != m_oInitialValueSet.m_strAntennaInfo)
+            m_pHDF5File->setAntennaInfo(m_oInitialValueSet.m_strAntennaInfo);
 
         if (m_oInitialValueSet.m_i64TSObservedMaserName_us)
             m_pHDF5File->addObservedMaserName(m_oInitialValueSet.m_i64TSObservedMaserName_us,
@@ -1153,11 +1153,12 @@ void cHDF5FileWriter::appliedPointingModel_callback(const string &strModelName, 
 }
 */
 
-void cHDF5FileWriter::observationInfo_callback(const string &strObservationInfo)
+void cHDF5FileWriter::antennaInfo_callback(int64_t i64Timestamp_us, const string &strAntennaInfo, const string &strStatus)
 {
-    m_oInitialValueSet.m_strObservationInformation = strObservationInfo;
-   if(getState() == RECORDING)
-        m_pHDF5File->setObservationInfo(m_oInitialValueSet.m_strObservationInformation);
+    m_oInitialValueSet.m_strAntennaInfo = strAntennaInfo;
+
+    if(getState() == RECORDING)
+        m_pHDF5File->setAntennaInfo(m_oInitialValueSet.m_strAntennaInfo);
 }
 
 void cHDF5FileWriter::antennaBeamwidth_callback(int64_t i64Timestamp_us, const std::string &strAntennaBeamwidth, const std::string &strStatus)
