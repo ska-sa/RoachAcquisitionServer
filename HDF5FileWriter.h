@@ -271,15 +271,10 @@ class cHDF5FileWriter : public cSpectrometerDataStreamInterpreter::cCallbackInte
         std::string m_strAntennaInfo;
         double      m_dAntennaBeamwidth_deg;
         
-        // Observed Maser Name
-        int64_t  m_i64TSObservedMaserName_us;
-        char     m_chaVObservedMaserName[32];
-        char     m_chaObservedMaserNameStatus[7];
-        
-        // Observed Maser Vlsr
-        int64_t  m_i64TSObservedMaserVlsr_us;
-        double   m_dVObservedMaserVlsr_km_s;
-        char     m_chaObservedMaserVlsrStatus[7];
+        // Observed Maser
+        int64_t     m_i64TSObservedMaser_us;
+        std::string m_strObservedMaser;
+        char        m_chaObservedMaserStatus[7];
 
     } cInitialValueSet;
 
@@ -355,9 +350,7 @@ public:
     void                                                appliedPointingModel_callback(const std::string &strModelName, const std::vector<double> &vdPointingModelParams);
     void                                                antennaInfo_callback(int64_t i64Timestamp_us, const std::string &strAntennaInfo, const std::string &strStatus);
     void                                                antennaBeamwidth_callback(int64_t i64Timestamp_us, const std::string &strAntennaBeamwidth, const std::string &strStatus);
-    void                                                observedMaserName_callback(int64_t i64Timestamp_us, const std::string &strObservedMaserName, const std::string &strStatus);
-    void                                                observedMaserVlsr_callback(int64_t i64Timestamp_us, double dObservedMaserVlsr_km_s, const std::string &strStatus);
-
+    void                                                observedMaser_callback(int64_t i64Timestamp_us, const std::string &strObservedMaser, const std::string &strStatus);
 
     //Noise diode values
     void                                                rNoiseDiode5GHzInputSource_callback(int64_t i64Timestamp_us, const std::string &strNoiseDiodeInputSource, const std::string &strStatus);

@@ -212,13 +212,9 @@ cHDF5FileWriter::cHDF5FileWriter(const string &strRecordingDirectory, uint32_t u
         m_oInitialValueSet.m_dAntennaBeamwidth_deg = 0.0;
         m_oInitialValueSet.m_strAntennaInfo = "";
 
-        m_oInitialValueSet.m_i64TSObservedMaserName_us = 0;
-        sprintf(m_oInitialValueSet.m_chaVObservedMaserName, "");
-        sprintf(m_oInitialValueSet.m_chaObservedMaserNameStatus, "0");
-
-        m_oInitialValueSet.m_i64TSObservedMaserVlsr_us = 0;
-        m_oInitialValueSet.m_dVObservedMaserVlsr_km_s = 0;
-        sprintf(m_oInitialValueSet.m_chaObservedMaserVlsrStatus, "0");
+        m_oInitialValueSet.m_i64TSObservedMaser_us = 0;
+        m_oInitialValueSet.m_strObservedMaser = "";
+        sprintf(m_oInitialValueSet.m_chaObservedMaserStatus, "0");
     }
 }
 
@@ -562,15 +558,10 @@ void cHDF5FileWriter::getNextFrame_callback(const std::vector<int> &vi32Chan0, c
         if ("" != m_oInitialValueSet.m_strAntennaInfo)
             m_pHDF5File->setAntennaInfo(m_oInitialValueSet.m_strAntennaInfo);
 
-        if (m_oInitialValueSet.m_i64TSObservedMaserName_us)
-            m_pHDF5File->addObservedMaserName(m_oInitialValueSet.m_i64TSObservedMaserName_us,
-                                              m_oInitialValueSet.m_chaVObservedMaserName,
-                                              m_oInitialValueSet.m_chaObservedMaserNameStatus);
-
-        if (m_oInitialValueSet.m_i64TSObservedMaserVlsr_us)
-            m_pHDF5File->addObservedMaserVlsr(m_oInitialValueSet.m_i64TSObservedMaserVlsr_us,
-                                              m_oInitialValueSet.m_dVObservedMaserVlsr_km_s,
-                                              m_oInitialValueSet.m_chaObservedMaserVlsrStatus);
+        if (m_oInitialValueSet.m_i64TSObservedMaser_us)
+            m_pHDF5File->addObservedMaser(m_oInitialValueSet.m_i64TSObservedMaser_us,
+                                          m_oInitialValueSet.m_strObservedMaser,
+                                          m_oInitialValueSet.m_chaObservedMaserStatus);
 
         setState(RECORDING);
 
@@ -1171,30 +1162,17 @@ void cHDF5FileWriter::antennaBeamwidth_callback(int64_t i64Timestamp_us, const s
     }
 }
 
-void cHDF5FileWriter::observedMaserName_callback(int64_t i64Timestamp_us, const string &strObservedMaserName, const std::string &strStatus)
+void cHDF5FileWriter::observedMaser_callback(int64_t i64Timestamp_us, const string &strObservedMaser, const std::string &strStatus)
 {
-    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSObservedMaserName_us)
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSObservedMaser_us)
     {
         boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
-        m_oInitialValueSet.m_i64TSObservedMaserName_us = i64Timestamp_us;
-        sprintf(m_oInitialValueSet.m_chaVObservedMaserName, "%s", strObservedMaserName.c_str());
-        sprintf(m_oInitialValueSet.m_chaObservedMaserNameStatus, "%s", strStatus.c_str());
+        m_oInitialValueSet.m_i64TSObservedMaser_us = i64Timestamp_us;
+        m_oInitialValueSet.m_strObservedMaser = strObservedMaser;
+        sprintf(m_oInitialValueSet.m_chaObservedMaserStatus, "%s", strStatus.c_str());
     }
     if(getState() == RECORDING)
-        m_pHDF5File->addObservedMaserName(i64Timestamp_us, strObservedMaserName, strStatus);
-}
-
-void cHDF5FileWriter::observedMaserVlsr_callback(int64_t i64Timestamp_us, double dObservedMaserVlsr_km_s, const std::string &strStatus)
-{
-    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSObservedMaserVlsr_us)
-    {
-        boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
-        m_oInitialValueSet.m_i64TSObservedMaserVlsr_us = i64Timestamp_us;
-        m_oInitialValueSet.m_dVObservedMaserVlsr_km_s = dObservedMaserVlsr_km_s;
-        sprintf(m_oInitialValueSet.m_chaObservedMaserVlsrStatus, "%s", strStatus.c_str());
-    }
-    if(getState() == RECORDING)
-        m_pHDF5File->addObservedMaserVlsr(i64Timestamp_us, dObservedMaserVlsr_km_s, strStatus);
+        m_pHDF5File->addObservedMaser(i64Timestamp_us, strObservedMaser, strStatus);
 }
 
 void cHDF5FileWriter::rNoiseDiode5GHzInputSource_callback(int64_t i64Timestamp_us, const string &strInputSource, const string &strStatus)

@@ -47,9 +47,8 @@ public:
         virtual void                                    antennaBeamwidth_callback(int64_t i64Timestamp_us, const std::string &strAntennaBeamwidth, const std::string &strStatus) = 0;
         virtual void                                    antennaStatus_callback(int64_t i64Timestamp_us, const std::string &strAntennaStatus, const std::string &strStatus) = 0;
 
-        //Observed Maser values
-        virtual void                                    observedMaserName_callback(int64_t i64Timestamp_us, const std::string &strObservedMaserName, const std::string &strStatus) = 0;
-        virtual void                                    observedMaserVlsr_callback(int64_t i64Timestamp_us, double dObservedMaserVlsr_km_s, const std::string &strStatus) = 0;
+        //Observed Maser
+        virtual void                                    observedMaser_callback(int64_t i64Timestamp_us, const std::string &strObservedMaser, const std::string &strStatus) = 0;
 
         //Global experiment values
         virtual void                                    sourceSelection_callback(int64_t i64Timestamp_us, const std::string &strSourceName, const std::string &strStatus) = 0;
@@ -134,8 +133,7 @@ private:
 // PJP    
     void                                                sendAntennaBeamwidth(int64_t i64Timestamp_us, const std::string &strAntennaBeamwidth, const std::string &strStatus);
     void                                                sendAntennaInfo(int64_t i64Timestamp_us, const std::string &strAntennaInfo, const std::string &strStatus);
-    void                                                sendObservedMaserName(int64_t i64Timestamp_us, const std::string &strObservedMaserName, const std::string &strStatus);
-    void                                                sendObservedMaserVlsr(int64_t i64Timestamp_us, double dObservedMaserVlsr, const std::string &strStatus);
+    void                                                sendObservedMaser(int64_t i64Timestamp_us, const std::string &strObservedMaser, const std::string &strStatus);
 // PJP
 
     //Noise diode values
