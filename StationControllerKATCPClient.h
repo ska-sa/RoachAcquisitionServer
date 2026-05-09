@@ -50,6 +50,9 @@ public:
         //Observed Maser
         virtual void                                    observedMaser_callback(int64_t i64Timestamp_us, const std::string &strObservedMaser, const std::string &strStatus) = 0;
 
+        //Observation details
+        virtual void                                    observationDetails_callback(int64_t i64Timestamp_us, const std::string &strObservationDetails, const std::string &strStatus) = 0;
+
         //Global experiment values
         virtual void                                    sourceSelection_callback(int64_t i64Timestamp_us, const std::string &strSourceName, const std::string &strStatus) = 0;
         // Onsource sensor
@@ -134,6 +137,7 @@ private:
     void                                                sendAntennaBeamwidth(int64_t i64Timestamp_us, const std::string &strAntennaBeamwidth, const std::string &strStatus);
     void                                                sendAntennaInfo(int64_t i64Timestamp_us, const std::string &strAntennaInfo, const std::string &strStatus);
     void                                                sendObservedMaser(int64_t i64Timestamp_us, const std::string &strObservedMaser, const std::string &strStatus);
+    void                                                sendObservationDetails(int64_t i64Timestamp_us, const std::string &strObservationDetails, const std::string &strStatus);
 // PJP
 
     //Noise diode values

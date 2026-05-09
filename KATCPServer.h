@@ -152,6 +152,9 @@ public:
         //Observed Maser
         void                                    observedMaser_callback(int64_t i64Timestamp_us, const std::string &strObservedMaser, const std::string &strStatus);
 
+        //Observation details
+        void                                    observationDetails_callback(int64_t i64Timestamp_us, const std::string &strObservationDetails, const std::string &strStatus);
+
         //Global experiment values
         void                                    sourceSelection_callback(int64_t i64Timestamp_us, const std::string &strSourceName, const std::string &strStatus);
         

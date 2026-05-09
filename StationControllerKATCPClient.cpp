@@ -96,6 +96,7 @@ cStationControllerKATCPClient::cStationControllerKATCPClient() :
     m_vstrSensorSampling.push_back("SCS.HPBW event");
     m_vstrSensorSampling.push_back("SCS.AntennaInfo event");
     m_vstrSensorSampling.push_back("SCS.observed-maser event");
+    m_vstrSensorSampling.push_back("SCS.observation-details event");
 }
 
 cStationControllerKATCPClient::~cStationControllerKATCPClient()
@@ -606,6 +607,12 @@ void cStationControllerKATCPClient::processKATCPMessage(const vector<string> &vs
     if( !vstrTokens[3].compare("SCS.observed-maser") )
     {
         sendObservedMaser( strtod(vstrTokens[1].c_str(), NULL)*1e6, vstrTokens[5].c_str(), vstrTokens[4].c_str() );
+        return;
+    }
+
+    if( !vstrTokens[3].compare("SCS.observation-details") )
+    {
+        sendObservationDetails( strtod(vstrTokens[1].c_str(), NULL)*1e6, vstrTokens[5].c_str(), vstrTokens[4].c_str() );
         return;
     }
 // PJP
@@ -1471,6 +1478,26 @@ void cStationControllerKATCPClient::sendObservedMaser(int64_t i64Timestamp_us, c
     {
         boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
         pHandler->observedMaser_callback(i64Timestamp_us, strObservedMaser, strStatus);
+    }
+}
+
+void cStationControllerKATCPClient::sendObservationDetails(int64_t i64Timestamp_us, const string &strObservationDetails, const std::string &strStatus)
+{
+    boost::shared_lock<boost::shared_mutex> oLock(m_oCallbackHandlersMutex);
+
+    //Note the vector contains the base type callback handler pointer so cast to the derived version is this class
+    //to call function added in the derived version of the callback handler interface class
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers.size(); ui++)
+    {
+        cCallbackInterface *pHandler = dynamic_cast<cCallbackInterface*>(m_vpCallbackHandlers[ui]);
+        pHandler->observationDetails_callback(i64Timestamp_us, strObservationDetails, strStatus);
+    }
+
+    for(uint32_t ui = 0; ui < m_vpCallbackHandlers_shared.size(); ui++)
+    {
+        boost::shared_ptr<cCallbackInterface> pHandler = boost::dynamic_pointer_cast<cCallbackInterface>(m_vpCallbackHandlers_shared[ui]);
+        pHandler->observationDetails_callback(i64Timestamp_us, strObservationDetails, strStatus);
     }
 }
 

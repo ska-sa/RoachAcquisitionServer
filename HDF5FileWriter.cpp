@@ -215,6 +215,10 @@ cHDF5FileWriter::cHDF5FileWriter(const string &strRecordingDirectory, uint32_t u
         m_oInitialValueSet.m_i64TSObservedMaser_us = 0;
         m_oInitialValueSet.m_strObservedMaser = "";
         sprintf(m_oInitialValueSet.m_chaObservedMaserStatus, "0");
+
+        m_oInitialValueSet.m_i64TSObservationDetails_us = 0;
+        m_oInitialValueSet.m_strObservationDetails = "";
+        sprintf(m_oInitialValueSet.m_chaObservationDetailsStatus, "0");
     }
 }
 
@@ -562,6 +566,11 @@ void cHDF5FileWriter::getNextFrame_callback(const std::vector<int> &vi32Chan0, c
             m_pHDF5File->addObservedMaser(m_oInitialValueSet.m_i64TSObservedMaser_us,
                                           m_oInitialValueSet.m_strObservedMaser,
                                           m_oInitialValueSet.m_chaObservedMaserStatus);
+
+        if (m_oInitialValueSet.m_i64TSObservationDetails_us)
+            m_pHDF5File->addObservationDetails(m_oInitialValueSet.m_i64TSObservationDetails_us,
+                                               m_oInitialValueSet.m_strObservationDetails,
+                                               m_oInitialValueSet.m_chaObservationDetailsStatus);
 
         setState(RECORDING);
 
@@ -1173,6 +1182,19 @@ void cHDF5FileWriter::observedMaser_callback(int64_t i64Timestamp_us, const stri
     }
     if(getState() == RECORDING)
         m_pHDF5File->addObservedMaser(i64Timestamp_us, strObservedMaser, strStatus);
+}
+
+void cHDF5FileWriter::observationDetails_callback(int64_t i64Timestamp_us, const string &strObservationDetails, const std::string &strStatus)
+{
+    if (i64Timestamp_us > m_oInitialValueSet.m_i64TSObservationDetails_us)
+    {
+        boost::unique_lock<boost::shared_mutex> oLock(m_oMutex);
+        m_oInitialValueSet.m_i64TSObservationDetails_us = i64Timestamp_us;
+        m_oInitialValueSet.m_strObservationDetails = strObservationDetails;
+        sprintf(m_oInitialValueSet.m_chaObservationDetailsStatus, "%s", strStatus.c_str());
+    }
+    if(getState() == RECORDING)
+        m_pHDF5File->addObservationDetails(i64Timestamp_us, strObservationDetails, strStatus);
 }
 
 void cHDF5FileWriter::rNoiseDiode5GHzInputSource_callback(int64_t i64Timestamp_us, const string &strInputSource, const string &strStatus)

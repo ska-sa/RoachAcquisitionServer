@@ -1335,6 +1335,7 @@ void cKATCPServer::cKATCPClientCallbackHandler::antennaStatus_callback(int64_t i
 void cKATCPServer::cKATCPClientCallbackHandler::antennaInfo_callback(int64_t i64Timestamp_us, const std::string &strAntennaInfo, const std::string &strStatus) {}
 void cKATCPServer::cKATCPClientCallbackHandler::antennaBeamwidth_callback(int64_t i64Timestamp_us, const std::string &strAntennaBeamwidth, const std::string &strStatus) {}
 void cKATCPServer::cKATCPClientCallbackHandler::observedMaser_callback(int64_t i64Timestamp_us, const std::string &strObservedMaser, const std::string &strStatus) {}
+void cKATCPServer::cKATCPClientCallbackHandler::observationDetails_callback(int64_t i64Timestamp_us, const std::string &strObservationDetails, const std::string &strStatus) {}
 void cKATCPServer::cKATCPClientCallbackHandler::sourceSelection_callback(int64_t i64Timestamp_us, const std::string &strSourceName, const std::string &strStatus) {}
 void cKATCPServer::cKATCPClientCallbackHandler::onSource_callback(int64_t i64Timestamp_us, const std::string &strValue, const std::string &strStatus) {}
 void cKATCPServer::cKATCPClientCallbackHandler::bandSelectLcp_callback(int64_t i64Timestamp_us, bool bBandSelectLCP, const std::string &strStatus) {}

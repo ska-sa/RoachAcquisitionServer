@@ -276,6 +276,11 @@ class cHDF5FileWriter : public cSpectrometerDataStreamInterpreter::cCallbackInte
         std::string m_strObservedMaser;
         char        m_chaObservedMaserStatus[7];
 
+        // Observation details
+        int64_t     m_i64TSObservationDetails_us;
+        std::string m_strObservationDetails;
+        char        m_chaObservationDetailsStatus[7];
+
     } cInitialValueSet;
 
 public:
@@ -351,7 +356,7 @@ public:
     void                                                antennaInfo_callback(int64_t i64Timestamp_us, const std::string &strAntennaInfo, const std::string &strStatus);
     void                                                antennaBeamwidth_callback(int64_t i64Timestamp_us, const std::string &strAntennaBeamwidth, const std::string &strStatus);
     void                                                observedMaser_callback(int64_t i64Timestamp_us, const std::string &strObservedMaser, const std::string &strStatus);
-
+    void                                                observationDetails_callback(int64_t i64Timestamp_us, const std::string &strObservationDetails, const std::string &strStatus);
     //Noise diode values
     void                                                rNoiseDiode5GHzInputSource_callback(int64_t i64Timestamp_us, const std::string &strNoiseDiodeInputSource, const std::string &strStatus);
     void                                                rNoiseDiode5GHzLevel_callback(int64_t i64Timestamp_us, const int32_t i32NoiseDiodeLevel_dB, const std::string &strStatus);
