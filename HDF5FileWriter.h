@@ -109,6 +109,26 @@ class cHDF5FileWriter : public cSpectrometerDataStreamInterpreter::cCallbackInte
 
         double  m_aPointingModel[30];
 
+        // Requested RA offset - cTimestampedDouble
+        int64_t m_i64TSRequestedRaOffset_us;
+        double  m_dVRequestedRaOffset_deg;
+        char    m_chaRequestedRaOffsetStatus[7];
+
+        // Requested Dec offset - cTimestampedDouble
+        int64_t m_i64TSRequestedDecOffset_us;
+        double  m_dVRequestedDecOffset_deg;
+        char    m_chaRequestedDecOffsetStatus[7];
+
+        // Requested Azim offset - cTimestampedDouble
+        int64_t m_i64TSRequestedAzOffset_us;
+        double  m_dVRequestedAzOffset_deg;
+        char    m_chaRequestedAzOffsetStatus[7];
+
+        // Requested Elev offset - cTimestampedDouble
+        int64_t m_i64TSRequestedElOffset_us;
+        double  m_dVRequestedElOffset_deg;
+        char    m_chaRequestedElOffsetStatus[7];
+
         // Antenna status
         int64_t m_i64TSAntennaStatus_us;
         char    m_chaVAntennaStatus[16];
@@ -248,8 +268,18 @@ class cHDF5FileWriter : public cSpectrometerDataStreamInterpreter::cCallbackInte
         double   m_dVAttenuationADCChan1_dB;
 
         // Antenna configuration
-        std::string         m_strObservationInformation;
-        double              m_dAntennaBeamwidth_deg;
+        std::string m_strAntennaInfo;
+        double      m_dAntennaBeamwidth_deg;
+        
+        // Observed Maser
+        int64_t     m_i64TSObservedMaser_us;
+        std::string m_strObservedMaser;
+        char        m_chaObservedMaserStatus[7];
+
+        // Observation details
+        int64_t     m_i64TSObservationDetails_us;
+        std::string m_strObservationDetails;
+        char        m_chaObservationDetailsStatus[7];
 
     } cInitialValueSet;
 
@@ -314,12 +344,19 @@ public:
 
     void                                                pointingModel_callback(uint8_t ui8ParameterNumber, double dParameterValue);
 
+    //Antenna offsets
+    void                                                RequestedRaOffset_callback(int64_t i64Timestamp_us, double dRightAscensionOffset_deg, const std::string &strStatus);
+    void                                                RequestedDecOffset_callback(int64_t i64Timestamp_us, double dDeclinationOffset_deg, const std::string &strStatus);
+    void                                                RequestedAzOffset_callback(int64_t i64Timestamp_us, double dAzimuthOffset_deg, const std::string &strStatus);
+    void                                                RequestedElOffset_callback(int64_t i64Timestamp_us, double dElevationOffset_deg, const std::string &strStatus);
+
     void                                                antennaStatus_callback(int64_t i64Timestamp_us, const std::string &strAntennaStatus, const std::string &strStatus);
 
     void                                                appliedPointingModel_callback(const std::string &strModelName, const std::vector<double> &vdPointingModelParams);
-    void                                                observationInfo_callback(const std::string &strObservationInfo);
+    void                                                antennaInfo_callback(int64_t i64Timestamp_us, const std::string &strAntennaInfo, const std::string &strStatus);
     void                                                antennaBeamwidth_callback(int64_t i64Timestamp_us, const std::string &strAntennaBeamwidth, const std::string &strStatus);
-
+    void                                                observedMaser_callback(int64_t i64Timestamp_us, const std::string &strObservedMaser, const std::string &strStatus);
+    void                                                observationDetails_callback(int64_t i64Timestamp_us, const std::string &strObservationDetails, const std::string &strStatus);
     //Noise diode values
     void                                                rNoiseDiode5GHzInputSource_callback(int64_t i64Timestamp_us, const std::string &strNoiseDiodeInputSource, const std::string &strStatus);
     void                                                rNoiseDiode5GHzLevel_callback(int64_t i64Timestamp_us, const int32_t i32NoiseDiodeLevel_dB, const std::string &strStatus);

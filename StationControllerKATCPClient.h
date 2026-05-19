@@ -37,9 +37,21 @@ public:
 
         virtual void                                    pointingModel_callback(uint8_t i8ParameterNumber, double dParameterValue) = 0;
 
-        virtual void                                    observationInfo_callback(const std::string &strstrObservationInfo) = 0;
+        //Antenna offsets
+        virtual void                                    RequestedRaOffset_callback(int64_t i64Timestamp_us, double dRightAscensionOffset_deg, const std::string &strStatus) = 0;
+        virtual void                                    RequestedDecOffset_callback(int64_t i64Timestamp_us, double dDeclinationOffset_deg, const std::string &strStatus) = 0;
+        virtual void                                    RequestedAzOffset_callback(int64_t i64Timestamp_us, double dAzimuthOffset_deg, const std::string &strStatus) = 0;
+        virtual void                                    RequestedElOffset_callback(int64_t i64Timestamp_us, double dElevationOffset_deg, const std::string &strStatus) = 0;
+
+        virtual void                                    antennaInfo_callback(int64_t i64Timestamp_us, const std::string &strAntennaInfo, const std::string &strStatus) = 0;
         virtual void                                    antennaBeamwidth_callback(int64_t i64Timestamp_us, const std::string &strAntennaBeamwidth, const std::string &strStatus) = 0;
         virtual void                                    antennaStatus_callback(int64_t i64Timestamp_us, const std::string &strAntennaStatus, const std::string &strStatus) = 0;
+
+        //Observed Maser
+        virtual void                                    observedMaser_callback(int64_t i64Timestamp_us, const std::string &strObservedMaser, const std::string &strStatus) = 0;
+
+        //Observation details
+        virtual void                                    observationDetails_callback(int64_t i64Timestamp_us, const std::string &strObservationDetails, const std::string &strStatus) = 0;
 
         //Global experiment values
         virtual void                                    sourceSelection_callback(int64_t i64Timestamp_us, const std::string &strSourceName, const std::string &strStatus) = 0;
@@ -112,11 +124,20 @@ private:
     void                                                sendSkyActualAntennaEl(int64_t i64Timestamp_us,double dElevation_deg, const std::string &strStatus);
 
     void                                                sendPointingModelParameter(uint8_t ui8ParameterNumber, double dParameterValue);
+
+    //Antenna offsets
+    void                                                sendRequestedRaOffset(int64_t i64Timestamp_us, double dRequestedRaOffset, const std::string &strStatus);
+    void                                                sendRequestedDecOffset(int64_t i64Timestamp_us, double dRequestedDecOffset, const std::string &strStatus);
+    void                                                sendRequestedAzimOffset(int64_t i64Timestamp_us, double dRequestedAzimOffset, const std::string &strStatus);
+    void                                                sendRequestedElevOffset(int64_t i64Timestamp_us, double dRequestedElevOffset, const std::string &strStatus);
+
     // TODO: Figure out what to do about this one.
     void                                                sendAntennaStatus(int64_t i64Timestamp_us, std::string strAntennaStatus, const std::string &strStatus);
 // PJP    
     void                                                sendAntennaBeamwidth(int64_t i64Timestamp_us, const std::string &strAntennaBeamwidth, const std::string &strStatus);
-    void                                                sendObservationInfo(int64_t i64Timestamp_us, const std::string &strObservationInformation, const std::string &strStatus);
+    void                                                sendAntennaInfo(int64_t i64Timestamp_us, const std::string &strAntennaInfo, const std::string &strStatus);
+    void                                                sendObservedMaser(int64_t i64Timestamp_us, const std::string &strObservedMaser, const std::string &strStatus);
+    void                                                sendObservationDetails(int64_t i64Timestamp_us, const std::string &strObservationDetails, const std::string &strStatus);
 // PJP
 
     //Noise diode values

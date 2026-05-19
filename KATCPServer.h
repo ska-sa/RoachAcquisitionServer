@@ -138,9 +138,22 @@ public:
 
         void                                    pointingModel_callback(uint8_t i8ParameterNumber, double dParameterValue);
 
+        //Antenna offsets
+        void                                    RequestedRaOffset_callback(int64_t i64Timestamp_us, double dRightAscensionOffset_deg, const std::string &strStatus);
+        void                                    RequestedDecOffset_callback(int64_t i64Timestamp_us, double dDeclinationOffset_deg, const std::string &strStatus);
+        void                                    RequestedAzOffset_callback(int64_t i64Timestamp_us, double dAzimuthOffset_deg, const std::string &strStatus);
+        void                                    RequestedElOffset_callback(int64_t i64Timestamp_us, double dElevationOffset_deg, const std::string &strStatus);
+
+
         void                                    antennaStatus_callback(int64_t i64Timestamp_us, const std::string &strAntennaStatus, const std::string &strStatus);
-        void                                    observationInfo_callback(const std::string &strObservationInfo);
+        void                                    antennaInfo_callback(int64_t i64Timestamp_us, const std::string &strAntennaInfo, const std::string &strStatus);
         void                                    antennaBeamwidth_callback(int64_t i64Timestamp_us, const std::string &strAntennaBeamwidth, const std::string &strStatus);
+
+        //Observed Maser
+        void                                    observedMaser_callback(int64_t i64Timestamp_us, const std::string &strObservedMaser, const std::string &strStatus);
+
+        //Observation details
+        void                                    observationDetails_callback(int64_t i64Timestamp_us, const std::string &strObservationDetails, const std::string &strStatus);
 
         //Global experiment values
         void                                    sourceSelection_callback(int64_t i64Timestamp_us, const std::string &strSourceName, const std::string &strStatus);

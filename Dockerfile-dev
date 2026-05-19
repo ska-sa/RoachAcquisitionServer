@@ -1,0 +1,9 @@
+# docker build -f Dockerfile-dev --no-cache -t roach2-dev .
+
+FROM roach2-base:latest
+
+WORKDIR /workspace
+COPY . .
+
+RUN cmake .
+RUN make

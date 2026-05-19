@@ -1,3 +1,5 @@
+# docker build -f Dockerfile-dev-base --no-cache -t roach2-base .
+
 FROM debian:10.13-slim
 
 # Replace sources.list with archive.debian.org
@@ -32,10 +34,3 @@ WORKDIR /workspace/katcp_devel
 RUN git checkout version-5.0
 RUN make
 RUN make -C katcp install
-
-WORKDIR /workspace
-RUN git clone --recursive https://github.com/ska-sa/RoachAcquisitionServer.git
-WORKDIR /workspace/RoachAcquisitionServer
-
-RUN cmake .
-RUN make
